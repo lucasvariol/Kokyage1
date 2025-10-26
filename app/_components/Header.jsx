@@ -67,18 +67,18 @@ export default function Header() {
   };
 
   const burgerStyle = {
-    width: '48px',
-    height: '48px',
-    borderRadius: '50%',
-    background: isTransparent ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.9)',
+    width: '44px',
+    height: '44px',
+    borderRadius: '12px',
+    background: isTransparent ? 'rgba(255,255,255,0.15)' : 'rgba(96,162,157,0.08)',
     backdropFilter: 'blur(10px)',
-    border: isTransparent ? '2px solid rgba(255,255,255,0.3)' : '2px solid rgba(96,162,157,0.2)',
+    border: isTransparent ? '1px solid rgba(255,255,255,0.3)' : '1px solid rgba(96,162,157,0.15)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     cursor: 'pointer',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
     transition: 'all 0.3s ease',
     zIndex: 101,
     padding: 0,
@@ -87,11 +87,11 @@ export default function Header() {
 
   const lineStyle = {
     display: 'block',
-    width: '18px',
-    height: '2px',
-    background: isTransparent ? 'white' : '#1f2937',
+    width: '20px',
+    height: '2.5px',
+    background: isTransparent ? 'white' : '#60A29D',
     borderRadius: '2px',
-    margin: '2px 0',
+    margin: '2.5px 0',
     transition: 'all 0.3s ease'
   };
 
@@ -104,15 +104,15 @@ export default function Header() {
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
-          padding: '0 16px' // Ajout de padding interne
+          padding: '0 20px'
         }}>
           {/* LOGO */}
           <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
-            <img src="/logo.png" alt="Kokyage" style={logoStyle} />
+            <img src="/logo.png" alt="Kokyage" className="mobile-logo" style={logoStyle} />
           </Link>
 
           {/* NAVIGATION */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {/* Navigation desktop pour utilisateurs non connectés */}
             {!connected && (
               <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -242,17 +242,18 @@ export default function Header() {
         >
           <div style={{
             position: 'absolute',
-            top: '80px',
-            right: '16px',
-            left: '16px',
-            background: 'rgba(255,255,255,0.95)',
+            top: '75px',
+            right: '20px',
+            left: '20px',
+            background: 'rgba(255,255,255,0.98)',
             backdropFilter: 'blur(20px)',
-            borderRadius: '20px',
-            padding: '32px 24px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
-            border: '1px solid rgba(255,255,255,0.3)',
-            maxWidth: '400px',
-            margin: '0 auto'
+            borderRadius: '24px',
+            padding: '28px 24px',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.15)',
+            border: '1px solid rgba(96,162,157,0.1)',
+            maxWidth: '380px',
+            margin: '0 auto',
+            animation: 'slideIn 0.3s ease-out'
           }}
           onClick={(e) => e.stopPropagation()}
           >
@@ -373,31 +374,37 @@ export default function Header() {
                   margin: '0 0 16px 0'
                 }}>Navigation</h4>
                 
-                <Link href="/fonctionnement" style={{
+                  <Link href="/fonctionnement" style={{
                   display: 'flex',
                   alignItems: 'center',
                   color: '#374151',
                   textDecoration: 'none',
-                  padding: '16px 20px',
-                  borderRadius: '12px',
-                  marginBottom: '12px',
-                  gap: '12px'
+                  padding: '18px 20px',
+                  borderRadius: '16px',
+                  marginBottom: '16px',
+                  gap: '14px',
+                  background: 'rgba(96,162,157,0.04)',
+                  border: '1px solid rgba(96,162,157,0.1)',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  transition: 'all 0.2s ease'
                 }}>
                   ❓ Comment ça marche
-                </Link>
-
-                <Link href="/ajout-logement" style={{
+                </Link>                <Link href="/ajout-logement" style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: '#1F2937',
                   background: 'rgba(96,162,157,0.12)',
                   border: '1px solid rgba(96,162,157,0.25)',
-                  padding: '16px 24px',
-                  borderRadius: '12px',
-                  marginBottom: '16px',
+                  padding: '20px 24px',
+                  borderRadius: '16px',
+                  marginBottom: '20px',
                   gap: '12px',
-                  fontWeight: '600'
+                  fontWeight: '600',
+                  fontSize: '16px',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s ease'
                 }}>
                   ✨ Proposer un logement
                 </Link>
@@ -405,16 +412,18 @@ export default function Header() {
                 <Link href="/inscription" style={{
                   background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                   color: 'white',
-                  padding: '16px 24px',
-                  borderRadius: '12px',
+                  padding: '20px 28px',
+                  borderRadius: '16px',
                   textDecoration: 'none',
                   fontWeight: '700',
-                  fontSize: '16px',
+                  fontSize: '17px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '8px',
-                  marginTop: '16px'
+                  gap: '10px',
+                  marginTop: '8px',
+                  boxShadow: '0 6px 20px rgba(215,144,119,0.25)',
+                  transition: 'all 0.2s ease'
                 }}>
                   🚀 Inscription gratuite
                 </Link>
@@ -426,6 +435,17 @@ export default function Header() {
 
       {/* CSS pour responsive */}
       <style jsx>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        
         @media (max-width: 768px) {
           .desktop-nav {
             display: none !important;
@@ -442,7 +462,21 @@ export default function Header() {
         
         @media (max-width: 480px) {
           header {
-            padding: 12px 16px !important;
+            padding: 14px 0px !important;
+          }
+          
+          header > div {
+            padding: 0 16px !important;
+          }
+          
+          .mobile-logo {
+            height: 40px !important;
+          }
+        }
+        
+        @media (max-width: 360px) {
+          header > div {
+            padding: 0 12px !important;
           }
         }
       `}</style>
