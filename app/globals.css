@@ -1,5 +1,15 @@
 @import 'leaflet/dist/leaflet.css';
 
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 /* Fix Leaflet map sizing issues */
 .leaflet-container {
   width: 100% !important;

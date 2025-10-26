@@ -48,12 +48,14 @@ export default function Header() {
     position: 'sticky',
     top: 0,
     zIndex: 100,
-    padding: '16px 24px',
+    padding: '16px 0px',
     background: isTransparent ? 'transparent' : 'rgba(255,255,255,0.95)',
     backdropFilter: isTransparent ? 'none' : 'blur(20px)',
     borderBottom: isTransparent ? 'none' : '1px solid rgba(0,0,0,0.1)',
     transition: 'all 0.3s ease',
-    boxShadow: isTransparent ? 'none' : '0 4px 20px rgba(0,0,0,0.1)'
+    boxShadow: isTransparent ? 'none' : '0 4px 20px rgba(0,0,0,0.1)',
+    width: '100%',
+    overflow: 'hidden'
   };
 
   const logoStyle = {
@@ -94,108 +96,134 @@ export default function Header() {
   };
 
   return (
-    <header style={headerStyle}>
-      <div style={{ 
-        maxWidth: '1200px', 
-        margin: '0 auto', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between' 
-      }}>
-        {/* LOGO */}
-        <Link href="/" style={{ textDecoration: 'none' }}>
-          <img src="/logo.png" alt="Kokyage" style={logoStyle} />
-        </Link>
+    <>
+      <header style={headerStyle}>
+        <div style={{ 
+          maxWidth: '1200px', 
+          margin: '0 auto', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          padding: '0 16px' // Ajout de padding interne
+        }}>
+          {/* LOGO */}
+          <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
+            <img src="/logo.png" alt="Kokyage" style={logoStyle} />
+          </Link>
 
-        {/* NAVIGATION */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          {/* Navigation desktop pour utilisateurs non connectés */}
-          {!connected && (
-            <nav style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-              <Link href="/fonctionnement" style={{
-                color: isTransparent ? 'white' : '#374151',
-                textDecoration: 'none',
-                fontSize: '15px',
-                fontWeight: '500',
-                padding: '8px 16px',
-                borderRadius: '20px',
-                transition: 'all 0.3s ease'
-              }}>
-                Comment ça marche
-              </Link>
+          {/* NAVIGATION */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Navigation desktop pour utilisateurs non connectés */}
+            {!connected && (
+              <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <Link href="/fonctionnement" className="desktop-link" style={{
+                  color: isTransparent ? 'white' : '#374151',
+                  textDecoration: 'none',
+                  fontSize: '15px',
+                  fontWeight: '500',
+                  padding: '8px 12px',
+                  borderRadius: '20px',
+                  transition: 'all 0.3s ease'
+                }}>
+                  Comment ça marche
+                </Link>
 
-              <Link href="/connexion" style={{
-                background: 'rgba(96,162,157,0.12)',
-                color: '#2D3748',
-                padding: '11px 22px',
-                borderRadius: '24px',
-                textDecoration: 'none',
-                fontWeight: '600',
-                fontSize: '14px',
-                border: '1px solid rgba(96,162,157,0.25)',
-                boxShadow: '0 3px 10px rgba(96,162,157,0.18)',
-                transition: 'all 0.3s ease',
-                whiteSpace: 'nowrap'
-              }}>
-                ✨ Proposer un logement
-              </Link>
-              
-              <Link href="/inscription" style={{
+                <Link href="/connexion" className="desktop-button" style={{
+                  background: 'rgba(96,162,157,0.12)',
+                  color: '#2D3748',
+                  padding: '10px 16px',
+                  borderRadius: '24px',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  fontSize: '13px',
+                  border: '1px solid rgba(96,162,157,0.25)',
+                  boxShadow: '0 3px 10px rgba(96,162,157,0.18)',
+                  transition: 'all 0.3s ease',
+                  whiteSpace: 'nowrap'
+                }}>
+                  ✨ Proposer
+                </Link>
+                
+                <Link href="/inscription" className="desktop-button" style={{
+                  background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                  color: 'white',
+                  padding: '11px 18px',
+                  borderRadius: '25px',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  fontSize: '13px',
+                  boxShadow: '0 4px 15px rgba(215,144,119,0.3)',
+                  transition: 'all 0.3s ease',
+                  whiteSpace: 'nowrap'
+                }}>
+                  🚀 Inscription
+                </Link>
+              </nav>
+            )}
+
+            {/* CTA pour utilisateurs connectés */}
+            {connected && (
+              <Link href="/ajout-logement" className="desktop-button" style={{
                 background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                 color: 'white',
-                padding: '12px 24px',
+                padding: '11px 18px',
                 borderRadius: '25px',
                 textDecoration: 'none',
                 fontWeight: '600',
-                fontSize: '14px',
+                fontSize: '13px',
                 boxShadow: '0 4px 15px rgba(215,144,119,0.3)',
                 transition: 'all 0.3s ease',
                 whiteSpace: 'nowrap'
               }}>
-                🚀 Inscription
+                ✨ Proposer
               </Link>
-            </nav>
-          )}
+            )}
 
-          {/* CTA pour utilisateurs connectés */}
-          {connected && (
-            <Link href="/ajout-logement" style={{
-              background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '25px',
-              textDecoration: 'none',
-              fontWeight: '600',
-              fontSize: '14px',
-              boxShadow: '0 4px 15px rgba(215,144,119,0.3)',
-              transition: 'all 0.3s ease',
-              whiteSpace: 'nowrap'
-            }}>
-              ✨ Proposer un logement
-            </Link>
-          )}
-
-          {/* BURGER BUTTON */}
-          <button
-            onClick={() => setOpen(!open)}
-            style={burgerStyle}
-            aria-label="Menu"
-          >
-            <span style={{
-              ...lineStyle,
-              transform: open ? 'rotate(45deg) translate(5px, 5px)' : 'none'
-            }}></span>
-            <span style={{
-              ...lineStyle,
-              opacity: open ? 0 : 1
-            }}></span>
-            <span style={{
-              ...lineStyle,
-              transform: open ? 'rotate(-45deg) translate(7px, -6px)' : 'none'
-            }}></span>
-          </button>
+            {/* BURGER BUTTON */}
+            <button
+              onClick={() => setOpen(!open)}
+              style={burgerStyle}
+              aria-label="Menu"
+            >
+              <span style={{
+                ...lineStyle,
+                transform: open ? 'rotate(45deg) translate(5px, 5px)' : 'none'
+              }}></span>
+              <span style={{
+                ...lineStyle,
+                opacity: open ? 0 : 1
+              }}></span>
+              <span style={{
+                ...lineStyle,
+                transform: open ? 'rotate(-45deg) translate(7px, -6px)' : 'none'
+              }}></span>
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
+
+      {/* CSS pour responsive */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .desktop-nav {
+            display: none !important;
+          }
+          
+          .desktop-link {
+            display: none !important;
+          }
+          
+          .desktop-button {
+            display: none !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          header {
+            padding: 12px 16px !important;
+          }
+        }
+      `}</style>
 
       {/* MENU MOBILE */}
       {open && (
@@ -215,15 +243,16 @@ export default function Header() {
           <div style={{
             position: 'absolute',
             top: '80px',
-            right: '24px',
+            right: '16px',
+            left: '16px',
             background: 'rgba(255,255,255,0.95)',
             backdropFilter: 'blur(20px)',
             borderRadius: '20px',
             padding: '32px 24px',
             boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
             border: '1px solid rgba(255,255,255,0.3)',
-            minWidth: '280px',
-            maxWidth: '320px'
+            maxWidth: '400px',
+            margin: '0 auto'
           }}
           onClick={(e) => e.stopPropagation()}
           >
@@ -394,6 +423,29 @@ export default function Header() {
           </div>
         </div>
       )}
-    </header>
+
+      {/* CSS pour responsive */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .desktop-nav {
+            display: none !important;
+          }
+          
+          .desktop-link {
+            display: none !important;
+          }
+          
+          .desktop-button {
+            display: none !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          header {
+            padding: 12px 16px !important;
+          }
+        }
+      `}</style>
+    </>
   );
 }
