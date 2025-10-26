@@ -1524,8 +1524,29 @@ export default function Page() {
         }
         
         .revenue-cards {
-          grid-template-columns: 1fr !important;
-          gap: 16px !important;
+          grid-template-columns: 1fr 1fr !important;
+          gap: 12px !important;
+        }
+        
+        .revenue-cards > a {
+          padding: 24px 16px !important;
+          border-radius: 16px !important;
+        }
+        
+        .revenue-cards img {
+          max-width: 120px !important;
+          height: 80px !important;
+          margin: 12px auto 0 !important;
+        }
+        
+        .revenue-cards > a > div:first-child {
+          font-size: 14px !important;
+          margin-bottom: 8px !important;
+        }
+        
+        .revenue-cards > a > div:nth-child(2) {
+          font-size: 1.5rem !important;
+          margin-bottom: 12px !important;
         }
         
         .cta-buttons {
@@ -1595,6 +1616,19 @@ export default function Page() {
           width: 100% !important;
           text-align: center !important;
           justify-content: center !important;
+        }
+        
+        .revenue-cards > a {
+          padding: 20px 12px !important;
+        }
+        
+        .revenue-cards img {
+          max-width: 100px !important;
+          height: 70px !important;
+        }
+        
+        .revenue-cards > a > div:nth-child(2) {
+          font-size: 1.3rem !important;
         }
       }
     `}</style>
