@@ -1,0 +1,115 @@
+INFORMATIONS LÉGALES KOKYAGE - Pour le chatbot
+
+=== CADRE LÉGAL DE LA SOUS-LOCATION EN FRANCE ===
+
+Article 8 de la loi n°89-462 du 6 juillet 1989 :
+La sous-location est autorisée UNIQUEMENT avec l'accord écrit du propriétaire.
+Sans cet accord, le locataire s'expose à :
+- Résiliation du bail
+- Condamnation à des dommages et intérêts
+- Poursuites pénales dans certains cas
+
+KOKYAGE RESPECTE CETTE LOI en exigeant :
+1. Demande formelle du locataire au propriétaire
+2. Signature électronique du propriétaire (valeur juridique équivalente à une signature manuscrite)
+3. Conservation de la preuve d'accord
+
+=== LIMITES DE DURÉE ===
+
+RÉSIDENCE PRINCIPALE (où le locataire habite) :
+- Paris, Lyon, Bordeaux, Nice, etc. : Maximum 120 jours/an
+- Autres villes : pas de limite spécifique mais doit rester résidence principale
+
+RÉSIDENCE SECONDAIRE :
+- Accord du propriétaire obligatoire
+- Pas de limite de jours
+
+=== FISCALITÉ ===
+
+Les revenus de sous-location sont IMPOSABLES :
+
+Pour le LOCATAIRE :
+- Revenus à déclarer dans la catégorie "Bénéfices industriels et commerciaux" (BIC) ou "Revenus fonciers"
+- Si < 23 000€/an : régime micro-BIC (abattement de 50%)
+- Si > 23 000€/an : régime réel
+
+Pour le PROPRIÉTAIRE :
+- Les 40% reçus s'ajoutent aux revenus locatifs classiques
+- À déclarer dans les revenus fonciers
+
+Kokyage fournit un récapitulatif annuel pour faciliter la déclaration.
+
+=== ASSURANCE ===
+
+L'assurance Kokyage couvre :
+✅ Dommages matériels au logement (jusqu'à X00 000€)
+✅ Vol d'objets appartenant au locataire
+✅ Responsabilité civile du voyageur
+✅ Responsabilité civile du locataire vis-à-vis du propriétaire
+✅ Frais de relogement temporaire en cas de sinistre grave
+
+Ne couvre PAS :
+❌ Objets de valeur non déclarés (bijoux, œuvres d'art >5000€)
+❌ Dommages intentionnels
+❌ Usure normale
+❌ Catastrophes naturelles (couvertes par l'assurance habitation classique)
+
+=== RESPONSABILITÉ ===
+
+Hiérarchie de responsabilité :
+
+1. LE VOYAGEUR est responsable des dégradations qu'il cause
+   → Empreinte bancaire jusqu'à 300€
+   → Assurance au-delà
+
+2. LE LOCATAIRE reste garant vis-à-vis du propriétaire
+   → Même responsabilité que s'il occupait le logement
+   → Kokyage l'assiste en cas de litige
+
+3. LE PROPRIÉTAIRE n'a aucune interaction avec les voyageurs
+   → Son interlocuteur unique reste le locataire
+   → Il bénéficie de la couverture assurantielle
+
+=== COPROPRIÉTÉ ===
+
+Certains règlements de copropriété interdisent :
+- La location courte durée
+- La sous-location
+- L'usage commercial du bien
+
+⚠️ Il est IMPÉRATIF de vérifier le règlement de copropriété avant de publier sur Kokyage.
+
+Si interdit : 
+- Le locataire et le propriétaire peuvent être poursuivis par le syndic
+- Kokyage décline toute responsabilité
+
+=== BAIL MOBILITÉ (bail meublé courte durée) ===
+
+Pour les baux mobilité (1 à 10 mois) :
+- La sous-location est généralement INTERDITE dans le contrat
+- Vérifier les clauses spécifiques du bail
+
+=== DONNÉES PERSONNELLES (RGPD) ===
+
+Kokyage respecte le RGPD :
+- Consentement explicite pour collecter les données
+- Droit d'accès, de rectification, de suppression
+- Données hébergées en Europe
+- Chiffrement des données sensibles
+- Conservation limitée dans le temps
+
+=== EN RÉSUMÉ ===
+
+✅ Kokyage est 100% légal car :
+1. Accord du propriétaire obligatoire et tracé
+2. Respect des limites de durée (120j en résidence principale)
+3. Assurance conforme aux exigences légales
+4. Respect du RGPD
+
+⚠️ Responsabilités de l'utilisateur :
+1. Déclarer ses revenus aux impôts
+2. Vérifier le règlement de copropriété
+3. Respecter les clauses de son bail
+4. Ne pas dépasser 120 jours/an en résidence principale
+
+Pour toute question juridique spécifique, Kokyage recommande de consulter un avocat spécialisé en droit immobilier.

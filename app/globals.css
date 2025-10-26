@@ -1,0 +1,537 @@
+@import 'leaflet/dist/leaflet.css';
+
+/* Fix Leaflet map sizing issues */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 300px;
+  min-width: 320px;
+}
+:root{
+  --c-primary:#C96745;
+  --c-secondary:#D68E74;
+  --c-accent:#CAAD78;
+  --c-text:#333;
+  --c-border:#eee;
+}
+/* Small set of utility classes used in components (project doesn't use Tailwind) */
+.flex{display:flex}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.header-relative{position:relative}
+
+/* Header-specific helpers that some components reference */
+.header-right{display:flex;align-items:center;margin-left:auto;gap:12px;position:relative}
+.burger-btn {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: var(--c-primary) !important;
+  border: 2px solid #fff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  z-index: 101 !important;
+}
+.burger-btn:hover {
+  background: #d45c1a;
+}
+.burger-btn .bar {
+  display: block !important;
+  width: 14px !important;
+  height: 2px !important;
+  background: #fff !important;
+  border-radius: 2px !important;
+  margin: 0.5px 0 !important;
+  opacity: 1 !important;
+}
+.btn-proposer{padding:8px 12px;border-radius:8px;border:1px solid var(--c-border);background:#fff;color:#222}
+/* Modern Logo Styles */
+.logo img, .logo-modern img {
+  height: 48px !important;
+  display: block !important;
+  transition: all 0.3s ease !important;
+  max-width: none !important;
+  width: auto !important;
+}
+
+.logo-modern {
+  display: flex !important;
+  align-items: center !important;
+  text-decoration: none !important;
+  transition: transform 0.3s ease !important;
+  z-index: 102 !important;
+}
+
+.logo-modern:hover {
+  transform: scale(1.05) !important;
+}
+
+/* Header Modern Container */
+.header-modern {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  width: 100% !important;
+}
+
+.header-modern > div {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:var(--c-text);font-family:Inter,system-ui,Arial,sans-serif;line-height:1.5}
+a{color:var(--c-primary);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%;display:block}
+
+/* Prevent global img rules from breaking Leaflet tiles/markers */
+.leaflet-container img { max-width: none !important; }
+.leaflet-container .leaflet-tile, 
+.leaflet-container .leaflet-marker-icon, 
+.leaflet-container .leaflet-marker-shadow {
+  max-width: none !important;
+}
+
+.container{max-width:1100px;margin:0 auto;padding:20px}
+
+/* Header */
+.header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--c-border);z-index:10}
+.navbar{display:flex;align-items:center;gap:16px;padding:10px 16px}
+.logo{font-weight:800;font-size:1.3rem;color:var(--c-primary)}
+.menu{display:flex;gap:12px}
+.menu a{color:#222;padding:6px 8px;border-radius:6px}
+.auth{margin-left:auto;display:flex;gap:8px}
+.burger{display:flex;flex-direction:column;gap:4px;margin-left:auto;cursor:pointer;align-items:center}
+.burger span{width:26px;height:3px;background:#222;border-radius:2px}
+.menu.open{position:absolute;right:12px;top:58px;background:#fff;border:1px solid #ddd;border-radius:10px;padding:10px;flex-direction:column}
+
+/* Buttons */
+.btn{display:inline-block;padding:10px 14px;border:1px solid var(--c-border);border-radius:10px;background:#fff;color:#222;transition:.2s;cursor:pointer}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn-secondary{background:var(--c-secondary);border-color:var(--c-secondary);color:#fff}
+.pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:.85rem}
+.pill.tenant{background:var(--c-accent);color:#000}
+.pill.owner{background:var(--c-secondary);color:#fff}
+
+/* Sections */
+.section{margin:20px 0}
+.hero{background:#faf7f5;border:1px solid var(--c-border);border-radius:16px;padding:22px;text-align:center}
+.searchGrid{display:grid;grid-template-columns:1fr;gap:10px;max-width:780px;margin:12px auto 0}
+.input, select{padding:10px 12px;border:1px solid #ddd;border-radius:10px}
+.benefits{display:grid;grid-template-columns:1fr;gap:14px}
+.card{border:1px solid var(--c-border);border-radius:14px;padding:14px;background:#fff}
+.map{width:100%;height:320px;border-radius:12px;border:1px solid #ddd}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
+.price{color:var(--c-primary);font-weight:700}
+.placeholder{border:2px dashed #ddd;border-radius:14px;padding:30px;text-align:center;color:#666}
+
+/* Footer */
+footer{margin-top:30px;border-top:1px solid var(--c-border);padding:16px;text-align:center;color:#666}
+.footerLinks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* Responsive */
+@media(min-width:700px){
+  .searchGrid{grid-template-columns:2fr repeat(3,1fr) 1fr}
+  .grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:900px){
+  .menu,.auth,.publish{display:none}
+  .burger{display:flex}
+}
+
+/* Estimator: responsive revenue columns and images */
+.estimator-revenues{display:flex;justify-content:space-between;align-items:flex-start;width:100%;max-width:700px;margin-top:6px;gap:16px}
+.estimator-column{text-align:center;width:48%}
+.estimator-image{margin:12px auto 0;display:block;width:210px;max-width:100%;height:150px;object-fit:cover;border-radius:12px}
+
+@media(max-width:700px){
+  .estimator-revenues{flex-direction:column;align-items:center}
+  .estimator-column{width:100%}
+  .estimator-image{width:160px;height:120px}
+}
+
+/* Mobile phone specific adjustments (general phone sizes) */
+@media (max-width: 600px) {
+  :root{--c-text:#222} 
+  html,body{font-size:15px}
+
+  /* Tighten page container and card paddings */
+  .container{padding:12px}
+  .search-section{padding:18px 12px;margin:14px;border-radius:12px}
+
+  /* Framed card around the search form for better visual separation (global) */
+  .search-card{background:#fff;border-radius:18px;padding:22px 28px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 12px 40px rgba(0,0,0,0.08);max-width:1100px;margin:0 auto 18px}
+  .search-card .search-form{margin-bottom:0}
+
+  /* Normalize controls inside the search form for consistent alignment */
+  .search-card .search-form > * { display: inline-flex; align-items: center; }
+  .search-card .search-form input[type="text"],
+  .search-card .search-form .btn,
+  .search-card .search-form button,
+  .search-card .search-form [role="button"] {
+    height: 65px; box-sizing: border-box;
+  }
+  .search-card .search-form input[type="text"] { padding: 14px 18px; }
+
+  /* Form: stack inputs vertically */
+  .search-form{flex-direction:column;align-items:stretch;gap:12px}
+  .search-form .btn.btn-primary{width:100%;align-self:center}
+
+  /* Headings smaller for mobile */
+  .search-section h1{font-size:24px;line-height:1.15}
+  .estimator-section h3{font-size:20px;padding:0 6px}
+
+  /* Estimator: full width, images smaller */
+  .estimator-revenues{max-width:100%;padding:0 6px}
+  .estimator-column{width:100%;text-align:center}
+  .estimator-image{width:140px;height:100px}
+
+  /* Pills/buttons: smaller and wrap */
+  .pill{padding:6px 10px;font-size:0.85rem}
+  .pill + .pill{margin-left:6px}
+
+  /* Convaincre CTAs: full width stacked */
+  a[href^="/convaincre-"]{display:block;width:100%;max-width:520px;margin:10px auto;padding:14px 12px;border-width:2px;font-size:16px;border-radius:8px}
+
+  /* Benefits and other card lists should stack */
+  .benefits{display:block}
+  .benefit{width:100%;margin-bottom:12px}
+
+  /* Footer spacing */
+  footer{padding:12px}
+
+
+}
+
+/* Make the main search button have the same spacing as the other inputs on wide screens */
+@media (min-width: 701px) {
+  .search-form > .btn.btn-primary { margin-left: 20px; }
+}
+@media (max-width: 700px) {
+  /* When stacked on mobile, reset the margin so buttons are full-width */
+  .search-form > .btn.btn-primary { margin-left: 0; display: block; width: 100%; max-width: none; }
+}
+
+/* Very small phones */
+@media (max-width: 420px) {
+  .search-section h1{font-size:20px}
+  .estimator-section h3{font-size:18px}
+  .estimator-image{width:120px;height:90px}
+  a[href^="/convaincre-"]{font-size:15px;padding:12px}
+}
+
+/* Modern 2025 Animations and Effects */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-50px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Modern Range Slider Styles */
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+}
+
+input[type="range"]::-moz-range-track {
+  background: #e2e8f0;
+  height: 8px;
+  border-radius: 4px;
+  border: none;
+}
+
+/* Modern Header 2025 Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fix for Header Modern Visibility Issues */
+.header-modern {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  width: 100% !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Default transparent state for homepage */
+.header-modern.home-page {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Scrolled or non-home page state */
+.header-modern.scrolled,
+.header-modern:not(.home-page) {
+  background: rgba(255,255,255,0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Logo visibility fixes */
+.logo-modern img {
+  height: 50px !important;
+  width: auto !important;
+  display: block !important;
+  transition: all 0.3s ease !important;
+}
+
+/* White logo for home page when not scrolled */
+.header-modern.home-page:not(.scrolled) .logo-modern img {
+  filter: brightness(0) invert(1) !important;
+}
+
+/* Normal logo for scrolled or other pages */
+.header-modern.scrolled .logo-modern img,
+.header-modern:not(.home-page) .logo-modern img {
+  filter: none !important;
+  height: 45px !important;
+}
+
+/* Burger Button Base Styles */
+.burger-modern,
+.burger-public {
+  position: relative !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  z-index: 101 !important;
+  padding: 0 !important;
+  outline: none !important;
+}
+
+/* Burger for home page (transparent header) */
+.header-modern.home-page:not(.scrolled) .burger-modern,
+.header-modern.home-page:not(.scrolled) .burger-public {
+  background: rgba(255,255,255,0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 2px solid rgba(255,255,255,0.3) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Burger for scrolled or other pages */
+.header-modern.scrolled .burger-modern,
+.header-modern.scrolled .burger-public,
+.header-modern:not(.home-page) .burger-modern,
+.header-modern:not(.home-page) .burger-public {
+  background: rgba(255,255,255,0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 2px solid rgba(102,126,234,0.2) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Burger lines base */
+.burger-modern span,
+.burger-public span {
+  display: block !important;
+  width: 18px !important;
+  height: 2px !important;
+  border-radius: 2px !important;
+  margin: 2px 0 !important;
+  transition: all 0.3s ease !important;
+}
+
+/* White lines for home page */
+.header-modern.home-page:not(.scrolled) .burger-modern span,
+.header-modern.home-page:not(.scrolled) .burger-public span {
+  background: white !important;
+}
+
+/* Dark lines for scrolled or other pages */
+.header-modern.scrolled .burger-modern span,
+.header-modern.scrolled .burger-public span,
+.header-modern:not(.home-page) .burger-modern span,
+.header-modern:not(.home-page) .burger-public span {
+  background: #1f2937 !important;
+}
+
+/* Hover effects */
+.burger-modern:hover,
+.burger-public:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15) !important;
+}
+
+/* Modern Header Responsive Styles */
+@media (max-width: 768px) {
+  .nav-desktop {
+    display: none !important;
+  }
+  
+  .header-modern {
+    padding: 12px 20px !important;
+  }
+  
+  .logo-modern img {
+    height: 45px !important;
+  }
+  
+  .burger-modern,
+  .burger-public {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-modern-overlay > div,
+  .menu-public-overlay > div {
+    right: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    min-width: unset !important;
+    max-width: unset !important;
+  }
+}
+
+/* Modern card hover effects */
+.benefit-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important;
+}
+
+/* Modern form styles */
+.search-form-modern input:focus,
+.search-form-modern button:focus {
+  transform: translateY(-1px);
+}
+
+/* Responsive grid improvements for 2025 */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 20px 80px !important;
+  }
+  
+  .search-card-modern {
+    padding: 24px !important;
+    margin: 0 16px !important;
+  }
+  
+  .search-form-modern {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .search-form-modern > * {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+  
+  .benefits-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  
+  .benefit-card {
+    padding: 32px 24px !important;
+  }
+}
+
+/* Premium glassmorphism effect */
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Modern gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* CTA buttons: Convaincre propriétaire / locataire */
+.cta-row{display:flex;gap:100px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:12px;margin-bottom:24px;max-width:820px;margin-left:auto;margin-right:auto}
+.cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:20px;width:300px;height:72px;border-radius:12px;padding:12px 20px;font-weight:700;font-size:18px;text-decoration:none;transition:transform .12s ease,box-shadow .12s ease,opacity .12s ease;box-shadow:0 8px 24px rgba(0,0,0,0.06);outline:none}
+.cta-btn:focus{box-shadow:0 10px 30px rgba(0,0,0,0.12);transform:translateY(-2px)}
+.cta-primary{background:linear-gradient(90deg,#C96745 0%,#D68E74 100%);color:#fff;border:0}
+.cta-outline{background:#fff;color:#222;border:2px solid rgba(0,0,0,0.08)}
+.cta-btn:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.12)}
+
+@media(max-width:760px){
+  .cta-btn{width:calc(100% - 40px);max-width:480px}
+  .cta-row{gap:18px}
+}

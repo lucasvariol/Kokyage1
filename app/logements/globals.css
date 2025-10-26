@@ -1,0 +1,326 @@
+"use client";
+
+import Header from '../_components/Header';
+import Footer from '../_components/Footer';
+import { supabase } from '@/lib/supabaseClient';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import { useEffect, useState } from 'react';
+import Map, { Marker as MapboxMarker } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+export default function Page() {
+  const [mounted, setMounted] = useState(false);
+  const [items, setItems] = useState([]);
+  // Etats pour les filtres de base et avancés
+  const [destination, setDestination] = useState("");
+  const [arrivee, setArrivee] = useState("");
+  const [depart, setDepart] = useState("");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  // Etats pour le slider prix et chambres/sdb
+  const [priceMin, setPriceMin] = useState(0);
+  const [priceMax, setPriceMax] = useState(300);
+  const [bedrooms, setBedrooms] = useState(1);
+  const [bathrooms, setBathrooms] = useState(1);
+  const [viewport, setViewport] = useState({
+    longitude: 2.3522,
+    latitude: 48.8566,
+    zoom: 12
+  });
+
+  useEffect(() => {
+    setMounted(true);
+
+    // Configuration des icônes Leaflet
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: "/marker-icon-2x.png",
+      iconUrl: "/marker-icon.png",
+      shadowUrl: "/marker-shadow.png",
+    });
+
+    // Récupération des logements
+    async function fetchListings() {
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!error) setItems(data || []);
+    }
+    fetchListings();
+  }, []);
+
+  return (
+    <>
+      <Header />
+      <main style={{ background: '#f7f8fa', minHeight: '100vh', paddingBottom: 32 }}>
+        <h1 style={{ fontSize: 32, fontWeight: 700, color: '#222', marginBottom: 24, textAlign: 'center' }}>Réserver un logement</h1>
+        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px' }}>
+          {/* Filtres */}
+          <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+            {/* Récapitulatif des filtres de base */}
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', padding: '10px 18px' }}>
+              <input
+                type="text"
+                placeholder="Destination"
+                value={destination}
+                onChange={e => setDestination(e.target.value)}
+                style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid #ddd', fontSize: 16, minWidth: 120 }}
+              />
+              <input
+                type="date"
+                placeholder="Arrivée"
+                value={arrivee}
+                onChange={e => setArrivee(e.target.value)}
+                style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid #ddd', fontSize: 16, minWidth: 120 }}
+              />
+              <input
+                type="date"
+                placeholder="Départ"
+                value={depart}
+                onChange={e => setDepart(e.target.value)}
+                style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid #ddd', fontSize: 16, minWidth: 120 }}
+              />
+              {/* Bouton loupe orange */}
+              <button
+                type="button"
+                style={{
+                  marginLeft: 8,
+                  background: '#C96745',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 44,
+                  height: 44,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(201,103,69,0.10)'
+                }}
+                aria-label="Rechercher"
+              >
+                {/* Icône SVG loupe */}
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <circle cx="10" cy="10" r="7" stroke="#fff" strokeWidth="2"/>
+                  <line x1="16.2" y1="16.2" x2="20" y2="20" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
+            {/* Bouton pour ouvrir les filtres avancés */}
+            <button
+              type="button"
+              onClick={() => setShowAdvancedFilters(true)}
+              style={{ padding: '10px 24px', borderRadius: 8, fontSize: 16, background: '#C96745', color: '#fff', border: 'none', height: 48 }}
+            >
+              Filtre
+            </button>
+          </div>
+          {/* Fenêtre modale des filtres avancés */}
+          {showAdvancedFilters && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0, left: 0, width: '100vw', height: '100vh',
+                background: 'rgba(34,34,34,0.45)',
+                zIndex: 1000,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onClick={() => setShowAdvancedFilters(false)}
+            >
+              <div
+                style={{
+                  background: '#fff',
+                  borderRadius: 16,
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+                  padding: '32px 28px',
+                  minWidth: 320,
+                  minHeight: 120,
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 18
+                }}
+                onClick={e => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setShowAdvancedFilters(false)}
+                  style={{
+                    position: 'absolute',
+                    top: 12,
+                    right: 16,
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 22,
+                    color: '#888',
+                    cursor: 'pointer'
+                  }}
+                  aria-label="Fermer"
+                >
+                  ×
+                </button>
+                <h3 style={{ fontSize: 20, fontWeight: 600, color: '#C96745', marginBottom: 8 }}>Filtres avancés</h3>
+                <select
+                  className="filter-type-btn"
+                  style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid #ddd', fontSize: 16, minWidth: 120 }}
+                >
+                  <option value="">Type</option>
+                  <option value="appartement">Appartement</option>
+                  <option value="maison">Maison</option>
+                  <option value="studio">Studio</option>
+                </select>
+                {/* Séparateur */}
+                <div style={{ height: 1, background: '#eee', margin: '14px 0' }} />
+                {/* Slider prix min */}
+                <div style={{ margin: '0 0 8px 0', width: 260 }}>
+                  <label style={{ fontWeight: 500, marginBottom: 6, display: 'block' }}>Prix minimum par nuit (€)</label>
+                  <input
+                    type="range"
+                    min={0}
+                    max={300}
+                    value={priceMin}
+                    onChange={e => {
+                      const val = Number(e.target.value);
+                      if (val < priceMax) setPriceMin(val);
+                    }}
+                    style={{
+                      width: '100%',
+                      accentColor: '#C96745'
+                    }}
+                  />
+                  <div style={{ textAlign: 'right', fontWeight: 500, marginTop: 4 }}>{priceMin}€</div>
+                </div>
+                {/* Slider prix max */}
+                <div style={{ margin: '0 0 8px 0', width: 260 }}>
+                  <label style={{ fontWeight: 500, marginBottom: 6, display: 'block' }}>Prix maximum par nuit (€)</label>
+                  <input
+                    type="range"
+                    min={0}
+                    max={300}
+                    value={priceMax}
+                    onChange={e => {
+                      const val = Number(e.target.value);
+                      if (val > priceMin) setPriceMax(val);
+                    }}
+                    style={{
+                      width: '100%',
+                      accentColor: '#C96745'
+                    }}
+                  />
+                  <div style={{ textAlign: 'right', fontWeight: 500, marginTop: 4 }}>{priceMax}€</div>
+                </div>
+                {/* Séparateur */}
+                <div style={{ height: 1, background: '#eee', margin: '14px 0' }} />
+                {/* Sélection chambres/sdb */}
+                <div style={{ display: 'flex', gap: 32, marginTop: 0 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontWeight: 500 }}>Chambres</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <button
+                        type="button"
+                        className="filter-plusminus-btn"
+                        onClick={() => setBedrooms(b => Math.max(1, b - 1))}
+                        style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #ddd', background: '#fff', fontSize: 18, cursor: 'pointer', transition: 'transform 0.18s' }}
+                      >-</button>
+                      <span style={{ minWidth: 24, textAlign: 'center', fontWeight: 500 }}>{bedrooms}</span>
+                      <button
+                        type="button"
+                        className="filter-plusminus-btn"
+                        onClick={() => setBedrooms(b => b + 1)}
+                        style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #ddd', background: '#fff', fontSize: 18, cursor: 'pointer', transition: 'transform 0.18s' }}
+                      >+</button>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontWeight: 500 }}>Salles de bain</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <button
+                        type="button"
+                        className="filter-plusminus-btn"
+                        onClick={() => setBathrooms(b => Math.max(1, b - 1))}
+                        style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #ddd', background: '#fff', fontSize: 18, cursor: 'pointer', transition: 'transform 0.18s' }}
+                      >-</button>
+                      <span style={{ minWidth: 24, textAlign: 'center', fontWeight: 500 }}>{bathrooms}</span>
+                      <button
+                        type="button"
+                        className="filter-plusminus-btn"
+                        onClick={() => setBathrooms(b => b + 1)}
+                        style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid #ddd', background: '#fff', fontSize: 18, cursor: 'pointer', transition: 'transform 0.18s' }}
+                      >+</button>
+                    </div>
+                  </div>
+                </div>
+                {/* Animation CSS */}
+                <style>{`
+                  .filter-type-btn:hover {
+                    transform: scale(1.04);
+                    box-shadow: 0 2px 8px rgba(201,103,69,0.12);
+                    border: 2px solid #222;
+                  }
+                  .filter-plusminus-btn:hover {
+                    transform: scale(1.18);
+                    background: #f7e3da;
+                    border-color: #222;
+                  }
+                `}</style>
+                <button
+                  style={{ padding: '10px 24px', borderRadius: 8, fontSize: 16, background: '#C96745', color: '#fff', border: 'none', marginTop: 18 }}
+                  onClick={() => setShowAdvancedFilters(false)}
+                >
+                  Appliquer
+                </button>
+              </div>
+            </div>
+          )}
+          {/* Carte interactive Leaflet */}
+          <div style={{ width: '100%', height: 400, borderRadius: 16, marginBottom: 32, overflow: 'hidden' }}>
+            {mounted && (
+              <MapContainer center={[48.8566, 2.3522]} zoom={12} style={{ height: '100%', width: '100%' }}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                {/* Markers pour chaque logement */}
+                {items
+                  .filter(it => typeof it.latitude === 'number' && typeof it.longitude === 'number')
+                  .map(it => (
+                    <Marker key={it.id} position={[it.latitude, it.longitude]}>
+                      <Popup>
+                        <strong>{it.title}</strong><br />
+                        {it.address}
+                      </Popup>
+                    </Marker>
+                  ))}
+              </MapContainer>
+            )}
+          </div>
+          {/* Carte Mapbox (exemple) */}
+          <div style={{ width: '100%', height: 400, borderRadius: 16, marginBottom: 32, overflow: 'hidden' }}>
+            <Map
+              initialViewState={viewport}
+              style={{ width: '100%', height: 400 }}
+              mapStyle="mapbox://styles/mapbox/streets-v11"
+              mapboxAccessToken="pk.eyJ1IjoibHVjYXN2YXJpb2wiLCJhIjoiY21mNXVoN212MDlmNDJqc2kyaDU3OHM1OCJ9.TUPHVJPJyepQtJM5O6QZsA"
+            >
+              <MapboxMarker longitude={2.3522} latitude={48.8566} />
+            </Map>
+          </div>
+          {/* Liste des logements */}
+          <div className="logements-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32 }}>
+            {items.map((it) => (
+              <article key={it.id} className="logement-card" style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                <div style={{ width: '100%', height: 180, background: '#eee', borderRadius: 12, marginBottom: 16, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {/* Image du logement */}
+                  {it.image_url ? <img src={it.image_url} alt={it.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ color: '#bbb' }}>Aperçu</span>}
+                </div>
+                <h3 style={{ fontSize: 20, fontWeight: 600, color: '#C96745', marginBottom: 8 }}><a href={`/logement/${it.id}`} style={{ color: '#C96745', textDecoration: 'none' }}>{it.title}</a></h3>
+                <p style={{ marginBottom: 4 }}>{it.city} — {it.address}</p>
+                <p style={{ fontWeight: 500, color: '#222', marginBottom: 8 }}>{it.price_per_night}€ / nuit</p>
+                <button style={{ padding: '8px 18px', borderRadius: 8, background: '#C96745', color: '#fff', border: 'none', fontSize: 16, marginTop: 'auto' }}>Voir le logement</button>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}
