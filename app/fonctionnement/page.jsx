@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 import Chatbot from '../_components/Chatbot';
 import Link from 'next/link';
 
-export default function Page() {
+function PageContent() {
   const [activeTab, setActiveTab] = useState('concept');
   const searchParams = useSearchParams();
 
@@ -197,6 +197,14 @@ export default function Page() {
         }
       `}</style>
     </>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PageContent />
+    </Suspense>
   );
 }
 

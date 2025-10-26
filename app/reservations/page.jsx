@@ -4,10 +4,10 @@
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 import { supabase } from '@/lib/supabaseClient';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function ReservationsPage() {
+function ReservationsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -924,5 +924,13 @@ export default function ReservationsPage() {
       
       <Footer />
     </>
+  );
+}
+
+export default function ReservationsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ReservationsContent />
+    </Suspense>
   );
 }

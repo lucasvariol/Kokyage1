@@ -4,7 +4,7 @@ import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 import StripeCardForm from '../_components/StripeCardForm';
 import { supabase } from '@/lib/supabaseClient';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -13,7 +13,7 @@ import { getFeeMultiplier, percentLabel } from '@/lib/commissions';
 // Charger Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || '');
 
-export default function ConfirmerEtPayerPage() {
+function ConfirmerEtPayerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -729,5 +729,13 @@ export default function ConfirmerEtPayerPage() {
       
       <Footer />
     </Elements>
+  );
+}
+
+export default function ConfirmerEtPayerPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConfirmerEtPayerContent />
+    </Suspense>
   );
 }

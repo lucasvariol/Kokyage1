@@ -1,6 +1,6 @@
 "use client";
 import dayjs from 'dayjs';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { supabase } from '@/lib/supabaseClient';
@@ -10,7 +10,7 @@ import { fr } from 'date-fns/locale';
 import { useSearchParams } from 'next/navigation';
 
 
-export default function Calendrier({ listingId: initialListingId }) {
+function CalendrierContent({ listingId: initialListingId }) {
   const searchParams = useSearchParams();
   const [selectedDates, setSelectedDates] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -356,5 +356,13 @@ export default function Calendrier({ listingId: initialListingId }) {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function Calendrier({ listingId: initialListingId }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CalendrierContent listingId={initialListingId} />
+    </Suspense>
   );
 }
