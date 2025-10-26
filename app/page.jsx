@@ -239,7 +239,7 @@ export default function Page() {
             background: 'rgba(255,255,255,0.95)', 
             backdropFilter: 'blur(10px)',
             borderRadius: '24px', 
-            padding: '32px', 
+            padding: '24px', 
             boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
             border: '1px solid rgba(255,255,255,0.2)',
             maxWidth: '900px',
@@ -256,7 +256,7 @@ export default function Page() {
             </h2>
             <form className="search-form-modern" action="/logements" style={{ 
               display: 'flex', 
-              gap: '16px', 
+              gap: '12px', 
               alignItems: 'stretch', 
               flexWrap: 'wrap', 
               justifyContent: 'center',
@@ -265,7 +265,7 @@ export default function Page() {
               padding: '8px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
             }}>
-            <div style={{ position: 'relative', flex: '2', minWidth: '250px', zIndex: 10000 }}>
+            <div className="search-input-container" style={{ position: 'relative', flex: '2', minWidth: '200px', zIndex: 10000 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                   <input
                     name="destination"
@@ -394,7 +394,7 @@ export default function Page() {
           </div>
 
             {/* Arrivée */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '140px' }}>
+            <div className="date-field" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '140px' }}>
               <div style={{ position: 'relative', width: '100%' }}>
                 <DatePicker
                   key={`arr-${arrivee || 'none'}`}
@@ -458,7 +458,7 @@ export default function Page() {
               </div>
             </div>
             {/* Départ */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '140px' }}>
+            <div className="date-field" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '140px' }}>
               <div style={{ position: 'relative', width: '100%' }}>
                 <DatePicker
                   key={`dep-${arrivee || 'none'}-${depart || 'none'}`}
@@ -514,7 +514,7 @@ export default function Page() {
             </div>
 
             {/* Voyageurs */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '120px', zIndex: 10000 }}>
+            <div className="travelers-field" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '120px', zIndex: 10000 }}>
               {/* Masqué */}
               <select
                 name="voyageurs"
@@ -765,7 +765,7 @@ export default function Page() {
             </div>
 
             {/* Revenus calculés */}
-            <div style={{ 
+            <div className="revenue-cards" style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
               gap: '24px', 
@@ -872,7 +872,7 @@ export default function Page() {
               </a>
             </div>
             {/* CTA modernes */}
-            <div style={{ 
+            <div className="cta-buttons" style={{ 
               display: 'flex', 
               flexDirection: 'row',
               flexWrap: 'wrap',
@@ -1487,6 +1487,117 @@ export default function Page() {
     </main>
     <Footer />
     <Chatbot />
+
+    {/* CSS Responsive */}
+    <style jsx>{`
+      @media (max-width: 768px) {
+        .search-card-modern {
+          padding: 20px 16px !important;
+          border-radius: 20px !important;
+        }
+        
+        .search-form-modern {
+          flex-direction: column !important;
+          gap: 12px !important;
+          padding: 12px !important;
+        }
+        
+        .search-input-container {
+          min-width: unset !important;
+          flex: none !important;
+        }
+        
+        .btn-search-modern {
+          min-width: unset !important;
+          width: 100% !important;
+          padding: 18px 24px !important;
+        }
+        
+        .estimator-section {
+          margin: -40px auto 40px !important;
+          padding: 0 16px !important;
+        }
+        
+        .estimator-section > div {
+          padding: 32px 20px !important;
+          border-radius: 20px !important;
+        }
+        
+        .revenue-cards {
+          grid-template-columns: 1fr !important;
+          gap: 16px !important;
+        }
+        
+        .cta-buttons {
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        
+        .cta-buttons > a {
+          min-width: unset !important;
+          max-width: unset !important;
+          flex: none !important;
+        }
+        
+        .date-field {
+          min-width: unset !important;
+          flex: none !important;
+        }
+        
+        .travelers-field {
+          min-width: unset !important;
+          flex: none !important;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .search-card-modern {
+          padding: 16px 12px !important;
+          margin: 0 16px !important;
+        }
+        
+        .search-form-modern {
+          padding: 8px !important;
+        }
+        
+        .estimator-section {
+          padding: 0 12px !important;
+        }
+        
+        .estimator-section > div {
+          padding: 24px 16px !important;
+        }
+        
+        .btn-search-modern {
+          padding: 16px 20px !important;
+          font-size: 15px !important;
+        }
+        
+        /* Hero section mobile */
+        section:first-of-type {
+          padding: 60px 16px 80px !important;
+        }
+        
+        /* Stats grid mobile */
+        section:last-of-type > div:last-child {
+          grid-template-columns: 1fr !important;
+          gap: 20px !important;
+          text-align: center !important;
+        }
+        
+        /* CTA buttons mobile */
+        section:last-of-type > div > div:last-of-type {
+          flex-direction: column !important;
+          gap: 12px !important;
+        }
+        
+        section:last-of-type > div > div:last-of-type > a {
+          width: 100% !important;
+          text-align: center !important;
+          justify-content: center !important;
+        }
+      }
+    `}</style>
   </>
   ;
             }
