@@ -1563,14 +1563,16 @@ export default function Page() {
         }
         
         .cta-buttons {
-          flex-direction: column !important;
-          gap: 12px !important;
+          flex-direction: row !important;
+          gap: 10px !important;
         }
         
         .cta-buttons > a {
           min-width: unset !important;
           max-width: unset !important;
-          flex: none !important;
+          flex: 1 !important;
+          padding: 16px 12px !important;
+          font-size: 14px !important;
         }
         
         .date-field {
@@ -1642,6 +1644,15 @@ export default function Page() {
         
         .revenue-cards > a > div:nth-child(2) {
           font-size: 1.3rem !important;
+        }
+        
+        .cta-buttons > a {
+          padding: 14px 8px !important;
+          font-size: 13px !important;
+        }
+        
+        .cta-buttons > a > div:last-child {
+          font-size: 16px !important;
         }
       }
     `}</style>
