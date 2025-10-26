@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://your-domain.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://kokyage.com';
 const root = process.cwd();
 const appDir = path.join(root, 'app');
 const pagesDir = path.join(root, 'pages');

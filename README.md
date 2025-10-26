@@ -79,3 +79,4 @@ curl -X POST http://localhost:3000/api/bookings -H "Content-Type: application/js
 ```
 
 > Pour tester POST authentifiés avec `curl`, récupérez les cookies de la réponse du login (en-tête `set-cookie`) et renvoyez-les avec `-H "Cookie: ..."`. Plus simple : testez via Postman/Insomnia qui gèrent les cookies automatiquement.
+# Last updated: 10/26/2025 17:16:47
