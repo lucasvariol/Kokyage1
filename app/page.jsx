@@ -269,7 +269,7 @@ export default function Page() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                   <input
                     name="destination"
-                    placeholder="🔍 Où souhaitez-vous aller ?"
+                    placeholder="Où souhaitez-vous aller ?"
                     value={lieu}
                     onChange={e => {
                       setLieu(e.target.value);
@@ -394,7 +394,7 @@ export default function Page() {
           </div>
 
             {/* Arrivée */}
-            <div className="date-field" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '140px' }}>
+            <div className="date-field desktop-only" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '140px' }}>
               <div style={{ position: 'relative', width: '100%' }}>
                 <DatePicker
                   key={`arr-${arrivee || 'none'}`}
@@ -458,7 +458,7 @@ export default function Page() {
               </div>
             </div>
             {/* Départ */}
-            <div className="date-field" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '140px' }}>
+            <div className="date-field desktop-only" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '140px' }}>
               <div style={{ position: 'relative', width: '100%' }}>
                 <DatePicker
                   key={`dep-${arrivee || 'none'}-${depart || 'none'}`}
@@ -514,7 +514,7 @@ export default function Page() {
             </div>
 
             {/* Voyageurs */}
-            <div className="travelers-field" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '120px', zIndex: 10000 }}>
+            <div className="travelers-field desktop-only" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '1', minWidth: '120px', zIndex: 10000 }}>
               {/* Masqué */}
               <select
                 name="voyageurs"
@@ -653,8 +653,8 @@ export default function Page() {
                 e.target.style.boxShadow = '0 4px 15px rgba(102,126,234,0.4)';
               }}
             >
-              <span>🔍</span>
-              Rechercher
+              <span className="search-icon">🔍</span>
+              <span className="search-text">Rechercher</span>
             </button>
             </form>
           </div>
@@ -1491,26 +1491,39 @@ export default function Page() {
     {/* CSS Responsive */}
     <style jsx>{`
       @media (max-width: 768px) {
+        .desktop-only {
+          display: none !important;
+        }
+        
         .search-card-modern {
           padding: 20px 16px !important;
           border-radius: 20px !important;
         }
         
         .search-form-modern {
-          flex-direction: column !important;
+          flex-direction: row !important;
           gap: 12px !important;
           padding: 12px !important;
         }
         
         .search-input-container {
           min-width: unset !important;
-          flex: none !important;
+          flex: 1 !important;
         }
         
         .btn-search-modern {
-          min-width: unset !important;
-          width: 100% !important;
-          padding: 18px 24px !important;
+          min-width: 56px !important;
+          width: 56px !important;
+          padding: 18px !important;
+          border-radius: 12px !important;
+        }
+        
+        .search-text {
+          display: none !important;
+        }
+        
+        .search-icon {
+          font-size: 18px !important;
         }
         
         .estimator-section {
