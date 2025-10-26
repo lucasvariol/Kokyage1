@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma": ""
+    "prisma": "",
+    "generate-sitemap": "node ./scripts/generate-sitemap.mjs",
+    "postbuild": "npm run generate-sitemap"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^5.2.0",
