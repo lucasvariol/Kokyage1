@@ -197,7 +197,8 @@ function ConfirmerEtPayerContent() {
         // Rediriger vers la page de connexion si non connecté
         if (!user) {
           console.log('User not authenticated, redirecting to login');
-          router.push('/connexion?redirect=/confirmer-et-payer' + window.location.search);
+          const currentUrl = `/confirmer-et-payer${window.location.search}`;
+          router.push(`/connexion?redirect=${encodeURIComponent(currentUrl)}`);
           return;
         }
 
