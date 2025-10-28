@@ -161,6 +161,23 @@ export default function Header() {
               </nav>
             )}
 
+            {/* Navigation desktop pour utilisateurs connectés */}
+            {connected && (
+              <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <Link href="/fonctionnement" className="desktop-link" style={{
+                  color: isTransparent ? 'white' : '#374151',
+                  textDecoration: 'none',
+                  fontSize: '15px',
+                  fontWeight: '500',
+                  padding: '8px 12px',
+                  borderRadius: '20px',
+                  transition: 'all 0.3s ease'
+                }}>
+                  Comment ça marche
+                </Link>
+              </nav>
+            )}
+
             {/* CTA pour utilisateurs connectés */}
             {connected && (
               <Link href="/ajout-logement" className="desktop-button" style={{
@@ -283,6 +300,19 @@ export default function Header() {
                     textTransform: 'uppercase', 
                     margin: '0 0 12px 0'
                   }}>Navigation</h4>
+                  
+                  <Link href="/fonctionnement" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#374151',
+                    textDecoration: 'none',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    marginBottom: '8px',
+                    gap: '12px'
+                  }}>
+                    ❓ Comment ça marche
+                  </Link>
                   
                   <Link href="/messages" style={{
                     display: 'flex',

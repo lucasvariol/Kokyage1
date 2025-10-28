@@ -60,7 +60,7 @@ function PageContent() {
             letterSpacing: '-0.02em',
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
           }}>
-            Rejoignez la nouvelle génération<br />de location
+            Le principe Kokyage<br />de location
           </h1>
           <p style={{ 
             fontSize: '1.25rem', 
