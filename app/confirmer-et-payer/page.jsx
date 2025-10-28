@@ -194,6 +194,13 @@ function ConfirmerEtPayerContent() {
         setUser(user);
         console.log('User:', user);
 
+        // Rediriger vers la page de connexion si non connecté
+        if (!user) {
+          console.log('User not authenticated, redirecting to login');
+          router.push('/connexion?redirect=/confirmer-et-payer' + window.location.search);
+          return;
+        }
+
         if (!listingId) {
           console.log('No listingId, redirecting to home');
           router.push('/');
