@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 export default function Chatbot() {
-  const [isOpen, setIsOpen] = useState(true);
+  // Détecte si on est sur mobile et définit isOpen en conséquence
+  const [isOpen, setIsOpen] = useState(false);
   const [userProfile, setUserProfile] = useState(null); // 'proprietaire', 'locataire', 'voyageur', ou null
   const [messages, setMessages] = useState([
     {
