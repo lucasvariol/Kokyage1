@@ -1297,6 +1297,10 @@ function FAQContent() {
         {
           q: "Comment je reçois mes revenus ?",
           a: "Kokyage vous verse votre part (40% - 3% de commission) automatiquement chaque mois par virement bancaire. Tout est transparent et tracé dans votre espace personnel."
+        },
+        {
+          q: "Comment déclarer mes revenus de sous-location ?",
+          a: "Les revenus perçus via Kokyage sont des revenus fonciers. Vous devez les déclarer dans la catégorie 'revenus fonciers' (formulaire 2044 ou 2042). Si vos revenus locatifs sont inférieurs à 15 000 €/an, vous bénéficiez du régime micro-foncier avec un abattement forfaitaire de 30%. Au-delà, ou sur option, vous pouvez choisir le régime réel pour déduire vos charges réelles (travaux, intérêts d'emprunt, taxe foncière, assurance PNO, frais de gestion, etc.). Kokyage vous fournit un récapitulatif annuel pour faciliter votre déclaration."
         }
       ]
     },
@@ -1318,6 +1322,14 @@ function FAQContent() {
         {
           q: "Combien de temps puis-je sous-louer ?",
           a: "Autant que vous le souhaitez pendant vos absences, dans le respect des limites légales (maximum 120 jours par an en résidence principale dans certaines villes)."
+        },
+        {
+          q: "Comment déclarer mes revenus de sous-location ?",
+          a: "Les revenus de sous-location sont considérés comme des Bénéfices Industriels et Commerciaux (BIC) pour la location meublée, ou des revenus fonciers pour la location nue. Pour rester exonéré d'impôts, vous devez respecter le principe de non-lucratité : le loyer facturé au voyageur ne doit pas dépasser le loyer que vous payez à votre propriétaire. Si vous facturez plus, l'excédent est imposable. Kokyage vous aide à paramétrer votre loyer pour respecter facilement cette règle et vous fournit un récapitulatif annuel pour votre déclaration."
+        },
+        {
+          q: "Qu'en est-il de la taxe de séjour ?",
+          a: "La taxe de séjour est une taxe locale collectée auprès des voyageurs et reversée à la commune. Kokyage collecte automatiquement cette taxe lors de chaque réservation (montant variable selon la commune, entre 0,20 € et 4,50 € par nuit et par personne) et se charge de la reverser aux autorités locales. Vous n'avez aucune démarche à effectuer !"
         }
       ]
     },
@@ -1339,31 +1351,6 @@ function FAQContent() {
         {
           q: "Comment je suis sûr que le logement existe vraiment ?",
           a: "Chaque logement est modéré par notre équipe avant publication. De plus, les locataires sont vérifiés (identité, justificatif de domicile) et notés par les précédents voyageurs."
-        }
-      ]
-    },
-    {
-      category: "Fiscalité",
-      questions: [
-        {
-          q: "Comment déclarer mes revenus en tant que propriétaire ?",
-          a: "Les revenus perçus via Kokyage sont des revenus fonciers. Vous devez les déclarer dans la catégorie 'revenus fonciers' (formulaire 2044 ou 2042). Si vos revenus locatifs sont inférieurs à 15 000 €/an, vous bénéficiez du régime micro-foncier avec un abattement forfaitaire de 30%. Au-delà, ou sur option, vous pouvez choisir le régime réel pour déduire vos charges réelles (travaux, intérêts d'emprunt, taxe foncière, etc.). Kokyage vous fournit un récapitulatif annuel pour faciliter votre déclaration."
-        },
-        {
-          q: "Et pour les locataires qui sous-louent ?",
-          a: "Les revenus de sous-location sont considérés comme des Bénéfices Industriels et Commerciaux (BIC) pour la location meublée, ou des revenus fonciers pour la location nue. Pour rester exonéré d'impôts, vous devez respecter le principe de non-lucratité : le loyer facturé au voyageur ne doit pas dépasser le loyer que vous payez à votre propriétaire. Si vous facturez plus, l'excédent est imposable. Kokyage vous aide à paramétrer votre loyer pour respecter facilement cette règle."
-        },
-        {
-          q: "Qu'en est-il de la taxe de séjour ?",
-          a: "La taxe de séjour est une taxe locale collectée auprès des voyageurs et reversée à la commune. Kokyage collecte automatiquement cette taxe lors de chaque réservation (montant variable selon la commune, entre 0,20 € et 4,50 € par nuit et par personne) et se charge de la reverser aux autorités locales. Vous n'avez aucune démarche à effectuer !"
-        },
-        {
-          q: "Dois-je payer des cotisations sociales ?",
-          a: "Pour les propriétaires : les revenus fonciers sont soumis aux prélèvements sociaux (17,2%) mais pas aux cotisations sociales classiques. Pour les locataires : si vos revenus de sous-location dépassent certains seuils et que vous êtes en location meublée professionnelle (LMP), vous pouvez être soumis aux cotisations sociales. Dans la majorité des cas (location meublée non professionnelle - LMNP), seuls les prélèvements sociaux s'appliquent. Nous vous recommandons de consulter un expert-comptable pour votre situation spécifique."
-        },
-        {
-          q: "Où puis-je trouver mes justificatifs fiscaux ?",
-          a: "Tous vos justificatifs (récapitulatifs annuels, détails des revenus, taxe de séjour collectée, etc.) sont disponibles dans votre espace personnel Kokyage, section 'Comptabilité' ou 'Documents fiscaux'. Vous recevrez également un email récapitulatif en janvier de chaque année pour faciliter votre déclaration d'impôts."
         }
       ]
     },
