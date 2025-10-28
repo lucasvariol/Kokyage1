@@ -9,6 +9,14 @@ export async function POST(request) {
   try {
     const { messages, userProfile, assistanceType } = await request.json();
 
+    // Vérifier si la clé API OpenAI est configurée en premier
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('OPENAI_API_KEY non configurée');
+      return NextResponse.json({
+        message: "⚠️ Le chatbot n'est pas encore configuré. Pour l'activer, ajoutez votre clé API OpenAI dans les variables d'environnement.\n\nEn attendant, n'hésitez pas à consulter notre FAQ ou à nous contacter directement !"
+      });
+    }
+
     // Charger le contexte depuis les fichiers
     const contextDir = path.join(process.cwd(), 'chatbot-context');
     
@@ -27,18 +35,32 @@ export async function POST(request) {
         }
       } else {
         // Sinon charger le contexte normal
-        systemPrompt = fs.readFileSync(path.join(contextDir, 'system-prompt.txt'), 'utf-8');
-        faqContent = fs.readFileSync(path.join(contextDir, 'faq.txt'), 'utf-8');
+        try {
+          systemPrompt = fs.readFileSync(path.join(contextDir, 'system-prompt.txt'), 'utf-8');
+        } catch (e) {
+          console.warn('system-prompt.txt non trouvé');
+          systemPrompt = 'Tu es un assistant virtuel pour Kokyage, une plateforme de sous-location de logements entre locataires et propriétaires.';
+        }
+        
+        try {
+          faqContent = fs.readFileSync(path.join(contextDir, 'faq.txt'), 'utf-8');
+        } catch (e) {
+          console.warn('faq.txt non trouvé');
+          faqContent = '';
+        }
         
         // Charger les infos légales si le fichier existe
         try {
           legalInfo = fs.readFileSync(path.join(contextDir, 'legal-info.txt'), 'utf-8');
         } catch (e) {
-          // Fichier optionnel
+          console.warn('legal-info.txt non trouvé');
+          legalInfo = '';
         }
       }
     } catch (error) {
       console.warn('Impossible de charger les fichiers de contexte:', error);
+      // Continuer avec un contexte par défaut
+      systemPrompt = systemPrompt || 'Tu es un assistant virtuel pour Kokyage, une plateforme de sous-location de logements entre locataires et propriétaires.';
     }
 
     // Adapter le contexte selon le type d'assistance ou le profil utilisateur
@@ -65,14 +87,6 @@ ${faqContent}
 
 ${legalInfo ? `INFORMATIONS LÉGALES:\n${legalInfo}\n` : ''}
 Réponds toujours en français, de manière amicale et professionnelle.`;
-
-    // Vérifier si la clé API OpenAI est configurée
-    if (!process.env.OPENAI_API_KEY) {
-      console.error('OPENAI_API_KEY non configurée');
-      return NextResponse.json({
-        message: "⚠️ Le chatbot n'est pas encore configuré. Pour l'activer, ajoutez votre clé API OpenAI dans les variables d'environnement.\n\nEn attendant, n'hésitez pas à consulter notre FAQ ou à nous contacter directement !"
-      });
-    }
 
     // Appel à l'API OpenAI
     const OpenAI = (await import('openai')).default;

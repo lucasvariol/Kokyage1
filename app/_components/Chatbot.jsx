@@ -90,7 +90,13 @@ export default function Chatbot() {
             userProfile: userProfile
           }),
         })
-        .then(res => res.json())
+        .then(async res => {
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.message || 'Erreur lors de la communication avec le chatbot');
+          }
+          return data;
+        })
         .then(data => {
           setMessages(prev => [...prev, { 
             role: 'assistant', 
@@ -98,10 +104,12 @@ export default function Chatbot() {
           }]);
           setIsLoading(false);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error('Erreur chatbot:', error);
+          const errorMsg = error.message || 'Désolé, une erreur est survenue. Réessayez.';
           setMessages(prev => [...prev, { 
             role: 'assistant', 
-            content: '❌ Désolé, une erreur est survenue. Réessayez.' 
+            content: `❌ ${errorMsg}` 
           }]);
           setIsLoading(false);
         });
@@ -177,11 +185,11 @@ export default function Chatbot() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Erreur lors de la communication avec le chatbot');
-      }
-
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Erreur lors de la communication avec le chatbot');
+      }
       
       setMessages(prev => [...prev, { 
         role: 'assistant', 
@@ -189,9 +197,15 @@ export default function Chatbot() {
       }]);
     } catch (error) {
       console.error('Erreur chatbot:', error);
+      const errorMsg = error.message.includes('fetch') 
+        ? '❌ Impossible de contacter le serveur. Vérifiez votre connexion internet.' 
+        : error.message.includes('chatbot')
+        ? '❌ Le service de chatbot est temporairement indisponible. Réessayez plus tard.'
+        : `❌ ${error.message}`;
+      
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: '❌ Désolé, une erreur s\'est produite. Veuillez réessayer.' 
+        content: errorMsg
       }]);
     } finally {
       setIsLoading(false);
