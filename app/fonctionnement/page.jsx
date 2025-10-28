@@ -13,7 +13,7 @@ function PageContent() {
 
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['concept', 'proprietaire', 'locataire', 'faq'].includes(tabParam)) {
+    if (tabParam && ['concept', 'proprietaire', 'locataire', 'fiscalite', 'faq'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -153,6 +153,24 @@ function PageContent() {
             🏠 Locataire
           </button>
           <button
+            onClick={() => setActiveTab('fiscalite')}
+            style={{
+              flex: '1 1 200px',
+              padding: '16px 20px',
+              border: 'none',
+              borderRadius: '14px',
+              fontSize: '1.05rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              background: activeTab === 'fiscalite' ? '#60A29D' : 'transparent',
+              color: activeTab === 'fiscalite' ? 'white' : '#666',
+              boxShadow: activeTab === 'fiscalite' ? '0 4px 12px rgba(96,162,157,0.3)' : 'none'
+            }}
+          >
+            💰 Fiscalité
+          </button>
+          <button
             onClick={() => setActiveTab('faq')}
             style={{
               flex: '1 1 200px',
@@ -182,6 +200,7 @@ function PageContent() {
         {activeTab === 'concept' && <ConceptContent />}
         {activeTab === 'proprietaire' && <ProprietaireContent />}
         {activeTab === 'locataire' && <LocataireContent />}
+        {activeTab === 'fiscalite' && <FiscaliteContent />}
         {activeTab === 'faq' && <FAQContent />}
       </section>
 
@@ -1250,6 +1269,247 @@ function LocataireContent() {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
+    </div>
+  );
+}
+
+function FiscaliteContent() {
+  return (
+    <div>
+      <h2 style={{ 
+        fontSize: '2.5rem', 
+        fontWeight: 800, 
+        marginBottom: '24px',
+        color: '#2D3748',
+        textAlign: 'center'
+      }}>
+        💰 Fiscalité & Déclarations
+      </h2>
+      <p style={{ 
+        fontSize: '1.1rem', 
+        color: '#666', 
+        marginBottom: '50px',
+        textAlign: 'center',
+        maxWidth: '700px',
+        margin: '0 auto 50px'
+      }}>
+        Comprendre vos obligations fiscales en tant que propriétaire ou locataire sous-louant sur Kokyage
+      </p>
+
+      {/* Section Propriétaire */}
+      <div style={{
+        background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)',
+        padding: '40px',
+        borderRadius: '20px',
+        marginBottom: '40px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+      }}>
+        <h3 style={{
+          fontSize: '1.8rem',
+          fontWeight: 700,
+          color: '#C96745',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <span>👤</span> Pour les propriétaires
+        </h3>
+
+        <div style={{ marginBottom: '30px' }}>
+          <h4 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#2D3748', marginBottom: '16px' }}>
+            📊 Revenus locatifs classiques
+          </h4>
+          <p style={{ color: '#555', lineHeight: 1.8, marginBottom: '12px' }}>
+            Les revenus que vous percevez via Kokyage sont des <strong>revenus fonciers</strong> et doivent être déclarés comme tels.
+          </p>
+          <ul style={{ color: '#555', lineHeight: 1.8, paddingLeft: '24px' }}>
+            <li>Régime <strong>micro-foncier</strong> si vos revenus locatifs sont &lt; 15 000 € / an (abattement forfaitaire de 30%)</li>
+            <li>Régime <strong>réel</strong> si &gt; 15 000 € / an ou si vous souhaitez déduire vos charges réelles</li>
+            <li>Déclaration dans la catégorie <strong>revenus fonciers</strong> (formulaire 2044 ou 2042)</li>
+          </ul>
+        </div>
+
+        <div style={{ marginBottom: '30px' }}>
+          <h4 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#2D3748', marginBottom: '16px' }}>
+            🧾 Charges déductibles (régime réel)
+          </h4>
+          <ul style={{ color: '#555', lineHeight: 1.8, paddingLeft: '24px' }}>
+            <li>Travaux d'entretien et de réparation</li>
+            <li>Intérêts d'emprunt</li>
+            <li>Taxe foncière</li>
+            <li>Assurance propriétaire non occupant (PNO)</li>
+            <li>Frais de gestion et d'administration</li>
+          </ul>
+        </div>
+
+        <div style={{
+          background: 'white',
+          padding: '20px',
+          borderRadius: '12px',
+          borderLeft: '4px solid #C96745'
+        }}>
+          <p style={{ color: '#555', lineHeight: 1.8, margin: 0 }}>
+            💡 <strong>Bon à savoir :</strong> Kokyage vous fournira un récapitulatif annuel de vos revenus pour faciliter votre déclaration fiscale.
+          </p>
+        </div>
+      </div>
+
+      {/* Section Locataire */}
+      <div style={{
+        background: 'linear-gradient(135deg, #E8F4F3 0%, #D1E9E7 100%)',
+        padding: '40px',
+        borderRadius: '20px',
+        marginBottom: '40px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+      }}>
+        <h3 style={{
+          fontSize: '1.8rem',
+          fontWeight: 700,
+          color: '#60A29D',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <span>🏠</span> Pour les locataires
+        </h3>
+
+        <div style={{ marginBottom: '30px' }}>
+          <h4 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#2D3748', marginBottom: '16px' }}>
+            📊 Revenus de sous-location
+          </h4>
+          <p style={{ color: '#555', lineHeight: 1.8, marginBottom: '12px' }}>
+            Les revenus de sous-location sont considérés comme des <strong>Bénéfices Industriels et Commerciaux (BIC)</strong> ou des <strong>revenus fonciers</strong> selon la nature de la location.
+          </p>
+          <ul style={{ color: '#555', lineHeight: 1.8, paddingLeft: '24px' }}>
+            <li><strong>Location meublée :</strong> BIC (régime micro-BIC avec abattement de 50% ou régime réel)</li>
+            <li><strong>Location nue :</strong> Revenus fonciers (micro-foncier ou régime réel)</li>
+            <li>Déclaration obligatoire si les revenus dépassent 305 € / an</li>
+          </ul>
+        </div>
+
+        <div style={{ marginBottom: '30px' }}>
+          <h4 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#2D3748', marginBottom: '16px' }}>
+            ⚖️ Principe de non-lucratité
+          </h4>
+          <p style={{ color: '#555', lineHeight: 1.8, marginBottom: '12px' }}>
+            Pour être exonéré d'impôts, vous devez respecter le principe de <strong>non-lucratité</strong> :
+          </p>
+          <ul style={{ color: '#555', lineHeight: 1.8, paddingLeft: '24px' }}>
+            <li>Le loyer facturé au sous-locataire ne doit <strong>pas dépasser</strong> le loyer que vous payez au propriétaire</li>
+            <li>Si vous facturez plus, l'excédent est imposable</li>
+            <li>Conservez vos justificatifs (bail, quittances de loyer, etc.)</li>
+          </ul>
+        </div>
+
+        <div style={{
+          background: 'white',
+          padding: '20px',
+          borderRadius: '12px',
+          borderLeft: '4px solid #60A29D'
+        }}>
+          <p style={{ color: '#555', lineHeight: 1.8, margin: 0 }}>
+            ⚠️ <strong>Important :</strong> Kokyage facilite le respect de la non-lucratité en vous permettant de paramétrer votre loyer pour ne jamais dépasser votre propre loyer mensuel.
+          </p>
+        </div>
+      </div>
+
+      {/* Section Taxe de séjour */}
+      <div style={{
+        background: 'linear-gradient(135deg, #FFF8F0 0%, #FFE8CC 100%)',
+        padding: '40px',
+        borderRadius: '20px',
+        marginBottom: '40px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+      }}>
+        <h3 style={{
+          fontSize: '1.8rem',
+          fontWeight: 700,
+          color: '#D79077',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <span>🏛️</span> Taxe de séjour
+        </h3>
+
+        <p style={{ color: '#555', lineHeight: 1.8, marginBottom: '16px' }}>
+          La <strong>taxe de séjour</strong> est une taxe locale collectée auprès des voyageurs et reversée à la commune.
+        </p>
+
+        <ul style={{ color: '#555', lineHeight: 1.8, paddingLeft: '24px', marginBottom: '20px' }}>
+          <li><strong>Kokyage collecte automatiquement</strong> la taxe de séjour lors de chaque réservation</li>
+          <li>Le montant varie selon la commune et la catégorie du logement (entre 0,20 € et 4,50 € par nuit et par personne)</li>
+          <li><strong>Kokyage se charge de reverser</strong> la taxe aux autorités locales</li>
+          <li>Vous n'avez aucune démarche à effectuer</li>
+        </ul>
+
+        <div style={{
+          background: 'white',
+          padding: '20px',
+          borderRadius: '12px',
+          borderLeft: '4px solid #D79077'
+        }}>
+          <p style={{ color: '#555', lineHeight: 1.8, margin: 0 }}>
+            ✅ <strong>Simplification :</strong> Kokyage calcule, collecte et reverse automatiquement la taxe de séjour. Vous n'avez rien à faire !
+          </p>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div style={{
+        background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
+        padding: '40px',
+        borderRadius: '20px',
+        textAlign: 'center',
+        color: 'white',
+        boxShadow: '0 10px 30px rgba(96,162,157,0.3)'
+      }}>
+        <h3 style={{ fontSize: '1.6rem', fontWeight: 700, marginBottom: '16px' }}>
+          Des questions sur votre situation fiscale ?
+        </h3>
+        <p style={{ fontSize: '1.1rem', marginBottom: '24px', opacity: 0.95 }}>
+          Nos experts sont là pour vous accompagner
+        </p>
+        <button
+          onClick={() => {
+            const event = new CustomEvent('openChatbot', { 
+              detail: { profile: 'proprietaire' } 
+            });
+            window.dispatchEvent(event);
+          }}
+          style={{
+            background: 'white',
+            color: '#60A29D',
+            border: 'none',
+            padding: '16px 40px',
+            borderRadius: '50px',
+            fontSize: '1.1rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            transition: 'transform 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+          onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+        >
+          💬 Discuter avec notre chatbot
+        </button>
+      </div>
+
+      <div style={{
+        marginTop: '40px',
+        padding: '24px',
+        background: '#FFF9E6',
+        borderRadius: '12px',
+        borderLeft: '4px solid #F59E0B'
+      }}>
+        <p style={{ color: '#92400E', lineHeight: 1.8, margin: 0 }}>
+          ⚠️ <strong>Avertissement :</strong> Ces informations sont fournies à titre indicatif et ne constituent pas un conseil fiscal personnalisé. Nous vous recommandons de consulter un expert-comptable ou un conseiller fiscal pour votre situation spécifique.
+        </p>
+      </div>
     </div>
   );
 }
