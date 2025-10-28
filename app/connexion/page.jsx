@@ -2,11 +2,11 @@
 
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
-export default function Page(){
+function ConnexionContent(){
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,6 +15,8 @@ export default function Page(){
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect') || '/profil';
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -53,7 +55,7 @@ export default function Page(){
 
     setSuccess('Connexion réussie ! Redirection en cours...');
     setLoading(false);
-    setTimeout(() => router.push('/profil'), 1200);
+    setTimeout(() => router.push(redirectUrl), 1200);
   }
 
   return (<>
@@ -342,4 +344,12 @@ export default function Page(){
     </main>
     <Footer />
   </>);
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div style={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Chargement...</div>}>
+      <ConnexionContent />
+    </Suspense>
+  );
 }
