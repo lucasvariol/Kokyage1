@@ -694,7 +694,7 @@ export default function Page() {
               margin: '0 auto',
                 lineHeight: 1.6
               }}>
-              Sous-louez enfin votre logement <br />  en partageant les revenus avec votre propriétaire. <br /> Légal, sécurisé, simple
+              Sous-louez enfin votre logement <br />  en partageant les revenus avec votre propriétaire. <br />
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' }}>
@@ -883,9 +883,9 @@ export default function Page() {
               margin: '40px auto 0'
             }}>
               <a href="/fonctionnement?tab=proprietaire" style={{
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
                 color: 'white',
-                padding: '20px 24px',
+                padding: '24px 32px',
                 borderRadius: '16px',
                 textDecoration: 'none',
                 textAlign: 'center',
@@ -894,46 +894,62 @@ export default function Page() {
                 fontWeight: '700',
                 position: 'relative',
                 overflow: 'hidden',
-                flex: '1 1 250px',
-                minWidth: '250px',
-                maxWidth: '290px'
+                flex: '1 1 280px',
+                minWidth: '280px',
+                maxWidth: '320px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px'
               }}
               onMouseOver={e => {
+                e.target.style.transform = 'translateY(-4px)';
                 e.target.style.boxShadow = '0 12px 35px rgba(245,158,11,0.6)';
               }}
               onMouseOut={e => {
+                e.target.style.transform = 'translateY(0)';
                 e.target.style.boxShadow = '0 8px 25px rgba(245,158,11,0.4)';
               }}>
-                <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '4px' }}>Convaincre mon</div>
-                <div style={{ fontSize: '20px', fontWeight: '800' }}>🏠 Propriétaire</div>
+                <div style={{ fontSize: '40px', marginBottom: '4px' }}>🏠</div>
+                <div style={{ fontSize: '13px', opacity: 0.95, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>
+                  Convaincre mon
+                </div>
+                <div style={{ fontSize: '22px', fontWeight: '800' }}>Propriétaire</div>
               </a>
 
               <a href="/fonctionnement?tab=locataire" style={{
-                background: 'white',
-                color: '#2D3748',
-                padding: '20px 24px',
+                background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
+                color: 'white',
+                padding: '24px 32px',
                 borderRadius: '16px',
                 textDecoration: 'none',
                 textAlign: 'center',
-                boxShadow: '0 8px 25px rgba(0,0,0,0.1)',
-                border: '2px solid #e5e7eb',
+                boxShadow: '0 8px 25px rgba(96,162,157,0.4)',
                 transition: 'all 0.3s ease',
                 fontWeight: '700',
                 position: 'relative',
-                flex: '1 1 250px',
-                minWidth: '250px',
-                maxWidth: '290px'
+                overflow: 'hidden',
+                flex: '1 1 280px',
+                minWidth: '280px',
+                maxWidth: '320px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px'
               }}
               onMouseOver={e => {
-                e.target.style.boxShadow = '0 12px 35px rgba(0,0,0,0.15)';
-                e.target.style.borderColor = '#60A29D';
+                e.target.style.transform = 'translateY(-4px)';
+                e.target.style.boxShadow = '0 12px 35px rgba(96,162,157,0.6)';
               }}
               onMouseOut={e => {
-                e.target.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
-                e.target.style.borderColor = '#e5e7eb';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 8px 25px rgba(96,162,157,0.4)';
               }}>
-                <div style={{ fontSize: '14px', opacity: 0.7, marginBottom: '4px' }}>Convaincre mon</div>
-                <div style={{ fontSize: '20px', fontWeight: '800' }}>💼 Locataire</div>
+                <div style={{ fontSize: '40px', marginBottom: '4px' }}>💼</div>
+                <div style={{ fontSize: '13px', opacity: 0.95, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>
+                  Convaincre mon
+                </div>
+                <div style={{ fontSize: '22px', fontWeight: '800' }}>Locataire</div>
               </a>
             </div>
             <div style={{ display: 'flex', gap: 18, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: 14 }}>
@@ -1162,7 +1178,6 @@ export default function Page() {
               maxWidth: '600px', 
               margin: '0 auto' 
             }}>
-              Une solution qui profite à tous les acteurs de la location
             </p>
           </div>
           
