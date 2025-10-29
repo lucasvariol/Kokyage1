@@ -677,12 +677,12 @@ export default function Page() {
           border: '1px solid rgba(0,0,0,0.05)',
           backdropFilter: 'blur(10px)'
         }}>
-          <div className="estimator-heading" style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <div className="estimator-heading" style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h3 style={{ 
               fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', 
               fontWeight: 800, 
               color: '#2D3748', 
-              margin: '0 0 16px 0',
+              margin: '0 0 12px 0',
               letterSpacing: '-0.01em'
             }}>
               Calculez vos revenus potentiels
@@ -697,14 +697,14 @@ export default function Page() {
               Sous-louez enfin votre logement <br />  en partageant les revenus avec votre propriétaire. <br />
             </p>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
             <div style={{ width: '100%', maxWidth: '700px' }}>
               <div className="price-input-section" style={{ 
                 background: '#F5F1ED',
                 borderRadius: '16px',
                 padding: '24px',
                 border: '2px solid #E8E3DC',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 overflow: 'hidden',
                 position: 'relative'
               }}>
@@ -875,7 +875,7 @@ export default function Page() {
             <div style={{ 
               display: 'flex', 
               justifyContent: 'center',
-              marginTop: '40px'
+              marginTop: '20px'
             }}>
               <a href="/fonctionnement" style={{
                 background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
@@ -1508,7 +1508,7 @@ export default function Page() {
         }
 
         .estimator-heading {
-          margin-bottom: 32px !important;
+          margin-bottom: 24px !important;
         }
 
         .search-title {
@@ -1519,7 +1519,7 @@ export default function Page() {
 
         .estimator-heading h3 {
           font-size: 1.6rem !important;
-          margin-bottom: 12px !important;
+          margin-bottom: 10px !important;
         }
 
         .estimator-subtitle {
@@ -1528,7 +1528,7 @@ export default function Page() {
 
         .price-input-section {
           padding: 20px !important;
-          margin-bottom: 20px !important;
+          margin-bottom: 12px !important;
         }
 
         .price-input-text {
@@ -1650,12 +1650,12 @@ export default function Page() {
         }
 
         .estimator-heading {
-          margin-bottom: 24px !important;
+          margin-bottom: 16px !important;
         }
 
         .estimator-heading h3 {
           font-size: 1.3rem !important;
-          margin-bottom: 10px !important;
+          margin-bottom: 8px !important;
         }
 
         .estimator-subtitle {
@@ -1664,7 +1664,7 @@ export default function Page() {
 
         .price-input-section {
           padding: 16px !important;
-          margin-bottom: 16px !important;
+          margin-bottom: 12px !important;
           border-radius: 12px !important;
         }
 
