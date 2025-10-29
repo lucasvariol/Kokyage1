@@ -807,8 +807,8 @@ export default function Page() {
                   background: 'rgba(255,255,255,0.1)',
                   borderRadius: '50%'
                 }}></div>
-                <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>💼 Locataire</div>
-                <div style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: '800', marginBottom: '16px' }}>
+                <div className="revenue-card-label" style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Locataire</div>
+                <div className="revenue-amount" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: '800', marginBottom: '16px' }}>
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.6))}
                 </div>
                 <img src="/images/locataire_evaluation.png" alt="Locataire" style={{ 
@@ -856,8 +856,8 @@ export default function Page() {
                   background: 'rgba(255,255,255,0.1)',
                   borderRadius: '50%'
                 }}></div>
-                <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>🏠 Propriétaire</div>
-                <div style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: '800', marginBottom: '16px' }}>
+                <div className="revenue-card-label" style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Propriétaire</div>
+                <div className="revenue-amount" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: '800', marginBottom: '16px' }}>
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.4))}
                 </div>
                 <img src="/images/proprietaire_evaluation.png" alt="Propriétaire" style={{ 
@@ -1542,24 +1542,27 @@ export default function Page() {
         }
         
         .revenue-cards > a {
-          padding: 24px 16px !important;
+          padding: 20px 12px !important;
           border-radius: 16px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
         }
         
-        .revenue-cards img {
-          max-width: 120px !important;
-          height: 80px !important;
-          margin: 12px auto 0 !important;
+        .revenue-card-label {
+          font-size: 12px !important;
+          margin-bottom: 6px !important;
         }
-        
-        .revenue-cards > a > div:first-child {
-          font-size: 14px !important;
+
+        .revenue-amount {
+          font-size: 1.3rem !important;
           margin-bottom: 8px !important;
         }
         
-        .revenue-cards > a > div:nth-child(2) {
-          font-size: 1.5rem !important;
-          margin-bottom: 12px !important;
+        .revenue-cards img {
+          max-width: 100px !important;
+          height: 70px !important;
+          margin: 8px auto 0 !important;
         }
         
         .cta-buttons {
@@ -1712,16 +1715,23 @@ export default function Page() {
         }
         
         .revenue-cards > a {
-          padding: 20px 12px !important;
+          padding: 16px 8px !important;
+        }
+
+        .revenue-card-label {
+          font-size: 11px !important;
+          margin-bottom: 4px !important;
+        }
+
+        .revenue-amount {
+          font-size: 1.1rem !important;
+          margin-bottom: 6px !important;
         }
         
         .revenue-cards img {
-          max-width: 100px !important;
-          height: 70px !important;
-        }
-        
-        .revenue-cards > a > div:nth-child(2) {
-          font-size: 1.3rem !important;
+          max-width: 80px !important;
+          height: 60px !important;
+          margin: 6px auto 0 !important;
         }
         
         .cta-buttons > a {
