@@ -18,11 +18,13 @@ Kokyage permet aux locataires de sous-louer leur logement pendant leurs absences
 
 3. SÉCURITÉ
 - Accord électronique juridiquement valable entre propriétaire et locataire
-- Assurance automatique couvrant jusqu'à X00 000€ par séjour
 - Empreinte bancaire (caution) jusqu'à 300€ pour les petites dégradations
+- Assurance responsabilité civile du voyageur pour les dommages plus importants
+- Le locataire principal reste juridiquement responsable du logement
 - Modération de chaque annonce avant publication
 - Vérification d'identité obligatoire (KYC)
 - Système de notation et d'avis
+- Recommandation forte : demander au voyageur une attestation de villégiature (incluse dans son assurance habitation)
 
 4. POUR LES PROPRIÉTAIRES
 - Revenus passifs (40% sans effort)
@@ -34,13 +36,16 @@ Kokyage permet aux locataires de sous-louer leur logement pendant leurs absences
 5. POUR LES LOCATAIRES
 - Revenus pour financer leur loyer pendant leurs absences
 - Contrôle : ils valident chaque réservation
-- Couverture par l'assurance Kokyage
+- Protection via empreinte bancaire (300€) et assurance RC du voyageur
+- Restent juridiquement responsables du logement
+- Doivent demander une attestation de villégiature au voyageur
 - Maximum 120 jours/an en résidence principale dans certaines villes
 
 6. POUR LES VOYAGEURS
 - Logements authentiques chez de vrais habitants
 - Prix souvent plus abordables qu'Airbnb
-- Assurance incluse (environ 2€/nuit)
+- Empreinte bancaire (caution) de 300€ enregistrée
+- Recommandé d'avoir une assurance responsabilité civile (attestation de villégiature)
 - Contribuent à un modèle responsable (pas de spéculation immobilière)
 
 LÉGALITÉ :
@@ -68,7 +73,7 @@ Je me permets de vous contacter pour vous parler d'une plateforme intéressante 
 **Vos avantages :**
 ✅ Gagnez 60% des revenus de sous-location pendant vos absences (vacances, déplacements professionnels...)
 ✅ Financez une partie de votre loyer sans effort
-✅ Assurance complète incluse jusqu'à X00 000€
+✅ Protection via empreinte bancaire (300€) et votre assurance responsabilité civile
 ✅ Vous gardez le contrôle : vous validez chaque réservation
 
 **Mes avantages :**
@@ -78,9 +83,10 @@ Je me permets de vous contacter pour vous parler d'une plateforme intéressante 
 
 **La sécurité :**
 - Vérification d'identité obligatoire pour tous les voyageurs
-- Assurance automatique sur chaque séjour
+- Empreinte bancaire (caution) de 300€ pour les petites dégradations
+- Assurance responsabilité civile du voyageur pour les dommages importants
 - Modération de votre annonce avant publication
-- Vous restez responsable du logement
+- Vous restez responsable du logement (recommandé de demander une attestation de villégiature au voyageur)
 
 C'est 100% légal et encadré. L'accord se fait simplement par signature électronique sur la plateforme.
 

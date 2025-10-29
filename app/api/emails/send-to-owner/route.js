@@ -53,15 +53,15 @@ L'objectif est simple : transformer les périodes où le logement reste vide en 
 
 TRIPLE SÉCURITÉ pour vous protéger :
 
-1. 💳 CAUTION ENREGISTRÉE
-   → Empreinte bancaire jusqu'à 300€ par séjour
+1. 💳 EMPREINTE BANCAIRE (CAUTION)
+   → Empreinte bancaire de 300€ enregistrée pour chaque réservation
    → Prélèvement automatique en cas de dégradation validée
    → Couvre les petites réparations immédiatement
 
-2. 🏠 ASSURANCE KOKYAGE
-   → Protection jusqu'à 500 000€ par séjour
-   → Couvre les dommages matériels importants
-   → Active automatiquement sur chaque réservation
+2. 🏠 ASSURANCE DU VOYAGEUR
+   → L'assurance responsabilité civile du voyageur est sollicitée pour les dommages importants
+   → Recommandé de demander une attestation de villégiature
+   → Généralement incluse dans l'assurance habitation du voyageur
 
 3. 👤 RESPONSABILITÉ DU LOCATAIRE
    → Votre locataire reste juridiquement garant vis-à-vis de vous

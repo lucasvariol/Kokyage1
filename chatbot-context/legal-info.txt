@@ -39,35 +39,47 @@ Pour le PROPRIÉTAIRE :
 
 Kokyage fournit un récapitulatif annuel pour faciliter la déclaration.
 
-=== ASSURANCE ===
+=== ASSURANCE ET PROTECTION ===
 
-L'assurance Kokyage couvre :
-✅ Dommages matériels au logement (jusqu'à X00 000€)
-✅ Vol d'objets appartenant au locataire
-✅ Responsabilité civile du voyageur
-✅ Responsabilité civile du locataire vis-à-vis du propriétaire
-✅ Frais de relogement temporaire en cas de sinistre grave
+Kokyage n'a pas d'assurance directe intégrée. La protection repose sur plusieurs niveaux :
 
-Ne couvre PAS :
-❌ Objets de valeur non déclarés (bijoux, œuvres d'art >5000€)
+1. EMPREINTE BANCAIRE (CAUTION)
+✅ 300€ enregistrés pour chaque réservation
+✅ Utilisée pour couvrir les petites dégradations validées par les modérateurs
+✅ Aucun blocage de fonds, simple autorisation de prélèvement
+
+2. ASSURANCE DU VOYAGEUR
+✅ L'assurance responsabilité civile du voyageur est sollicitée en priorité pour les dommages importants
+✅ Recommandation forte : demander une attestation de villégiature au voyageur
+✅ Cette attestation est généralement incluse dans l'assurance habitation du voyageur
+
+3. RESPONSABILITÉ DU LOCATAIRE
+✅ Le locataire principal reste juridiquement responsable du logement
+✅ Il demeure garant vis-à-vis du propriétaire conformément à la loi
+✅ Importance de demander l'attestation de villégiature au voyageur
+
+Points non couverts :
+❌ Objets de valeur non déclarés ou non sécurisés
 ❌ Dommages intentionnels
-❌ Usure normale
-❌ Catastrophes naturelles (couvertes par l'assurance habitation classique)
+❌ Usure normale du logement
 
 === RESPONSABILITÉ ===
 
 Hiérarchie de responsabilité :
 
 1. LE VOYAGEUR est responsable des dégradations qu'il cause
-   → Empreinte bancaire jusqu'à 300€
-   → Assurance au-delà
+   → Empreinte bancaire (caution) jusqu'à 300€ pour les petites dégradations
+   → Son assurance responsabilité civile pour les dommages plus importants
+   → Recommandation : fournir une attestation de villégiature
 
-2. LE LOCATAIRE reste garant vis-à-vis du propriétaire
+2. LE LOCATAIRE reste juridiquement garant vis-à-vis du propriétaire
    → Même responsabilité que s'il occupait le logement
+   → Doit demander l'attestation de villégiature au voyageur
    → Kokyage l'assiste en cas de litige
 
 3. LE PROPRIÉTAIRE n'a aucune interaction avec les voyageurs
    → Son interlocuteur unique reste le locataire
+   → Le locataire demeure son garant juridique
    → Il bénéficie de la couverture assurantielle
 
 === COPROPRIÉTÉ ===
@@ -103,7 +115,7 @@ Kokyage respecte le RGPD :
 ✅ Kokyage est 100% légal car :
 1. Accord du propriétaire obligatoire et tracé
 2. Respect des limites de durée (120j en résidence principale)
-3. Assurance conforme aux exigences légales
+3. Système de protection conforme (empreinte bancaire + RC voyageur + responsabilité locataire)
 4. Respect du RGPD
 
 ⚠️ Responsabilités de l'utilisateur :

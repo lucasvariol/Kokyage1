@@ -35,11 +35,11 @@ Concrètement :
 
 ✨  → Les revenus sont partagés équitablement : 60% pour vous, 40% pour votre propriétaire
    
-🛡️   → Chaque séjour est assuré et encadré par un contrat vérifié par des avocats spécialisés
+🛡️   → Chaque séjour est protégé par une empreinte bancaire (caution de 300€) et l'assurance responsabilité civile du voyageur
 
 Vous gardez le contrôle total et pouvez arrêter à tout moment.
 
-Kokyage s’occupe de tout : gestion des paiements, assurance, vérifications et support client.
+Kokyage s'occupe de tout : gestion des paiements, vérifications et support client.
 Vous n’avez qu’à activer votre compte pour commencer à louer en toute légalité et en toute confiance.
 
 💬 ET MAINTENANT ?

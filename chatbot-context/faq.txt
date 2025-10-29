@@ -6,7 +6,7 @@ Q: Kokyage, c'est légal ?
 R: Oui, totalement ! La sous-location est légale en France avec l'accord du propriétaire. Kokyage encadre ce processus via une signature électronique juridiquement valable.
 
 Q: Comment fonctionne la répartition des revenus ?
-R: Pour chaque nuit louée : 60% au locataire, 40% au propriétaire. Kokyage prélève 3% sur chaque part pour financer la plateforme, la modération et l'assurance.
+R: Pour chaque nuit louée : 60% au locataire, 40% au propriétaire. Kokyage prélève 3% sur chaque part pour financer la plateforme et la modération, et fait payer des frais de service de 17% au voyageur.
 
 Q: Que se passe-t-il si le propriétaire refuse ?
 R: Sans accord du propriétaire, impossible de publier sur Kokyage. Le propriétaire est libre de refuser.
@@ -17,7 +17,7 @@ Q: Puis-je annuler mon autorisation ?
 R: Oui, à tout moment ! Retrait immédiat de la plateforme, annulation des réservations futures (>14 jours).
 
 Q: Comment suis-je protégé en cas de dégradation ?
-R: Triple protection : 1) Caution jusqu'à 300€, 2) Assurance jusqu'à X00 000€, 3) Responsabilité du locataire principal.
+R: Triple protection : 1) Empreinte bancaire (caution) jusqu'à 300€ pour les petites dégradations, 2) Assurance responsabilité civile du voyageur (s'il en a une), 3) Responsabilité juridique du locataire principal qui reste votre garant.
 
 Q: Dois-je gérer les voyageurs ?
 R: Non, jamais. Le locataire reste votre unique interlocuteur et responsable.
@@ -31,7 +31,7 @@ Q: Mon propriétaire va-t-il accepter ?
 R: Beaucoup acceptent car ils touchent 40% sans effort et fidélisent leur locataire.
 
 Q: Que se passe-t-il si un voyageur dégrade mon logement ?
-R: Caution jusqu'à 300€ pour dégradations mineures, assurance jusqu'à X00 000€ pour dommages importants.
+R: Empreinte bancaire (caution) jusqu'à 300€ pour dégradations mineures. Pour les dommages plus importants, c'est l'assurance responsabilité civile du voyageur qui est sollicitée en priorité. Il est fortement recommandé de demander au voyageur une attestation de villégiature, généralement incluse dans son assurance habitation.
 
 Q: Puis-je choisir qui loue mon logement ?
 R: Oui ! Vous validez chaque réservation et consultez les profils des voyageurs.
@@ -45,7 +45,7 @@ Q: C'est différent d'Airbnb ?
 R: Oui ! Logements de vrais habitants temporairement absents. Plus authentique, souvent moins cher, modèle anti-spéculation.
 
 Q: Suis-je assuré pendant mon séjour ?
-R: Oui, assurance automatique incluse (~2€/nuit) couvrant dommages matériels et responsabilité civile.
+R: Une empreinte bancaire (équivalente à une caution) de 300€ est enregistrée pour couvrir les petites dégradations. Pour les incidents plus importants, c'est l'assurance responsabilité civile du voyageur qui est sollicitée en priorité. Il est recommandé d'avoir une attestation de villégiature (généralement incluse dans votre assurance habitation).
 
 Q: Que se passe-t-il si j'annule ?
 R: Conditions définies par le locataire (flexible, modérée ou stricte), affichées avant réservation.
@@ -59,7 +59,7 @@ Q: Qu'est-ce que l'empreinte bancaire ?
 R: Autorisation de prélèvement jusqu'à 300€ (sans blocage). Utilisée uniquement en cas de dégradation validée.
 
 Q: L'assurance couvre quoi ?
-R: Dommages matériels, vols, incendies, responsabilité civile, jusqu'à X00 000€. Pas les objets de valeur non déclarés ni dommages intentionnels.
+R: Kokyage n'a pas d'assurance directe. La protection repose sur : 1) Une empreinte bancaire de 300€ couvrant les petites dégradations, 2) L'assurance responsabilité civile du voyageur pour les dommages plus importants, 3) La responsabilité juridique du locataire principal. Il est fortement recommandé au locataire de demander au voyageur une attestation de villégiature.
 
 Q: Comment signaler un problème ?
 R: Support 24h/24 depuis votre espace personnel. Modérateurs interviennent immédiatement en cas de problème grave.
