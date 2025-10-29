@@ -60,7 +60,7 @@ function PageContent() {
             letterSpacing: '-0.02em',
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.15)'
           }}>
-            Le principe Kokyage<br />de location
+            Le principe Kokyage<br />
           </h1>
           <p style={{ 
             fontSize: '1.25rem', 
@@ -1279,7 +1279,43 @@ function FAQContent() {
         },
         {
           q: "Comment déclarer mes revenus de sous-location ?",
-          a: "Les revenus perçus via Kokyage sont des revenus fonciers. Vous devez les déclarer dans la catégorie 'revenus fonciers' (formulaire 2044 ou 2042). Si vos revenus locatifs sont inférieurs à 15 000 €/an, vous bénéficiez du régime micro-foncier avec un abattement forfaitaire de 30%. Au-delà, ou sur option, vous pouvez choisir le régime réel pour déduire vos charges réelles (travaux, intérêts d'emprunt, taxe foncière, assurance PNO, frais de gestion, etc.). Kokyage vous fournit un récapitulatif annuel pour faciliter votre déclaration."
+          a: (
+            <>
+              <strong>🪑 Cas n°1 – Ton logement est loué meublé</strong>
+              <br /><br />
+              Si tu loues déjà ton bien meublé (bail meublé classique, résidence principale ou secondaire), les revenus perçus via Kokyage s'ajoutent à tes revenus locatifs meublés existants.
+              <br /><br />
+              Ils doivent être déclarés dans la catégorie des Bénéfices Industriels et Commerciaux (BIC), car la location meublée est juridiquement une activité commerciale.
+              <br /><br />
+              <strong>🏠 Cas n°2 – Ton logement est loué non meublé (nu)</strong>
+              <br /><br />
+              Si tu loues ton logement vide à ton locataire, mais que tu perçois une part de revenus issus de la sous-location, ces sommes s'ajoutent à tes revenus fonciers.
+              <br /><br />
+              Tu restes donc imposé dans la catégorie des revenus fonciers (article 29 du Code général des impôts).
+              <br /><br />
+              <strong>📊 Comment Kokyage m'aide à faire ma déclaration ?</strong>
+              <br /><br />
+              Conformément à l'article 242 bis du Code général des impôts, Kokyage transmet chaque année à l'administration fiscale le montant brut des revenus perçus via la plateforme.
+              Tu recevras également un relevé annuel récapitulatif dans ton espace personnel, indiquant les montants à intégrer dans ta déclaration de revenus.
+              <br /><br />
+              <strong>💼 Et si j'ai plusieurs logements ?</strong>
+              <br /><br />
+              Chaque logement doit être déclaré séparément selon son statut (meublé ou non meublé).
+              Tu peux cumuler des revenus BIC pour les logements meublés et des revenus fonciers pour les logements nus, si tu en détiens plusieurs.
+              <br /><br />
+              <strong>⚖️ Et si je suis un bailleur professionnel ?</strong>
+              <br /><br />
+              Si tu loues de manière habituelle et significative, tu peux relever du statut de Loueur en Meublé Professionnel (LMP).
+              Tu seras alors soumis à des cotisations sociales et à une imposition spécifique, gérée via ton numéro SIRET.
+              <br /><br />
+              <strong>📚 Où trouver les informations officielles ?</strong>
+              <br /><br />
+              Tu peux consulter les sites officiels suivants :<br />
+              • impots.gouv.fr – Revenus fonciers et BIC<br />
+              • service-public.fr – Loueur en meublé<br />
+              • urssaf.fr – Activité de location meublée
+            </>
+          )
         }
       ]
     }, 
@@ -1310,11 +1346,11 @@ function FAQContent() {
               <br /><br />
               • Le logement sous-loué est ta résidence principale (tu y vis au moins 8 mois par an).<br />
               • Tu loues à des voyageurs de passage pour de courts séjours.<br />
-              • Le montant total perçu sur l'année ne dépasse pas 206 € par m² et par an (plafond 2025, mis à jour chaque année).<br />
+              • Le montant total perçu sur l'année ne dépasse pas 206 € par m² et par an en IDF et 152 € par m² et par an ailleurs (plafond 2025, mis à jour chaque année).<br />
               • Tu n'offres aucun service hôtelier (petit-déjeuner, ménage quotidien, réception, etc.).
               <br /><br />
               <strong>➡️ Exemple :</strong><br />
-              Si ton logement principal fait 40 m², tu peux percevoir jusqu'à 8 240 € par an sans rien déclarer.
+              Si ton logement principal fait 40 m² en région Parisienne, tu peux percevoir jusqu'à 8 240 € par an sans rien déclarer.
               En dessous de ce seuil, aucune déclaration n'est requise et aucune imposition n'est due.
               <br /><br />
               <strong>💰 Et si je dépasse les 206 €/m²/an ?</strong>
@@ -1344,7 +1380,7 @@ function FAQContent() {
               • t'immatriculer en tant que loueur en meublé non professionnel (LMNP) ou professionnel (LMP) ;<br />
               • déclarer tes revenus à l'URSSAF pour payer les cotisations sociales correspondantes.
               <br /><br />
-              <strong>🧮 Comment est calculé le plafond de 206 €/m²/an ?</strong>
+              <strong>🧮 Comment est calculé le plafond de 206 €/m²/an en IDF et 152 €/m²/an ailleurs ?</strong>
               <br /><br />
               Le plafond s'applique sur la surface habitable du logement sous-loué :<br />
               Exemple : 30 m² × 206 € = 6 180 € par an maximum pour rester exonéré.
@@ -1423,6 +1459,40 @@ function FAQContent() {
         </p>
       </div>
 
+      {/* Disclaimer */}
+      <div style={{
+        background: '#FFF9E6',
+        border: '2px solid #FFD700',
+        borderRadius: '12px',
+        padding: '24px 32px',
+        marginBottom: '48px',
+        boxShadow: '0 4px 12px rgba(255, 215, 0, 0.1)'
+      }}>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+          <div style={{ fontSize: '2rem', flexShrink: 0 }}>⚠️</div>
+          <div>
+            <h3 style={{
+              fontSize: '1.2rem',
+              fontWeight: 700,
+              color: '#2D3748',
+              marginBottom: '12px'
+            }}>
+              Avertissement
+            </h3>
+            <p style={{
+              fontSize: '1rem',
+              lineHeight: 1.7,
+              color: '#4A5568',
+              margin: 0
+            }}>
+              Les informations présentées sur cette page sont fournies à titre informatif et général.
+              Elles ne constituent pas un conseil fiscal, juridique ou comptable personnalisé.
+              Chaque utilisateur demeure responsable de vérifier sa situation auprès de l'administration fiscale ou d'un conseiller compétent.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {faqs.map((category, catIndex) => (
         <div key={catIndex} style={{ marginBottom: '48px' }}>
           <h3 style={{
@@ -1489,7 +1559,7 @@ function FAQContent() {
                   </button>
                   
                   <div style={{
-                    maxHeight: isOpen ? '500px' : '0',
+                    maxHeight: isOpen ? '2000px' : '0',
                     overflow: 'hidden',
                     transition: 'max-height 0.3s ease'
                   }}>
