@@ -1074,7 +1074,7 @@ export default function Page() {
             Un modèle équitable qui profite à tous
           </p>
 
-          <div style={{ 
+          <div className="revenue-split-cards" style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             gap: '32px',
@@ -1598,6 +1598,28 @@ export default function Page() {
           min-width: unset !important;
           flex: none !important;
         }
+        
+        /* Cases 60% et 40% côte à côte sur mobile */
+        .revenue-split-cards {
+          grid-template-columns: 1fr 1fr !important;
+          gap: 16px !important;
+        }
+        
+        .revenue-split-cards > div {
+          padding: 24px 16px !important;
+        }
+        
+        .revenue-split-cards > div > div:first-child {
+          font-size: 3rem !important;
+        }
+        
+        .revenue-split-cards > div > h3 {
+          font-size: 1.1rem !important;
+        }
+        
+        .revenue-split-cards > div > p {
+          font-size: 0.85rem !important;
+        }
       }
       
       @media (max-width: 480px) {
@@ -1667,6 +1689,27 @@ export default function Page() {
         
         .cta-buttons > a > div:last-child {
           font-size: 16px !important;
+        }
+        
+        /* Cases 60% et 40% encore plus compactes sur petits écrans */
+        .revenue-split-cards {
+          gap: 12px !important;
+        }
+        
+        .revenue-split-cards > div {
+          padding: 20px 12px !important;
+        }
+        
+        .revenue-split-cards > div > div:first-child {
+          font-size: 2.5rem !important;
+        }
+        
+        .revenue-split-cards > div > h3 {
+          font-size: 1rem !important;
+        }
+        
+        .revenue-split-cards > div > p {
+          font-size: 0.8rem !important;
         }
       }
     `}</style>
