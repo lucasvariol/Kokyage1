@@ -311,7 +311,7 @@ export default function Header() {
                     marginBottom: '8px',
                     gap: '12px'
                   }}>
-                    ❓ Comment ça marche
+                  Comment ça marche
                   </Link>
                   
                   <Link href="/messages" style={{
@@ -419,7 +419,7 @@ export default function Header() {
                   fontWeight: '500',
                   transition: 'all 0.2s ease'
                 }}>
-                  ❓ Comment ça marche
+                Comment ça marche
                 </Link>                <Link href="/ajout-logement" style={{
                   display: 'flex',
                   alignItems: 'center',
