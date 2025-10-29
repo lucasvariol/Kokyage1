@@ -987,64 +987,66 @@ export default function Page() {
           </p>
           
           {/* Features Grid */}
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-            gap: '32px',
+          <div className="features-badges" style={{ 
+            display: 'flex', 
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '24px',
             marginTop: '48px'
           }}>
-            <div style={{ textAlign: 'center' }}>
+            <div className="feature-badge" style={{ textAlign: 'center', flex: '0 1 auto' }}>
               <div style={{ 
-                width: '80px', 
-                height: '80px', 
+                width: '70px', 
+                height: '70px', 
                 background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 16px',
-                fontSize: '2rem'
+                margin: '0 auto 12px',
+                fontSize: '1.8rem'
               }}>
                 ⚖️
               </div>
-              <h4 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#2D3748', marginBottom: '8px' }}>100% Légal</h4>
-              <p style={{ color: '#718096', fontSize: '0.95rem' }}>Cadre juridique sécurisé</p>
+              <h4 style={{ fontSize: '1rem', fontWeight: '700', color: '#2D3748', marginBottom: '6px' }}>100% Légal</h4>
+              <p style={{ color: '#718096', fontSize: '0.85rem', margin: 0 }}>Cadre juridique sécurisé</p>
             </div>
             
-            <div style={{ textAlign: 'center' }}>
+            <div className="feature-badge" style={{ textAlign: 'center', flex: '0 1 auto' }}>
               <div style={{ 
-                width: '80px', 
-                height: '80px', 
+                width: '70px', 
+                height: '70px', 
                 background: 'linear-gradient(135deg, #CAAD78 0%, #B5935F 100%)',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 16px',
-                fontSize: '2rem'
+                margin: '0 auto 12px',
+                fontSize: '1.8rem'
               }}>
                 🛡️
               </div>
-              <h4 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#2D3748', marginBottom: '8px' }}>Sécurisé</h4>
-              <p style={{ color: '#718096', fontSize: '0.95rem' }}>enregistrement empreinte bancaire</p>
+              <h4 style={{ fontSize: '1rem', fontWeight: '700', color: '#2D3748', marginBottom: '6px' }}>Sécurisé</h4>
+              <p style={{ color: '#718096', fontSize: '0.85rem', margin: 0 }}>enregistrement empreinte bancaire</p>
             </div>
             
-            <div style={{ textAlign: 'center' }}>
+            <div className="feature-badge" style={{ textAlign: 'center', flex: '0 1 auto' }}>
               <div style={{ 
-                width: '80px', 
-                height: '80px', 
+                width: '70px', 
+                height: '70px', 
                 background: 'linear-gradient(135deg, #e28060ff 0%, #741b05ff 100%)',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 16px',
-                fontSize: '2rem'
+                margin: '0 auto 12px',
+                fontSize: '1.8rem'
               }}>
                 👌
               </div>
-              <h4 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#2D3748', marginBottom: '8px' }}>Simple</h4>
-              <p style={{ color: '#718096', fontSize: '0.95rem' }}>Processus automatisé</p>
+              <h4 style={{ fontSize: '1rem', fontWeight: '700', color: '#2D3748', marginBottom: '6px' }}>Simple</h4>
+              <p style={{ color: '#718096', fontSize: '0.85rem', margin: 0 }}>Processus automatisé</p>
             </div>
           </div>
         </div>
@@ -1620,6 +1622,26 @@ export default function Page() {
         .revenue-split-cards > div > p {
           font-size: 0.85rem !important;
         }
+        
+        /* Badges features toujours en ligne mais plus compacts */
+        .features-badges {
+          gap: 16px !important;
+        }
+        
+        .feature-badge > div:first-child {
+          width: 60px !important;
+          height: 60px !important;
+          font-size: 1.5rem !important;
+          margin-bottom: 10px !important;
+        }
+        
+        .feature-badge h4 {
+          font-size: 0.9rem !important;
+        }
+        
+        .feature-badge p {
+          font-size: 0.75rem !important;
+        }
       }
       
       @media (max-width: 480px) {
@@ -1710,6 +1732,26 @@ export default function Page() {
         
         .revenue-split-cards > div > p {
           font-size: 0.8rem !important;
+        }
+        
+        /* Badges features encore plus compacts sur petits écrans */
+        .features-badges {
+          gap: 12px !important;
+        }
+        
+        .feature-badge > div:first-child {
+          width: 50px !important;
+          height: 50px !important;
+          font-size: 1.3rem !important;
+          margin-bottom: 8px !important;
+        }
+        
+        .feature-badge h4 {
+          font-size: 0.85rem !important;
+        }
+        
+        .feature-badge p {
+          font-size: 0.7rem !important;
         }
       }
     `}</style>
