@@ -245,7 +245,7 @@ export default function Page() {
             maxWidth: '900px',
             margin: '0 auto'
           }}>
-            <h2 style={{ 
+            <h2 className="search-title" style={{ 
               fontSize: '1.5rem', 
               fontWeight: 700, 
               color: '#2D3748', 
@@ -872,17 +872,12 @@ export default function Page() {
               </a>
             </div>
             {/* CTA modernes */}
-            <div className="cta-buttons" style={{ 
+            <div style={{ 
               display: 'flex', 
-              flexDirection: 'row',
-              flexWrap: 'wrap',
               justifyContent: 'center',
-              gap: '12px', 
-              marginTop: '40px',
-              maxWidth: '600px',
-              margin: '40px auto 0'
+              marginTop: '40px'
             }}>
-              <a href="/fonctionnement?tab=proprietaire" style={{
+              <a href="/fonctionnement" style={{
                 background: 'white',
                 color: '#4A5568',
                 padding: '12px 24px',
@@ -903,31 +898,7 @@ export default function Page() {
                 e.target.style.background = 'white';
                 e.target.style.borderColor = '#E2E8F0';
               }}>
-                Convaincre mon propriétaire
-              </a>
-
-              <a href="/fonctionnement?tab=locataire" style={{
-                background: 'white',
-                color: '#4A5568',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                textAlign: 'center',
-                border: '1px solid #E2E8F0',
-                transition: 'all 0.3s ease',
-                fontWeight: '500',
-                fontSize: '14px',
-                display: 'inline-block'
-              }}
-              onMouseOver={e => {
-                e.target.style.background = '#F7FAFC';
-                e.target.style.borderColor = '#CBD5E0';
-              }}
-              onMouseOut={e => {
-                e.target.style.background = 'white';
-                e.target.style.borderColor = '#E2E8F0';
-              }}>
-                Convaincre mon locataire
+                Comment ça marche ?
               </a>
             </div>
             <div style={{ display: 'flex', gap: 18, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: 14 }}>
@@ -1534,6 +1505,12 @@ export default function Page() {
           margin-bottom: 32px !important;
         }
 
+        .search-title {
+          font-size: 1.3rem !important;
+          white-space: nowrap !important;
+          margin-bottom: 24px !important;
+        }
+
         .estimator-heading h3 {
           font-size: 1.6rem !important;
           margin-bottom: 12px !important;
@@ -1690,6 +1667,13 @@ export default function Page() {
         .price-input-text input {
           width: 50px !important;
           font-size: 16px !important;
+        }
+
+        .search-title {
+          font-size: 1.1rem !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
         }
         
         .btn-search-modern {
