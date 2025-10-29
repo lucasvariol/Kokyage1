@@ -968,7 +968,6 @@ export default function Page() {
             margin: '0 auto 48px'
           }}>
             Une plateforme de sous-location <strong>simplifiée</strong>, <strong>légale</strong> et <strong>sécurisée</strong>.
-            Accord propriétaire, signature électronique et assurance intégrés.
           </p>
           
           {/* Features Grid */}
@@ -1011,7 +1010,7 @@ export default function Page() {
                 🛡️
               </div>
               <h4 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#2D3748', marginBottom: '8px' }}>Sécurisé</h4>
-              <p style={{ color: '#718096', fontSize: '0.95rem' }}>Assurance et protection</p>
+              <p style={{ color: '#718096', fontSize: '0.95rem' }}>enregistrement empreinte bancaire</p>
             </div>
             
             <div style={{ textAlign: 'center' }}>
@@ -1096,7 +1095,7 @@ export default function Page() {
                 opacity: 0.9,
                 lineHeight: 1.6
               }}>
-                Celui qui gère la sous-location et accueille les voyageurs
+                Celui qui gère les réservations et accueille les voyageurs
               </p>
             </div>
 
@@ -1222,11 +1221,11 @@ export default function Page() {
                 </li>
                 <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                   <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Cadrage légal complet
+                  Cadrage légal
                 </li>
                 <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                   <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Assurance incluse
+                  Protection optimale
                 </li>
               </ul>
             </div>
@@ -1285,7 +1284,7 @@ export default function Page() {
                 </li>
                 <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                   <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Transparence totale
+                  Libre d'arrêter à tout moment
                 </li>
               </ul>
             </div>
@@ -1470,7 +1469,7 @@ export default function Page() {
             margin: '60px auto 0'
           }}>
             <div>
-              <div style={{ fontSize: '2.5rem', fontWeight: '800', color: '#60A29D' }}>1000+</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: '800', color: '#60A29D' }}>XX</div>
               <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Logements disponibles</div>
             </div>
             <div>
