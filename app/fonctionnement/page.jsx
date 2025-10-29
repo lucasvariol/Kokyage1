@@ -554,7 +554,7 @@ function ConceptContent() {
       </div>
 
       {/* Main Concept */}
-      <div style={{
+      <div className="concept-section" style={{
         background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
         padding: '48px 40px',
         borderRadius: '20px',
@@ -564,7 +564,7 @@ function ConceptContent() {
       }}>
 
         
-        <div style={{ 
+        <div className="concept-content" style={{ 
           maxWidth: '800px', 
           margin: '10px auto',
           fontSize: '1.15rem',
@@ -572,13 +572,13 @@ function ConceptContent() {
         }}>
 
 
-          <div style={{ 
+          <div className="revenue-section" style={{ 
             background: 'rgba(255,255,255,0.15)',
             padding: '32px',
             borderRadius: '12px',
             marginBottom: '32px'
           }}>
-            <h4 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '24px', textAlign: 'center' }}>
+            <h4 className="revenue-heading" style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '24px', textAlign: 'center' }}>
               Répartition des revenus de sous-location
             </h4>
             
@@ -632,7 +632,7 @@ function ConceptContent() {
             </p>
           </div>
 
-          <p style={{ 
+          <p className="concept-motto" style={{ 
             textAlign: 'center',
             fontSize: '1.3rem',
             fontWeight: 700,
@@ -782,6 +782,27 @@ function ConceptContent() {
         }
         
         @media (max-width: 768px) {
+          .concept-section {
+            padding: 32px 24px !important;
+            margin-bottom: 32px !important;
+          }
+          
+          .concept-content {
+            margin: 0 auto !important;
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
+          }
+          
+          .revenue-section {
+            padding: 20px !important;
+            margin-bottom: 20px !important;
+          }
+          
+          .revenue-heading {
+            font-size: 1.4rem !important;
+            margin-bottom: 16px !important;
+          }
+          
           .revenue-split-grid {
             gap: 16px !important;
           }
@@ -801,11 +822,37 @@ function ConceptContent() {
           .revenue-desc {
             font-size: 0.85rem !important;
           }
+          
+          .concept-motto {
+            font-size: 1.1rem !important;
+            padding: 16px !important;
+            line-height: 1.5 !important;
+          }
         }
         
         @media (max-width: 480px) {
+          .concept-section {
+            padding: 24px 16px !important;
+            margin-bottom: 24px !important;
+          }
+          
+          .concept-content {
+            font-size: 0.95rem !important;
+          }
+          
+          .revenue-section {
+            padding: 16px !important;
+            margin-bottom: 16px !important;
+          }
+          
+          .revenue-heading {
+            font-size: 1.2rem !important;
+            margin-bottom: 12px !important;
+          }
+          
           .revenue-split-grid {
             gap: 12px !important;
+            margin-bottom: 16px !important;
           }
           
           .revenue-split-card {
@@ -824,6 +871,12 @@ function ConceptContent() {
           .revenue-desc {
             font-size: 0.75rem !important;
             margin-top: 6px !important;
+          }
+          
+          .concept-motto {
+            font-size: 0.95rem !important;
+            padding: 12px !important;
+            line-height: 1.4 !important;
           }
         }
       `}</style>
