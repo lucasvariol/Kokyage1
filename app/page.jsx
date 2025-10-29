@@ -878,25 +878,31 @@ export default function Page() {
               marginTop: '40px'
             }}>
               <a href="/fonctionnement" style={{
-                background: 'white',
-                color: '#4A5568',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                textAlign: 'center',
-                border: '1px solid #E2E8F0',
+                background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '16px 32px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                fontWeight: '500',
-                fontSize: '14px',
-                display: 'inline-block'
+                boxShadow: '0 4px 15px rgba(215,144,119,0.4)',
+                height: '56px',
+                minWidth: '140px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                textDecoration: 'none'
               }}
               onMouseOver={e => {
-                e.target.style.background = '#F7FAFC';
-                e.target.style.borderColor = '#CBD5E0';
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 8px 25px rgba(215,144,119,0.6)';
               }}
               onMouseOut={e => {
-                e.target.style.background = 'white';
-                e.target.style.borderColor = '#E2E8F0';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 15px rgba(215,144,119,0.4)';
               }}>
                 Comment ça marche ?
               </a>
@@ -1170,7 +1176,7 @@ export default function Page() {
                 color: '#3b82f6', 
                 marginBottom: '20px'
               }}>
-                💼 Locataire
+              Locataire
               </h3>
               <ul style={{ 
                 color: '#4b5563', 
@@ -1229,7 +1235,7 @@ export default function Page() {
                 color: '#10b981', 
                 marginBottom: '20px'
               }}>
-                🏠 Propriétaire
+                Propriétaire
               </h3>
               <ul style={{ 
                 color: '#4b5563', 
