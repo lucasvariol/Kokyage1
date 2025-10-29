@@ -877,79 +877,57 @@ export default function Page() {
               flexDirection: 'row',
               flexWrap: 'wrap',
               justifyContent: 'center',
-              gap: '20px', 
+              gap: '12px', 
               marginTop: '40px',
               maxWidth: '600px',
               margin: '40px auto 0'
             }}>
               <a href="/fonctionnement?tab=proprietaire" style={{
-                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                color: 'white',
-                padding: '24px 32px',
-                borderRadius: '16px',
+                background: 'white',
+                color: '#4A5568',
+                padding: '12px 24px',
+                borderRadius: '8px',
                 textDecoration: 'none',
                 textAlign: 'center',
-                boxShadow: '0 8px 25px rgba(245,158,11,0.4)',
+                border: '1px solid #E2E8F0',
                 transition: 'all 0.3s ease',
-                fontWeight: '700',
-                position: 'relative',
-                overflow: 'hidden',
-                flex: '1 1 280px',
-                minWidth: '280px',
-                maxWidth: '320px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '8px'
+                fontWeight: '500',
+                fontSize: '14px',
+                display: 'inline-block'
               }}
               onMouseOver={e => {
-                e.target.style.transform = 'translateY(-4px)';
-                e.target.style.boxShadow = '0 12px 35px rgba(245,158,11,0.6)';
+                e.target.style.background = '#F7FAFC';
+                e.target.style.borderColor = '#CBD5E0';
               }}
               onMouseOut={e => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 8px 25px rgba(245,158,11,0.4)';
+                e.target.style.background = 'white';
+                e.target.style.borderColor = '#E2E8F0';
               }}>
-                <div style={{ fontSize: '40px', marginBottom: '4px' }}>🏠</div>
-                <div style={{ fontSize: '13px', opacity: 0.95, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>
-                  Convaincre mon
-                </div>
-                <div style={{ fontSize: '22px', fontWeight: '800' }}>Propriétaire</div>
+                Convaincre mon propriétaire
               </a>
 
               <a href="/fonctionnement?tab=locataire" style={{
-                background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
-                color: 'white',
-                padding: '24px 32px',
-                borderRadius: '16px',
+                background: 'white',
+                color: '#4A5568',
+                padding: '12px 24px',
+                borderRadius: '8px',
                 textDecoration: 'none',
                 textAlign: 'center',
-                boxShadow: '0 8px 25px rgba(96,162,157,0.4)',
+                border: '1px solid #E2E8F0',
                 transition: 'all 0.3s ease',
-                fontWeight: '700',
-                position: 'relative',
-                overflow: 'hidden',
-                flex: '1 1 280px',
-                minWidth: '280px',
-                maxWidth: '320px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '8px'
+                fontWeight: '500',
+                fontSize: '14px',
+                display: 'inline-block'
               }}
               onMouseOver={e => {
-                e.target.style.transform = 'translateY(-4px)';
-                e.target.style.boxShadow = '0 12px 35px rgba(96,162,157,0.6)';
+                e.target.style.background = '#F7FAFC';
+                e.target.style.borderColor = '#CBD5E0';
               }}
               onMouseOut={e => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 8px 25px rgba(96,162,157,0.4)';
+                e.target.style.background = 'white';
+                e.target.style.borderColor = '#E2E8F0';
               }}>
-                <div style={{ fontSize: '40px', marginBottom: '4px' }}>💼</div>
-                <div style={{ fontSize: '13px', opacity: 0.95, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>
-                  Convaincre mon
-                </div>
-                <div style={{ fontSize: '22px', fontWeight: '800' }}>Locataire</div>
+                Convaincre mon locataire
               </a>
             </div>
             <div style={{ display: 'flex', gap: 18, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: 14 }}>
