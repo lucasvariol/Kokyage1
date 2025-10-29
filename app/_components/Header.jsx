@@ -141,7 +141,7 @@ export default function Header() {
                   transition: 'all 0.3s ease',
                   whiteSpace: 'nowrap'
                 }}>
-                  ✨ Proposer
+                Proposer un logement
                 </Link>
                 
                 <Link href="/inscription" className="desktop-button" style={{
@@ -156,7 +156,7 @@ export default function Header() {
                   transition: 'all 0.3s ease',
                   whiteSpace: 'nowrap'
                 }}>
-                  🚀 Inscription
+                Inscription
                 </Link>
               </nav>
             )}
@@ -192,7 +192,7 @@ export default function Header() {
                 transition: 'all 0.3s ease',
                 whiteSpace: 'nowrap'
               }}>
-                ✨ Proposer
+                Proposer un logement
               </Link>
             )}
 
@@ -288,7 +288,7 @@ export default function Header() {
                     display: 'block',
                     textAlign: 'center'
                   }}>
-                    ✨ Proposer un logement
+                  Proposer un logement
                   </Link>
                 </div>
 
@@ -299,7 +299,7 @@ export default function Header() {
                     fontWeight: '600', 
                     textTransform: 'uppercase', 
                     margin: '0 0 12px 0'
-                  }}>Navigation</h4>
+                  }}>MENU</h4>
                   
                   <Link href="/fonctionnement" style={{
                     display: 'flex',
@@ -436,7 +436,7 @@ export default function Header() {
                   textDecoration: 'none',
                   transition: 'all 0.2s ease'
                 }}>
-                  ✨ Proposer un logement
+                Proposer un logement
                 </Link>
 
                 <Link href="/inscription" style={{
@@ -455,7 +455,7 @@ export default function Header() {
                   boxShadow: '0 6px 20px rgba(215,144,119,0.25)',
                   transition: 'all 0.2s ease'
                 }}>
-                  🚀 Inscription gratuite
+                Inscription gratuite
                 </Link>
               </div>
             )}
