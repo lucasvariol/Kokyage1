@@ -678,7 +678,7 @@ function ConceptContent() {
           <StepCard
             number="4"
             title="Un voyageur réserve"
-            description="Il paie en ligne de manière sécurisée. L'assurance et les garanties sont automatiquement activées."
+            description="Il paie en ligne de manière sécurisée. Une empreinte bancaire de 300€ est prise en guise de caution."
           />
           <StepCard
             number="5"
@@ -714,7 +714,7 @@ function ConceptContent() {
           <BenefitCard
             icon="🛡️"
             title="100% sécurisé"
-            description="Assurance automatique, caution, modération et système de notation."
+            description="Caution, modération et système de notation."
           />
           <BenefitCard
             icon="🤝"
@@ -758,8 +758,8 @@ function ConceptContent() {
             classic="❌ 0%"
           />
           <ComparisonRow
-            label="Assurance dédiée"
-            kokyage="✅ Incluse et automatique"
+            label="empreinte bancaire du voyageur"
+            kokyage="✅ 300€ enregistrés"
             classic="❌ Aucune couverture"
           />
           <ComparisonRow
@@ -968,32 +968,7 @@ function ProprietaireContent() {
           title="Une sécurité juridique totale"
           description="Chaque sous-location s'effectue dans le cadre d'un accord de consentement électronique, validé par nos experts juridiques."
         />
-
-        {/* Assurance */}
-        <FeatureCard
-          icon="🛡️"
-          title="Une assurance qui protège tout le monde"
-          description={
-            <>
-              Sur Kokyage, chaque séjour est automatiquement couvert par une assurance dédiée.
-              Elle protège le propriétaire, le locataire et le voyageur et couvre jusqu'à <strong>X00 000 €</strong> dans les rares cas où surviennent dégradations, vols ou incidents.
-              <br /><br />
-              Aucune démarche à effectuer : la couverture est un supplément payé par le voyageur lors de sa réservation.
-              <br /><br />
-              Ainsi, vous avez la garantie que votre bien reste protégé en toutes circonstances, sans avance de frais ni paperasse.
-              <br /><br />
-              <Link href="/faq" style={{ 
-                color: '#60A29D', 
-                fontWeight: 600,
-                textDecoration: 'none',
-                borderBottom: '2px solid #60A29D'
-              }}>
-                → Cliquez ici pour connaître les détails sur l'assurance
-              </Link>
-            </>
-          }
-        />
-
+  
         {/* Responsabilité */}
         <FeatureCard
           icon="⚖️"
@@ -1005,21 +980,20 @@ function ProprietaireContent() {
               Pour les petites dégradations, une empreinte bancaire (équivalente à une caution) est enregistrée auprès du voyageur.
               En cas de dommage validé par nos modérateurs, jusqu'à <strong>300 €</strong> peuvent être prélevés automatiquement afin de couvrir les réparations mineures.
               <br /><br />
-              Dans les rares cas d'incidents plus importants, l'assurance intervient pour indemniser les dommages matériels.
+              Dans les rares cas d'incidents plus importants, c'est l'assurance responsabilité civile du voyageur qui est sollicitée en priorité, s'il en possède une.
               Et si cela s'avère nécessaire, le locataire principal demeure garant vis-à-vis de vous, conformément à la loi et à l'accord signé.
+              Il est fortement recommandé au locataire principal de demander au voyageur une attestation de villégiature, généralement incluse dans l'assurance habitation du voyageur.
               <br /><br />
               <strong style={{ color: '#60A29D' }}>Vous bénéficiez ainsi d'une triple sécurité :</strong>
               <ol style={{ marginTop: '16px', paddingLeft: '20px' }}>
                 <li>Une caution enregistrée couvrant les dégradations jusqu'à 300 € ;</li>
-                <li>Une assurance active protégeant chaque séjour jusqu'à [X00 000 €] ;</li>
+                <li>l'assurance responsabilité civile du voyageur, s'il en a une ;</li>
                 <li>Un locataire juridiquement responsable, qui reste votre interlocuteur unique.</li>
               </ol>
               <br />
               Enfin, chaque voyageur est noté par le locataire principal à la fin de son séjour.
               Un système de signalement permet de bannir définitivement les utilisateurs peu fiables, pour maintenir une communauté respectueuse et de confiance.
-              <br /><br />
-              Kokyage veille à ce que votre logement soit toujours entre de bonnes mains — <strong>protégé, encadré et sous contrôle</strong>.
-            </>
+              <br />  </>
           }
         />
 
@@ -1068,13 +1042,18 @@ function ProprietaireContent() {
           title="Aucun frais cachés, tout est transparent !"
           description={
             <>
-              Sur Kokyage, chaque séjour profite à tout le monde : au locataire, au propriétaire et à la plateforme qui assure la gestion et la sécurité.
+              Sur Kokyage, la répartition des revenus est claire et transparente pour chaque acteur.
               <br /><br />
-              <strong style={{ color: '#60A29D' }}>👉 Exemple concret :</strong>
+              Le locataire fixe librement le prix de la nuitée.
+              <br /><br />
+              Le voyageur paie ce prix, plus des frais de service de 17%
+              Ensuite, les revenus sont partagés automatiquement : <strong>40 % pour le propriétaire</strong> et <strong>60 % pour le locataire</strong>, chacun déduisant une commission de 3 % pour Kokyage.
+              <br /><br />
+              <strong style={{ color: '#60A29D' }}>Exemple concret :</strong>
               <br />
               Si le locataire fixe le prix de la nuit à <strong>100 €</strong> :
               <ul style={{ marginTop: '12px', paddingLeft: '20px' }}>
-                <li>Le voyageur paie environ <strong>117 €</strong>, dont 15 € pour Kokyage (frais de service) et 2 € pour l'assurance.</li>
+                <li>Le voyageur paie environ <strong>117 €</strong>, dont 17 € de frais pour Kokyage</li>
                 <li>Le propriétaire perçoit <strong>40 €</strong>, moins 3 % de commission, soit <strong style={{ color: '#60A29D' }}>38,80 € nets</strong>.</li>
                 <li>Le locataire reçoit <strong>60 €</strong>, moins 3 % de commission, soit <strong>58,20 € nets</strong>.</li>
               </ul>
@@ -1176,8 +1155,8 @@ function LocataireContent() {
 
       <FeatureCard
         icon="🛡️"
-        title="Vous êtes protégé à 100%"
-        description="Chaque séjour est couvert par une assurance jusqu'à 500 000€. une empreinte bancaire (caution jusqu'à 300€) protège des petites dégradations, et vous validez chaque réservation. Vous gardez le contrôle total."
+        title="Vous êtes protégé"
+        description="chaque séjour fait l'objet d'une prise d'empreinte bancaire de 300€ auprès du voyageur, couvrant les petites dégradations. Pour les dégradations plus importantes, c'est l'assurance responsabilité civile du voyageur qui est sollicitée en priorité. Il est fortement recommandé au locataire principal de demander au voyageur une attestation de villégiature, généralement incluse dans son assurance habitation."
       />
 
       <FeatureCard
@@ -1271,11 +1250,11 @@ function FAQContent() {
         },
         {
           q: "Comment fonctionne la répartition des revenus ?",
-          a: "Pour chaque nuit louée : 60% reviennent au locataire, 40% au propriétaire. Kokyage prélève ensuite 3% de commission sur chaque part pour financer la plateforme, la modération, l'assurance et le support client."
+          a: "Pour chaque nuit louée : 60% reviennent au locataire, 40% au propriétaire. Kokyage prélève ensuite 3% de commission sur chaque part pour financer la plateforme et la modération. et fait payer des frais de service de 17% au voyageur."
         },
         {
           q: "Que se passe-t-il si le propriétaire refuse ?",
-          a: "Le propriétaire est libre de refuser ou d'accepter la demande de sous-location. Sans son accord, le logement ne peut pas être publié sur Kokyage. Le locataire ne peut donc pas sous-louer via notre plateforme."
+          a: "Le propriétaire est libre de refuser ou d'accepter la demande de sous-location. Sans son accord, le logement ne peut pas être publié sur Kokyage. Le locataire ne peut donc pas sous-louer via notre plateforme. Pour l'aider à convaincre son propriétaire, Kokyage fournit un email type expliquant les avantages du modèle dans le volet 'locataire' de cette meme page."
         }
       ]
     },
@@ -1288,7 +1267,7 @@ function FAQContent() {
         },
         {
           q: "Comment suis-je protégé en cas de dégradation ?",
-          a: "Triple protection : 1) Empreinte bancaire du voyageur (caution jusqu'à 300€), 2) Assurance automatique couvrant jusqu'à X00 000€, 3) Responsabilité du locataire principal qui reste votre garant conformément à la loi."
+          a: "Triple protection : 1) Empreinte bancaire du voyageur (caution jusqu'à 300€), 2) l'assurance responsabilité civile du voyageur s'il en a, 3) Responsabilité du locataire principal qui reste votre garant conformément à la loi."
         },
         {
           q: "Dois-je gérer les voyageurs ?",
@@ -1303,7 +1282,7 @@ function FAQContent() {
           a: "Les revenus perçus via Kokyage sont des revenus fonciers. Vous devez les déclarer dans la catégorie 'revenus fonciers' (formulaire 2044 ou 2042). Si vos revenus locatifs sont inférieurs à 15 000 €/an, vous bénéficiez du régime micro-foncier avec un abattement forfaitaire de 30%. Au-delà, ou sur option, vous pouvez choisir le régime réel pour déduire vos charges réelles (travaux, intérêts d'emprunt, taxe foncière, assurance PNO, frais de gestion, etc.). Kokyage vous fournit un récapitulatif annuel pour faciliter votre déclaration."
         }
       ]
-    },
+    }, 
     {
       category: "Pour les locataires",
       questions: [
@@ -1325,7 +1304,61 @@ function FAQContent() {
         },
         {
           q: "Comment déclarer mes revenus de sous-location ?",
-          a: "Les revenus de sous-location sont considérés comme des Bénéfices Industriels et Commerciaux (BIC) pour la location meublée, ou des revenus fonciers pour la location nue. Pour rester exonéré d'impôts, vous devez respecter le principe de non-lucratité : le loyer facturé au voyageur ne doit pas dépasser le loyer que vous payez à votre propriétaire. Si vous facturez plus, l'excédent est imposable. Kokyage vous aide à paramétrer votre loyer pour respecter facilement cette règle et vous fournit un récapitulatif annuel pour votre déclaration."
+          a: (
+            <>
+              <strong>Tu n'as rien à déclarer si toutes les conditions suivantes sont réunies :</strong>
+              <br /><br />
+              • Le logement sous-loué est ta résidence principale (tu y vis au moins 8 mois par an).<br />
+              • Tu loues à des voyageurs de passage pour de courts séjours.<br />
+              • Le montant total perçu sur l'année ne dépasse pas 206 € par m² et par an (plafond 2025, mis à jour chaque année).<br />
+              • Tu n'offres aucun service hôtelier (petit-déjeuner, ménage quotidien, réception, etc.).
+              <br /><br />
+              <strong>➡️ Exemple :</strong><br />
+              Si ton logement principal fait 40 m², tu peux percevoir jusqu'à 8 240 € par an sans rien déclarer.
+              En dessous de ce seuil, aucune déclaration n'est requise et aucune imposition n'est due.
+              <br /><br />
+              <strong>💰 Et si je dépasse les 206 €/m²/an ?</strong>
+              <br /><br />
+              Dès que ce seuil est franchi, tes revenus deviennent imposables.
+              Tu dois alors les déclarer dans la catégorie des Bénéfices Industriels et Commerciaux (BIC).
+              <br /><br />
+              Tu bénéficieras automatiquement du régime micro-BIC, sauf si tu choisis le régime réel :<br />
+              • <strong>Micro-BIC</strong> : tu déclares le montant total perçu et bénéficies d'un abattement de 50 % pour frais.<br />
+              • <strong>Régime réel</strong> : tu déduis tes charges réelles (loyer, assurance, entretien, etc.), si cela est plus avantageux.
+              <br /><br />
+              <strong>🏢 Et si je sous-loue un logement qui n'est pas ma résidence principale ?</strong>
+              <br /><br />
+              Dans ce cas, l'exonération ne s'applique pas.
+              Les revenus sont imposables dès le premier euro, quelle que soit leur importance.
+              Ils doivent être déclarés en BIC, selon le régime micro-BIC ou réel simplifié.
+              <br /><br />
+              <strong>📊 Comment Kokyage m'aide à faire ma déclaration ?</strong>
+              <br /><br />
+              Conformément à l'article 242 bis du Code général des impôts, Kokyage transmet chaque année à l'administration fiscale le montant brut des revenus perçus via la plateforme.
+              Tu recevras également un relevé annuel dans ton espace personnel, récapitulant le total de tes revenus bruts à déclarer.
+              <br /><br />
+              <strong>📅 Et si je loue souvent ou plusieurs logements ?</strong>
+              <br /><br />
+              Si tu sous-loues régulièrement ou plusieurs logements, ton activité peut être considérée comme professionnelle.
+              Tu devras alors :<br />
+              • t'immatriculer en tant que loueur en meublé non professionnel (LMNP) ou professionnel (LMP) ;<br />
+              • déclarer tes revenus à l'URSSAF pour payer les cotisations sociales correspondantes.
+              <br /><br />
+              <strong>🧮 Comment est calculé le plafond de 206 €/m²/an ?</strong>
+              <br /><br />
+              Le plafond s'applique sur la surface habitable du logement sous-loué :<br />
+              Exemple : 30 m² × 206 € = 6 180 € par an maximum pour rester exonéré.
+              <br /><br />
+              Ce plafond est révisé chaque année par arrêté ministériel. Il est consultable sur service-public.fr.
+              <br /><br />
+              <strong>🧾 Où trouver des informations officielles ?</strong>
+              <br /><br />
+              Tu peux consulter les sources suivantes :<br />
+              • impots.gouv.fr – Revenus issus de la location ou de la sous-location de meublés<br />
+              • Service-public.fr – Sous-location d'un logement<br />
+              • URSSAF – Activités de location meublée
+            </>
+          )
         },
         {
           q: "Qu'en est-il de la taxe de séjour ?",
