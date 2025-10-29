@@ -669,7 +669,7 @@ export default function Page() {
         position: 'relative',
         zIndex: 0
       }}>
-        <div style={{ 
+        <div className="estimator-card" style={{ 
           background: 'white',
           borderRadius: '24px', 
           boxShadow: '0 20px 60px rgba(0,0,0,0.1)', 
@@ -677,7 +677,7 @@ export default function Page() {
           border: '1px solid rgba(0,0,0,0.05)',
           backdropFilter: 'blur(10px)'
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <div className="estimator-heading" style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h3 style={{ 
               fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', 
               fontWeight: 800, 
@@ -687,7 +687,7 @@ export default function Page() {
             }}>
               Calculez vos revenus potentiels
             </h3>
-            <p style={{
+            <p className="estimator-subtitle" style={{
               fontSize: '1.1rem',
               color: '#718096',
               maxWidth: '600px',
@@ -699,7 +699,7 @@ export default function Page() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' }}>
             <div style={{ width: '100%', maxWidth: '700px' }}>
-              <div style={{ 
+              <div className="price-input-section" style={{ 
                 background: '#F5F1ED',
                 borderRadius: '16px',
                 padding: '24px',
@@ -708,7 +708,7 @@ export default function Page() {
                 overflow: 'hidden',
                 position: 'relative'
               }}>
-                <div style={{ textAlign: 'center', marginBottom: '16px', fontSize: '18px', color: '#4A5568' }}>
+                <div className="price-input-text" style={{ textAlign: 'center', marginBottom: '16px', fontSize: '18px', color: '#4A5568' }}>
                   <strong style={{ fontWeight: 700, color: '#60A29D' }}>{nbNuits}</strong> nuits à&nbsp;
                   <input
                     aria-label="Prix par nuit"
@@ -1547,9 +1547,32 @@ export default function Page() {
           padding: 0 16px !important;
         }
         
-        .estimator-section > div {
-          padding: 32px 20px !important;
+        .estimator-card {
+          padding: 32px 24px !important;
           border-radius: 20px !important;
+        }
+
+        .estimator-heading {
+          margin-bottom: 32px !important;
+        }
+
+        .estimator-heading h3 {
+          font-size: 1.6rem !important;
+          margin-bottom: 12px !important;
+        }
+
+        .estimator-subtitle {
+          font-size: 1rem !important;
+        }
+
+        .price-input-section {
+          padding: 20px !important;
+          margin-bottom: 20px !important;
+        }
+
+        .price-input-text {
+          font-size: 16px !important;
+          margin-bottom: 12px !important;
         }
         
         .revenue-cards {
@@ -1658,8 +1681,37 @@ export default function Page() {
           padding: 0 12px !important;
         }
         
-        .estimator-section > div {
+        .estimator-card {
           padding: 24px 16px !important;
+        }
+
+        .estimator-heading {
+          margin-bottom: 24px !important;
+        }
+
+        .estimator-heading h3 {
+          font-size: 1.3rem !important;
+          margin-bottom: 10px !important;
+        }
+
+        .estimator-subtitle {
+          font-size: 0.95rem !important;
+        }
+
+        .price-input-section {
+          padding: 16px !important;
+          margin-bottom: 16px !important;
+          border-radius: 12px !important;
+        }
+
+        .price-input-text {
+          font-size: 14px !important;
+          margin-bottom: 10px !important;
+        }
+
+        .price-input-text input {
+          width: 50px !important;
+          font-size: 16px !important;
         }
         
         .btn-search-modern {
