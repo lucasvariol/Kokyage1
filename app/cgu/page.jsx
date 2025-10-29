@@ -18,6 +18,17 @@ function getCGUContent() {
   }
 }
 
+const customComponents = {
+  h1: ({node, ...props}) => <h1 style={{fontSize: '2rem', fontWeight: 800, color: '#2D3748', margin: '0 0 16px'}} {...props} />,
+  h2: ({node, ...props}) => <h2 style={{fontSize: '1.5rem', fontWeight: 800, color: '#2D3748', margin: '32px 0 12px'}} {...props} />,
+  h3: ({node, ...props}) => <h3 style={{fontSize: '1.25rem', fontWeight: 700, color: '#2D3748', margin: '24px 0 8px'}} {...props} />,
+  p: ({node, ...props}) => <p style={{color: '#4A5568', lineHeight: 1.8, margin: '0 0 12px'}} {...props} />,
+  ul: ({node, ...props}) => <ul style={{color: '#4A5568', lineHeight: 1.8, margin: '0 0 12px 20px'}} {...props} />,
+  li: ({node, ...props}) => <li style={{margin: '6px 0'}} {...props} />,
+  hr: ({node, ...props}) => <hr style={{border: 'none', borderTop: '1px solid #eee', margin: '24px 0'}} {...props} />,
+  blockquote: ({node, ...props}) => <blockquote style={{borderLeft: '4px solid #E2E8F0', padding: '8px 16px', color: '#4A5568', background: '#F8FAFC', borderRadius: '6px'}} {...props} />
+};
+
 export default function Page() {
   const content = getCGUContent();
   return (
@@ -35,27 +46,11 @@ export default function Page() {
             boxShadow: '0 12px 32px rgba(0,0,0,0.08)',
             padding: '32px'
           }}>
-            <article className="markdown-body">
-              <ReactMarkdown>{content}</ReactMarkdown>
-            </article>
+            <ReactMarkdown components={customComponents}>{content}</ReactMarkdown>
           </div>
         </section>
       </main>
       <Footer />
-      <style jsx>{`
-        .markdown-body h1 { font-size: 2rem; font-weight: 800; color: #2D3748; margin: 0 0 16px; }
-        .markdown-body h2 { font-size: 1.5rem; font-weight: 800; color: #2D3748; margin: 32px 0 12px; }
-        .markdown-body h3 { font-size: 1.25rem; font-weight: 700; color: #2D3748; margin: 24px 0 8px; }
-        .markdown-body p  { color: #4A5568; line-height: 1.8; margin: 0 0 12px; }
-        .markdown-body ul { color: #4A5568; line-height: 1.8; margin: 0 0 12px 20px; }
-        .markdown-body li { margin: 6px 0; }
-        .markdown-body hr { border: none; border-top: 1px solid #eee; margin: 24px 0; }
-        .markdown-body blockquote { border-left: 4px solid #E2E8F0; padding: 8px 16px; color: #4A5568; background:#F8FAFC; border-radius: 6px; }
-        @media (max-width: 768px) {
-          .markdown-body h1 { font-size: 1.6rem; }
-          .markdown-body h2 { font-size: 1.25rem; }
-        }
-      `}</style>
     </>
   );
 }
