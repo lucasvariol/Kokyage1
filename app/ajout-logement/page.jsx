@@ -3,7 +3,7 @@
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 import ListingAssistantChatbot from '../_components/ListingAssistantChatbot';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
@@ -34,6 +34,17 @@ export default function Page() {
   const [bathrooms, setBathrooms] = useState(1);
   const [description, setDescription] = useState('');
   const [ownerEmail, setOwnerEmail] = useState('');
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/connexion');
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   // Functions stay the same
   const handleAddressChange = (e) => {
