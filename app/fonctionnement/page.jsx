@@ -582,42 +582,42 @@ function ConceptContent() {
               Répartition des revenus de sous-location
             </h4>
             
-            <div style={{ 
+            <div className="revenue-split-grid" style={{ 
               display: 'grid', 
               gridTemplateColumns: '1fr 1fr', 
               gap: '24px',
               marginBottom: '24px'
             }}>
-              <div style={{ 
+              <div className="revenue-split-card" style={{ 
                 background: 'rgba(255,255,255,0.2)',
                 padding: '24px',
                 borderRadius: '12px',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '8px', color: '#ffffffff' }}>
+                <div className="revenue-percent" style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '8px', color: '#ffffffff' }}>
                   60%
                 </div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>
+                <div className="revenue-title" style={{ fontSize: '1.1rem', fontWeight: 600 }}>
                   Pour le locataire
                 </div>
-                <div style={{ fontSize: '0.9rem', marginTop: '8px', opacity: 0.9 }}>
+                <div className="revenue-desc" style={{ fontSize: '0.9rem', marginTop: '8px', opacity: 0.9 }}>
                   Celui qui gère la sous-location
                 </div>
               </div>
 
-              <div style={{ 
+              <div className="revenue-split-card" style={{ 
                 background: 'rgba(255,255,255,0.2)',
                 padding: '24px',
                 borderRadius: '12px',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '8px', color: '#ffffffff' }}>
+                <div className="revenue-percent" style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '8px', color: '#ffffffff' }}>
                   40%
                 </div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 600 }}>
+                <div className="revenue-title" style={{ fontSize: '1.1rem', fontWeight: 600 }}>
                   Pour le propriétaire
                 </div>
-                <div style={{ fontSize: '0.9rem', marginTop: '8px', opacity: 0.9 }}>
+                <div className="revenue-desc" style={{ fontSize: '0.9rem', marginTop: '8px', opacity: 0.9 }}>
                   Sans aucun effort de sa part
                 </div>
               </div>
@@ -779,6 +779,52 @@ function ConceptContent() {
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+          .revenue-split-grid {
+            gap: 16px !important;
+          }
+          
+          .revenue-split-card {
+            padding: 20px 16px !important;
+          }
+          
+          .revenue-percent {
+            font-size: 2.5rem !important;
+          }
+          
+          .revenue-title {
+            font-size: 1rem !important;
+          }
+          
+          .revenue-desc {
+            font-size: 0.85rem !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .revenue-split-grid {
+            gap: 12px !important;
+          }
+          
+          .revenue-split-card {
+            padding: 16px 12px !important;
+          }
+          
+          .revenue-percent {
+            font-size: 2rem !important;
+            margin-bottom: 6px !important;
+          }
+          
+          .revenue-title {
+            font-size: 0.9rem !important;
+          }
+          
+          .revenue-desc {
+            font-size: 0.75rem !important;
+            margin-top: 6px !important;
+          }
         }
       `}</style>
     </div>
@@ -1328,7 +1374,7 @@ function FAQContent() {
         },
         {
           q: "Que se passe-t-il si un voyageur dégrade mon logement ?",
-          a: "Vous êtes couvert par l'assurance Kokyage. En cas de dégradation mineure, l'empreinte bancaire du voyageur (jusqu'à 300€) est utilisée. Pour les dommages plus importants, l'assurance prend le relais jusqu'à X00 000€."
+          a: "Kokyage enregistre une empreinte bancaire de 300€ auprès du voyageur, couvrant les petites dégradations. Pour les dommages plus importants, c'est l'assurance responsabilité civile du voyageur qui est sollicitée en priorité. Il est fortement recommandé de demander au voyageur une attestation de villégiature, généralement incluse dans son assurance habitation."
         },
         {
           q: "Puis-je choisir qui loue mon logement ?",
@@ -1360,7 +1406,7 @@ function FAQContent() {
               <br /><br />
               Tu bénéficieras automatiquement du régime micro-BIC, sauf si tu choisis le régime réel :<br />
               • <strong>Micro-BIC</strong> : tu déclares le montant total perçu et bénéficies d'un abattement de 50 % pour frais.<br />
-              • <strong>Régime réel</strong> : tu déduis tes charges réelles (loyer, assurance, entretien, etc.), si cela est plus avantageux.
+              • <strong>Régime réel</strong> : tu déduis tes charges réelles, si cela est plus avantageux.
               <br /><br />
               <strong>🏢 Et si je sous-loue un logement qui n'est pas ma résidence principale ?</strong>
               <br /><br />
@@ -1410,10 +1456,6 @@ function FAQContent() {
           a: "Oui ! Sur Kokyage, vous louez chez de vrais habitants qui s'absentent temporairement. C'est plus authentique, souvent moins cher, et vous ne participez pas à la spéculation immobilière qui chasse les résidents des centres-villes."
         },
         {
-          q: "Suis-je assuré pendant mon séjour ?",
-          a: "Oui, une assurance dédiée est automatiquement incluse dans votre réservation (environ 2€/nuit). Elle couvre les dommages matériels et votre responsabilité civile."
-        },
-        {
           q: "Que se passe-t-il si j'annule ?",
           a: "Les conditions d'annulation sont définies par le locataire lors de la publication (flexible, modérée ou stricte). Elles sont clairement affichées avant votre réservation."
         },
@@ -1423,23 +1465,6 @@ function FAQContent() {
         }
       ]
     },
-    {
-      category: "Sécurité & Assurance",
-      questions: [
-        {
-          q: "Qu'est-ce que l'empreinte bancaire ?",
-          a: "C'est l'équivalent d'une caution sans blocage de fonds. Une autorisation de prélèvement jusqu'à 300€ est enregistrée. En cas de dégradation validée par nos modérateurs, le montant peut être prélevé pour couvrir les réparations."
-        },
-        {
-          q: "L'assurance couvre quoi exactement ?",
-          a: "L'assurance couvre les dommages matériels (dégradations, vols, incendies...), la responsabilité civile du voyageur et du locataire, jusqu'à X00 000€. Elle ne couvre pas les objets de valeur non déclarés ni les dommages intentionnels."
-        },
-        {
-          q: "Comment signaler un problème ?",
-          a: "Vous pouvez contacter notre support 24h/24 depuis votre espace personnel. En cas de problème grave, nos modérateurs interviennent immédiatement pour médiation et application des garanties."
-        }
-      ]
-    }
   ];
 
   return (
