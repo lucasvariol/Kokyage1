@@ -208,6 +208,7 @@ function LogementsInner() {
   const destinationBoxRef = useRef(null);
   const mapContainerRef = useRef(null);
   const resultsIndicatorRef = useRef(null);
+  const logementsListRef = useRef(null);
   const [searchView, setSearchView] = useState(null); // { center: [lat, lng], zoom }
   const [disponibilities, setDisponibilities] = useState({}); // { listing_id: [date1, date2, ...] }
 
@@ -1682,21 +1683,29 @@ function LogementsInner() {
             
             {/* Scroll indicator - mobile only */}
             {isMobile && (
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 80,
-                background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,1) 100%)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                paddingBottom: 16,
-                pointerEvents: 'none',
-                zIndex: 1000
-              }}>
+              <div 
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: 80,
+                  background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,1) 100%)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  paddingBottom: 16,
+                  pointerEvents: 'auto',
+                  zIndex: 1000,
+                  cursor: 'pointer'
+                }}
+                onClick={() => {
+                  if (logementsListRef.current) {
+                    logementsListRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+              >
                 <div style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -1732,7 +1741,7 @@ function LogementsInner() {
             }
           `}</style>
           {/* Liste des logements */}
-          <div className="logements-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 24 }}>
+          <div ref={logementsListRef} className="logements-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 24 }}>
             {sortedItems.map((it) => {
               // Parse images array
               let imagesArr = [];
