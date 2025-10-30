@@ -12,6 +12,15 @@ export default function Header() {
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (open) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [open]);
 
   // État de scroll
   useEffect(() => {
@@ -251,7 +260,8 @@ export default function Header() {
             height: '100vh',
             background: 'rgba(0,0,0,0.5)',
             backdropFilter: 'blur(8px)',
-            zIndex: 200
+            // Must sit above any page elements (hero/map use very high z-index)
+            zIndex: 1000002
           }}
           onClick={() => setOpen(false)}
         >
@@ -268,7 +278,8 @@ export default function Header() {
             border: '1px solid rgba(96,162,157,0.1)',
             maxWidth: '380px',
             margin: '0 auto',
-            animation: 'slideIn 0.3s ease-out'
+            animation: 'slideIn 0.3s ease-out',
+            zIndex: 1000003
           }}
           onClick={(e) => e.stopPropagation()}
           >
