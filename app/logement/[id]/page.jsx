@@ -3501,6 +3501,7 @@ export default function Page({ params }) {
               margin-left: 0 !important;
               margin-right: 0 !important;
               width: 100% !important;
+              box-sizing: border-box !important;
             }
             
             /* Container principal pour éviter le débordement */
@@ -3511,11 +3512,21 @@ export default function Page({ params }) {
               max-width: 100vw !important;
             }
             
+            :global(body) {
+              overflow-x: hidden !important;
+              max-width: 100vw !important;
+            }
+            
+            :global(*) {
+              max-width: 100vw !important;
+            }
+            
             /* Ajuste le padding des containers principaux */
             :global(.logement-detail > div) {
               padding-left: 0 !important;
               padding-right: 0 !important;
               max-width: 100vw !important;
+              box-sizing: border-box !important;
             }
             
             /* Container avec padding */
@@ -3523,6 +3534,7 @@ export default function Page({ params }) {
               padding-left: 0 !important;
               padding-right: 0 !important;
               max-width: 100vw !important;
+              box-sizing: border-box !important;
             }
             
             /* Galerie mobile - pleine largeur */
@@ -3568,9 +3580,21 @@ export default function Page({ params }) {
               border-radius: 12px !important;
               padding: 16px !important;
               margin-bottom: 16px !important;
-              margin-left: 12px !important;
-              margin-right: 12px !important;
-              width: calc(100% - 24px) !important;
+              margin-left: 8px !important;
+              margin-right: 8px !important;
+              width: calc(100vw - 16px) !important;
+              max-width: calc(100vw - 16px) !important;
+              box-sizing: border-box !important;
+              overflow-x: hidden !important;
+            }
+            
+            /* Éléments à l'intérieur des cards */
+            :global(.card-header *),
+            :global(.card-description *),
+            :global(.card-map *),
+            :global(.card-reviews *),
+            :global(.card-reservations *) {
+              max-width: 100% !important;
               box-sizing: border-box !important;
             }
             
@@ -3616,15 +3640,18 @@ export default function Page({ params }) {
               display: none !important;
             }
             
-            /* Boutons d'action */
+            /* Actions row */
             :global(.actions-row) {
               flex-direction: column !important;
               gap: 8px !important;
+              max-width: 100% !important;
             }
             
             :global(.actions-row > *) {
               width: 100% !important;
+              max-width: 100% !important;
               justify-content: center !important;
+              box-sizing: border-box !important;
             }
             
             /* Bouton partager */
@@ -3640,27 +3667,44 @@ export default function Page({ params }) {
               left: auto !important;
               right: auto !important;
               top: auto !important;
-              margin: 16px 12px !important;
-              width: calc(100% - 24px) !important;
+              margin: 16px 8px !important;
+              width: calc(100vw - 16px) !important;
+              max-width: calc(100vw - 16px) !important;
               border-radius: 16px !important;
               box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
               z-index: auto !important;
               padding: 16px !important;
               max-height: none !important;
               overflow-y: visible !important;
+              overflow-x: hidden !important;
+              box-sizing: border-box !important;
+            }
+            
+            /* Éléments dans la sidebar */
+            :global(.booking-sidebar *) {
+              max-width: 100% !important;
+              box-sizing: border-box !important;
             }
             
             /* Calendrier */
             :global(.rdp) {
               font-size: 14px !important;
+              max-width: 100% !important;
+              overflow-x: hidden !important;
             }
             
             :global(.rdp .rdp-months) {
               flex-direction: column !important;
+              max-width: 100% !important;
             }
             
             :global(.rdp .rdp-month) {
               width: 100% !important;
+              max-width: 100% !important;
+            }
+            
+            :global(.rdp-table) {
+              max-width: 100% !important;
             }
             
             /* Price breakdown */
@@ -3713,27 +3757,35 @@ export default function Page({ params }) {
               width: 100% !important;
             }
             
-            /* Avis */
-            :global(.review-item) {
+            /* Review et reservation items */
+            :global(.review-item),
+            :global(.reservation-item) {
               padding: 16px !important;
+              max-width: 100% !important;
+              box-sizing: border-box !important;
+              overflow-x: hidden !important;
+            }
+            
+            :global(.review-item *),
+            :global(.reservation-item *) {
+              max-width: 100% !important;
+              word-wrap: break-word !important;
+              overflow-wrap: break-word !important;
             }
             
             /* Réservations */
-            :global(.reservation-item) {
-              padding: 16px !important;
-              flex-direction: column !important;
-              align-items: flex-start !important;
-              gap: 10px !important;
-            }
-            
             :global(.reservation-actions) {
               width: 100% !important;
+              max-width: 100% !important;
               flex-direction: column !important;
               gap: 8px !important;
+              box-sizing: border-box !important;
             }
             
             :global(.reservation-actions > *) {
               width: 100% !important;
+              max-width: 100% !important;
+              box-sizing: border-box !important;
             }
           }
 
@@ -3747,6 +3799,8 @@ export default function Page({ params }) {
             :global(.main-title) {
               font-size: 18px !important;
               line-height: 1.3 !important;
+              word-wrap: break-word !important;
+              overflow-wrap: break-word !important;
             }
             
             :global(.card-header),
@@ -3755,14 +3809,22 @@ export default function Page({ params }) {
             :global(.card-reviews),
             :global(.card-reservations) {
               padding: 12px !important;
-              margin-left: 8px !important;
-              margin-right: 8px !important;
-              width: calc(100% - 16px) !important;
+              margin-left: 4px !important;
+              margin-right: 4px !important;
+              width: calc(100vw - 8px) !important;
+              max-width: calc(100vw - 8px) !important;
             }
             
             :global(.gallery-thumbnails) {
-              padding-left: 8px !important;
-              padding-right: 8px !important;
+              padding-left: 4px !important;
+              padding-right: 4px !important;
+            }
+            
+            :global(.booking-sidebar) {
+              margin: 16px 4px !important;
+              width: calc(100vw - 8px) !important;
+              max-width: calc(100vw - 8px) !important;
+              padding: 12px !important;
             }
           }
           
