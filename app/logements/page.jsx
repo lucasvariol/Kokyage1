@@ -765,8 +765,8 @@ function LogementsInner() {
             boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
             maxWidth: '1100px',
             margin: '0 auto',
-            display: isMobile ? 'grid' : 'flex',
-            gridTemplateColumns: isMobile ? '1fr 1fr' : undefined,
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
             flexWrap: isMobile ? 'nowrap' : 'wrap',
             gap: isMobile ? 12 : 8,
             alignItems: 'stretch',
@@ -775,7 +775,7 @@ function LogementsInner() {
             zIndex: 100000
           }}>
             {/* Destination avec autocomplétion */}
-            <div ref={destinationBoxRef} style={{ position: 'relative', flex: '1 1 240px', minWidth: isMobile ? '0' : '200px', gridColumn: isMobile ? '1 / -1' : undefined }}>
+            <div ref={destinationBoxRef} style={{ position: 'relative', flex: isMobile ? '0 0 auto' : '1 1 240px', minWidth: isMobile ? '0' : '200px', width: isMobile ? '100%' : 'auto' }}>
               <input
                 type="text"
                 placeholder="Où allez-vous ?"
@@ -858,76 +858,84 @@ function LogementsInner() {
               )}
             </div>
 
-            {/* Date d'arrivée */}
-            <div style={{ flex: '0 0 auto', width: isMobile ? '100%' : 'auto' }}>
-              <DatePicker
-                selected={arrivee ? new Date(arrivee) : null}
-                onChange={date => setArrivee(date ? formatDateLocal(date) : "")}
-                dateFormat="dd/MM/yyyy"
-                minDate={new Date()}
-                placeholderText="Arrivée"
-                customInput={
-                  <button type="button" style={{
-                    ...btnStyle,
-                    width: isMobile ? '100%' : 160,
-                    minWidth: isMobile ? 'auto' : 160,
-                    maxWidth: isMobile ? '100%' : 160,
-                    textAlign: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingLeft: 12,
-                    paddingRight: 12,
-                    height: isMobile ? 54 : btnStyle.height
-                  }}>
-                    <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Arrivée</span>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
-                      {arrivee
-                        ? new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-                        : "Date"}
-                    </span>
-                  </button>
-                }
-              />
-            </div>
+            {/* Dates container - wraps Arrivée and Départ on mobile to share space equally */}
+            <div style={{ 
+              display: 'flex', 
+              gap: isMobile ? 12 : 8, 
+              flex: isMobile ? '0 0 auto' : '0 0 auto',
+              width: isMobile ? '100%' : 'auto'
+            }}>
+              {/* Date d'arrivée */}
+              <div style={{ flex: isMobile ? '1 1 0' : '0 0 auto', width: isMobile ? '0' : 'auto', minWidth: 0 }}>
+                <DatePicker
+                  selected={arrivee ? new Date(arrivee) : null}
+                  onChange={date => setArrivee(date ? formatDateLocal(date) : "")}
+                  dateFormat="dd/MM/yyyy"
+                  minDate={new Date()}
+                  placeholderText="Arrivée"
+                  customInput={
+                    <button type="button" style={{
+                      ...btnStyle,
+                      width: '100%',
+                      minWidth: isMobile ? 'auto' : 160,
+                      maxWidth: isMobile ? '100%' : 160,
+                      textAlign: 'center',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingLeft: 12,
+                      paddingRight: 12,
+                      height: isMobile ? 54 : btnStyle.height
+                    }}>
+                      <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Arrivée</span>
+                      <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
+                        {arrivee
+                          ? new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+                          : "Date"}
+                      </span>
+                    </button>
+                  }
+                />
+              </div>
 
-            {/* Date de départ */}
-            <div style={{ flex: '0 0 auto', width: isMobile ? '100%' : 'auto' }}>
-              <DatePicker
-                selected={depart ? new Date(depart) : null}
-                onChange={date => setDepart(date ? formatDateLocal(date) : "")}
-                dateFormat="dd/MM/yyyy"
-                minDate={arrivee ? new Date(arrivee) : new Date()}
-                placeholderText="Départ"
-                customInput={
-                  <button type="button" style={{
-                    ...btnStyle,
-                    width: isMobile ? '100%' : 160,
-                    minWidth: isMobile ? 'auto' : 160,
-                    maxWidth: isMobile ? '100%' : 160,
-                    textAlign: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingLeft: 12,
-                    paddingRight: 12,
-                    height: isMobile ? 54 : btnStyle.height
-                  }}>
-                    <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Départ</span>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
-                      {depart
-                        ? new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-                        : "Date"}
-                    </span>
-                  </button>
-                }
-              />
+              {/* Date de départ */}
+              <div style={{ flex: isMobile ? '1 1 0' : '0 0 auto', width: isMobile ? '0' : 'auto', minWidth: 0 }}>
+                <DatePicker
+                  selected={depart ? new Date(depart) : null}
+                  onChange={date => setDepart(date ? formatDateLocal(date) : "")}
+                  dateFormat="dd/MM/yyyy"
+                  minDate={arrivee ? new Date(arrivee) : new Date()}
+                  placeholderText="Départ"
+                  customInput={
+                    <button type="button" style={{
+                      ...btnStyle,
+                      width: '100%',
+                      minWidth: isMobile ? 'auto' : 160,
+                      maxWidth: isMobile ? '100%' : 160,
+                      textAlign: 'center',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingLeft: 12,
+                      paddingRight: 12,
+                      height: isMobile ? 54 : btnStyle.height
+                    }}>
+                      <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Départ</span>
+                      <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
+                        {depart
+                          ? new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+                          : "Date"}
+                      </span>
+                    </button>
+                  }
+                />
+              </div>
             </div>
 
             {/* Voyageurs */}
-            <div style={{ position: 'relative', flex: '0 0 auto', width: isMobile ? '100%' : 'auto', gridColumn: isMobile ? '1 / -1' : undefined }}>
+            <div style={{ position: 'relative', flex: '0 0 auto', width: isMobile ? '100%' : 'auto' }}>
               <button
                 type="button"
                 style={{
@@ -998,91 +1006,97 @@ function LogementsInner() {
               )}
             </div>
 
-            {/* Bouton Rechercher */}
-            <button
-              type="button"
-              style={{
-                background: '#C96745',
-                border: 'none',
-                borderRadius: 12,
-                width: isMobile ? '100%' : 56,
-                height: isMobile ? 54 : 65,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(201,103,69,0.25)',
-                transition: 'all 0.2s',
-                flex: '0 0 auto',
-                gridColumn: isMobile ? '1 / 2' : undefined,
-                fontSize: isMobile ? 15 : 16,
-                fontWeight: 600,
-                color: '#fff',
-                gap: 8
-              }}
-              onClick={handleSearch}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = 'scale(1.05)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(201,103,69,0.35)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(201,103,69,0.25)';
-              }}
-              aria-label="Rechercher"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/>
-                <path d="m21 21-4.35-4.35"/>
-              </svg>
-              {isMobile && <span>Rechercher</span>}
-            </button>
+            {/* Action buttons container - wraps Rechercher and Filtres on mobile */}
+            <div style={{ 
+              display: 'flex', 
+              gap: isMobile ? 12 : 8, 
+              flex: isMobile ? '0 0 auto' : '0 0 auto',
+              width: isMobile ? '100%' : 'auto'
+            }}>
+              {/* Bouton Rechercher */}
+              <button
+                type="button"
+                style={{
+                  background: '#C96745',
+                  border: 'none',
+                  borderRadius: 12,
+                  width: isMobile ? '100%' : 56,
+                  height: isMobile ? 54 : 65,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(201,103,69,0.25)',
+                  transition: 'all 0.2s',
+                  flex: isMobile ? '1 1 0' : '0 0 auto',
+                  fontSize: isMobile ? 15 : 16,
+                  fontWeight: 600,
+                  color: '#fff',
+                  gap: 8
+                }}
+                onClick={handleSearch}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(201,103,69,0.35)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(201,103,69,0.25)';
+                }}
+                aria-label="Rechercher"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+                {isMobile && <span>Rechercher</span>}
+              </button>
 
-            {/* Bouton Filtres avancés */}
-            <button
-              type="button"
-              onClick={() => setShowAdvancedFilters(true)}
-              style={{
-                padding: isMobile ? '0 16px' : '0 20px',
-                borderRadius: 12,
-                fontSize: 15,
-                fontWeight: 600,
-                background: '#fff',
-                color: '#C96745',
-                border: '2px solid #C96745',
-                height: isMobile ? 54 : 65,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                flex: '0 0 auto',
-                width: isMobile ? '100%' : undefined,
-                gridColumn: isMobile ? '2 / 3' : undefined
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = '#C96745';
-                e.currentTarget.style.color = '#fff';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = '#fff';
-                e.currentTarget.style.color = '#C96745';
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="4" y1="21" x2="4" y2="14"/>
-                <line x1="4" y1="10" x2="4" y2="3"/>
-                <line x1="12" y1="21" x2="12" y2="12"/>
-                <line x1="12" y1="8" x2="12" y2="3"/>
-                <line x1="20" y1="21" x2="20" y2="16"/>
-                <line x1="20" y1="12" x2="20" y2="3"/>
-                <line x1="1" y1="14" x2="7" y2="14"/>
-                <line x1="9" y1="8" x2="15" y2="8"/>
-                <line x1="17" y1="16" x2="23" y2="16"/>
-              </svg>
-              Filtres
-            </button>
+              {/* Bouton Filtres avancés */}
+              <button
+                type="button"
+                onClick={() => setShowAdvancedFilters(true)}
+                style={{
+                  padding: isMobile ? '0 16px' : '0 20px',
+                  borderRadius: 12,
+                  fontSize: 15,
+                  fontWeight: 600,
+                  background: '#fff',
+                  color: '#C96745',
+                  border: '2px solid #C96745',
+                  height: isMobile ? 54 : 65,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  flex: isMobile ? '1 1 0' : '0 0 auto',
+                  minWidth: 0
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = '#C96745';
+                  e.currentTarget.style.color = '#fff';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = '#fff';
+                  e.currentTarget.style.color = '#C96745';
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="4" y1="21" x2="4" y2="14"/>
+                  <line x1="4" y1="10" x2="4" y2="3"/>
+                  <line x1="12" y1="21" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12" y2="3"/>
+                  <line x1="20" y1="21" x2="20" y2="16"/>
+                  <line x1="20" y1="12" x2="20" y2="3"/>
+                  <line x1="1" y1="14" x2="7" y2="14"/>
+                  <line x1="9" y1="8" x2="15" y2="8"/>
+                  <line x1="17" y1="16" x2="23" y2="16"/>
+                </svg>
+                Filtres
+              </button>
+            </div>
           </div>
         </div>
       </section>
