@@ -866,7 +866,7 @@ function LogementsInner() {
               width: isMobile ? '100%' : 'auto'
             }}>
               {/* Date d'arrivée */}
-              <div style={{ flex: isMobile ? '1 1 0' : '0 0 auto', width: isMobile ? '0' : 'auto', minWidth: 0 }}>
+              <div style={{ flex: isMobile ? '1 1 0%' : '0 0 auto', width: isMobile ? '100%' : 'auto', minWidth: 0 }}>
                 <DatePicker
                   selected={arrivee ? new Date(arrivee) : null}
                   onChange={date => setArrivee(date ? formatDateLocal(date) : "")}
@@ -877,8 +877,8 @@ function LogementsInner() {
                     <button type="button" style={{
                       ...btnStyle,
                       width: '100%',
-                      minWidth: isMobile ? 'auto' : 160,
-                      maxWidth: isMobile ? '100%' : 160,
+                      minWidth: isMobile ? '0' : 160,
+                      maxWidth: 'none',
                       textAlign: 'center',
                       display: 'flex',
                       flexDirection: 'column',
@@ -900,7 +900,7 @@ function LogementsInner() {
               </div>
 
               {/* Date de départ */}
-              <div style={{ flex: isMobile ? '1 1 0' : '0 0 auto', width: isMobile ? '0' : 'auto', minWidth: 0 }}>
+              <div style={{ flex: isMobile ? '1 1 0%' : '0 0 auto', width: isMobile ? '100%' : 'auto', minWidth: 0 }}>
                 <DatePicker
                   selected={depart ? new Date(depart) : null}
                   onChange={date => setDepart(date ? formatDateLocal(date) : "")}
@@ -911,8 +911,8 @@ function LogementsInner() {
                     <button type="button" style={{
                       ...btnStyle,
                       width: '100%',
-                      minWidth: isMobile ? 'auto' : 160,
-                      maxWidth: isMobile ? '100%' : 160,
+                      minWidth: isMobile ? '0' : 160,
+                      maxWidth: 'none',
                       textAlign: 'center',
                       display: 'flex',
                       flexDirection: 'column',
