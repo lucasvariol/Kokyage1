@@ -66,6 +66,20 @@ export default function Header() {
     filter: isTransparent ? 'brightness(0) invert(1)' : 'none'
   };
 
+  const secondaryButtonStyle = {
+    background: 'rgba(96,162,157,0.12)',
+    color: '#2D3748',
+    padding: '10px 16px',
+    borderRadius: '24px',
+    textDecoration: 'none',
+    fontWeight: '600',
+    fontSize: '13px',
+    border: '1px solid rgba(96,162,157,0.25)',
+    boxShadow: '0 3px 10px rgba(96,162,157,0.18)',
+    transition: 'all 0.3s ease',
+    whiteSpace: 'nowrap'
+  };
+
   const burgerStyle = {
     width: '44px',
     height: '44px',
@@ -116,19 +130,11 @@ export default function Header() {
             {/* Navigation desktop pour utilisateurs non connectés */}
             {!connected && (
               <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <Link href="/fonctionnement" className="desktop-link" style={{
-                  color: isTransparent ? 'white' : '#374151',
-                  textDecoration: 'none',
-                  fontSize: '15px',
-                  fontWeight: '500',
-                  padding: '8px 12px',
-                  borderRadius: '20px',
-                  transition: 'all 0.3s ease'
-                }}>
+                  <Link href="/fonctionnement" className="desktop-button" style={secondaryButtonStyle}>
                   Comment ça marche
                 </Link>
 
-                <Link href="/connexion" className="desktop-button" style={{
+                  <Link href="/connexion" className="desktop-button" style={{
                   background: 'rgba(96,162,157,0.12)',
                   color: '#2D3748',
                   padding: '10px 16px',
@@ -156,7 +162,7 @@ export default function Header() {
                   transition: 'all 0.3s ease',
                   whiteSpace: 'nowrap'
                 }}>
-                Inscription
+                Créer un compte
                 </Link>
               </nav>
             )}
@@ -164,15 +170,7 @@ export default function Header() {
             {/* Navigation desktop pour utilisateurs connectés */}
             {connected && (
               <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <Link href="/fonctionnement" className="desktop-link" style={{
-                  color: isTransparent ? 'white' : '#374151',
-                  textDecoration: 'none',
-                  fontSize: '15px',
-                  fontWeight: '500',
-                  padding: '8px 12px',
-                  borderRadius: '20px',
-                  transition: 'all 0.3s ease'
-                }}>
+                  <Link href="/fonctionnement" className="desktop-button" style={secondaryButtonStyle}>
                   Comment ça marche
                 </Link>
               </nav>
@@ -455,7 +453,7 @@ export default function Header() {
                   boxShadow: '0 6px 20px rgba(215,144,119,0.25)',
                   transition: 'all 0.2s ease'
                 }}>
-                Inscription gratuite
+                Créer un compte
                 </Link>
               </div>
             )}

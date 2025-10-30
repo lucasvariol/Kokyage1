@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
@@ -10,13 +10,30 @@ import Link from 'next/link';
 function PageContent() {
   const [activeTab, setActiveTab] = useState('concept');
   const searchParams = useSearchParams();
+  const contentRef = useRef(null);
 
   useEffect(() => {
     const tabParam = searchParams.get('tab');
     if (tabParam && ['concept', 'proprietaire', 'locataire', 'faq'].includes(tabParam)) {
       setActiveTab(tabParam);
+      // Si un onglet est fourni dans l'URL, on scrolle aussi sur mobile
+      if (typeof window !== 'undefined' && window.innerWidth <= 768 && contentRef.current) {
+        setTimeout(() => {
+          contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
     }
   }, [searchParams]);
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    // Scroll vers le contenu sur mobile
+    if (window.innerWidth <= 768 && contentRef.current) {
+      setTimeout(() => {
+        contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  };
 
   return (
     <>
@@ -99,7 +116,7 @@ function PageContent() {
           flexWrap: 'wrap'
         }}>
           <button
-            onClick={() => setActiveTab('concept')}
+            onClick={() => handleTabClick('concept')}
             style={{
               flex: '1 1 200px',
               padding: '16px 20px',
@@ -117,7 +134,7 @@ function PageContent() {
             💡 Le concept
           </button>
           <button
-            onClick={() => setActiveTab('proprietaire')}
+            onClick={() => handleTabClick('proprietaire')}
             style={{
               flex: '1 1 200px',
               padding: '16px 20px',
@@ -135,7 +152,7 @@ function PageContent() {
             👤 Propriétaire
           </button>
           <button
-            onClick={() => setActiveTab('locataire')}
+            onClick={() => handleTabClick('locataire')}
             style={{
               flex: '1 1 200px',
               padding: '16px 20px',
@@ -153,7 +170,7 @@ function PageContent() {
             🏠 Locataire
           </button>
           <button
-            onClick={() => setActiveTab('faq')}
+            onClick={() => handleTabClick('faq')}
             style={{
               flex: '1 1 200px',
               padding: '16px 20px',
@@ -174,7 +191,7 @@ function PageContent() {
       </section>
 
       {/* Content Section */}
-      <section style={{
+      <section ref={contentRef} style={{
         maxWidth: '900px',
         margin: '60px auto',
         padding: '0 20px 80px'
@@ -1538,31 +1555,40 @@ function FAQContent() {
       </div>
 
       {/* Disclaimer */}
-      <div style={{
-        background: '#FFF9E6',
-        border: '2px solid #FFD700',
-        borderRadius: '12px',
-        padding: '24px 32px',
-        marginBottom: '48px',
-        boxShadow: '0 4px 12px rgba(255, 215, 0, 0.1)'
-      }}>
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-          <div style={{ fontSize: '2rem', flexShrink: 0 }}>⚠️</div>
+      <div
+        className="disclaimer"
+        style={{
+          background: '#FFF9E6',
+          border: '2px solid #FFD700',
+          borderRadius: '12px',
+          padding: '24px 32px',
+          marginBottom: '48px',
+          boxShadow: '0 4px 12px rgba(255, 215, 0, 0.1)'
+        }}
+      >
+        <div className="disclaimer-inner" style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+          <div className="disclaimer-icon" style={{ fontSize: '2rem', flexShrink: 0 }}>⚠️</div>
           <div>
-            <h3 style={{
-              fontSize: '1.2rem',
-              fontWeight: 700,
-              color: '#2D3748',
-              marginBottom: '12px'
-            }}>
+            <h3
+              className="disclaimer-title"
+              style={{
+                fontSize: '1.2rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '12px'
+              }}
+            >
               Avertissement
             </h3>
-            <p style={{
-              fontSize: '1rem',
-              lineHeight: 1.7,
-              color: '#4A5568',
-              margin: 0
-            }}>
+            <p
+              className="disclaimer-text"
+              style={{
+                fontSize: '1rem',
+                lineHeight: 1.7,
+                color: '#4A5568',
+                margin: 0
+              }}
+            >
               Les informations présentées sur cette page sont fournies à titre informatif et général.
               Elles ne constituent pas un conseil fiscal, juridique ou comptable personnalisé.
               Chaque utilisateur demeure responsable de vérifier sa situation auprès de l'administration fiscale ou d'un conseiller compétent.
@@ -1695,6 +1721,45 @@ function FAQContent() {
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Disclaimer responsive sizing */
+        @media (max-width: 768px) {
+          .disclaimer {
+            padding: 12px 16px !important;
+            margin-bottom: 32px !important;
+          }
+          .disclaimer-inner {
+            gap: 8px !important;
+            align-items: center !important;
+          }
+          .disclaimer-icon {
+            font-size: 1.5rem !important;
+          }
+          .disclaimer-title {
+            font-size: 1rem !important;
+            margin-bottom: 6px !important;
+          }
+          .disclaimer-text {
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .disclaimer {
+            padding: 10px 12px !important;
+          }
+          .disclaimer-icon {
+            font-size: 1.3rem !important;
+          }
+          .disclaimer-title {
+            font-size: 0.95rem !important;
+          }
+          .disclaimer-text {
+            font-size: 0.85rem !important;
+            line-height: 1.45 !important;
+          }
         }
       `}</style>
     </div>
