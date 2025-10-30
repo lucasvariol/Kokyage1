@@ -1748,14 +1748,22 @@ function LogementsInner() {
             <div style={{
               textAlign: 'center',
               padding: '24px 16px',
-              marginBottom: 16
+              marginBottom: 16,
+              position: 'relative',
+              zIndex: 10
             }}>
               <div style={{
                 display: 'inline-flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: 8,
-                animation: 'bounce 2s infinite'
+                animation: 'bounce 2s infinite',
+                cursor: 'pointer'
+              }}
+              onClick={() => {
+                if (logementsListRef.current) {
+                  logementsListRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
               }}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C96745" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
