@@ -3635,19 +3635,19 @@ export default function Page({ params }) {
             
             /* Sidebar de réservation */
             :global(.booking-sidebar) {
-              position: fixed !important;
-              bottom: 0 !important;
-              left: 0 !important;
-              right: 0 !important;
+              position: static !important;
+              bottom: auto !important;
+              left: auto !important;
+              right: auto !important;
               top: auto !important;
-              margin: 0 !important;
-              width: 100% !important;
-              border-radius: 16px 16px 0 0 !important;
-              box-shadow: 0 -4px 20px rgba(0,0,0,0.15) !important;
-              z-index: 100 !important;
+              margin: 16px 12px !important;
+              width: calc(100% - 24px) !important;
+              border-radius: 16px !important;
+              box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+              z-index: auto !important;
               padding: 16px !important;
-              max-height: 70vh !important;
-              overflow-y: auto !important;
+              max-height: none !important;
+              overflow-y: visible !important;
             }
             
             /* Calendrier */
