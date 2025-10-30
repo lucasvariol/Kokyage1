@@ -113,7 +113,7 @@ function Gallery({ images }) {
   const nextImage = () => setCurrent((current + 1) % images.length);
 
   return (
-    <div style={{
+    <div className="gallery-container" style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -251,7 +251,7 @@ function Gallery({ images }) {
           {current + 1} / {images.length}
         </div>
       </div>
-      <div style={{
+      <div className="gallery-thumbnails" style={{
         marginTop: 10,
         display: 'flex',
         gap: 12,
@@ -1438,14 +1438,14 @@ export default function Page({ params }) {
                     {/* Colonne principale gauche */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                       {/* Card Header */}
-                      <div style={{
+                      <div className="card-header" style={{
                         background: '#fff',
                         borderRadius: 20,
                         padding: '32px',
                         boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
                         border: '1px solid #f1f5f9'
                       }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                        <div className="header-top-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
                           <div style={{ flex: 1 }}>
                             <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
                               {(() => { const m = getStatusMeta(item.status); return (
@@ -1497,7 +1497,7 @@ export default function Page({ params }) {
                                 </span>
                               )}
                             </div>
-                            <h1 style={{ 
+                            <h1 className="main-title" style={{ 
                               fontSize: 'clamp(24px, 3vw, 36px)', 
                               fontWeight: 800, 
                               color: '#0f172a', 
@@ -1552,6 +1552,7 @@ export default function Page({ params }) {
                           </div>
                           <button
                             onClick={handleCopy}
+                            className="share-button"
                             style={{
                               background: copied ? 'linear-gradient(135deg, #D79077 0%, #C96745 100%)' : '#fff',
                               color: copied ? '#fff' : '#64748b',
@@ -1590,14 +1591,14 @@ export default function Page({ params }) {
                         </div>
 
                         {/* Chips d'infos */}
-                        <div style={{ 
+                        <div className="info-chips-grid" style={{ 
                           display: 'grid', 
                           gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', 
                           gap: 10,
                           marginBottom: 20
                         }}>
                           {typeof item.nb_voyageurs === 'number' && (
-                            <div style={{ 
+                            <div className="info-chip" style={{ 
                               background: '#fff', 
                               padding: '14px', 
                               borderRadius: 12,
@@ -1622,12 +1623,12 @@ export default function Page({ params }) {
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                               </svg>
-                              <div style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.nb_voyageurs}</div>
-                              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>voyageurs</div>
+                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.nb_voyageurs}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>voyageurs</div>
                             </div>
                           )}
                           {typeof item.bedrooms === 'number' && (
-                            <div style={{ 
+                            <div className="info-chip" style={{ 
                               background: '#fff', 
                               padding: '14px', 
                               borderRadius: 12,
@@ -1652,12 +1653,12 @@ export default function Page({ params }) {
                                 <path d="M2 17h20"></path>
                                 <path d="M6 8v9"></path>
                               </svg>
-                              <div style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.bedrooms}</div>
-                              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>chambres</div>
+                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.bedrooms}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>chambres</div>
                             </div>
                           )}
                           {typeof item.beds === 'number' && (
-                            <div style={{ 
+                            <div className="info-chip" style={{ 
                               background: '#fff', 
                               padding: '14px', 
                               borderRadius: 12,
@@ -1680,12 +1681,12 @@ export default function Page({ params }) {
                                 <rect x="2" y="7" width="20" height="14" rx="2"></rect>
                                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                               </svg>
-                              <div style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.beds}</div>
-                              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>lits</div>
+                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.beds}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>lits</div>
                             </div>
                           )}
                           {typeof item.bathrooms === 'number' && (
-                            <div style={{ 
+                            <div className="info-chip" style={{ 
                               background: '#fff', 
                               padding: '14px', 
                               borderRadius: 12,
@@ -1711,12 +1712,12 @@ export default function Page({ params }) {
                                 <line x1="7" y1="19" x2="7" y2="21"></line>
                                 <line x1="17" y1="19" x2="17" y2="21"></line>
                               </svg>
-                              <div style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.bathrooms}</div>
-                              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>sdb</div>
+                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.bathrooms}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>sdb</div>
                             </div>
                           )}
                           {typeof item.surface === 'number' && item.surface > 0 && (
-                            <div style={{ 
+                            <div className="info-chip" style={{ 
                               background: '#fff', 
                               padding: '14px', 
                               borderRadius: 12,
@@ -1740,13 +1741,13 @@ export default function Page({ params }) {
                                 <path d="M3 9h18"></path>
                                 <path d="M9 21V9"></path>
                               </svg>
-                              <div style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.surface}</div>
-                              <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>m²</div>
+                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.surface}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>m²</div>
                             </div>
                           )}
                         </div>
                         {/* Stats Row */}
-                        <div style={{
+                        <div className="stats-row" style={{
                           display: 'flex', 
                           gap: 24, 
                           padding: '16px 0',
@@ -1773,7 +1774,7 @@ export default function Page({ params }) {
                               </div>
                             </div>
                           </div>
-                          <div style={{ width: 1, background: '#e2e8f0' }} />
+                          <div className="stats-divider" style={{ width: 1, background: '#e2e8f0' }} />
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <div style={{ 
                               background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
@@ -1799,7 +1800,7 @@ export default function Page({ params }) {
 
                         {/* Actions - Seulement pour le locataire (owner_id) */}
                         {role === 'tenant' && (
-                          <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
+                          <div className="actions-row" style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
                             <a
                               href={`/calendrier?listingId=${item.id}`}
                               style={{ 
@@ -1929,7 +1930,7 @@ export default function Page({ params }) {
                       </div>
 
                       {/* Card Description */}
-                      <div style={{
+                      <div className="card-description" style={{
                         background: '#fff',
                         borderRadius: 20,
                         padding: '32px',
@@ -1975,7 +1976,7 @@ export default function Page({ params }) {
 
                       {/* Card Localisation */}
                       {(item.latitude && item.longitude) ? (
-                        <div style={{
+                        <div className="card-map" style={{
                           background: '#fff',
                           borderRadius: 20,
                           padding: '32px',
@@ -2017,7 +2018,7 @@ export default function Page({ params }) {
                       ) : null}
                       {/* Card Réservations */}
                       {reservations.length > 0 && (
-                        <div style={{
+                        <div className="card-reservations" style={{
                           background: '#fff',
                           borderRadius: 20,
                           padding: '32px',
@@ -2052,7 +2053,7 @@ export default function Page({ params }) {
                           </h2>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                             {reservations.map(r => (
-                              <div key={r.id} style={{
+                              <div key={r.id} className="reservation-item" style={{
                                 background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
                                 borderRadius: 14,
                                 padding: '16px 20px',
@@ -2092,7 +2093,7 @@ export default function Page({ params }) {
 
                       {/* Card Avis */}
                       {reviews.length > 0 && (
-                        <div style={{
+                        <div className="card-reviews" style={{
                           background: '#fff',
                           borderRadius: 20,
                           padding: '32px',
@@ -2124,7 +2125,7 @@ export default function Page({ params }) {
                           </h2>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                             {reviews.map(r => (
-                              <div key={r.id} style={{
+                              <div key={r.id} className="review-item" style={{
                                 background: 'linear-gradient(135deg, #fefce8 0%, #fef9c3 100%)',
                                 borderRadius: 14,
                                 padding: '20px',
@@ -2177,7 +2178,7 @@ export default function Page({ params }) {
                     {/* Colonne droite - Card de réservation sticky (masquée pour le propriétaire) */}
                     {role !== 'tenant' && (
                       <div style={{ position: 'relative' }}>
-                        <div style={{
+                        <div className="booking-sidebar" style={{
                           position: 'sticky',
                           top: 100,
                           background: '#fff',
@@ -2789,6 +2790,7 @@ export default function Page({ params }) {
                     }}
                   >
                     <div
+                      className="modal-content modal-body"
                       onClick={(e) => e.stopPropagation()}
                       style={{
                         width: 'min(800px, 100%)',
@@ -2800,8 +2802,7 @@ export default function Page({ params }) {
                         boxShadow: '0 25px 80px rgba(0,0,0,0.3)',
                         border: '1px solid #e5e7eb'
                       }}
-                    >
-                      <h2 style={{ fontSize: 28, fontWeight: 900, marginBottom: 24, color: '#111' }}>
+                    ><h2 style={{ fontSize: 28, fontWeight: 900, marginBottom: 24, color: '#111' }}>
                         Modifier l'annonce
                       </h2>
 
@@ -2994,7 +2995,7 @@ export default function Page({ params }) {
                       </div>
 
                       {/* Nombre de voyageurs, chambres, salles de bain, lits */}
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16, marginBottom: 20 }}>
+                      <div className="edit-form-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16, marginBottom: 20 }}>
                         <div>
                           <label style={{ display: 'block', fontWeight: 700, marginBottom: 8, color: '#374151', fontSize: 14 }}>
                             Voyageurs
@@ -3471,11 +3472,225 @@ export default function Page({ params }) {
           @keyframes spin {
             to { transform: rotate(360deg); }
           }
+          
+          /* Responsive design pour tablette et mobile */
           @media (max-width: 1024px) {
             .detail-grid {
               grid-template-columns: 1fr !important;
+              gap: 20px !important;
+              margin-top: -20px !important;
             }
           }
+
+          @media (max-width: 768px) {
+            /* Adaptation du padding global */
+            :global(.logement-detail) {
+              padding: 0 !important;
+            }
+            
+            /* Ajuste le padding des containers principaux */
+            :global(.logement-detail > div:first-child) {
+              padding: 0 16px 40px !important;
+            }
+            
+            /* Galerie mobile */
+            :global(.gallery-container) {
+              margin-bottom: 20px !important;
+            }
+            
+            :global(.gallery-container > div:first-child) {
+              border-radius: 16px !important;
+              max-width: 100% !important;
+            }
+            
+            /* Thumbnails en scroll horizontal sur mobile */
+            :global(.gallery-thumbnails) {
+              overflow-x: auto !important;
+              flex-wrap: nowrap !important;
+              -webkit-overflow-scrolling: touch !important;
+              scrollbar-width: none !important;
+            }
+            
+            :global(.gallery-thumbnails::-webkit-scrollbar) {
+              display: none !important;
+            }
+            
+            /* Cards principales */
+            :global(.card-header),
+            :global(.card-description),
+            :global(.card-map),
+            :global(.card-reviews),
+            :global(.card-reservations) {
+              border-radius: 16px !important;
+              padding: 20px !important;
+              margin-bottom: 16px !important;
+            }
+            
+            /* Titre principal */
+            :global(.main-title) {
+              font-size: 22px !important;
+            }
+            
+            /* Grid des infos (voyageurs, chambres, etc.) */
+            :global(.info-chips-grid) {
+              grid-template-columns: repeat(3, 1fr) !important;
+              gap: 8px !important;
+            }
+            
+            :global(.info-chip) {
+              padding: 10px 8px !important;
+            }
+            
+            :global(.info-chip svg) {
+              width: 16px !important;
+              height: 16px !important;
+            }
+            
+            :global(.info-chip-value) {
+              font-size: 15px !important;
+            }
+            
+            :global(.info-chip-label) {
+              font-size: 10px !important;
+            }
+            
+            /* Stats row */
+            :global(.stats-row) {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 12px !important;
+            }
+            
+            :global(.stats-divider) {
+              display: none !important;
+            }
+            
+            /* Boutons d'action */
+            :global(.actions-row) {
+              flex-direction: column !important;
+              gap: 8px !important;
+            }
+            
+            :global(.actions-row > *) {
+              width: 100% !important;
+              justify-content: center !important;
+            }
+            
+            /* Bouton partager */
+            :global(.share-button) {
+              min-width: auto !important;
+              width: 100% !important;
+            }
+            
+            /* Sidebar de réservation */
+            :global(.booking-sidebar) {
+              position: sticky !important;
+              bottom: 0 !important;
+              top: auto !important;
+              margin: 0 -16px !important;
+              border-radius: 20px 20px 0 0 !important;
+              box-shadow: 0 -4px 20px rgba(0,0,0,0.15) !important;
+              z-index: 100 !important;
+            }
+            
+            /* Calendrier */
+            :global(.rdp) {
+              font-size: 14px !important;
+            }
+            
+            :global(.rdp .rdp-months) {
+              flex-direction: column !important;
+            }
+            
+            :global(.rdp .rdp-month) {
+              width: 100% !important;
+            }
+            
+            /* Price breakdown */
+            :global(.price-detail-row) {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 4px !important;
+            }
+            
+            /* Section titre/header avec statut */
+            :global(.header-top-row) {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 12px !important;
+            }
+            
+            /* Modal */
+            :global(.modal-content) {
+              width: 95% !important;
+              max-width: 95% !important;
+              max-height: 90vh !important;
+              overflow-y: auto !important;
+            }
+            
+            :global(.modal-body) {
+              padding: 20px !important;
+            }
+            
+            /* Form d'édition */
+            :global(.edit-form-row) {
+              flex-direction: column !important;
+              gap: 16px !important;
+            }
+            
+            :global(.edit-form-row > *) {
+              flex: 1 1 auto !important;
+              width: 100% !important;
+            }
+            
+            /* Sélecteur de voyageurs */
+            :global(.guests-selector) {
+              width: 100% !important;
+            }
+            
+            /* Avis */
+            :global(.review-item) {
+              padding: 16px !important;
+            }
+            
+            /* Réservations */
+            :global(.reservation-item) {
+              padding: 16px !important;
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 10px !important;
+            }
+            
+            :global(.reservation-actions) {
+              width: 100% !important;
+              flex-direction: column !important;
+              gap: 8px !important;
+            }
+            
+            :global(.reservation-actions > *) {
+              width: 100% !important;
+            }
+          }
+
+          @media (max-width: 480px) {
+            /* Très petits écrans */
+            :global(.info-chips-grid) {
+              grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            :global(.main-title) {
+              font-size: 20px !important;
+            }
+            
+            :global(.card-header),
+            :global(.card-description),
+            :global(.card-map),
+            :global(.card-reviews),
+            :global(.card-reservations) {
+              padding: 16px !important;
+            }
+          }
+          
           :global(.selected-night) {
             background: #222 !important;
             color: #fff !important;
