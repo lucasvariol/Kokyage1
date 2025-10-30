@@ -1743,42 +1743,6 @@ function LogementsInner() {
             }
           `}</style>
           
-          {/* Scroll indicator for mobile - below map */}
-          {isMobile && (
-            <div style={{
-              textAlign: 'center',
-              padding: '24px 16px',
-              marginBottom: 16,
-              position: 'relative',
-              zIndex: 10
-            }}>
-              <div style={{
-                display: 'inline-flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 8,
-                animation: 'bounce 2s infinite',
-                cursor: 'pointer'
-              }}
-              onClick={() => {
-                if (logementsListRef.current) {
-                  logementsListRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C96745" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-                <span style={{ 
-                  fontSize: 14, 
-                  fontWeight: 600, 
-                  color: '#C96745'
-                }}>
-                  Faites défiler pour voir les {filteredItems.length} {filteredItems.length === 1 ? 'logement' : 'logements'}
-                </span>
-              </div>
-            </div>
-          )}
-          
           {/* Liste des logements */}
           <div ref={logementsListRef} className="logements-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 24 }}>
             {sortedItems.map((it) => {
