@@ -209,6 +209,15 @@ function LogementsInner() {
   const [searchView, setSearchView] = useState(null); // { center: [lat, lng], zoom }
   const [disponibilities, setDisponibilities] = useState({}); // { listing_id: [date1, date2, ...] }
 
+  // Responsive helper to stabilize search bar layout on mobile
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const update = () => setIsMobile(typeof window !== 'undefined' && window.innerWidth <= 768);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
   // Helper function to format date as YYYY-MM-DD in local timezone (avoid UTC conversion issues)
   const formatDateLocal = (date) => {
     if (!date) return "";
@@ -737,7 +746,7 @@ function LogementsInner() {
             marginBottom: '16px',
             textAlign: 'center'
           }}>
-            🏠 Trouvez votre logement idéal
+          Trouvez votre logement idéal
           </h1>
           <p style={{ 
             fontSize: 'clamp(1rem, 2vw, 1.2rem)', 
@@ -756,16 +765,17 @@ function LogementsInner() {
             boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
             maxWidth: '1100px',
             margin: '0 auto',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
+            display: isMobile ? 'grid' : 'flex',
+            gridTemplateColumns: isMobile ? '1fr 1fr' : undefined,
+            flexWrap: isMobile ? 'nowrap' : 'wrap',
+            gap: 8,
             alignItems: 'stretch',
             justifyContent: 'center',
             position: 'relative',
             zIndex: 100000
           }}>
             {/* Destination avec autocomplétion */}
-            <div ref={destinationBoxRef} style={{ position: 'relative', flex: '1 1 240px', minWidth: '200px' }}>
+            <div ref={destinationBoxRef} style={{ position: 'relative', flex: '1 1 240px', minWidth: isMobile ? '0' : '200px', gridColumn: isMobile ? '1 / -1' : undefined }}>
               <input
                 type="text"
                 placeholder="Où allez-vous ?"
@@ -779,7 +789,8 @@ function LogementsInner() {
                   ...inputStyle,
                   width: '100%',
                   minWidth: 'unset',
-                  maxWidth: 'unset'
+                  maxWidth: 'unset',
+                  height: isMobile ? 56 : inputStyle.height
                 }}
                 autoComplete="off"
               />
@@ -856,12 +867,13 @@ function LogementsInner() {
                 customInput={
                   <button type="button" style={{
                     ...btnStyle,
-                    width: 160,
-                    minWidth: 160,
-                    maxWidth: 160,
+                    width: isMobile ? '100%' : 160,
+                    minWidth: isMobile ? 'auto' : 160,
+                    maxWidth: isMobile ? '100%' : 160,
                     textAlign: 'left',
                     paddingLeft: 16,
-                    paddingRight: 16
+                    paddingRight: 16,
+                    height: isMobile ? 56 : btnStyle.height
                   }}>
                     <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Arrivée</span>
                     <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
@@ -885,12 +897,13 @@ function LogementsInner() {
                 customInput={
                   <button type="button" style={{
                     ...btnStyle,
-                    width: 160,
-                    minWidth: 160,
-                    maxWidth: 160,
+                    width: isMobile ? '100%' : 160,
+                    minWidth: isMobile ? 'auto' : 160,
+                    maxWidth: isMobile ? '100%' : 160,
                     textAlign: 'left',
                     paddingLeft: 16,
-                    paddingRight: 16
+                    paddingRight: 16,
+                    height: isMobile ? 56 : btnStyle.height
                   }}>
                     <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Départ</span>
                     <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
@@ -909,12 +922,13 @@ function LogementsInner() {
                 type="button"
                 style={{
                   ...btnStyle,
-                  width: 140,
-                  minWidth: 140,
-                  maxWidth: 140,
+                  width: isMobile ? '100%' : 140,
+                  minWidth: isMobile ? 'auto' : 140,
+                  maxWidth: isMobile ? '100%' : 140,
                   textAlign: 'left',
                   paddingLeft: 16,
-                  paddingRight: 16
+                  paddingRight: 16,
+                  height: isMobile ? 56 : btnStyle.height
                 }}
                 onClick={() => setShowVoyageursMenu(v => !v)}
               >
@@ -977,15 +991,16 @@ function LogementsInner() {
                 background: '#C96745',
                 border: 'none',
                 borderRadius: 12,
-                width: 56,
-                height: 65,
+                width: isMobile ? '100%' : 56,
+                height: isMobile ? 56 : 65,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
                 boxShadow: '0 4px 12px rgba(201,103,69,0.25)',
                 transition: 'all 0.2s',
-                flex: '0 0 auto'
+                flex: '0 0 auto',
+                gridColumn: isMobile ? '1 / 2' : undefined
               }}
               onClick={handleSearch}
               onMouseEnter={e => {
@@ -1009,20 +1024,22 @@ function LogementsInner() {
               type="button"
               onClick={() => setShowAdvancedFilters(true)}
               style={{
-                padding: '0 20px',
+                padding: isMobile ? '0 16px' : '0 20px',
                 borderRadius: 12,
                 fontSize: 15,
                 fontWeight: 600,
                 background: '#fff',
                 color: '#C96745',
                 border: '2px solid #C96745',
-                height: 65,
+                height: isMobile ? 56 : 65,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                flex: '0 0 auto'
+                flex: '0 0 auto',
+                width: isMobile ? '100%' : undefined,
+                gridColumn: isMobile ? '2 / 3' : undefined
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = '#C96745';
