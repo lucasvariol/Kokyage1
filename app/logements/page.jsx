@@ -206,6 +206,7 @@ function LogementsInner() {
   const [showVoyageursMenu, setShowVoyageursMenu] = useState(false);
   const [hasTypedDestination, setHasTypedDestination] = useState(false);
   const destinationBoxRef = useRef(null);
+  const mapContainerRef = useRef(null);
   const [searchView, setSearchView] = useState(null); // { center: [lat, lng], zoom }
   const [disponibilities, setDisponibilities] = useState({}); // { listing_id: [date1, date2, ...] }
 
@@ -617,6 +618,14 @@ function LogementsInner() {
 
   async function handleSearch() {
     applyFilters();
+    
+    // Scroll to map on mobile after search
+    if (isMobile && mapContainerRef.current) {
+      setTimeout(() => {
+        mapContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+    
     if (!destination) {
       // Reset to Paris center if no destination
       setMapCenter([48.8566, 2.3522]);
@@ -1648,7 +1657,9 @@ function LogementsInner() {
       {/* Contenu principal */}
       <main style={{ background: '#f7f8fa', minHeight: '100vh', paddingBottom: 32 }}>
         <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px' }}>
-          <div style={{
+          <div
+            ref={mapContainerRef}
+            style={{
             position: 'relative',
             width: isMobile ? '100vw' : '100%',
             minWidth: isMobile ? 'unset' : 320,
