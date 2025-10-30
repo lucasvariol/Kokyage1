@@ -300,14 +300,18 @@ export default function Header() {
                   }}>MENU</h4>
                   
                   <Link href="/fonctionnement" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: '#374151',
-                    textDecoration: 'none',
-                    padding: '12px 16px',
+                    display: 'block',
+                    textAlign: 'center',
+                    color: '#1F2937',
+                    background: 'rgba(96,162,157,0.12)',
+                    border: '1px solid rgba(96,162,157,0.25)',
+                    padding: '14px 20px',
                     borderRadius: '12px',
-                    marginBottom: '8px',
-                    gap: '12px'
+                    marginBottom: '12px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease'
                   }}>
                   Comment ça marche
                   </Link>
@@ -405,16 +409,17 @@ export default function Header() {
                   <Link href="/fonctionnement" style={{
                   display: 'flex',
                   alignItems: 'center',
-                  color: '#374151',
-                  textDecoration: 'none',
-                  padding: '18px 20px',
+                  justifyContent: 'center',
+                  color: '#1F2937',
+                  background: 'rgba(96,162,157,0.12)',
+                  border: '1px solid rgba(96,162,157,0.25)',
+                  padding: '20px 24px',
                   borderRadius: '16px',
                   marginBottom: '16px',
-                  gap: '14px',
-                  background: 'rgba(96,162,157,0.04)',
-                  border: '1px solid rgba(96,162,157,0.1)',
+                  gap: '12px',
+                  fontWeight: '600',
                   fontSize: '16px',
-                  fontWeight: '500',
+                  textDecoration: 'none',
                   transition: 'all 0.2s ease'
                 }}>
                 Comment ça marche
