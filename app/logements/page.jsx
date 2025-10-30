@@ -174,7 +174,7 @@ const inputStyle = {
   outline: 'none', transition: 'box-shadow 0.2s, border 0.08s'
 };
 const btnStyle = {
-  width: '100%', minWidth: 150, maxWidth: 150, padding: '12px 16px', borderRadius: 16,
+  width: '100%', minWidth: 150, maxWidth: 150, padding: '12px 16px', borderRadius: 8,
   border: '1px solid #ddd', fontSize: 16, background: '#fff', boxShadow: '0 2px 8px rgba(201,103,69,0.07)',
   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
   cursor: 'pointer', height: 65, boxSizing: 'border-box', outline: 'none', transition: 'box-shadow 0.2s, border 0.08s'
@@ -761,18 +761,16 @@ function LogementsInner() {
           <div style={{
             background: 'white',
             borderRadius: '24px',
-            padding: '12px',
+            padding: isMobile ? '16px' : '12px',
             boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
             maxWidth: '1100px',
             margin: '0 auto',
             display: isMobile ? 'grid' : 'flex',
             gridTemplateColumns: isMobile ? '1fr 1fr' : undefined,
             flexWrap: isMobile ? 'nowrap' : 'wrap',
-            gap: 8,
+            gap: isMobile ? 12 : 8,
             alignItems: 'stretch',
             justifyContent: 'center',
-            justifyItems: isMobile ? 'stretch' : undefined,
-            alignContent: isMobile ? 'stretch' : undefined,
             position: 'relative',
             zIndex: 100000
           }}>
@@ -792,7 +790,9 @@ function LogementsInner() {
                   width: '100%',
                   minWidth: 'unset',
                   maxWidth: 'unset',
-                  height: isMobile ? 56 : inputStyle.height
+                  height: isMobile ? 54 : inputStyle.height,
+                  fontSize: isMobile ? 15 : 16,
+                  padding: isMobile ? '0 16px' : '14px 18px'
                 }}
                 autoComplete="off"
               />
@@ -859,7 +859,7 @@ function LogementsInner() {
             </div>
 
             {/* Date d'arrivée */}
-            <div style={{ flex: '0 0 auto' }}>
+            <div style={{ flex: '0 0 auto', width: isMobile ? '100%' : 'auto' }}>
               <DatePicker
                 selected={arrivee ? new Date(arrivee) : null}
                 onChange={date => setArrivee(date ? formatDateLocal(date) : "")}
@@ -872,10 +872,14 @@ function LogementsInner() {
                     width: isMobile ? '100%' : 160,
                     minWidth: isMobile ? 'auto' : 160,
                     maxWidth: isMobile ? '100%' : 160,
-                    textAlign: isMobile ? 'center' : 'left',
-                    paddingLeft: 16,
-                    paddingRight: 16,
-                    height: isMobile ? 56 : btnStyle.height
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingLeft: 12,
+                    paddingRight: 12,
+                    height: isMobile ? 54 : btnStyle.height
                   }}>
                     <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Arrivée</span>
                     <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
@@ -889,7 +893,7 @@ function LogementsInner() {
             </div>
 
             {/* Date de départ */}
-            <div style={{ flex: '0 0 auto' }}>
+            <div style={{ flex: '0 0 auto', width: isMobile ? '100%' : 'auto' }}>
               <DatePicker
                 selected={depart ? new Date(depart) : null}
                 onChange={date => setDepart(date ? formatDateLocal(date) : "")}
@@ -902,10 +906,14 @@ function LogementsInner() {
                     width: isMobile ? '100%' : 160,
                     minWidth: isMobile ? 'auto' : 160,
                     maxWidth: isMobile ? '100%' : 160,
-                    textAlign: isMobile ? 'center' : 'left',
-                    paddingLeft: 16,
-                    paddingRight: 16,
-                    height: isMobile ? 56 : btnStyle.height
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingLeft: 12,
+                    paddingRight: 12,
+                    height: isMobile ? 54 : btnStyle.height
                   }}>
                     <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Départ</span>
                     <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
@@ -919,7 +927,7 @@ function LogementsInner() {
             </div>
 
             {/* Voyageurs */}
-            <div style={{ position: 'relative', flex: '0 0 auto' }}>
+            <div style={{ position: 'relative', flex: '0 0 auto', width: isMobile ? '100%' : 'auto', gridColumn: isMobile ? '1 / -1' : undefined }}>
               <button
                 type="button"
                 style={{
@@ -927,10 +935,14 @@ function LogementsInner() {
                   width: isMobile ? '100%' : 140,
                   minWidth: isMobile ? 'auto' : 140,
                   maxWidth: isMobile ? '100%' : 140,
-                  textAlign: isMobile ? 'center' : 'left',
-                  paddingLeft: 16,
-                  paddingRight: 16,
-                  height: isMobile ? 56 : btnStyle.height
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingLeft: 12,
+                  paddingRight: 12,
+                  height: isMobile ? 54 : btnStyle.height
                 }}
                 onClick={() => setShowVoyageursMenu(v => !v)}
               >
@@ -994,7 +1006,7 @@ function LogementsInner() {
                 border: 'none',
                 borderRadius: 12,
                 width: isMobile ? '100%' : 56,
-                height: isMobile ? 56 : 65,
+                height: isMobile ? 54 : 65,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1002,7 +1014,11 @@ function LogementsInner() {
                 boxShadow: '0 4px 12px rgba(201,103,69,0.25)',
                 transition: 'all 0.2s',
                 flex: '0 0 auto',
-                gridColumn: isMobile ? '1 / 2' : undefined
+                gridColumn: isMobile ? '1 / 2' : undefined,
+                fontSize: isMobile ? 15 : 16,
+                fontWeight: 600,
+                color: '#fff',
+                gap: 8
               }}
               onClick={handleSearch}
               onMouseEnter={e => {
@@ -1015,15 +1031,11 @@ function LogementsInner() {
               }}
               aria-label="Rechercher"
             >
-              <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:8}}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="m21 21-4.35-4.35"/>
-                </svg>
-                {isMobile && (
-                  <span style={{color:'#fff', fontWeight:700, fontSize:16}}>Rechercher</span>
-                )}
-              </div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+              </svg>
+              {isMobile && <span>Rechercher</span>}
             </button>
 
             {/* Bouton Filtres avancés */}
@@ -1038,7 +1050,7 @@ function LogementsInner() {
                 background: '#fff',
                 color: '#C96745',
                 border: '2px solid #C96745',
-                height: isMobile ? 56 : 65,
+                height: isMobile ? 54 : 65,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 display: 'flex',
