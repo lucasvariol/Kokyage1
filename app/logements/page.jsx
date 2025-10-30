@@ -1614,7 +1614,21 @@ function LogementsInner() {
       {/* Contenu principal */}
       <main style={{ background: '#f7f8fa', minHeight: '100vh', paddingBottom: 32 }}>
         <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px' }}>
-          <div style={{ width: '100%', minWidth: 320, minHeight: 300, height: 400, borderRadius: 16, marginBottom: 32, overflow: 'hidden', background: '#ddd' }}>
+          <div style={{
+            width: isMobile ? '100vw' : '100%',
+            minWidth: isMobile ? 'unset' : 320,
+            minHeight: 300,
+            height: isMobile ? 540 : 400,
+            borderRadius: isMobile ? 0 : 16,
+            marginBottom: 32,
+            overflow: 'hidden',
+            background: '#ddd',
+            // full-bleed on mobile
+            marginLeft: isMobile ? 'calc(50% - 50vw)' : 0,
+            marginRight: isMobile ? 'calc(50% - 50vw)' : 0,
+            // subtle top inner shadow to hint draggability
+            boxShadow: isMobile ? 'inset 0 14px 24px -12px rgba(0,0,0,0.28)' : 'none'
+          }}>
             {mounted && (
               <ListingsMap items={filteredItems} center={mapCenter} onCenterChange={setMapCenter} searchView={searchView} />
             )}
