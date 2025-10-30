@@ -1111,6 +1111,15 @@ function LogementsInner() {
           </div>
         </div>
       </section>
+      
+      {/* Global override to make react-datepicker inputs stretch full width */}
+      <style jsx global>{`
+        .react-datepicker-wrapper,
+        .react-datepicker__input-container {
+          display: block;
+          width: 100%;
+        }
+      `}</style>
 
       {/* Indicateur de résultats */}
       {mounted && (
