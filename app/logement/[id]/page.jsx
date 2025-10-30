@@ -33,6 +33,57 @@ function Gallery({ images }) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [modalOpen, current]);
 
+  // Support du swipe sur mobile
+  useEffect(() => {
+    if (!images || images.length <= 1) return;
+    
+    const carousel = document.getElementById('gallery-carousel');
+    if (!carousel) return;
+    
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    
+    const handleTouchStart = (e) => {
+      startX = e.touches[0].clientX;
+      isDragging = true;
+    };
+    
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+      carousel.style.transform = `translateX(calc(-${current * 100}% + ${diff}px))`;
+    };
+    
+    const handleTouchEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      const diff = currentX - startX;
+      
+      if (Math.abs(diff) > 50) {
+        if (diff > 0 && current > 0) {
+          prevImage();
+        } else if (diff < 0 && current < images.length - 1) {
+          nextImage();
+        }
+      } else {
+        // Snap back
+        carousel.style.transform = `translateX(-${current * 100}%)`;
+      }
+    };
+    
+    carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+    carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
+    carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
+    
+    return () => {
+      carousel.removeEventListener('touchstart', handleTouchStart);
+      carousel.removeEventListener('touchmove', handleTouchMove);
+      carousel.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [images, current]);
+
   if (!images || images.length === 0) {
     return (
       <div style={{
@@ -80,22 +131,39 @@ function Gallery({ images }) {
           cursor: 'zoom-in',
           background: 'linear-gradient(90deg,#f7f7fa 0%,#f0f0f7 100%)',
           borderRadius: 24,
-          boxShadow: '0 6px 32px rgba(0,0,0,0.10)'
+          boxShadow: '0 6px 32px rgba(0,0,0,0.10)',
+          overflow: 'hidden'
         }}
         onClick={() => setModalOpen(true)}
       >
-        <img
-          src={images[current]}
-          alt={`Photo ${current + 1} du logement`}
+        {/* Carousel container */}
+        <div
+          id="gallery-carousel"
           style={{
-            width: '100%',
+            display: 'flex',
             height: '100%',
-            objectFit: 'cover',
-            borderRadius: 24,
-            transition: 'box-shadow 0.2s',
-            boxShadow: '0 2px 16px rgba(0,0,0,0.08)'
+            transition: 'transform 0.3s ease',
+            transform: `translateX(-${current * 100}%)`
           }}
-        />
+        >
+          {images.map((url, idx) => (
+            <img
+              key={idx}
+              src={url}
+              alt={`Photo ${idx + 1} du logement`}
+              style={{
+                minWidth: '100%',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: 24,
+                userSelect: 'none',
+                pointerEvents: 'none'
+              }}
+              draggable="false"
+            />
+          ))}
+        </div>
         <button
           onClick={e => { e.stopPropagation(); prevImage(); }}
           style={{
