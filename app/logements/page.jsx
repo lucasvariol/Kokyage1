@@ -197,7 +197,6 @@ function ListingsMap({ items, center, onCenterChange, searchView }) {
                 <span style="font-weight:700;color:#222;font-size:18px;">${(price*feeMultiplier).toFixed(0)} €</span>
                 <span style="font-size:14px;color:#666;">/ nuit</span>
               </div>
-              <div style="font-size:11px;color:#888;">dont frais ${percentLabel()} ≈ ${(price*(feeMultiplier-1)).toFixed(0)} €</div>
             </div>
             <a href="/logement/${logement.id}" 
               style="display:block;text-align:center;padding:10px 20px;background:linear-gradient(135deg,#C96745 0%,#b85a3e 100%);color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;box-shadow:0 4px 12px rgba(201,103,69,0.25);transition:all 0.2s;"
@@ -860,6 +859,97 @@ function LogementsInner() {
       setSearchView({ center: [48.8566, 2.3522], zoom: 11 });
     }
   }, [destination, mounted]);
+
+  // Initialize swipe on listing cards for mobile
+  useEffect(() => {
+    if (!mounted || typeof window === 'undefined') return;
+    
+    const initSwipe = (listingId, totalImages, prefix = 'listing') => {
+      const carousel = document.getElementById(`${prefix}-carousel-${listingId}`);
+      if (!carousel || carousel.dataset.swipeInit) return;
+      
+      carousel.dataset.swipeInit = 'true';
+      let startX = 0;
+      let currentX = 0;
+      let isDragging = false;
+      
+      const handleTouchStart = (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+      };
+      
+      const handleTouchMove = (e) => {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        const currentIndex = imageIndexes[listingId] || 0;
+        carousel.style.transform = `translateX(calc(-${currentIndex * 100}% + ${diff}px))`;
+      };
+      
+      const handleTouchEnd = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        const diff = currentX - startX;
+        
+        if (Math.abs(diff) > 50) {
+          const currentIndex = imageIndexes[listingId] || 0;
+          if (diff > 0 && currentIndex > 0) {
+            // Swipe right - previous image
+            setImageIndexes(idx => ({ 
+              ...idx, 
+              [listingId]: currentIndex - 1 
+            }));
+          } else if (diff < 0 && currentIndex < totalImages - 1) {
+            // Swipe left - next image
+            setImageIndexes(idx => ({ 
+              ...idx, 
+              [listingId]: currentIndex + 1 
+            }));
+          }
+        } else {
+          // Snap back
+          const currentIndex = imageIndexes[listingId] || 0;
+          carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+      };
+      
+      carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+      carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
+      carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
+    };
+    
+    // Initialize swipe for main listings
+    sortedItems.forEach(item => {
+      let imagesArr = [];
+      if (item.images) {
+        if (Array.isArray(item.images)) imagesArr = item.images;
+        else if (typeof item.images === 'string') {
+          try { const arr = JSON.parse(item.images); if (Array.isArray(arr)) imagesArr = arr; } catch {}
+        }
+      }
+      if (!imagesArr.length && item.image_url) imagesArr = [item.image_url];
+      
+      if (imagesArr.length > 1) {
+        setTimeout(() => initSwipe(item.id, imagesArr.length, 'listing'), 100);
+      }
+    });
+    
+    // Initialize swipe for alternative listings
+    alternativeListings.forEach(item => {
+      let imagesArr = [];
+      if (item.images) {
+        if (Array.isArray(item.images)) imagesArr = item.images;
+        else if (typeof item.images === 'string') {
+          try { const arr = JSON.parse(item.images); if (Array.isArray(arr)) imagesArr = arr; } catch {}
+        }
+      }
+      if (!imagesArr.length && item.image_url) imagesArr = [item.image_url];
+      
+      if (imagesArr.length > 1) {
+        setTimeout(() => initSwipe(item.id, imagesArr.length, 'alt'), 100);
+      }
+    });
+  }, [mounted, sortedItems, alternativeListings, imageIndexes]);
 
   return (
     <>
@@ -1949,17 +2039,35 @@ function LogementsInner() {
                   }}>
                     {img ? (
                       <>
-                        <img
-                          src={img}
-                          alt={it.title}
+                        {/* Carousel container */}
+                        <div 
+                          id={`listing-carousel-${it.id}`}
                           style={{
-                            width: '100%', 
-                            height: '100%', 
-                            objectFit: 'cover',
-                            transition: 'transform 0.4s cubic-bezier(.7,.2,.3,1)',
-                            transform: hoveredCard === it.id ? 'scale(1.05)' : 'scale(1)'
+                            display: 'flex',
+                            height: '100%',
+                            transition: 'transform 0.3s ease',
+                            transform: `translateX(-${imgIdx * 100}%)`
                           }}
-                        />
+                        >
+                          {imagesArr.map((image, idx) => (
+                            <img
+                              key={idx}
+                              src={image}
+                              alt={`${it.title} - Image ${idx + 1}`}
+                              style={{
+                                minWidth: '100%',
+                                width: '100%', 
+                                height: '100%', 
+                                objectFit: 'cover',
+                                transition: 'transform 0.4s cubic-bezier(.7,.2,.3,1)',
+                                transform: hoveredCard === it.id ? 'scale(1.05)' : 'scale(1)',
+                                userSelect: 'none',
+                                pointerEvents: 'none'
+                              }}
+                              draggable="false"
+                            />
+                          ))}
+                        </div>
                         {/* Image navigation buttons */}
                         {imagesArr.length > 1 && hoveredCard === it.id && (
                           <>
@@ -2258,9 +2366,6 @@ function LogementsInner() {
                               <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
                                 par nuit
                               </div>
-                              <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2, fontWeight: 600 }}>
-                                dont frais plateforme {percentLabel()} ≈ {Math.round(fee)}€
-                              </div>
                             </>
                           );
                         })()}
@@ -2409,17 +2514,35 @@ function LogementsInner() {
                       }}>
                         {img ? (
                           <>
-                            <img
-                              src={img}
-                              alt={it.title}
+                            {/* Carousel container */}
+                            <div 
+                              id={`alt-carousel-${it.id}`}
                               style={{
-                                width: '100%', 
-                                height: '100%', 
-                                objectFit: 'cover',
-                                transition: 'transform 0.4s cubic-bezier(.7,.2,.3,1)',
-                                transform: hoveredCard === it.id ? 'scale(1.05)' : 'scale(1)'
+                                display: 'flex',
+                                height: '100%',
+                                transition: 'transform 0.3s ease',
+                                transform: `translateX(-${imgIdx * 100}%)`
                               }}
-                            />
+                            >
+                              {imagesArr.map((image, idx) => (
+                                <img
+                                  key={idx}
+                                  src={image}
+                                  alt={`${it.title} - Image ${idx + 1}`}
+                                  style={{
+                                    minWidth: '100%',
+                                    width: '100%', 
+                                    height: '100%', 
+                                    objectFit: 'cover',
+                                    transition: 'transform 0.4s cubic-bezier(.7,.2,.3,1)',
+                                    transform: hoveredCard === it.id ? 'scale(1.05)' : 'scale(1)',
+                                    userSelect: 'none',
+                                    pointerEvents: 'none'
+                                  }}
+                                  draggable="false"
+                                />
+                              ))}
+                            </div>
                             {/* Image navigation buttons */}
                             {imagesArr.length > 1 && hoveredCard === it.id && (
                               <>
