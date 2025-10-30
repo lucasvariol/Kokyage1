@@ -207,6 +207,7 @@ function LogementsInner() {
   const [hasTypedDestination, setHasTypedDestination] = useState(false);
   const destinationBoxRef = useRef(null);
   const mapContainerRef = useRef(null);
+  const resultsIndicatorRef = useRef(null);
   const [searchView, setSearchView] = useState(null); // { center: [lat, lng], zoom }
   const [disponibilities, setDisponibilities] = useState({}); // { listing_id: [date1, date2, ...] }
 
@@ -619,10 +620,10 @@ function LogementsInner() {
   async function handleSearch() {
     applyFilters();
     
-    // Scroll to map on mobile after search
-    if (isMobile && mapContainerRef.current) {
+    // Scroll to results indicator on mobile after search
+    if (isMobile && resultsIndicatorRef.current) {
       setTimeout(() => {
-        mapContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        resultsIndicatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     }
     
@@ -1112,7 +1113,7 @@ function LogementsInner() {
 
       {/* Indicateur de résultats */}
       {mounted && (
-        <section style={{
+        <section ref={resultsIndicatorRef} style={{
           background: '#fff',
           borderBottom: '1px solid #e5e7eb',
           padding: '16px 20px'
