@@ -174,7 +174,7 @@ const inputStyle = {
   outline: 'none', transition: 'box-shadow 0.2s, border 0.08s'
 };
 const btnStyle = {
-  width: '100%', minWidth: 150, maxWidth: 150, padding: '12px 16px', borderRadius: 8,
+  width: '100%', minWidth: 150, maxWidth: 150, padding: '12px 16px', borderRadius: 16,
   border: '1px solid #ddd', fontSize: 16, background: '#fff', boxShadow: '0 2px 8px rgba(201,103,69,0.07)',
   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
   cursor: 'pointer', height: 65, boxSizing: 'border-box', outline: 'none', transition: 'box-shadow 0.2s, border 0.08s'
@@ -771,6 +771,8 @@ function LogementsInner() {
             gap: 8,
             alignItems: 'stretch',
             justifyContent: 'center',
+            justifyItems: isMobile ? 'stretch' : undefined,
+            alignContent: isMobile ? 'stretch' : undefined,
             position: 'relative',
             zIndex: 100000
           }}>
@@ -870,7 +872,7 @@ function LogementsInner() {
                     width: isMobile ? '100%' : 160,
                     minWidth: isMobile ? 'auto' : 160,
                     maxWidth: isMobile ? '100%' : 160,
-                    textAlign: 'left',
+                    textAlign: isMobile ? 'center' : 'left',
                     paddingLeft: 16,
                     paddingRight: 16,
                     height: isMobile ? 56 : btnStyle.height
@@ -900,7 +902,7 @@ function LogementsInner() {
                     width: isMobile ? '100%' : 160,
                     minWidth: isMobile ? 'auto' : 160,
                     maxWidth: isMobile ? '100%' : 160,
-                    textAlign: 'left',
+                    textAlign: isMobile ? 'center' : 'left',
                     paddingLeft: 16,
                     paddingRight: 16,
                     height: isMobile ? 56 : btnStyle.height
@@ -925,7 +927,7 @@ function LogementsInner() {
                   width: isMobile ? '100%' : 140,
                   minWidth: isMobile ? 'auto' : 140,
                   maxWidth: isMobile ? '100%' : 140,
-                  textAlign: 'left',
+                  textAlign: isMobile ? 'center' : 'left',
                   paddingLeft: 16,
                   paddingRight: 16,
                   height: isMobile ? 56 : btnStyle.height
@@ -1013,10 +1015,15 @@ function LogementsInner() {
               }}
               aria-label="Rechercher"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/>
-                <path d="m21 21-4.35-4.35"/>
-              </svg>
+              <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:8}}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+                {isMobile && (
+                  <span style={{color:'#fff', fontWeight:700, fontSize:16}}>Rechercher</span>
+                )}
+              </div>
             </button>
 
             {/* Bouton Filtres avancés */}
@@ -1036,6 +1043,7 @@ function LogementsInner() {
                 transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: 8,
                 flex: '0 0 auto',
                 width: isMobile ? '100%' : undefined,
