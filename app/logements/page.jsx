@@ -1635,6 +1635,7 @@ function LogementsInner() {
       <main style={{ background: '#f7f8fa', minHeight: '100vh', paddingBottom: 32 }}>
         <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px' }}>
           <div style={{
+            position: 'relative',
             width: isMobile ? '100vw' : '100%',
             minWidth: isMobile ? 'unset' : 320,
             minHeight: 300,
@@ -1652,7 +1653,58 @@ function LogementsInner() {
             {mounted && (
               <ListingsMap items={filteredItems} center={mapCenter} onCenterChange={setMapCenter} searchView={searchView} />
             )}
+            
+            {/* Scroll indicator - mobile only */}
+            {isMobile && (
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 80,
+                background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,1) 100%)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                paddingBottom: 16,
+                pointerEvents: 'none',
+                zIndex: 10
+              }}>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 6,
+                  animation: 'bounce 2s infinite'
+                }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C96745" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                  <span style={{ 
+                    fontSize: 13, 
+                    fontWeight: 600, 
+                    color: '#C96745',
+                    textAlign: 'center',
+                    textShadow: '0 1px 2px rgba(255,255,255,0.8)'
+                  }}>
+                    Voir les logements
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
+          
+          <style jsx>{`
+            @keyframes bounce {
+              0%, 100% {
+                transform: translateY(0);
+              }
+              50% {
+                transform: translateY(-8px);
+              }
+            }
+          `}</style>
           {/* Liste des logements */}
           <div className="logements-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 24 }}>
             {sortedItems.map((it) => {
