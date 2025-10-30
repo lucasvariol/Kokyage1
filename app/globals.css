@@ -222,6 +222,13 @@ footer{margin-top:30px;border-top:1px solid var(--c-border);padding:16px;text-al
 
 }
 
+/* Make react-datepicker inputs expand to container width */
+.react-datepicker-wrapper,
+.react-datepicker__input-container{
+  display:block;
+  width:100%;
+}
+
 /* Make the main search button have the same spacing as the other inputs on wide screens */
 @media (min-width: 701px) {
   .search-form > .btn.btn-primary { margin-left: 20px; }
