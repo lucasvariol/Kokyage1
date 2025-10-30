@@ -871,11 +871,11 @@ function LogementsInner() {
             <div style={{ 
               display: 'flex', 
               gap: isMobile ? 12 : 8, 
-              flex: isMobile ? '0 0 auto' : '0 0 auto',
+              flex: isMobile ? '1 1 0%' : '0 0 auto',
               width: isMobile ? '100%' : 'auto'
             }}>
               {/* Date d'arrivée */}
-              <div style={{ flex: isMobile ? '1 1 0%' : '0 0 auto', width: isMobile ? '100%' : 'auto', minWidth: 0 }}>
+              <div style={{ flex: isMobile ? '1 1 0%' : '0 0 auto', width: isMobile ? 'calc(50% - 6px)' : 'auto', minWidth: 0 }}>
                 <DatePicker
                   selected={arrivee ? new Date(arrivee) : null}
                   onChange={date => setArrivee(date ? formatDateLocal(date) : "")}
@@ -909,7 +909,7 @@ function LogementsInner() {
               </div>
 
               {/* Date de départ */}
-              <div style={{ flex: isMobile ? '1 1 0%' : '0 0 auto', width: isMobile ? '100%' : 'auto', minWidth: 0 }}>
+              <div style={{ flex: isMobile ? '1 1 0%' : '0 0 auto', width: isMobile ? 'calc(50% - 6px)' : 'auto', minWidth: 0 }}>
                 <DatePicker
                   selected={depart ? new Date(depart) : null}
                   onChange={date => setDepart(date ? formatDateLocal(date) : "")}
