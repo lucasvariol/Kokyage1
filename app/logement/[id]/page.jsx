@@ -1115,7 +1115,10 @@ export default function Page({ params }) {
       <main style={{
         background: '#f8fafc',
         minHeight: '100vh',
-        paddingBottom: 0
+        paddingBottom: 0,
+        overflowX: 'hidden',
+        width: '100%',
+        maxWidth: '100vw'
       }}>
         {!item ? (
           <div style={{ 
@@ -1426,7 +1429,9 @@ export default function Page({ params }) {
                 <div style={{ 
                   padding: '0 24px 60px',
                   maxWidth: 1400,
-                  margin: '0 auto'
+                  margin: '0 auto',
+                  width: '100%',
+                  boxSizing: 'border-box'
                 }}>
                   <div className="detail-grid" style={{ 
                     display: 'grid', 
@@ -3486,21 +3491,56 @@ export default function Page({ params }) {
             /* Adaptation du padding global */
             :global(.logement-detail) {
               padding: 0 !important;
+              max-width: 100vw !important;
+              overflow-x: hidden !important;
+            }
+            
+            /* Container de la grille */
+            .detail-grid {
+              padding: 0 !important;
+              margin-left: 0 !important;
+              margin-right: 0 !important;
+              width: 100% !important;
+            }
+            
+            /* Container principal pour éviter le débordement */
+            :global(main) {
+              padding-left: 0 !important;
+              padding-right: 0 !important;
+              overflow-x: hidden !important;
+              max-width: 100vw !important;
             }
             
             /* Ajuste le padding des containers principaux */
-            :global(.logement-detail > div:first-child) {
-              padding: 0 16px 40px !important;
+            :global(.logement-detail > div) {
+              padding-left: 0 !important;
+              padding-right: 0 !important;
+              max-width: 100vw !important;
             }
             
-            /* Galerie mobile */
+            /* Container avec padding */
+            :global(main > article > div) {
+              padding-left: 0 !important;
+              padding-right: 0 !important;
+              max-width: 100vw !important;
+            }
+            
+            /* Galerie mobile - pleine largeur */
             :global(.gallery-container) {
               margin-bottom: 20px !important;
+              margin-left: 0 !important;
+              margin-right: 0 !important;
+              padding-left: 0 !important;
+              padding-right: 0 !important;
+              width: 100% !important;
             }
             
             :global(.gallery-container > div:first-child) {
-              border-radius: 16px !important;
+              border-radius: 0 !important;
               max-width: 100% !important;
+              width: 100vw !important;
+              margin-left: 0 !important;
+              margin-right: 0 !important;
             }
             
             /* Thumbnails en scroll horizontal sur mobile */
@@ -3509,21 +3549,29 @@ export default function Page({ params }) {
               flex-wrap: nowrap !important;
               -webkit-overflow-scrolling: touch !important;
               scrollbar-width: none !important;
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+              margin-left: 0 !important;
+              margin-right: 0 !important;
             }
             
             :global(.gallery-thumbnails::-webkit-scrollbar) {
               display: none !important;
             }
             
-            /* Cards principales */
+            /* Cards principales - éviter le débordement */
             :global(.card-header),
             :global(.card-description),
             :global(.card-map),
             :global(.card-reviews),
             :global(.card-reservations) {
-              border-radius: 16px !important;
-              padding: 20px !important;
+              border-radius: 12px !important;
+              padding: 16px !important;
               margin-bottom: 16px !important;
+              margin-left: 12px !important;
+              margin-right: 12px !important;
+              width: calc(100% - 24px) !important;
+              box-sizing: border-box !important;
             }
             
             /* Titre principal */
@@ -3534,24 +3582,27 @@ export default function Page({ params }) {
             /* Grid des infos (voyageurs, chambres, etc.) */
             :global(.info-chips-grid) {
               grid-template-columns: repeat(3, 1fr) !important;
-              gap: 8px !important;
+              gap: 6px !important;
+              margin-bottom: 16px !important;
             }
             
             :global(.info-chip) {
-              padding: 10px 8px !important;
+              padding: 8px 4px !important;
+              min-width: 0 !important;
             }
             
             :global(.info-chip svg) {
               width: 16px !important;
               height: 16px !important;
+              margin-bottom: 4px !important;
             }
             
             :global(.info-chip-value) {
-              font-size: 15px !important;
+              font-size: 14px !important;
             }
             
             :global(.info-chip-label) {
-              font-size: 10px !important;
+              font-size: 9px !important;
             }
             
             /* Stats row */
@@ -3584,13 +3635,19 @@ export default function Page({ params }) {
             
             /* Sidebar de réservation */
             :global(.booking-sidebar) {
-              position: sticky !important;
+              position: fixed !important;
               bottom: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
               top: auto !important;
-              margin: 0 -16px !important;
-              border-radius: 20px 20px 0 0 !important;
+              margin: 0 !important;
+              width: 100% !important;
+              border-radius: 16px 16px 0 0 !important;
               box-shadow: 0 -4px 20px rgba(0,0,0,0.15) !important;
               z-index: 100 !important;
+              padding: 16px !important;
+              max-height: 70vh !important;
+              overflow-y: auto !important;
             }
             
             /* Calendrier */
@@ -3620,16 +3677,24 @@ export default function Page({ params }) {
               gap: 12px !important;
             }
             
+            /* Bouton partager en pleine largeur */
+            :global(.share-button) {
+              min-width: auto !important;
+              width: 100% !important;
+              justify-content: center !important;
+            }
+            
             /* Modal */
             :global(.modal-content) {
-              width: 95% !important;
-              max-width: 95% !important;
+              width: calc(100vw - 24px) !important;
+              max-width: calc(100vw - 24px) !important;
               max-height: 90vh !important;
               overflow-y: auto !important;
+              margin: 12px !important;
             }
             
             :global(.modal-body) {
-              padding: 20px !important;
+              padding: 16px !important;
             }
             
             /* Form d'édition */
@@ -3676,10 +3741,12 @@ export default function Page({ params }) {
             /* Très petits écrans */
             :global(.info-chips-grid) {
               grid-template-columns: repeat(2, 1fr) !important;
+              gap: 6px !important;
             }
             
             :global(.main-title) {
-              font-size: 20px !important;
+              font-size: 18px !important;
+              line-height: 1.3 !important;
             }
             
             :global(.card-header),
@@ -3687,7 +3754,15 @@ export default function Page({ params }) {
             :global(.card-map),
             :global(.card-reviews),
             :global(.card-reservations) {
-              padding: 16px !important;
+              padding: 12px !important;
+              margin-left: 8px !important;
+              margin-right: 8px !important;
+              width: calc(100% - 16px) !important;
+            }
+            
+            :global(.gallery-thumbnails) {
+              padding-left: 8px !important;
+              padding-right: 8px !important;
             }
           }
           
