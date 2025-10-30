@@ -1683,7 +1683,7 @@ function LogementsInner() {
                 justifyContent: 'flex-end',
                 paddingBottom: 16,
                 pointerEvents: 'none',
-                zIndex: 10
+                zIndex: 1000
               }}>
                 <div style={{
                   display: 'flex',
