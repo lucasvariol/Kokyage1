@@ -1460,8 +1460,8 @@ export default function Page() {
         }
         
         .revenue-cards img {
-          max-width: 100px !important;
-          height: 70px !important;
+          max-width: 180px !important;
+          height: 120px !important;
           margin: 8px auto 0 !important;
         }
         
@@ -1633,8 +1633,8 @@ export default function Page() {
         }
         
         .revenue-cards img {
-          max-width: 80px !important;
-          height: 60px !important;
+          max-width: 140px !important;
+          height: 95px !important;
           margin: 6px auto 0 !important;
         }
         
