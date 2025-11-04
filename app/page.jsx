@@ -1149,26 +1149,16 @@ export default function Page() {
           zIndex: 1
         }}>
           <h2 style={{ 
-            fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
-            fontWeight: 900, 
+            fontSize: 'clamp(2rem, 4vw, 3rem)', 
+            fontWeight: 800, 
             color: '#1f2937', 
-            marginBottom: '24px',
-            letterSpacing: '-0.02em',
-            textShadow: 'none'
+            marginBottom: '48px',
+            letterSpacing: '-0.01em',
+            textShadow: 'none',
+            whiteSpace: 'nowrap'
           }}>
             Découvrez comment ça marche
           </h2>
-          <p style={{ 
-            fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', 
-            color: '#6b7280', 
-            marginBottom: '48px',
-            lineHeight: 1.6,
-            maxWidth: '600px',
-            margin: '0 auto 48px'
-          }}>
-            Kokyage simplifie la location courte durée pour les locataires et propriétaires. 
-            Découvrez notre fonctionnement en quelques minutes.
-          </p>
           
           <a 
             href="/fonctionnement"
