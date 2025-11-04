@@ -1114,11 +1114,13 @@ export default function Page() {
 
       {/* Section Call to Action - Fonctionnement */}
       <section className="cta-fonctionnement" style={{ 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+        background: 'white', 
         padding: '100px 24px',
         textAlign: 'center',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        borderTop: '1px solid #e5e7eb',
+        borderBottom: '1px solid #e5e7eb'
       }}>
         {/* Decorative circles */}
         <div style={{
@@ -1127,7 +1129,7 @@ export default function Page() {
           right: '-50px',
           width: '200px',
           height: '200px',
-          background: 'rgba(255,255,255,0.1)',
+          background: 'rgba(102, 126, 234, 0.05)',
           borderRadius: '50%',
         }}></div>
         <div style={{
@@ -1136,7 +1138,7 @@ export default function Page() {
           left: '-30px',
           width: '150px',
           height: '150px',
-          background: 'rgba(255,255,255,0.1)',
+          background: 'rgba(118, 75, 162, 0.05)',
           borderRadius: '50%',
         }}></div>
         
@@ -1149,16 +1151,16 @@ export default function Page() {
           <h2 style={{ 
             fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
             fontWeight: 900, 
-            color: 'white', 
+            color: '#1f2937', 
             marginBottom: '24px',
             letterSpacing: '-0.02em',
-            textShadow: '0 2px 10px rgba(0,0,0,0.1)'
+            textShadow: 'none'
           }}>
             Découvrez comment ça marche
           </h2>
           <p style={{ 
             fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', 
-            color: 'rgba(255,255,255,0.95)', 
+            color: '#6b7280', 
             marginBottom: '48px',
             lineHeight: 1.6,
             maxWidth: '600px',
@@ -1172,28 +1174,28 @@ export default function Page() {
             href="/fonctionnement"
             style={{
               display: 'inline-block',
-              background: 'white',
-              color: '#667eea',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
               fontSize: '1.2rem',
               fontWeight: 700,
               padding: '20px 48px',
               borderRadius: '50px',
               textDecoration: 'none',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+              boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
               transition: 'all 0.3s ease',
-              border: '3px solid white',
+              border: 'none',
               cursor: 'pointer'
             }}
             onMouseEnter={(e) => {
               e.target.style.transform = 'translateY(-4px) scale(1.05)';
-              e.target.style.boxShadow = '0 15px 40px rgba(0,0,0,0.3)';
+              e.target.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0) scale(1)';
-              e.target.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+              e.target.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.3)';
             }}
           >
-            Comment ça marche ? →
+            Tous les détails ici →
           </a>
           
           <div style={{ 
@@ -1202,7 +1204,7 @@ export default function Page() {
             justifyContent: 'center',
             gap: '40px',
             flexWrap: 'wrap',
-            color: 'white',
+            color: '#4b5563',
             fontSize: '0.95rem',
             opacity: 0.9
           }}>
