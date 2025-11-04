@@ -1112,212 +1112,120 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Section Avantages moderne */}
-      <section className="benefits-section" style={{ 
-        background: '#F5F1ED', 
-        padding: '80px 24px',
-        borderTop: '1px solid #E8E3DC'
+      {/* Section Call to Action - Fonctionnement */}
+      <section className="cta-fonctionnement" style={{ 
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+        padding: '100px 24px',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <h2 style={{ 
-              fontSize: 'clamp(2rem, 4vw, 3rem)', 
-              fontWeight: 800, 
-              color: '#2D3748', 
-              marginBottom: '16px',
-              letterSpacing: '-0.01em'
-            }}>
-              Pourquoi choisir Kokyage ?
-            </h2>
-            <p style={{ 
-              fontSize: '1.2rem', 
-              color: '#718096', 
-              maxWidth: '600px', 
-              margin: '0 auto' 
-            }}>
-            </p>
-          </div>
-          
-          <div className="benefits-grid" style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-            gap: '32px'
+        {/* Decorative circles */}
+        <div style={{
+          position: 'absolute',
+          top: '-50px',
+          right: '-50px',
+          width: '200px',
+          height: '200px',
+          background: 'rgba(255,255,255,0.1)',
+          borderRadius: '50%',
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: '-30px',
+          left: '-30px',
+          width: '150px',
+          height: '150px',
+          background: 'rgba(255,255,255,0.1)',
+          borderRadius: '50%',
+        }}></div>
+        
+        <div style={{ 
+          maxWidth: '800px', 
+          margin: '0 auto',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          <h2 style={{ 
+            fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
+            fontWeight: 900, 
+            color: 'white', 
+            marginBottom: '24px',
+            letterSpacing: '-0.02em',
+            textShadow: '0 2px 10px rgba(0,0,0,0.1)'
           }}>
-            <div className="benefit-card" style={{ 
+            Découvrez comment ça marche
+          </h2>
+          <p style={{ 
+            fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', 
+            color: 'rgba(255,255,255,0.95)', 
+            marginBottom: '48px',
+            lineHeight: 1.6,
+            maxWidth: '600px',
+            margin: '0 auto 48px'
+          }}>
+            Kokyage simplifie la location courte durée pour les locataires et propriétaires. 
+            Découvrez notre fonctionnement en quelques minutes.
+          </p>
+          
+          <a 
+            href="/fonctionnement"
+            style={{
+              display: 'inline-block',
               background: 'white',
-              borderRadius: '24px', 
-              boxShadow: '0 10px 40px rgba(0,0,0,0.1)', 
-              padding: '40px 32px', 
-              textAlign: 'center',
-              border: '1px solid rgba(0,0,0,0.05)',
+              color: '#667eea',
+              fontSize: '1.2rem',
+              fontWeight: 700,
+              padding: '20px 48px',
+              borderRadius: '50px',
+              textDecoration: 'none',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
               transition: 'all 0.3s ease',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                right: '0',
-                height: '4px',
-                background: 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)'
-              }}></div>
-              <img src="/images/locataire.png" alt="Locataire" style={{ 
-                width: '120px', 
-                height: '120px', 
-                objectFit: 'cover', 
-                borderRadius: '50%',
-                margin: '0 auto 24px',
-                border: '4px solid #f3f4f6'
-              }} />
-              <h3 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 700, 
-                color: '#3b82f6', 
-                marginBottom: '20px'
-              }}>
-              Locataire
-              </h3>
-              <ul style={{ 
-                color: '#4b5563', 
-                fontSize: '1rem', 
-                lineHeight: 2, 
-                paddingLeft: 0, 
-                listStyle: 'none', 
-                margin: 0,
-                textAlign: 'left'
-              }}>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Revenus complémentaires
-                </li>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Cadrage légal
-                </li>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Protection optimale
-                </li>
-              </ul>
+              border: '3px solid white',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-4px) scale(1.05)';
+              e.target.style.boxShadow = '0 15px 40px rgba(0,0,0,0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+            }}
+          >
+            Comment ça marche ? →
+          </a>
+          
+          <div style={{ 
+            marginTop: '48px',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '40px',
+            flexWrap: 'wrap',
+            color: 'white',
+            fontSize: '0.95rem',
+            opacity: 0.9
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              Simple et rapide
             </div>
-            
-            <div className="benefit-card" style={{ 
-              background: 'white',
-              borderRadius: '24px', 
-              boxShadow: '0 10px 40px rgba(0,0,0,0.1)', 
-              padding: '40px 32px', 
-              textAlign: 'center',
-              border: '1px solid rgba(0,0,0,0.05)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                right: '0',
-                height: '4px',
-                background: 'linear-gradient(90deg, #10b981 0%, #047857 100%)'
-              }}></div>
-              <img src="/images/proprietaire.png" alt="Propriétaire" style={{ 
-                width: '120px', 
-                height: '120px', 
-                objectFit: 'cover', 
-                borderRadius: '50%',
-                margin: '0 auto 24px',
-                border: '4px solid #f3f4f6'
-              }} />
-              <h3 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 700, 
-                color: '#10b981', 
-                marginBottom: '20px'
-              }}>
-                Propriétaire
-              </h3>
-              <ul style={{ 
-                color: '#4b5563', 
-                fontSize: '1rem', 
-                lineHeight: 2, 
-                paddingLeft: 0, 
-                listStyle: 'none', 
-                margin: 0,
-                textAlign: 'left'
-              }}>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Revenus complémentaires
-                </li>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Bien protégé
-                </li>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Libre d'arrêter à tout moment
-                </li>
-              </ul>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              100% légal
             </div>
-            
-            <div className="benefit-card" style={{ 
-              background: 'white',
-              borderRadius: '24px', 
-              boxShadow: '0 10px 40px rgba(0,0,0,0.1)', 
-              padding: '40px 32px', 
-              textAlign: 'center',
-              border: '1px solid rgba(0,0,0,0.05)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                right: '0',
-                height: '4px',
-                background: 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)'
-              }}></div>
-              <img src="/images/voyageur.png" alt="Voyageur" style={{ 
-                width: '120px', 
-                height: '120px', 
-                objectFit: 'cover', 
-                borderRadius: '50%',
-                margin: '0 auto 24px',
-                border: '4px solid #f3f4f6'
-              }} />
-              <h3 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 700, 
-                color: '#f59e0b', 
-                marginBottom: '20px'
-              }}>
-                ✈️ Voyageur
-              </h3>
-              <ul style={{ 
-                color: '#4b5563', 
-                fontSize: '1rem', 
-                lineHeight: 2, 
-                paddingLeft: 0, 
-                listStyle: 'none', 
-                margin: 0,
-                textAlign: 'left'
-              }}>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Tarifs équitables
-                </li>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Paiement sécurisé
-                </li>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ color: '#10b981', marginRight: '8px' }}>✓</span>
-                  Expérience simple
-                </li>
-              </ul>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              Gagnez de l'argent
             </div>
           </div>
         </div>
