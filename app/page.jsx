@@ -816,7 +816,7 @@ export default function Page() {
                   width: '100%', 
                   maxWidth: '280px',
                   height: '190px', 
-                  objectFit: 'cover', 
+                  objectFit: 'contain', 
                   borderRadius: '12px',
                   border: '3px solid rgba(255, 255, 255, 0)'
                 }} loading="lazy" />
@@ -865,7 +865,7 @@ export default function Page() {
                   width: '100%', 
                   maxWidth: '280px',
                   height: '190px', 
-                  objectFit: 'cover', 
+                  objectFit: 'contain', 
                   borderRadius: '12px',
                   border: '3px solid rgba(255, 255, 255, 0)'
                 }} loading="lazy" />
