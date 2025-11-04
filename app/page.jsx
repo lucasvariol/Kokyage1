@@ -1149,7 +1149,7 @@ export default function Page() {
           zIndex: 1
         }}>
           <h2 style={{ 
-            fontSize: 'clamp(2rem, 4vw, 3rem)', 
+            fontSize: 'clamp(1.5rem, 4vw, 3rem)', 
             fontWeight: 800, 
             color: '#1f2937', 
             marginBottom: '48px',
@@ -1164,25 +1164,25 @@ export default function Page() {
             href="/fonctionnement"
             style={{
               display: 'inline-block',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
               color: 'white',
               fontSize: '1.2rem',
               fontWeight: 700,
               padding: '20px 48px',
               borderRadius: '50px',
               textDecoration: 'none',
-              boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+              boxShadow: '0 10px 30px rgba(96,162,157,0.3)',
               transition: 'all 0.3s ease',
               border: 'none',
               cursor: 'pointer'
             }}
             onMouseEnter={(e) => {
               e.target.style.transform = 'translateY(-4px) scale(1.05)';
-              e.target.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.4)';
+              e.target.style.boxShadow = '0 15px 40px rgba(96,162,157,0.4)';
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0) scale(1)';
-              e.target.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.3)';
+              e.target.style.boxShadow = '0 10px 30px rgba(96,162,157,0.3)';
             }}
           >
             Tous les détails ici →
