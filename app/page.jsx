@@ -814,8 +814,8 @@ export default function Page() {
                 <img src="/images/locataire_evaluation.png" alt="Locataire" style={{ 
                   margin: '20px auto 0', 
                   width: '100%', 
-                  maxWidth: '280px',
-                  height: '190px', 
+                  maxWidth: '320px',
+                  height: '220px', 
                   objectFit: 'contain', 
                   borderRadius: '12px',
                   border: '3px solid rgba(255, 255, 255, 0)'
@@ -863,8 +863,8 @@ export default function Page() {
                 <img src="/images/proprietaire_evaluation.png" alt="Propriétaire" style={{ 
                   margin: '20px auto 0', 
                   width: '100%', 
-                  maxWidth: '280px',
-                  height: '190px', 
+                  maxWidth: '320px',
+                  height: '220px', 
                   objectFit: 'contain', 
                   borderRadius: '12px',
                   border: '3px solid rgba(255, 255, 255, 0)'
@@ -1460,8 +1460,8 @@ export default function Page() {
         }
         
         .revenue-cards img {
-          max-width: 180px !important;
-          height: 120px !important;
+          max-width: 220px !important;
+          height: 150px !important;
           margin: 8px auto 0 !important;
         }
         
@@ -1633,8 +1633,8 @@ export default function Page() {
         }
         
         .revenue-cards img {
-          max-width: 140px !important;
-          height: 95px !important;
+          max-width: 170px !important;
+          height: 115px !important;
           margin: 6px auto 0 !important;
         }
         
