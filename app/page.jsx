@@ -1596,10 +1596,14 @@ export default function Page() {
         }
         
         /* Stats grid mobile */
-        section:last-of-type > div:last-child {
-          grid-template-columns: 1fr !important;
+        section:last-of-type > div > div:nth-of-type(2) {
+          grid-template-columns: 1fr 1fr !important;
           gap: 20px !important;
           text-align: center !important;
+        }
+        
+        section:last-of-type > div > div:nth-of-type(2) > div:last-child {
+          grid-column: 1 / -1 !important;
         }
         
         /* CTA buttons mobile */
