@@ -814,8 +814,8 @@ export default function Page() {
                 <img src="/images/locataire_evaluation.png" alt="Locataire" style={{ 
                   margin: '20px auto 0', 
                   width: '100%', 
-                  maxWidth: '200px',
-                  height: '135px', 
+                  maxWidth: '280px',
+                  height: '190px', 
                   objectFit: 'cover', 
                   borderRadius: '12px',
                   border: '3px solid rgba(255, 255, 255, 0)'
@@ -863,8 +863,8 @@ export default function Page() {
                 <img src="/images/proprietaire_evaluation.png" alt="Propriétaire" style={{ 
                   margin: '20px auto 0', 
                   width: '100%', 
-                  maxWidth: '200px',
-                  height: '135px', 
+                  maxWidth: '280px',
+                  height: '190px', 
                   objectFit: 'cover', 
                   borderRadius: '12px',
                   border: '3px solid rgba(255, 255, 255, 0)'
