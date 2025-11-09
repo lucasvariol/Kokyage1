@@ -393,7 +393,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    60<span style={{ fontSize: '3rem', verticalAlign: 'super' }}>%</span>
+                    60<span style={{ fontSize: '3rem' }}>%</span>
                   </div>
                   <p style={{ 
                     fontSize: '0.95rem', 
@@ -456,7 +456,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    40<span style={{ fontSize: '3rem', verticalAlign: 'super' }}>%</span>
+                    40<span style={{ fontSize: '3rem' }}>%</span>
                   </div>
                   <p style={{ 
                     fontSize: '0.95rem', 
@@ -1399,7 +1399,7 @@ export default function Page() {
                 lineHeight: 1.7,
                 fontSize: '1.05rem'
               }}>
-                Le locataire principal reste juridiquement responsable du logement pendant toute la durée de la sous-location. Il demeure votre interlocuteur unique, conformément à la loi et à l'accord signé.
+                Le locataire principal reste juridiquement responsable du logement si les deux garanties précédentes ne couvrent pas l'intégralité des réparations.
               </p>
             </div>
           </div>
