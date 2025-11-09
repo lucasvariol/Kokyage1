@@ -203,7 +203,8 @@ export default function Page() {
         textAlign: 'center', 
         color: 'white',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'visible',
+        zIndex: 1
       }}>
         {/* Background Animation Elements */}
         <div style={{
@@ -868,9 +869,9 @@ export default function Page() {
         padding: '0 24px 80px',
         margin: '0',
         position: 'relative',
-        zIndex: 2
+        zIndex: 10
       }}>
-        <div style={{ maxWidth: '1100px', margin: '-100px auto 0', position: 'relative', zIndex: 3 }}>
+        <div style={{ maxWidth: '1100px', margin: '-100px auto 0', position: 'relative', zIndex: 11 }}>
         <div className="estimator-card" style={{ 
           background: 'white',
           borderRadius: '24px', 
