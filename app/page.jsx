@@ -331,7 +331,7 @@ export default function Page() {
               {activeTab === 'voyageur' ? (
                 <>Des hébergements <br /><span style={{ color: '#4ECDC4' }}> équitables et authentiques </span></>
               ) : (
-                <>Sous-louez enfin <span style={{ color: '#4ECDC4' }}>en partageant les revenus</span></>
+                <>Sous-louez enfin<br /><span style={{ color: '#4ECDC4' }}>en partageant les revenus</span></>
               )}
             </h1>
             
