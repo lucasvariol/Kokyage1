@@ -330,7 +330,10 @@ export default function Page() {
               {activeTab === 'voyageur' ? (
                 <>Des hébergements <br /><span style={{ color: '#4ECDC4' }}> équitables et authentiques </span></>
               ) : (
-                <>La sous-location<br /><span style={{ color: '#4ECDC4' }}>enfin possible</span></>
+                <>La sous-location <span style={{ color: '#4ECDC4' }}>enfin possible</span><br />
+                <span style={{ fontSize: '1.3rem', fontWeight: 600, opacity: 0.95, display: 'block', marginTop: '16px' }}>
+                  Convainquez votre propriétaire avec notre modèle de partage des revenus
+                </span></>
               )}
             </h1>            
             {/* Modern Search Card - Visible uniquement pour voyageur */}
@@ -771,41 +774,131 @@ export default function Page() {
         willChange: 'opacity, transform'
       }}>
       
-      {/* Section calculateur revenus - Visible uniquement pour hôte */}
+      {/* Section Partage des revenus - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
       <section style={{ 
+        background: '#FFFFFF',
+        padding: '0 24px 60px',
+        color: '#2D3748',
+        marginTop: '-80px',
+        position: 'relative',
+        zIndex: 2
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div className="revenue-split-cards" style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '32px',
+            marginBottom: '32px'
+          }}>
+            <div style={{ 
+              background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              textAlign: 'center',
+              border: 'none',
+              transition: 'all 0.3s ease',
+              cursor: 'default',
+              color: 'white',
+              boxShadow: '0 10px 30px rgba(96,162,157,0.25)'
+            }}>
+              <div style={{ 
+                fontSize: '4.5rem', 
+                fontWeight: 900, 
+                marginBottom: '12px',
+                color: '#FFE66D',
+                textShadow: '0 4px 12px rgba(0,0,0,0.2)'
+              }}>
+                60%
+              </div>
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 700, 
+                marginBottom: '12px',
+                color: 'white'
+              }}>
+                Pour le locataire
+              </h3>
+              <p style={{ 
+                fontSize: '1rem', 
+                opacity: 0.95,
+                lineHeight: 1.6,
+                color: 'white'
+              }}>
+                Celui qui gère les réservations et accueille les voyageurs
+              </p>
+            </div>
+
+            <div style={{ 
+              background: 'linear-gradient(135deg, #CAAD78 0%, #B5935F 100%)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              textAlign: 'center',
+              border: 'none',
+              transition: 'all 0.3s ease',
+              cursor: 'default',
+              color: 'white',
+              boxShadow: '0 10px 30px rgba(202,173,120,0.25)'
+            }}>
+              <div style={{ 
+                fontSize: '4.5rem', 
+                fontWeight: 900, 
+                marginBottom: '12px',
+                color: '#FFE66D',
+                textShadow: '0 4px 12px rgba(0,0,0,0.2)'
+              }}>
+                40%
+              </div>
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 700, 
+                marginBottom: '12px',
+                color: 'white'
+              }}>
+                Pour le propriétaire
+              </h3>
+              <p style={{ 
+                fontSize: '1rem', 
+                opacity: 0.95,
+                lineHeight: 1.6,
+                color: 'white'
+              }}>
+                Revenus passifs sans aucun effort de gestion
+              </p>
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+      )}
+
+      {/* Estimation revenus moderne - Visible uniquement pour hôte */}
+      {activeTab === 'hote' && (
+      <section className="estimator-section" style={{ 
         background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
         padding: '80px 24px',
-        color: 'white'
+        margin: '0'
       }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2 style={{ 
-            fontSize: 'clamp(2rem, 4vw, 2.8rem)', 
-            fontWeight: 800, 
-            textAlign: 'center',
-            marginBottom: '16px',
-            color: 'white'
-          }}>
-            Convainquez votre propriétaire avec notre modèle de partage des revenus
-          </h2>
-          <p style={{ 
-            textAlign: 'center', 
-            fontSize: '1.15rem', 
-            marginBottom: '48px',
-            opacity: 0.95,
-            color: 'white'
-          }}>
-            Calculez vos revenus en quelques clics
-          </p>
-
-          <div className="estimator-card" style={{ 
-            background: 'white',
-            borderRadius: '24px', 
-            boxShadow: '0 10px 40px rgba(0,0,0,0.15)', 
-            padding: '48px 32px', 
-            border: 'none',
-            marginTop: '0'
-          }}>
+        <div className="estimator-card" style={{ 
+          background: 'white',
+          borderRadius: '24px', 
+          boxShadow: '0 10px 40px rgba(96,162,157,0.15)', 
+          padding: '48px 32px', 
+          border: 'none'
+        }}>
+          <div className="estimator-heading" style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <h3 style={{ 
+              fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', 
+              fontWeight: 800, 
+              color: '#2D3748', 
+              margin: '0 0 12px 0',
+              letterSpacing: '-0.01em'
+            }}>
+              Calculez vos revenus potentiels
+            </h3>
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
 
             {/* Revenus calculés */}
