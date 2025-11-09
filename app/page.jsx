@@ -899,7 +899,7 @@ export default function Page() {
       {/* Estimation revenus moderne - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
       <section className="estimator-section" style={{ 
-        background: 'linear-gradient(135deg, #E8F4F8 0%, #D6EBF5 100%)',
+        background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
         padding: '80px 24px',
         margin: '0'
       }}>
