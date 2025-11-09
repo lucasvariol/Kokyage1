@@ -1305,7 +1305,8 @@ export default function Page() {
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
-              transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+              textAlign: 'center'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -1315,31 +1316,18 @@ export default function Page() {
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
             }}>
-              <div style={{
-                width: '60px',
-                height: '60px',
-                background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.8rem',
-                marginBottom: '20px'
-              }}>
-                💳
-              </div>
               <h3 style={{
-                fontSize: '1.3rem',
+                fontSize: '1.4rem',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '12px'
+                marginBottom: '20px'
               }}>
-                Caution de 300€
+                💳 Caution de 300€
               </h3>
               <p style={{
                 color: '#718096',
-                lineHeight: 1.6,
-                fontSize: '0.95rem'
+                lineHeight: 1.7,
+                fontSize: '1.05rem'
               }}>
                 Une empreinte bancaire est enregistrée auprès de chaque voyageur avant le séjour. Dans les rares cas de dégradations et après validation par nos modérateurs, jusqu'à 300€ peuvent être prélevés pour couvrir les réparations.
               </p>
@@ -1352,7 +1340,8 @@ export default function Page() {
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
-              transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+              textAlign: 'center'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -1362,33 +1351,20 @@ export default function Page() {
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
             }}>
-              <div style={{
-                width: '60px',
-                height: '60px',
-                background: 'linear-gradient(135deg, #CAAD78 0%, #B5935F 100%)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.8rem',
-                marginBottom: '20px'
-              }}>
-                📋
-              </div>
               <h3 style={{
-                fontSize: '1.3rem',
+                fontSize: '1.4rem',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '12px'
+                marginBottom: '20px'
               }}>
-                Assurance du voyageur
+                📋 Assurance du voyageur
               </h3>
               <p style={{
                 color: '#718096',
-                lineHeight: 1.6,
-                fontSize: '0.95rem'
+                lineHeight: 1.7,
+                fontSize: '1.05rem'
               }}>
-                Pour les dommages plus importants, l'assurance responsabilité civile du voyageur est sollicitée en priorité. il est fortement recommandé de demander une attestation de villégiture avant le séjour.
+                Pour les dommages plus importants, l'assurance responsabilité civile du voyageur est sollicitée en priorité. Il est fortement recommandé de demander une attestation de villégiature avant le séjour.
               </p>
             </div>
 
@@ -1399,7 +1375,8 @@ export default function Page() {
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
-              transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+              textAlign: 'center'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -1409,33 +1386,20 @@ export default function Page() {
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
             }}>
-              <div style={{
-                width: '60px',
-                height: '60px',
-                background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.8rem',
-                marginBottom: '20px'
-              }}>
-                ⚖️
-              </div>
               <h3 style={{
-                fontSize: '1.3rem',
+                fontSize: '1.4rem',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '12px'
+                marginBottom: '20px'
               }}>
-                Locataire garant
+                ⚖️ Locataire garant
               </h3>
               <p style={{
                 color: '#718096',
-                lineHeight: 1.6,
-                fontSize: '0.95rem'
+                lineHeight: 1.7,
+                fontSize: '1.05rem'
               }}>
-                Le locataire principal reste juridiquement responsable du logement pendant toute la durée de la sous-location.
+                Le locataire principal reste juridiquement responsable du logement pendant toute la durée de la sous-location. Il demeure votre interlocuteur unique, conformément à la loi et à l'accord signé.
               </p>
             </div>
           </div>
