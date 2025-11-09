@@ -174,22 +174,6 @@ export default function Header({ activeTab, setActiveTab }) {
                   <Link href="/fonctionnement" className="desktop-button" style={secondaryButtonStyle}>
                   Comment ça marche
                 </Link>
-
-                  <Link href="/connexion" className="desktop-button" style={{
-                  background: 'rgba(96,162,157,0.12)',
-                  color: '#2D3748',
-                  padding: '10px 16px',
-                  borderRadius: '24px',
-                  textDecoration: 'none',
-                  fontWeight: '600',
-                  fontSize: '13px',
-                  border: '1px solid rgba(96,162,157,0.25)',
-                  boxShadow: '0 3px 10px rgba(96,162,157,0.18)',
-                  transition: 'all 0.3s ease',
-                  whiteSpace: 'nowrap'
-                }}>
-                Proposer un logement
-                </Link>
                 
                 <Link href="/inscription" className="desktop-button" style={{
                   background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
@@ -466,23 +450,6 @@ export default function Header({ activeTab, setActiveTab }) {
                   transition: 'all 0.2s ease'
                 }}>
                 Comment ça marche
-                </Link>                <Link href="/ajout-logement" style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#1F2937',
-                  background: 'rgba(96,162,157,0.12)',
-                  border: '1px solid rgba(96,162,157,0.25)',
-                  padding: '20px 24px',
-                  borderRadius: '16px',
-                  marginBottom: '20px',
-                  gap: '12px',
-                  fontWeight: '600',
-                  fontSize: '16px',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s ease'
-                }}>
-                Proposer un logement
                 </Link>
 
                 <Link href="/inscription" style={{
