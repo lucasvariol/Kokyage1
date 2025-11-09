@@ -281,20 +281,12 @@ export default function Page() {
               fontSize: 'clamp(2rem, 5vw, 3.5rem)',
               fontWeight: 800,
               color: 'white',
-              marginBottom: '16px',
+              marginBottom: '0',
               letterSpacing: '-0.02em',
               textShadow: '0 4px 30px rgba(0,0,0,0.3)'
             }}>
               Bienvenue sur Kokyage
             </h1>
-            <p style={{
-              fontSize: 'clamp(1rem, 2vw, 1.25rem)',
-              color: 'rgba(255,255,255,0.8)',
-              fontWeight: 400,
-              letterSpacing: '0.01em'
-            }}>
-              Choisissez votre expérience
-            </p>
           </div>
 
           {/* Cards de sélection */}
@@ -347,7 +339,6 @@ export default function Page() {
                 pointerEvents: 'none'
               }} className="glow-effect" />
               
-              <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏖️</div>
               <h2 style={{
                 fontSize: '1.75rem',
                 fontWeight: 700,
@@ -357,14 +348,7 @@ export default function Page() {
               }}>
                 Je cherche un séjour
               </h2>
-              <p style={{
-                fontSize: '1.05rem',
-                color: 'rgba(255,255,255,0.75)',
-                lineHeight: 1.6,
-                marginBottom: '24px'
-              }}>
-                Découvrez des logements uniques à prix réduit grâce au partage de revenus
-              </p>
+              <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏖️</div>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -419,7 +403,6 @@ export default function Page() {
                 pointerEvents: 'none'
               }} className="glow-effect" />
               
-              <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏠</div>
               <h2 style={{
                 fontSize: '1.75rem',
                 fontWeight: 700,
@@ -429,14 +412,7 @@ export default function Page() {
               }}>
                 Je sous-loue mon logement
               </h2>
-              <p style={{
-                fontSize: '1.05rem',
-                color: 'rgba(255,255,255,0.75)',
-                lineHeight: 1.6,
-                marginBottom: '24px'
-              }}>
-                Générez des revenus passifs en partageant vos espaces inutilisés
-              </p>
+              <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏠</div>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -517,20 +493,14 @@ export default function Page() {
               border-radius: 20px !important;
             }
             
-            .mode-selection-cards > div > div:first-child {
-              font-size: 2.5rem !important;
-              margin-bottom: 12px !important;
-            }
-            
             .mode-selection-cards h2 {
               font-size: 0.95rem !important;
-              margin-bottom: 8px !important;
+              margin-bottom: 12px !important;
               line-height: 1.3 !important;
             }
             
-            .mode-selection-cards p {
-              font-size: 0.75rem !important;
-              line-height: 1.4 !important;
+            .mode-selection-cards > div > h2 + div {
+              font-size: 2.5rem !important;
               margin-bottom: 16px !important;
             }
 
@@ -562,19 +532,14 @@ export default function Page() {
               padding: 20px 8px !important;
               border-radius: 16px !important;
             }
-
-            .mode-selection-cards > div > div:first-child {
-              font-size: 2rem !important;
-              margin-bottom: 8px !important;
-            }
             
             .mode-selection-cards h2 {
               font-size: 0.85rem !important;
-              margin-bottom: 6px !important;
+              margin-bottom: 8px !important;
             }
             
-            .mode-selection-cards p {
-              font-size: 0.7rem !important;
+            .mode-selection-cards > div > h2 + div {
+              font-size: 2rem !important;
               margin-bottom: 12px !important;
             }
 
@@ -606,10 +571,12 @@ export default function Page() {
 
             .mode-selection-cards h2 {
               font-size: 0.8rem !important;
+              margin-bottom: 6px !important;
             }
 
-            .mode-selection-cards p {
-              font-size: 0.65rem !important;
+            .mode-selection-cards > div > h2 + div {
+              font-size: 1.8rem !important;
+              margin-bottom: 10px !important;
             }
           }
         `}</style>
