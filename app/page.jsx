@@ -276,7 +276,7 @@ export default function Page() {
                 }
               }}
             >
-              Je cherche un séjour
+              Chercher un séjour
             </button>
             <button
               onClick={() => handleTabChange('hote')}
@@ -310,7 +310,7 @@ export default function Page() {
                 }
               }}
             >
-              Je sous-loue mon logement
+              Sous-louer mon logement
             </button>
           </div>
 
@@ -393,7 +393,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    60<span style={{ fontSize: '3rem', verticalAlign: 'super' }}>%</span>
+                    60<span style={{ fontSize: '3rem' }}>%</span>
                   </div>
                   <p style={{ 
                     fontSize: '0.95rem', 
@@ -456,7 +456,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    40<span style={{ fontSize: '3rem', verticalAlign: 'super' }}>%</span>
+                    40<span style={{ fontSize: '3rem' }}>%</span>
                   </div>
                   <p style={{ 
                     fontSize: '0.95rem', 
@@ -1322,7 +1322,7 @@ export default function Page() {
                 color: '#2D3748',
                 marginBottom: '20px'
               }}>
-                💳 Caution de 300€
+                Caution de 300€
               </h3>
               <p style={{
                 color: '#718096',
@@ -1357,7 +1357,7 @@ export default function Page() {
                 color: '#2D3748',
                 marginBottom: '20px'
               }}>
-                📋 Assurance du voyageur
+              Assurance du voyageur
               </h3>
               <p style={{
                 color: '#718096',
@@ -1392,7 +1392,7 @@ export default function Page() {
                 color: '#2D3748',
                 marginBottom: '20px'
               }}>
-                ⚖️ Locataire garant
+              Locataire garant
               </h3>
               <p style={{
                 color: '#718096',
@@ -1403,28 +1403,6 @@ export default function Page() {
               </p>
             </div>
           </div>
-
-          <div style={{
-            marginTop: '48px',
-            textAlign: 'center',
-            padding: '32px',
-            background: 'white',
-            borderRadius: '20px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-            border: '2px solid #60A29D'
-          }}>
-            <p style={{
-              fontSize: '1.1rem',
-              color: '#2D3748',
-              fontWeight: 600,
-              margin: 0
-            }}>
-              ✨ <strong style={{ color: '#60A29D' }}>Triple sécurité</strong> : caution + assurance voyageur + responsabilité locataire
-            </p>
-          </div>
-        </div>
-      </section>
-      )}
 
       {/* Section Call to Action - Fonctionnement - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
