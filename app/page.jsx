@@ -393,7 +393,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    60<span style={{ fontSize: '3rem', verticalAlign: 'middle' }}>%</span>
+                    60<span style={{ fontSize: '3rem', verticalAlign: 'super' }}>%</span>
                   </div>
                   <p style={{ 
                     fontSize: '0.95rem', 
@@ -456,7 +456,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    40<span style={{ fontSize: '3rem', verticalAlign: 'middle' }}>%</span>
+                    40<span style={{ fontSize: '3rem', verticalAlign: 'super' }}>%</span>
                   </div>
                   <p style={{ 
                     fontSize: '0.95rem', 
@@ -1403,6 +1403,9 @@ export default function Page() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+      )}
 
       {/* Section Call to Action - Fonctionnement - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
