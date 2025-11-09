@@ -1341,7 +1341,7 @@ export default function Page() {
                 lineHeight: 1.6,
                 fontSize: '0.95rem'
               }}>
-                Une empreinte bancaire est enregistrée auprès de chaque voyageur. En cas de dégradation mineure validée par nos modérateurs, jusqu'à 300€ peuvent être prélevés automatiquement pour couvrir les réparations.
+                Une empreinte bancaire est enregistrée auprès de chaque voyageur avant le séjour. Dans les rares cas de dégradations et après validation par nos modérateurs, jusqu'à 300€ peuvent être prélevés pour couvrir les réparations.
               </p>
             </div>
 
@@ -1388,7 +1388,7 @@ export default function Page() {
                 lineHeight: 1.6,
                 fontSize: '0.95rem'
               }}>
-                Pour les dommages plus importants, l'assurance responsabilité civile du voyageur est sollicitée en priorité. Une attestation de villégiature (incluse dans l'assurance habitation) est fortement recommandée.
+                Pour les dommages plus importants, l'assurance responsabilité civile du voyageur est sollicitée en priorité. il est fortement recommandé de demander une attestation de villégiture avant le séjour.
               </p>
             </div>
 
@@ -1435,7 +1435,7 @@ export default function Page() {
                 lineHeight: 1.6,
                 fontSize: '0.95rem'
               }}>
-                Le locataire principal reste juridiquement responsable du logement pendant toute la durée de la sous-location. Il demeure votre interlocuteur unique, conformément à la loi et à l'accord signé.
+                Le locataire principal reste juridiquement responsable du logement pendant toute la durée de la sous-location.
               </p>
             </div>
           </div>
@@ -1755,13 +1755,14 @@ export default function Page() {
         }
         
         .estimator-section {
-          margin: -40px auto 40px !important;
-          padding: 0 16px !important;
+          padding: 0 16px 40px !important;
+          margin-top: 0 !important;
         }
         
         .estimator-card {
           padding: 32px 24px !important;
           border-radius: 20px !important;
+          margin-top: -80px !important;
         }
 
         .estimator-heading {
@@ -1845,10 +1846,24 @@ export default function Page() {
           flex: none !important;
         }
         
+        /* Onglets responsive - ne débordent pas */
+        .hero-section > div > div:first-of-type {
+          max-width: calc(100vw - 32px) !important;
+          margin: 0 auto 40px !important;
+          padding: 6px !important;
+        }
+        
+        .hero-section > div > div:first-of-type button {
+          padding: 12px 16px !important;
+          font-size: 0.9rem !important;
+          white-space: nowrap !important;
+        }
+        
         /* Titre principal - ajuste taille pour garder même nombre de lignes */
         h1 {
           font-size: clamp(1.8rem, 8vw, 4rem) !important;
           line-height: 1.2 !important;
+          padding: 0 8px !important;
         }
         
         /* Cases 60% et 40% côte à côte sur mobile */
@@ -1857,10 +1872,12 @@ export default function Page() {
           flex-wrap: nowrap !important;
           gap: 12px !important;
           justify-content: center !important;
+          padding: 0 8px !important;
+          margin-bottom: 60px !important;
         }
         
         .revenue-split-cards > div {
-          padding: 24px 16px !important;
+          padding: 20px 12px !important;
           min-width: 0 !important;
           flex: 1 !important;
           max-width: none !important;
