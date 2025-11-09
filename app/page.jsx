@@ -1647,26 +1647,38 @@ export default function Page() {
           flex: none !important;
         }
         
+        /* Titre principal - ajuste taille pour garder même nombre de lignes */
+        h1 {
+          font-size: clamp(1.8rem, 8vw, 4rem) !important;
+          line-height: 1.2 !important;
+        }
+        
         /* Cases 60% et 40% côte à côte sur mobile */
         .revenue-split-cards {
-          grid-template-columns: 1fr 1fr !important;
-          gap: 16px !important;
+          display: flex !important;
+          flex-wrap: nowrap !important;
+          gap: 12px !important;
+          justify-content: center !important;
         }
         
         .revenue-split-cards > div {
           padding: 24px 16px !important;
+          min-width: 0 !important;
+          flex: 1 !important;
+          max-width: none !important;
         }
         
-        .revenue-split-cards > div > div:first-child {
-          font-size: 3rem !important;
+        .revenue-split-cards > div > div:nth-child(2) {
+          font-size: 0.85rem !important;
         }
         
-        .revenue-split-cards > div > h3 {
-          font-size: 1.1rem !important;
+        .revenue-split-cards > div > div:nth-child(3) {
+          font-size: 3.5rem !important;
         }
         
         .revenue-split-cards > div > p {
-          font-size: 0.85rem !important;
+          font-size: 0.8rem !important;
+          line-height: 1.3 !important;
         }
         
         /* Badges features toujours en ligne mais plus compacts */
