@@ -331,7 +331,7 @@ export default function Page() {
               {activeTab === 'voyageur' ? (
                 <>Des hébergements <br /><span style={{ color: '#4ECDC4' }}> équitables et authentiques </span></>
               ) : (
-                <>La sous-location <span style={{ color: '#4ECDC4' }}>enfin possible</span></>
+                <>Sous-louez enfin <span style={{ color: '#4ECDC4' }}>en partageant les revenus</span></>
               )}
             </h1>
             
@@ -857,7 +857,9 @@ export default function Page() {
         opacity: isTransitioning ? 0 : 1,
         transform: isTransitioning ? 'translateY(10px)' : 'translateY(0)',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        willChange: 'opacity, transform'
+        willChange: 'opacity, transform',
+        position: 'relative',
+        zIndex: 10
       }}>
       
 
@@ -868,16 +870,17 @@ export default function Page() {
         background: '#FFFFFF',
         padding: '0 24px 80px',
         margin: '0',
-        position: 'relative',
-        zIndex: 10
+        position: 'relative'
       }}>
-        <div style={{ maxWidth: '1100px', margin: '-100px auto 0', position: 'relative', zIndex: 11 }}>
+        <div style={{ maxWidth: '1100px', margin: '-100px auto 0', position: 'relative' }}>
         <div className="estimator-card" style={{ 
           background: 'white',
           borderRadius: '24px', 
           boxShadow: '0 20px 60px rgba(0,0,0,0.15)', 
           padding: '48px 32px', 
-          border: '1px solid rgba(0,0,0,0.05)'
+          border: '1px solid rgba(0,0,0,0.05)',
+          position: 'relative',
+          zIndex: 1
         }}>
           <div className="estimator-heading" style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h3 style={{ 
