@@ -314,6 +314,10 @@ export default function Page() {
                 overflow: 'hidden',
                 transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
                 boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-between'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
@@ -341,15 +345,18 @@ export default function Page() {
                 pointerEvents: 'none'
               }} className="glow-effect" />
               
-              <h2 style={{
-                fontSize: '1.75rem',
-                fontWeight: 700,
-                color: 'white',
-                marginBottom: '16px',
-                letterSpacing: '-0.01em'
-              }}>
-                Je cherche un séjour
-              </h2>
+              <div>
+                <h2 style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 700,
+                  color: 'white',
+                  marginBottom: '16px',
+                  letterSpacing: '-0.01em',
+                  minHeight: '4.2rem'
+                }}>
+                  Je cherche un séjour
+                </h2>
+              </div>
               <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏖️</div>
               <div style={{
                 display: 'inline-flex',
@@ -378,6 +385,10 @@ export default function Page() {
                 overflow: 'hidden',
                 transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
                 boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-between'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
@@ -405,15 +416,18 @@ export default function Page() {
                 pointerEvents: 'none'
               }} className="glow-effect" />
               
-              <h2 style={{
-                fontSize: '1.75rem',
-                fontWeight: 700,
-                color: 'white',
-                marginBottom: '16px',
-                letterSpacing: '-0.01em'
-              }}>
-                Je sous-loue mon logement
-              </h2>
+              <div>
+                <h2 style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 700,
+                  color: 'white',
+                  marginBottom: '16px',
+                  letterSpacing: '-0.01em',
+                  minHeight: '4.2rem'
+                }}>
+                  Je sous-loue mon logement
+                </h2>
+              </div>
               <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏠</div>
               <div style={{
                 display: 'inline-flex',
@@ -499,9 +513,10 @@ export default function Page() {
               font-size: 0.95rem !important;
               margin-bottom: 12px !important;
               line-height: 1.3 !important;
+              min-height: 2.8rem !important;
             }
             
-            .mode-selection-cards > div > h2 + div {
+            .mode-selection-cards > div > div > h2 + div {
               font-size: 2.5rem !important;
               margin-bottom: 16px !important;
             }
@@ -538,9 +553,10 @@ export default function Page() {
             .mode-selection-cards h2 {
               font-size: 0.85rem !important;
               margin-bottom: 8px !important;
+              min-height: 2.4rem !important;
             }
             
-            .mode-selection-cards > div > h2 + div {
+            .mode-selection-cards > div > div > h2 + div {
               font-size: 2rem !important;
               margin-bottom: 12px !important;
             }
@@ -574,9 +590,10 @@ export default function Page() {
             .mode-selection-cards h2 {
               font-size: 0.8rem !important;
               margin-bottom: 6px !important;
+              min-height: 2.2rem !important;
             }
 
-            .mode-selection-cards > div > h2 + div {
+            .mode-selection-cards > div > div > h2 + div {
               font-size: 1.8rem !important;
               margin-bottom: 10px !important;
             }
