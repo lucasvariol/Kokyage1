@@ -2050,6 +2050,14 @@ export default function Page() {
           margin-top: -40px !important;
         }
 
+        .concept-section {
+          padding: 40px 16px 30px !important;
+        }
+
+        .concept-section + section {
+          padding: 30px 16px 40px !important;
+        }
+
         .estimator-heading {
           margin-bottom: 24px !important;
         }
