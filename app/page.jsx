@@ -48,6 +48,19 @@ export default function Page() {
 
   // État pour gérer l'onglet actif
   const [activeTab, setActiveTab] = useState('voyageur'); // 'voyageur' ou 'hote'
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Fonction pour changer d'onglet avec animation
+  const handleTabChange = (newTab) => {
+    if (newTab === activeTab) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveTab(newTab);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 50);
+    }, 300);
+  };
 
   // Fermer le menu voyageurs si clic en dehors
   useEffect(() => {
@@ -233,7 +246,7 @@ export default function Page() {
             border: '1px solid rgba(255,255,255,0.2)'
           }}>
             <button
-              onClick={() => setActiveTab('voyageur')}
+              onClick={() => handleTabChange('voyageur')}
               style={{
                 flex: 1,
                 background: activeTab === 'voyageur' 
@@ -267,7 +280,7 @@ export default function Page() {
               Je cherche un séjour
             </button>
             <button
-              onClick={() => setActiveTab('hote')}
+              onClick={() => handleTabChange('hote')}
               style={{
                 flex: 1,
                 background: activeTab === 'hote' 
@@ -310,9 +323,9 @@ export default function Page() {
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
           }}>
             {activeTab === 'voyageur' ? (
-              <>Offrez-vous enfin <br /><span style={{ color: '#4ECDC4' }}>des vacances</span></>
+              <>Des hébergements <br /><span style={{ color: '#4ECDC4' }}> équitables et authentiques </span></>
             ) : (
-              <>Générez des revenus<br /><span style={{ color: '#4ECDC4' }}>avec votre logement</span></>
+              <>La sous-location<br /><span style={{ color: '#4ECDC4' }}>enfin possible</span></>
             )}
           </h1>
           <p style={{ 
@@ -323,7 +336,7 @@ export default function Page() {
             maxWidth: '600px',
             margin: '0 auto 48px'
           }}>
-            {activeTab === 'hote' && 'Sous-louez légalement et partagez les revenus avec votre propriétaire'}
+            {activeTab === 'hote' && 'Partagez les revenus avec votre propriétaire et offrez-vous enfin des vacances !'}
           </p>
           
           {/* Modern Search Card - Visible uniquement pour voyageur */}
@@ -757,10 +770,118 @@ export default function Page() {
       
       {/* Contenu avec animation de fondu */}
       <div style={{
-        animation: 'fadeIn 0.5s ease-in-out',
-        opacity: 1
+        opacity: isTransitioning ? 0 : 1,
+        transform: isTransitioning ? 'translateY(20px)' : 'translateY(0)',
+        transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out'
       }}>
       
+      {/* Section Partage des revenus - Visible uniquement pour hôte - DÉPLACÉE EN PREMIER */}
+      {activeTab === 'hote' && (
+      <section style={{ 
+        background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
+        padding: '80px 24px',
+        color: 'white'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <h2 style={{ 
+            fontSize: 'clamp(2rem, 4vw, 2.8rem)', 
+            fontWeight: 800, 
+            textAlign: 'center',
+            marginBottom: '16px'
+          }}>
+            💰 Partage des revenus
+          </h2>
+          <p style={{ 
+            textAlign: 'center', 
+            fontSize: '1.15rem', 
+            marginBottom: '48px',
+            opacity: 0.95
+          }}>
+            Un modèle équitable qui profite à tous
+          </p>
+
+          <div className="revenue-split-cards" style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '32px',
+            marginBottom: '32px'
+          }}>
+            <div style={{ 
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(10px)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              textAlign: 'center',
+              border: '2px solid rgba(255,255,255,0.2)',
+              transition: 'all 0.3s ease',
+              cursor: 'default'
+            }}>
+              <div style={{ 
+                fontSize: '4.5rem', 
+                fontWeight: 900, 
+                marginBottom: '12px',
+                color: '#FFE66D',
+                textShadow: '0 4px 12px rgba(0,0,0,0.2)'
+              }}>
+                60%
+              </div>
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 700, 
+                marginBottom: '12px'
+              }}>
+                Pour le locataire
+              </h3>
+              <p style={{ 
+                fontSize: '1rem', 
+                opacity: 0.9,
+                lineHeight: 1.6
+              }}>
+                Celui qui gère les réservations et accueille les voyageurs
+              </p>
+            </div>
+
+            <div style={{ 
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(10px)',
+              padding: '40px 32px',
+              borderRadius: '20px',
+              textAlign: 'center',
+              border: '2px solid rgba(255,255,255,0.2)',
+              transition: 'all 0.3s ease',
+              cursor: 'default'
+            }}>
+              <div style={{ 
+                fontSize: '4.5rem', 
+                fontWeight: 900, 
+                marginBottom: '12px',
+                color: '#FFE66D',
+                textShadow: '0 4px 12px rgba(0,0,0,0.2)'
+              }}>
+                40%
+              </div>
+              <h3 style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 700, 
+                marginBottom: '12px'
+              }}>
+                Pour le propriétaire
+              </h3>
+              <p style={{ 
+                fontSize: '1rem', 
+                opacity: 0.9,
+                lineHeight: 1.6
+              }}>
+                Revenus passifs sans aucun effort de gestion
+              </p>
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+      )}
+
       {/* Estimation revenus moderne - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
       <section className="estimator-section" style={{ 
@@ -1111,113 +1232,6 @@ export default function Page() {
       </section>
       )}
 
-      {/* Section Partage des revenus - Visible uniquement pour hôte */}
-      {activeTab === 'hote' && (
-      <section style={{ 
-        background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
-        padding: '80px 24px',
-        color: 'white'
-      }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <h2 style={{ 
-            fontSize: 'clamp(2rem, 4vw, 2.8rem)', 
-            fontWeight: 800, 
-            textAlign: 'center',
-            marginBottom: '16px'
-          }}>
-            💰 Partage des revenus
-          </h2>
-          <p style={{ 
-            textAlign: 'center', 
-            fontSize: '1.15rem', 
-            marginBottom: '48px',
-            opacity: 0.95
-          }}>
-            Un modèle équitable qui profite à tous
-          </p>
-
-          <div className="revenue-split-cards" style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '32px',
-            marginBottom: '32px'
-          }}>
-            <div style={{ 
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              padding: '40px 32px',
-              borderRadius: '20px',
-              textAlign: 'center',
-              border: '2px solid rgba(255,255,255,0.2)',
-              transition: 'all 0.3s ease',
-              cursor: 'default'
-            }}>
-              <div style={{ 
-                fontSize: '4.5rem', 
-                fontWeight: 900, 
-                marginBottom: '12px',
-                color: '#FFE66D',
-                textShadow: '0 4px 12px rgba(0,0,0,0.2)'
-              }}>
-                60%
-              </div>
-              <h3 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 700, 
-                marginBottom: '12px'
-              }}>
-                Pour le locataire
-              </h3>
-              <p style={{ 
-                fontSize: '1rem', 
-                opacity: 0.9,
-                lineHeight: 1.6
-              }}>
-                Celui qui gère les réservations et accueille les voyageurs
-              </p>
-            </div>
-
-            <div style={{ 
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
-              padding: '40px 32px',
-              borderRadius: '20px',
-              textAlign: 'center',
-              border: '2px solid rgba(255,255,255,0.2)',
-              transition: 'all 0.3s ease',
-              cursor: 'default'
-            }}>
-              <div style={{ 
-                fontSize: '4.5rem', 
-                fontWeight: 900, 
-                marginBottom: '12px',
-                color: '#FFE66D',
-                textShadow: '0 4px 12px rgba(0,0,0,0.2)'
-              }}>
-                40%
-              </div>
-              <h3 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 700, 
-                marginBottom: '12px'
-              }}>
-                Pour le propriétaire
-              </h3>
-              <p style={{ 
-                fontSize: '1rem', 
-                opacity: 0.9,
-                lineHeight: 1.6
-              }}>
-                Revenus passifs sans aucun effort de gestion
-              </p>
-            </div>
-          </div>
-
-
-        </div>
-      </section>
-      )}
-
       {/* Section Call to Action - Fonctionnement - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
       <section className="cta-fonctionnement" style={{ 
@@ -1473,17 +1487,6 @@ export default function Page() {
 
     {/* CSS Responsive + Animations */}
     <style jsx>{`
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
       @media (max-width: 768px) {
         .desktop-only {
           display: none !important;
