@@ -261,14 +261,15 @@ export default function Page() {
           transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
         }}>
           {/* Logo */}
-          <div style={{ marginBottom: '50px', animation: 'fadeInDown 1s ease-out' }}>
+          <div style={{ marginBottom: '50px', animation: 'fadeInDown 1s ease-out', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <img 
               src="/logo.png" 
               alt="Kokyage" 
               style={{ 
-                height: '70px', 
+                height: 'clamp(80px, 10vw, 120px)', 
                 filter: 'brightness(0) invert(1)',
-                marginBottom: '20px'
+                marginBottom: '20px',
+                display: 'block'
               }} 
             />
             <h1 style={{
@@ -292,9 +293,9 @@ export default function Page() {
           </div>
 
           {/* Cards de sélection */}
-          <div style={{
+          <div className="mode-selection-cards" style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(2, 1fr)',
             gap: '30px',
             maxWidth: '900px',
             margin: '0 auto',
@@ -483,9 +484,35 @@ export default function Page() {
           }
 
           @media (max-width: 768px) {
-            div[style*="gridTemplateColumns"] {
-              grid-template-columns: 1fr !important;
-              gap: 20px !important;
+            .mode-selection-cards {
+              gap: 16px !important;
+              padding: 0 16px;
+            }
+            
+            .mode-selection-cards > div {
+              padding: 40px 20px !important;
+            }
+            
+            .mode-selection-cards h2 {
+              font-size: 1.25rem !important;
+            }
+            
+            .mode-selection-cards p {
+              font-size: 0.9rem !important;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .mode-selection-cards {
+              gap: 12px !important;
+            }
+            
+            .mode-selection-cards > div {
+              padding: 30px 16px !important;
+            }
+            
+            .mode-selection-cards > div > div:first-child {
+              font-size: 2.5rem !important;
             }
           }
         `}</style>
