@@ -785,16 +785,17 @@ export default function Page() {
       {/* Section Partage des revenus - Visible uniquement pour hôte - DÉPLACÉE EN PREMIER */}
       {activeTab === 'hote' && (
       <section style={{ 
-        background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
-        padding: '80px 24px',
-        color: 'white'
+        background: '#FFFFFF',
+        padding: '80px 24px 40px',
+        color: '#2D3748'
       }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <h2 style={{ 
             fontSize: 'clamp(2rem, 4vw, 2.8rem)', 
             fontWeight: 800, 
             textAlign: 'center',
-            marginBottom: '16px'
+            marginBottom: '16px',
+            color: '#2D3748'
           }}>
             💰 Partage des revenus
           </h2>
@@ -802,7 +803,7 @@ export default function Page() {
             textAlign: 'center', 
             fontSize: '1.15rem', 
             marginBottom: '48px',
-            opacity: 0.95
+            color: '#718096'
           }}>
             Un modèle équitable qui profite à tous
           </p>
@@ -814,14 +815,15 @@ export default function Page() {
             marginBottom: '32px'
           }}>
             <div style={{ 
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
+              background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
               padding: '40px 32px',
               borderRadius: '20px',
               textAlign: 'center',
-              border: '2px solid rgba(255,255,255,0.2)',
+              border: 'none',
               transition: 'all 0.3s ease',
-              cursor: 'default'
+              cursor: 'default',
+              color: 'white',
+              boxShadow: '0 10px 30px rgba(96,162,157,0.25)'
             }}>
               <div style={{ 
                 fontSize: '4.5rem', 
@@ -835,28 +837,31 @@ export default function Page() {
               <h3 style={{ 
                 fontSize: '1.5rem', 
                 fontWeight: 700, 
-                marginBottom: '12px'
+                marginBottom: '12px',
+                color: 'white'
               }}>
                 Pour le locataire
               </h3>
               <p style={{ 
                 fontSize: '1rem', 
-                opacity: 0.9,
-                lineHeight: 1.6
+                opacity: 0.95,
+                lineHeight: 1.6,
+                color: 'white'
               }}>
                 Celui qui gère les réservations et accueille les voyageurs
               </p>
             </div>
 
             <div style={{ 
-              background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(10px)',
+              background: 'linear-gradient(135deg, #CAAD78 0%, #B5935F 100%)',
               padding: '40px 32px',
               borderRadius: '20px',
               textAlign: 'center',
-              border: '2px solid rgba(255,255,255,0.2)',
+              border: 'none',
               transition: 'all 0.3s ease',
-              cursor: 'default'
+              cursor: 'default',
+              color: 'white',
+              boxShadow: '0 10px 30px rgba(202,173,120,0.25)'
             }}>
               <div style={{ 
                 fontSize: '4.5rem', 
@@ -870,14 +875,16 @@ export default function Page() {
               <h3 style={{ 
                 fontSize: '1.5rem', 
                 fontWeight: 700, 
-                marginBottom: '12px'
+                marginBottom: '12px',
+                color: 'white'
               }}>
                 Pour le propriétaire
               </h3>
               <p style={{ 
                 fontSize: '1rem', 
-                opacity: 0.9,
-                lineHeight: 1.6
+                opacity: 0.95,
+                lineHeight: 1.6,
+                color: 'white'
               }}>
                 Revenus passifs sans aucun effort de gestion
               </p>
@@ -893,18 +900,17 @@ export default function Page() {
       {activeTab === 'hote' && (
       <section className="estimator-section" style={{ 
         maxWidth: '1100px', 
-        margin: '-60px auto 60px', 
+        margin: '0 auto 60px', 
         padding: '0 24px',
         position: 'relative',
         zIndex: 0
       }}>
         <div className="estimator-card" style={{ 
-          background: 'white',
+          background: '#F8F9FA',
           borderRadius: '24px', 
-          boxShadow: '0 20px 60px rgba(0,0,0,0.1)', 
+          boxShadow: 'none', 
           padding: '48px 32px', 
-          border: '1px solid rgba(0,0,0,0.05)',
-          backdropFilter: 'blur(10px)'
+          border: 'none'
         }}>
           <div className="estimator-heading" style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h3 style={{ 
@@ -1030,13 +1036,14 @@ export default function Page() {
             {/* Barre de prix déplacée en dessous */}
             <div style={{ width: '100%', maxWidth: '700px' }}>
               <div className="price-input-section" style={{ 
-                background: '#F5F1ED',
+                background: 'white',
                 borderRadius: '16px',
                 padding: '24px',
-                border: '2px solid #E8E3DC',
+                border: '2px solid #E2E8F0',
                 marginBottom: '16px',
                 overflow: 'hidden',
-                position: 'relative'
+                position: 'relative',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
               }}>
                 <div className="price-input-text" style={{ textAlign: 'center', marginBottom: '16px', fontSize: '18px', color: '#4A5568' }}>
                   <strong style={{ fontWeight: 700, color: '#60A29D' }}>{nbNuits}</strong> nuits à&nbsp;
