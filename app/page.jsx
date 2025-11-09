@@ -199,7 +199,7 @@ export default function Page() {
       {/* Hero Section with Modern Design */}
       <section className="hero-section" style={{ 
         background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', 
-        padding: '80px 24px 120px',
+        padding: '80px 24px 60px',
         textAlign: 'center', 
         color: 'white',
         position: 'relative',
@@ -332,18 +332,7 @@ export default function Page() {
               ) : (
                 <>La sous-location<br /><span style={{ color: '#4ECDC4' }}>enfin possible</span></>
               )}
-            </h1>
-            <p style={{ 
-              fontSize: '1.25rem', 
-              opacity: 0.9, 
-              marginBottom: '48px', 
-              lineHeight: 1.6,
-              maxWidth: '600px',
-              margin: '0 auto 48px'
-            }}>
-              {activeTab === 'hote' && 'Partagez les revenus avec votre propriétaire et offrez-vous enfin des vacances !'}
-            </p>
-            
+            </h1>            
             {/* Modern Search Card - Visible uniquement pour voyageur */}
             {activeTab === 'voyageur' && (
             <div className="search-card-modern" style={{ 
@@ -797,16 +786,8 @@ export default function Page() {
             marginBottom: '16px',
             color: '#2D3748'
           }}>
-            💰 Partage des revenus
+            Convainquez votre propriétaire avec notre modèle de partage des revenus
           </h2>
-          <p style={{ 
-            textAlign: 'center', 
-            fontSize: '1.15rem', 
-            marginBottom: '48px',
-            color: '#718096'
-          }}>
-            Un modèle équitable qui profite à tous
-          </p>
 
           <div className="revenue-split-cards" style={{ 
             display: 'grid', 
