@@ -2154,7 +2154,7 @@ export default function Page() {
           gap: 12px !important;
           justify-content: center !important;
           padding: 0 8px !important;
-          margin-bottom: 60px !important;
+          margin-bottom: 20px !important;
         }
         
         .revenue-split-cards > div {
