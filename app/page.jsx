@@ -909,82 +909,8 @@ export default function Page() {
             }}>
               Calculez vos revenus potentiels
             </h3>
-            <p className="estimator-subtitle" style={{
-              fontSize: '1.1rem',
-              color: '#718096',
-              maxWidth: '600px',
-              margin: '0 auto',
-                lineHeight: 1.6
-              }}>
-              Sous-louez enfin votre logement <br />  en partageant les revenus avec votre propriétaire. <br />
-            </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-            <div style={{ width: '100%', maxWidth: '700px' }}>
-              <div className="price-input-section" style={{ 
-                background: '#F5F1ED',
-                borderRadius: '16px',
-                padding: '24px',
-                border: '2px solid #E8E3DC',
-                marginBottom: '16px',
-                overflow: 'hidden',
-                position: 'relative'
-              }}>
-                <div className="price-input-text" style={{ textAlign: 'center', marginBottom: '16px', fontSize: '18px', color: '#4A5568' }}>
-                  <strong style={{ fontWeight: 700, color: '#60A29D' }}>{nbNuits}</strong> nuits à&nbsp;
-                  <input
-                    aria-label="Prix par nuit"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={pricePerNight}
-                    onChange={e => {
-                      const raw = e.target.value;
-                      const numeric = raw.replace(/[^0-9]/g, '');
-                      setPricePerNight(numeric === '' ? '' : Number(numeric));
-                    }}
-                    style={{ 
-                      display: 'inline-block', 
-                      width: '60px', 
-                      border: 'none', 
-                      borderBottom: '3px solid #60A29D', 
-                      textAlign: 'center', 
-                      fontSize: '18px', 
-                      fontWeight: 700, 
-                      background: 'transparent',
-                      color: '#60A29D',
-                      outline: 'none',
-                      padding: '4px 0'
-                    }}
-                  />
-                  <span style={{ fontWeight: 600, color: '#374151' }}>€/nuit</span>
-                </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={30}
-                  step={1}
-                  value={nbNuits}
-                  onChange={e => setNbNuits(Number(e.target.value))}
-                  style={{
-                    width: '100%',
-                    height: '8px',
-                    borderRadius: '4px',
-                    background: '#e2e8f0',
-                    outline: 'none',
-                    appearance: 'none',
-                    cursor: 'pointer',
-                    touchAction: 'manipulation',
-                    userSelect: 'none',
-                    WebkitUserSelect: 'none',
-                    MozUserSelect: 'none',
-                    msUserSelect: 'none'
-                  }}
-                  onTouchStart={e => e.preventDefault()}
-                  onTouchMove={e => e.stopPropagation()}
-                />
-              </div>
-            </div>
 
             {/* Revenus calculés */}
             <div className="revenue-cards" style={{ 
@@ -1093,6 +1019,74 @@ export default function Page() {
                 }} loading="lazy" />
               </a>
             </div>
+
+            {/* Barre de prix déplacée en dessous */}
+            <div style={{ width: '100%', maxWidth: '700px' }}>
+              <div className="price-input-section" style={{ 
+                background: '#F5F1ED',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '2px solid #E8E3DC',
+                marginBottom: '16px',
+                overflow: 'hidden',
+                position: 'relative'
+              }}>
+                <div className="price-input-text" style={{ textAlign: 'center', marginBottom: '16px', fontSize: '18px', color: '#4A5568' }}>
+                  <strong style={{ fontWeight: 700, color: '#60A29D' }}>{nbNuits}</strong> nuits à&nbsp;
+                  <input
+                    aria-label="Prix par nuit"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={pricePerNight}
+                    onChange={e => {
+                      const raw = e.target.value;
+                      const numeric = raw.replace(/[^0-9]/g, '');
+                      setPricePerNight(numeric === '' ? '' : Number(numeric));
+                    }}
+                    style={{ 
+                      display: 'inline-block', 
+                      width: '60px', 
+                      border: 'none', 
+                      borderBottom: '3px solid #60A29D', 
+                      textAlign: 'center', 
+                      fontSize: '18px', 
+                      fontWeight: 700, 
+                      background: 'transparent',
+                      color: '#60A29D',
+                      outline: 'none',
+                      padding: '4px 0'
+                    }}
+                  />
+                  <span style={{ fontWeight: 600, color: '#374151' }}>€/nuit</span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={30}
+                  step={1}
+                  value={nbNuits}
+                  onChange={e => setNbNuits(Number(e.target.value))}
+                  style={{
+                    width: '100%',
+                    height: '8px',
+                    borderRadius: '4px',
+                    background: '#e2e8f0',
+                    outline: 'none',
+                    appearance: 'none',
+                    cursor: 'pointer',
+                    touchAction: 'manipulation',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none'
+                  }}
+                  onTouchStart={e => e.preventDefault()}
+                  onTouchMove={e => e.stopPropagation()}
+                />
+              </div>
+            </div>
+
             {/* CTA modernes */}
             <div style={{ 
               display: 'flex', 
