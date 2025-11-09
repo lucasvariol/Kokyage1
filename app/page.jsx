@@ -868,19 +868,24 @@ export default function Page() {
       {activeTab === 'hote' && (
       <section className="estimator-section" style={{ 
         background: '#FFFFFF',
-        padding: '0 24px 80px',
-        margin: '0',
-        position: 'relative'
+        padding: '140px 24px 80px', // grand padding top pour espace interne sous le chevauchement
+        margin: '-160px 0 0', // chevauche la zone orange
+        position: 'relative',
+        zIndex: 20,
+        boxShadow: '0 -12px 30px rgba(0,0,0,0.08)',
+        borderTop: '1px solid rgba(0,0,0,0.06)'
       }}>
-        <div style={{ maxWidth: '1100px', margin: '-100px auto 0', position: 'relative' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative' }}>
         <div className="estimator-card" style={{ 
           background: 'white',
-          borderRadius: '24px', 
-          boxShadow: '0 20px 60px rgba(0,0,0,0.15)', 
-          padding: '48px 32px', 
+          borderRadius: '28px', 
+          boxShadow: '0 18px 50px rgba(0,0,0,0.18)', 
+          padding: '52px 40px', 
           border: '1px solid rgba(0,0,0,0.05)',
           position: 'relative',
-          zIndex: 1
+          zIndex: 25,
+          maxWidth: '1040px',
+          margin: '0 auto'
         }}>
           <div className="estimator-heading" style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h3 style={{ 
