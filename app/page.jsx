@@ -46,9 +46,20 @@ export default function Page() {
   const voyageursBtnRef = useRef(null);
   const voyageursMenuRef = useRef(null);
 
-  // État pour gérer l'onglet actif
-  const [activeTab, setActiveTab] = useState('voyageur'); // 'voyageur' ou 'hote'
+  // État pour gérer l'onglet actif et l'écran de choix initial
+  const [activeTab, setActiveTab] = useState(null); // null, 'voyageur' ou 'hote'
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showModeSelection, setShowModeSelection] = useState(true);
+
+  // Fonction pour choisir le mode initial
+  const handleModeSelection = (mode) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveTab(mode);
+      setShowModeSelection(false);
+      setIsTransitioning(false);
+    }, 600);
+  };
 
   // Fonction pour changer d'onglet avec animation moderne
   const handleTabChange = (newTab) => {
@@ -191,6 +202,296 @@ export default function Page() {
         setIsLoadingSuggestions(false);
       });
   }, [lieu, hasTypedLieu]);
+
+  // Si showModeSelection est true, afficher l'écran de sélection du mode
+  if (showModeSelection) {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        overflow: 'hidden',
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+      }}>
+        {/* Animated background particles */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          overflow: 'hidden',
+          opacity: 0.3
+        }}>
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                width: `${Math.random() * 300 + 50}px`,
+                height: `${Math.random() * 300 + 50}px`,
+                borderRadius: '50%',
+                background: `radial-gradient(circle, ${i % 2 === 0 ? 'rgba(215,144,119,0.15)' : 'rgba(96,162,157,0.15)'} 0%, transparent 70%)`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 5}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Main content */}
+        <div style={{
+          position: 'relative',
+          zIndex: 1,
+          textAlign: 'center',
+          padding: '40px',
+          maxWidth: '1100px',
+          width: '100%',
+          opacity: isTransitioning ? 0 : 1,
+          transform: isTransitioning ? 'scale(0.95)' : 'scale(1)',
+          transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}>
+          {/* Logo */}
+          <div style={{ marginBottom: '50px', animation: 'fadeInDown 1s ease-out' }}>
+            <img 
+              src="/logo.png" 
+              alt="Kokyage" 
+              style={{ 
+                height: '70px', 
+                filter: 'brightness(0) invert(1)',
+                marginBottom: '20px'
+              }} 
+            />
+            <h1 style={{
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: 800,
+              color: 'white',
+              marginBottom: '16px',
+              letterSpacing: '-0.02em',
+              textShadow: '0 4px 30px rgba(0,0,0,0.3)'
+            }}>
+              Bienvenue sur Kokyage
+            </h1>
+            <p style={{
+              fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+              color: 'rgba(255,255,255,0.8)',
+              fontWeight: 400,
+              letterSpacing: '0.01em'
+            }}>
+              Choisissez votre expérience
+            </p>
+          </div>
+
+          {/* Cards de sélection */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '30px',
+            maxWidth: '900px',
+            margin: '0 auto',
+            animation: 'fadeInUp 1s ease-out 0.3s both'
+          }}>
+            {/* Card Voyageur */}
+            <div
+              onClick={() => handleModeSelection('voyageur')}
+              style={{
+                background: 'linear-gradient(135deg, rgba(96,162,157,0.1) 0%, rgba(78,205,196,0.15) 100%)',
+                backdropFilter: 'blur(20px)',
+                border: '2px solid rgba(96,162,157,0.3)',
+                borderRadius: '32px',
+                padding: '60px 40px',
+                cursor: 'pointer',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
+                e.currentTarget.style.borderColor = 'rgba(96,162,157,0.6)';
+                e.currentTarget.style.boxShadow = '0 30px 80px rgba(96,162,157,0.4)';
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(96,162,157,0.2) 0%, rgba(78,205,196,0.25) 100%)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.borderColor = 'rgba(96,162,157,0.3)';
+                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(96,162,157,0.1) 0%, rgba(78,205,196,0.15) 100%)';
+              }}
+            >
+              {/* Glow effect */}
+              <div style={{
+                position: 'absolute',
+                top: '-50%',
+                left: '-50%',
+                width: '200%',
+                height: '200%',
+                background: 'radial-gradient(circle, rgba(96,162,157,0.3) 0%, transparent 70%)',
+                opacity: 0,
+                transition: 'opacity 0.5s ease',
+                pointerEvents: 'none'
+              }} className="glow-effect" />
+              
+              <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏖️</div>
+              <h2 style={{
+                fontSize: '1.75rem',
+                fontWeight: 700,
+                color: 'white',
+                marginBottom: '16px',
+                letterSpacing: '-0.01em'
+              }}>
+                Je cherche un séjour
+              </h2>
+              <p style={{
+                fontSize: '1.05rem',
+                color: 'rgba(255,255,255,0.75)',
+                lineHeight: 1.6,
+                marginBottom: '24px'
+              }}>
+                Découvrez des logements uniques à prix réduit grâce au partage de revenus
+              </p>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#4ECDC4',
+                fontWeight: 600,
+                fontSize: '1rem'
+              }}>
+                Commencer
+                <span style={{ fontSize: '1.2rem' }}>→</span>
+              </div>
+            </div>
+
+            {/* Card Hôte */}
+            <div
+              onClick={() => handleModeSelection('hote')}
+              style={{
+                background: 'linear-gradient(135deg, rgba(215,144,119,0.1) 0%, rgba(201,103,69,0.15) 100%)',
+                backdropFilter: 'blur(20px)',
+                border: '2px solid rgba(215,144,119,0.3)',
+                borderRadius: '32px',
+                padding: '60px 40px',
+                cursor: 'pointer',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
+                e.currentTarget.style.borderColor = 'rgba(215,144,119,0.6)';
+                e.currentTarget.style.boxShadow = '0 30px 80px rgba(215,144,119,0.4)';
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(215,144,119,0.2) 0%, rgba(201,103,69,0.25) 100%)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.borderColor = 'rgba(215,144,119,0.3)';
+                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(215,144,119,0.1) 0%, rgba(201,103,69,0.15) 100%)';
+              }}
+            >
+              {/* Glow effect */}
+              <div style={{
+                position: 'absolute',
+                top: '-50%',
+                left: '-50%',
+                width: '200%',
+                height: '200%',
+                background: 'radial-gradient(circle, rgba(215,144,119,0.3) 0%, transparent 70%)',
+                opacity: 0,
+                transition: 'opacity 0.5s ease',
+                pointerEvents: 'none'
+              }} className="glow-effect" />
+              
+              <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏠</div>
+              <h2 style={{
+                fontSize: '1.75rem',
+                fontWeight: 700,
+                color: 'white',
+                marginBottom: '16px',
+                letterSpacing: '-0.01em'
+              }}>
+                Je sous-loue mon logement
+              </h2>
+              <p style={{
+                fontSize: '1.05rem',
+                color: 'rgba(255,255,255,0.75)',
+                lineHeight: 1.6,
+                marginBottom: '24px'
+              }}>
+                Générez des revenus passifs en partageant vos espaces inutilisés
+              </p>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#D79077',
+                fontWeight: 600,
+                fontSize: '1rem'
+              }}>
+                Commencer
+                <span style={{ fontSize: '1.2rem' }}>→</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Animations CSS */}
+        <style jsx>{`
+          @keyframes float {
+            0%, 100% {
+              transform: translate(0, 0) scale(1);
+            }
+            33% {
+              transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+              transform: translate(-20px, 20px) scale(0.9);
+            }
+          }
+
+          @keyframes fadeInDown {
+            from {
+              opacity: 0;
+              transform: translateY(-30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @media (max-width: 768px) {
+            div[style*="gridTemplateColumns"] {
+              grid-template-columns: 1fr !important;
+              gap: 20px !important;
+            }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return <>
     <Header activeTab={activeTab} setActiveTab={setActiveTab} />
