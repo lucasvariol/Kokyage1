@@ -50,6 +50,7 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState(null); // null, 'voyageur' ou 'hote'
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showModeSelection, setShowModeSelection] = useState(true);
+  const [isPageReady, setIsPageReady] = useState(false);
 
   // Fonction pour choisir le mode initial
   const handleModeSelection = (mode) => {
@@ -60,7 +61,8 @@ export default function Page() {
     }, 800);
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 1200);
+      setIsPageReady(true);
+    }, 1000);
   };
 
   // Fonction pour changer d'onglet avec animation moderne
@@ -586,7 +588,16 @@ export default function Page() {
 
   return <>
     <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-    <main style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif', background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)', minHeight: '100vh', paddingBottom: 0 }}>
+    <main style={{ 
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif', 
+      background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)', 
+      minHeight: '100vh', 
+      paddingBottom: 0,
+      opacity: isPageReady ? 1 : 0,
+      transform: isPageReady ? 'scale(1)' : 'scale(1.05)',
+      filter: isPageReady ? 'blur(0px)' : 'blur(10px)',
+      transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)'
+    }}>
       
       {/* Hero Section with Modern Design */}
       <section className="hero-section" style={{ 
