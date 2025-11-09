@@ -50,16 +50,14 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState('voyageur'); // 'voyageur' ou 'hote'
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Fonction pour changer d'onglet avec animation
+  // Fonction pour changer d'onglet avec animation moderne
   const handleTabChange = (newTab) => {
     if (newTab === activeTab) return;
     setIsTransitioning(true);
     setTimeout(() => {
       setActiveTab(newTab);
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 50);
-    }, 300);
+      setIsTransitioning(false);
+    }, 150); // Changement rapide après le début du fondu
   };
 
   // Fermer le menu voyageurs si clic en dehors
@@ -315,33 +313,40 @@ export default function Page() {
             </button>
           </div>
 
-          <h1 style={{ 
-            fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
-            fontWeight: 800, 
-            marginBottom: '24px', 
-            letterSpacing: '-0.02em',
-            textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
+          {/* Conteneur avec animation fluide pour tout le contenu */}
+          <div style={{
+            opacity: isTransitioning ? 0 : 1,
+            transform: isTransitioning ? 'translateY(10px)' : 'translateY(0)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            willChange: 'opacity, transform'
           }}>
-            {activeTab === 'voyageur' ? (
-              <>Des hébergements <br /><span style={{ color: '#4ECDC4' }}> équitables et authentiques </span></>
-            ) : (
-              <>La sous-location<br /><span style={{ color: '#4ECDC4' }}>enfin possible</span></>
-            )}
-          </h1>
-          <p style={{ 
-            fontSize: '1.25rem', 
-            opacity: 0.9, 
-            marginBottom: '48px', 
-            lineHeight: 1.6,
-            maxWidth: '600px',
-            margin: '0 auto 48px'
-          }}>
-            {activeTab === 'hote' && 'Partagez les revenus avec votre propriétaire et offrez-vous enfin des vacances !'}
-          </p>
-          
-          {/* Modern Search Card - Visible uniquement pour voyageur */}
-          {activeTab === 'voyageur' && (
-          <div className="search-card-modern" style={{ 
+            <h1 style={{ 
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
+              fontWeight: 800, 
+              marginBottom: '24px', 
+              letterSpacing: '-0.02em',
+              textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
+            }}>
+              {activeTab === 'voyageur' ? (
+                <>Des hébergements <br /><span style={{ color: '#4ECDC4' }}> équitables et authentiques </span></>
+              ) : (
+                <>La sous-location<br /><span style={{ color: '#4ECDC4' }}>enfin possible</span></>
+              )}
+            </h1>
+            <p style={{ 
+              fontSize: '1.25rem', 
+              opacity: 0.9, 
+              marginBottom: '48px', 
+              lineHeight: 1.6,
+              maxWidth: '600px',
+              margin: '0 auto 48px'
+            }}>
+              {activeTab === 'hote' && 'Partagez les revenus avec votre propriétaire et offrez-vous enfin des vacances !'}
+            </p>
+            
+            {/* Modern Search Card - Visible uniquement pour voyageur */}
+            {activeTab === 'voyageur' && (
+            <div className="search-card-modern" style={{ 
             background: 'rgba(255,255,255,0.95)', 
             backdropFilter: 'blur(10px)',
             borderRadius: '24px', 
@@ -765,14 +770,16 @@ export default function Page() {
             </form>
           </div>
           )}
+          </div>
         </div>
       </section>
       
-      {/* Contenu avec animation de fondu */}
+      {/* Contenu avec animation fluide */}
       <div style={{
         opacity: isTransitioning ? 0 : 1,
-        transform: isTransitioning ? 'translateY(20px)' : 'translateY(0)',
-        transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out'
+        transform: isTransitioning ? 'translateY(10px)' : 'translateY(0)',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        willChange: 'opacity, transform'
       }}>
       
       {/* Section Partage des revenus - Visible uniquement pour hôte - DÉPLACÉE EN PREMIER */}
@@ -1475,6 +1482,7 @@ export default function Page() {
       )}
       
       </div>
+      
     </main>
     <Footer />
     <Chatbot />
