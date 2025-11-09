@@ -2035,6 +2035,10 @@ export default function Page() {
           font-size: 18px !important;
         }
         
+        .hero-section {
+          padding-bottom: 60px !important;
+        }
+
         .estimator-section {
           padding: 0 16px 40px !important;
           margin-top: 0 !important;
@@ -2043,7 +2047,7 @@ export default function Page() {
         .estimator-card {
           padding: 32px 24px !important;
           border-radius: 20px !important;
-          margin-top: -80px !important;
+          margin-top: -40px !important;
         }
 
         .estimator-heading {
