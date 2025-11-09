@@ -276,7 +276,7 @@ export default function Page() {
                 }
               }}
             >
-              Chercher un séjour
+              Je cherche un séjour
             </button>
             <button
               onClick={() => handleTabChange('hote')}
@@ -310,7 +310,7 @@ export default function Page() {
                 }
               }}
             >
-              Sous-louer mon logement
+              Je sous-loue mon logement
             </button>
           </div>
 
@@ -393,7 +393,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    60<span style={{ fontSize: '3rem' }}>%</span>
+                    60<span style={{ fontSize: '3rem', verticalAlign: 'middle' }}>%</span>
                   </div>
                   <p style={{ 
                     fontSize: '0.95rem', 
@@ -456,7 +456,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    40<span style={{ fontSize: '3rem' }}>%</span>
+                    40<span style={{ fontSize: '3rem', verticalAlign: 'middle' }}>%</span>
                   </div>
                   <p style={{ 
                     fontSize: '0.95rem', 
