@@ -1264,6 +1264,204 @@ export default function Page() {
       </section>
       )}
 
+      {/* Section Garanties en cas de dégradations - Visible uniquement pour hôte */}
+      {activeTab === 'hote' && (
+      <section style={{ 
+        background: 'linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%)', 
+        padding: '80px 24px',
+        position: 'relative'
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+            <h2 style={{ 
+              fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', 
+              fontWeight: 800, 
+              color: '#2D3748',
+              marginBottom: '16px',
+              letterSpacing: '-0.01em'
+            }}>
+              🛡️ Garanties et protection
+            </h2>
+            <p style={{ 
+              fontSize: '1.15rem', 
+              color: '#718096', 
+              maxWidth: '700px',
+              margin: '0 auto',
+              lineHeight: 1.6
+            }}>
+              Vous et votre logement sont protégés à plusieurs niveaux
+            </p>
+          </div>
+
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '32px'
+          }}>
+            {/* Empreinte bancaire */}
+            <div style={{
+              background: 'white',
+              padding: '32px',
+              borderRadius: '20px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              border: '1px solid #E2E8F0',
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+            }}
+            onMouseOver={e => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 8px 30px rgba(96,162,157,0.15)';
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
+            }}>
+              <div style={{
+                width: '60px',
+                height: '60px',
+                background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.8rem',
+                marginBottom: '20px'
+              }}>
+                💳
+              </div>
+              <h3 style={{
+                fontSize: '1.3rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '12px'
+              }}>
+                Caution de 300€
+              </h3>
+              <p style={{
+                color: '#718096',
+                lineHeight: 1.6,
+                fontSize: '0.95rem'
+              }}>
+                Une empreinte bancaire est enregistrée auprès de chaque voyageur. En cas de dégradation mineure validée par nos modérateurs, jusqu'à 300€ peuvent être prélevés automatiquement pour couvrir les réparations.
+              </p>
+            </div>
+
+            {/* Assurance RC */}
+            <div style={{
+              background: 'white',
+              padding: '32px',
+              borderRadius: '20px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              border: '1px solid #E2E8F0',
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+            }}
+            onMouseOver={e => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 8px 30px rgba(202,173,120,0.15)';
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
+            }}>
+              <div style={{
+                width: '60px',
+                height: '60px',
+                background: 'linear-gradient(135deg, #CAAD78 0%, #B5935F 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.8rem',
+                marginBottom: '20px'
+              }}>
+                📋
+              </div>
+              <h3 style={{
+                fontSize: '1.3rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '12px'
+              }}>
+                Assurance du voyageur
+              </h3>
+              <p style={{
+                color: '#718096',
+                lineHeight: 1.6,
+                fontSize: '0.95rem'
+              }}>
+                Pour les dommages plus importants, l'assurance responsabilité civile du voyageur est sollicitée en priorité. Une attestation de villégiature (incluse dans l'assurance habitation) est fortement recommandée.
+              </p>
+            </div>
+
+            {/* Responsabilité locataire */}
+            <div style={{
+              background: 'white',
+              padding: '32px',
+              borderRadius: '20px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              border: '1px solid #E2E8F0',
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+            }}
+            onMouseOver={e => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 8px 30px rgba(215,144,119,0.15)';
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
+            }}>
+              <div style={{
+                width: '60px',
+                height: '60px',
+                background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.8rem',
+                marginBottom: '20px'
+              }}>
+                ⚖️
+              </div>
+              <h3 style={{
+                fontSize: '1.3rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '12px'
+              }}>
+                Locataire garant
+              </h3>
+              <p style={{
+                color: '#718096',
+                lineHeight: 1.6,
+                fontSize: '0.95rem'
+              }}>
+                Le locataire principal reste juridiquement responsable du logement pendant toute la durée de la sous-location. Il demeure votre interlocuteur unique, conformément à la loi et à l'accord signé.
+              </p>
+            </div>
+          </div>
+
+          <div style={{
+            marginTop: '48px',
+            textAlign: 'center',
+            padding: '32px',
+            background: 'white',
+            borderRadius: '20px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            border: '2px solid #60A29D'
+          }}>
+            <p style={{
+              fontSize: '1.1rem',
+              color: '#2D3748',
+              fontWeight: 600,
+              margin: 0
+            }}>
+              ✨ <strong style={{ color: '#60A29D' }}>Triple sécurité</strong> : caution + assurance voyageur + responsabilité locataire
+            </p>
+          </div>
+        </div>
+      </section>
+      )}
+
       {/* Section Call to Action - Fonctionnement - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
       <section className="cta-fonctionnement" style={{ 
