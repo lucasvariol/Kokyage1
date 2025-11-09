@@ -899,16 +899,15 @@ export default function Page() {
       {/* Estimation revenus moderne - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
       <section className="estimator-section" style={{ 
-        maxWidth: '1100px', 
-        margin: '0 auto 60px', 
-        padding: '0 24px',
-        position: 'relative',
-        zIndex: 0
+        background: 'linear-gradient(135deg, #E8F4F8 0%, #D6EBF5 100%)',
+        padding: '80px 24px',
+        margin: '0'
       }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
         <div className="estimator-card" style={{ 
-          background: '#F8F9FA',
+          background: 'white',
           borderRadius: '24px', 
-          boxShadow: 'none', 
+          boxShadow: '0 10px 40px rgba(96,162,157,0.15)', 
           padding: '48px 32px', 
           border: 'none'
         }}>
@@ -1140,6 +1139,7 @@ export default function Page() {
             <div style={{ display: 'flex', gap: 18, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', marginTop: 14 }}>
             </div>
           </div>
+        </div>
         </div>
       </section>
       )}
