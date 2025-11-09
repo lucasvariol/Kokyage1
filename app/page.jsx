@@ -193,7 +193,7 @@ export default function Page() {
   }, [lieu, hasTypedLieu]);
 
   return <>
-    <Header />
+    <Header activeTab={activeTab} setActiveTab={setActiveTab} />
     <main style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif', background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)', minHeight: '100vh', paddingBottom: 0 }}>
       
       {/* Hero Section with Modern Design */}
@@ -230,90 +230,6 @@ export default function Page() {
         
         <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           
-          {/* Onglets modernes intégrés */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '12px',
-            marginBottom: '40px',
-            background: 'rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(10px)',
-            padding: '8px',
-            borderRadius: '100px',
-            maxWidth: '600px',
-            margin: '0 auto 40px',
-            border: '1px solid rgba(255,255,255,0.2)'
-          }}>
-            <button
-              onClick={() => handleTabChange('voyageur')}
-              style={{
-                flex: 1,
-                background: activeTab === 'voyageur' 
-                  ? 'white' 
-                  : 'transparent',
-                color: activeTab === 'voyageur' ? '#D79077' : 'white',
-                border: 'none',
-                borderRadius: '100px',
-                padding: '14px 28px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: activeTab === 'voyageur' 
-                  ? '0 4px 20px rgba(0,0,0,0.15)' 
-                  : 'none',
-                transform: activeTab === 'voyageur' ? 'scale(1.02)' : 'scale(1)',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseOver={e => {
-                if (activeTab !== 'voyageur') {
-                  e.target.style.background = 'rgba(255,255,255,0.1)';
-                }
-              }}
-              onMouseOut={e => {
-                if (activeTab !== 'voyageur') {
-                  e.target.style.background = 'transparent';
-                }
-              }}
-            >
-              Je cherche un séjour
-            </button>
-            <button
-              onClick={() => handleTabChange('hote')}
-              style={{
-                flex: 1,
-                background: activeTab === 'hote' 
-                  ? 'white' 
-                  : 'transparent',
-                color: activeTab === 'hote' ? '#D79077' : 'white',
-                border: 'none',
-                borderRadius: '100px',
-                padding: '14px 28px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: activeTab === 'hote' 
-                  ? '0 4px 20px rgba(0,0,0,0.15)' 
-                  : 'none',
-                transform: activeTab === 'hote' ? 'scale(1.02)' : 'scale(1)',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseOver={e => {
-                if (activeTab !== 'hote') {
-                  e.target.style.background = 'rgba(255,255,255,0.1)';
-                }
-              }}
-              onMouseOut={e => {
-                if (activeTab !== 'hote') {
-                  e.target.style.background = 'transparent';
-                }
-              }}
-            >
-              Je sous-loue mon logement
-            </button>
-          </div>
-
           {/* Conteneur avec animation fluide pour tout le contenu */}
           <div style={{
             opacity: isTransitioning ? 0 : 1,

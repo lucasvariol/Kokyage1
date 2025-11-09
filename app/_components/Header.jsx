@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
-export default function Header() {
+export default function Header({ activeTab, setActiveTab }) {
   const pathname = usePathname();
   const isActive = (href) => pathname === href;
   const [open, setOpen] = useState(false);
@@ -136,6 +136,38 @@ export default function Header() {
 
           {/* NAVIGATION */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* Tab Switcher - Only show on homepage */}
+            {pathname === '/' && setActiveTab && (
+              <button
+                onClick={() => setActiveTab(activeTab === 'voyageur' ? 'hote' : 'voyageur')}
+                style={{
+                  background: 'rgba(96,162,157,0.12)',
+                  color: '#2D3748',
+                  padding: '10px 16px',
+                  borderRadius: '24px',
+                  fontWeight: '600',
+                  fontSize: '13px',
+                  border: '1px solid rgba(96,162,157,0.25)',
+                  boxShadow: '0 3px 10px rgba(96,162,157,0.18)',
+                  transition: 'all 0.3s ease',
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = 'rgba(96,162,157,0.2)';
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 5px 15px rgba(96,162,157,0.25)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = 'rgba(96,162,157,0.12)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 3px 10px rgba(96,162,157,0.18)';
+                }}
+              >
+                {activeTab === 'voyageur' ? 'Je sous-loue un logement' : 'Je cherche un séjour'}
+              </button>
+            )}
+
             {/* Navigation desktop pour utilisateurs non connectés */}
             {!connected && (
               <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
