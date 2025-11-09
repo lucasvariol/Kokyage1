@@ -185,59 +185,14 @@ export default function Page() {
     <Header />
     <main style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif', background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)', minHeight: '100vh', paddingBottom: 0 }}>
       
-      {/* Onglets de sélection */}
-      <div style={{
-        background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
-        padding: '20px 24px 0',
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '16px'
-      }}>
-        <button
-          onClick={() => setActiveTab('voyageur')}
-          style={{
-            background: activeTab === 'voyageur' ? 'white' : 'rgba(255,255,255,0.2)',
-            color: activeTab === 'voyageur' ? '#D79077' : 'white',
-            border: 'none',
-            borderRadius: '12px 12px 0 0',
-            padding: '16px 32px',
-            fontSize: '1.1rem',
-            fontWeight: '700',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            boxShadow: activeTab === 'voyageur' ? '0 -4px 20px rgba(0,0,0,0.1)' : 'none'
-          }}
-        >
-          🏖️ Je cherche un séjour
-        </button>
-        <button
-          onClick={() => setActiveTab('hote')}
-          style={{
-            background: activeTab === 'hote' ? 'white' : 'rgba(255,255,255,0.2)',
-            color: activeTab === 'hote' ? '#D79077' : 'white',
-            border: 'none',
-            borderRadius: '12px 12px 0 0',
-            padding: '16px 32px',
-            fontSize: '1.1rem',
-            fontWeight: '700',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            boxShadow: activeTab === 'hote' ? '0 -4px 20px rgba(0,0,0,0.1)' : 'none'
-          }}
-        >
-          🏠 Je sous-loue mon logement
-        </button>
-      </div>
-
       {/* Hero Section with Modern Design */}
       <section className="hero-section" style={{ 
         background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', 
-        padding: activeTab === 'voyageur' ? '80px 24px 120px' : '60px 24px 80px',
+        padding: '80px 24px 120px',
         textAlign: 'center', 
         color: 'white',
         position: 'relative',
-        overflow: 'hidden',
-        display: activeTab === 'voyageur' ? 'block' : 'none'
+        overflow: 'hidden'
       }}>
         {/* Background Animation Elements */}
         <div style={{
@@ -261,7 +216,92 @@ export default function Page() {
           animation: 'float 8s ease-in-out infinite reverse'
         }}></div>
         
-        <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          
+          {/* Onglets modernes intégrés */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '12px',
+            marginBottom: '40px',
+            background: 'rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(10px)',
+            padding: '8px',
+            borderRadius: '100px',
+            maxWidth: '600px',
+            margin: '0 auto 40px',
+            border: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            <button
+              onClick={() => setActiveTab('voyageur')}
+              style={{
+                flex: 1,
+                background: activeTab === 'voyageur' 
+                  ? 'white' 
+                  : 'transparent',
+                color: activeTab === 'voyageur' ? '#D79077' : 'white',
+                border: 'none',
+                borderRadius: '100px',
+                padding: '14px 28px',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: activeTab === 'voyageur' 
+                  ? '0 4px 20px rgba(0,0,0,0.15)' 
+                  : 'none',
+                transform: activeTab === 'voyageur' ? 'scale(1.02)' : 'scale(1)',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseOver={e => {
+                if (activeTab !== 'voyageur') {
+                  e.target.style.background = 'rgba(255,255,255,0.1)';
+                }
+              }}
+              onMouseOut={e => {
+                if (activeTab !== 'voyageur') {
+                  e.target.style.background = 'transparent';
+                }
+              }}
+            >
+              Je cherche un séjour
+            </button>
+            <button
+              onClick={() => setActiveTab('hote')}
+              style={{
+                flex: 1,
+                background: activeTab === 'hote' 
+                  ? 'white' 
+                  : 'transparent',
+                color: activeTab === 'hote' ? '#D79077' : 'white',
+                border: 'none',
+                borderRadius: '100px',
+                padding: '14px 28px',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: activeTab === 'hote' 
+                  ? '0 4px 20px rgba(0,0,0,0.15)' 
+                  : 'none',
+                transform: activeTab === 'hote' ? 'scale(1.02)' : 'scale(1)',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseOver={e => {
+                if (activeTab !== 'hote') {
+                  e.target.style.background = 'rgba(255,255,255,0.1)';
+                }
+              }}
+              onMouseOut={e => {
+                if (activeTab !== 'hote') {
+                  e.target.style.background = 'transparent';
+                }
+              }}
+            >
+              Je sous-loue mon logement
+            </button>
+          </div>
+
           <h1 style={{ 
             fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
             fontWeight: 800, 
@@ -269,7 +309,11 @@ export default function Page() {
             letterSpacing: '-0.02em',
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
           }}>
-            Offrez-vous enfin <br /><span style={{ color: '#4ECDC4' }}>des vacances</span>
+            {activeTab === 'voyageur' ? (
+              <>Offrez-vous enfin <br /><span style={{ color: '#4ECDC4' }}>des vacances</span></>
+            ) : (
+              <>Générez des revenus<br /><span style={{ color: '#4ECDC4' }}>avec votre logement</span></>
+            )}
           </h1>
           <p style={{ 
             fontSize: '1.25rem', 
@@ -279,10 +323,11 @@ export default function Page() {
             maxWidth: '600px',
             margin: '0 auto 48px'
           }}>
-            
+            {activeTab === 'hote' && 'Sous-louez légalement et partagez les revenus avec votre propriétaire'}
           </p>
           
-          {/* Modern Search Card */}
+          {/* Modern Search Card - Visible uniquement pour voyageur */}
+          {activeTab === 'voyageur' && (
           <div className="search-card-modern" style={{ 
             background: 'rgba(255,255,255,0.95)', 
             backdropFilter: 'blur(10px)',
@@ -706,62 +751,15 @@ export default function Page() {
             </button>
             </form>
           </div>
+          )}
         </div>
       </section>
-
-      {/* Section Hero pour Hôte */}
-      {activeTab === 'hote' && (
-        <section style={{ 
-          background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', 
-          padding: '60px 24px 80px', 
-          textAlign: 'center', 
-          color: 'white',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: '10%',
-            left: '10%',
-            width: '200px',
-            height: '200px',
-            background: 'rgba(255,255,255,0.1)',
-            borderRadius: '50%',
-            animation: 'float 6s ease-in-out infinite'
-          }}></div>
-          <div style={{
-            position: 'absolute',
-            top: '60%',
-            right: '15%',
-            width: '150px',
-            height: '150px',
-            background: 'rgba(255,255,255,0.08)',
-            borderRadius: '50%',
-            animation: 'float 8s ease-in-out infinite reverse'
-          }}></div>
-          
-          <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-            <h1 style={{ 
-              fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
-              fontWeight: 800, 
-              marginBottom: '24px', 
-              letterSpacing: '-0.02em',
-              textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
-            }}>
-              Générez des revenus<br /><span style={{ color: '#4ECDC4' }}>avec votre logement</span>
-            </h1>
-            <p style={{ 
-              fontSize: '1.25rem', 
-              opacity: 0.9, 
-              lineHeight: 1.6,
-              maxWidth: '600px',
-              margin: '0 auto'
-            }}>
-              Sous-louez légalement et partagez les revenus avec votre propriétaire
-            </p>
-          </div>
-        </section>
-      )}
+      
+      {/* Contenu avec animation de fondu */}
+      <div style={{
+        animation: 'fadeIn 0.5s ease-in-out',
+        opacity: 1
+      }}>
       
       {/* Estimation revenus moderne - Visible uniquement pour hôte */}
       {activeTab === 'hote' && (
@@ -1467,12 +1465,25 @@ export default function Page() {
         </div>
       </section>
       )}
+      
+      </div>
     </main>
     <Footer />
     <Chatbot />
 
-    {/* CSS Responsive */}
+    {/* CSS Responsive + Animations */}
     <style jsx>{`
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       @media (max-width: 768px) {
         .desktop-only {
           display: none !important;
