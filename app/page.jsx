@@ -57,8 +57,10 @@ export default function Page() {
     setTimeout(() => {
       setActiveTab(mode);
       setShowModeSelection(false);
+    }, 800);
+    setTimeout(() => {
       setIsTransitioning(false);
-    }, 600);
+    }, 1200);
   };
 
   // Fonction pour changer d'onglet avec animation moderne
@@ -218,7 +220,9 @@ export default function Page() {
         justifyContent: 'center',
         zIndex: 9999,
         overflow: 'hidden',
-        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+        opacity: isTransitioning ? 0 : 1,
+        transition: 'opacity 0.8s ease-out'
       }}>
         {/* Animated background particles */}
         <div style={{
@@ -257,8 +261,9 @@ export default function Page() {
           maxWidth: '1100px',
           width: '100%',
           opacity: isTransitioning ? 0 : 1,
-          transform: isTransitioning ? 'scale(0.95)' : 'scale(1)',
-          transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+          filter: isTransitioning ? 'blur(20px)' : 'blur(0px)',
+          transform: isTransitioning ? 'scale(0.9)' : 'scale(1)',
+          transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
         }}>
           {/* Logo */}
           <div style={{ marginBottom: '50px', animation: 'fadeInDown 1s ease-out', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
