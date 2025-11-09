@@ -253,11 +253,11 @@ export default function Page() {
         </div>
 
         {/* Main content */}
-        <div style={{
+        <div className="mode-selection-container" style={{
           position: 'relative',
           zIndex: 1,
           textAlign: 'center',
-          padding: '40px',
+          padding: '40px 20px',
           maxWidth: '1100px',
           width: '100%',
           opacity: isTransitioning ? 0 : 1,
@@ -489,35 +489,127 @@ export default function Page() {
           }
 
           @media (max-width: 768px) {
-            .mode-selection-cards {
-              gap: 16px !important;
-              padding: 0 16px;
+            .mode-selection-container {
+              padding: 24px 16px !important;
             }
-            
-            .mode-selection-cards > div {
-              padding: 40px 20px !important;
-            }
-            
-            .mode-selection-cards h2 {
-              font-size: 1.25rem !important;
-            }
-            
-            .mode-selection-cards p {
-              font-size: 0.9rem !important;
-            }
-          }
 
-          @media (max-width: 480px) {
+            .mode-selection-container > div:first-child {
+              margin-bottom: 32px !important;
+            }
+
+            .mode-selection-container h1 {
+              font-size: 1.75rem !important;
+              margin-bottom: 12px !important;
+            }
+
+            .mode-selection-container > div:first-child p {
+              font-size: 0.95rem !important;
+            }
+
             .mode-selection-cards {
               gap: 12px !important;
+              padding: 0 8px !important;
+              grid-template-columns: repeat(2, 1fr) !important;
             }
             
             .mode-selection-cards > div {
-              padding: 30px 16px !important;
+              padding: 24px 12px !important;
+              border-radius: 20px !important;
             }
             
             .mode-selection-cards > div > div:first-child {
               font-size: 2.5rem !important;
+              margin-bottom: 12px !important;
+            }
+            
+            .mode-selection-cards h2 {
+              font-size: 0.95rem !important;
+              margin-bottom: 8px !important;
+              line-height: 1.3 !important;
+            }
+            
+            .mode-selection-cards p {
+              font-size: 0.75rem !important;
+              line-height: 1.4 !important;
+              margin-bottom: 16px !important;
+            }
+
+            .mode-selection-cards > div > div:last-child {
+              font-size: 0.85rem !important;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .mode-selection-container {
+              padding: 20px 12px !important;
+            }
+
+            .mode-selection-container > div:first-child img {
+              height: 60px !important;
+              margin-bottom: 16px !important;
+            }
+
+            .mode-selection-container h1 {
+              font-size: 1.5rem !important;
+            }
+
+            .mode-selection-cards {
+              gap: 10px !important;
+              padding: 0 4px !important;
+            }
+            
+            .mode-selection-cards > div {
+              padding: 20px 8px !important;
+              border-radius: 16px !important;
+            }
+
+            .mode-selection-cards > div > div:first-child {
+              font-size: 2rem !important;
+              margin-bottom: 8px !important;
+            }
+            
+            .mode-selection-cards h2 {
+              font-size: 0.85rem !important;
+              margin-bottom: 6px !important;
+            }
+            
+            .mode-selection-cards p {
+              font-size: 0.7rem !important;
+              margin-bottom: 12px !important;
+            }
+
+            .mode-selection-cards > div > div:last-child {
+              font-size: 0.8rem !important;
+            }
+
+            .mode-selection-cards > div > div:last-child span {
+              font-size: 1rem !important;
+            }
+          }
+
+          @media (max-width: 380px) {
+            .mode-selection-container {
+              padding: 16px 8px !important;
+            }
+
+            .mode-selection-container h1 {
+              font-size: 1.3rem !important;
+            }
+
+            .mode-selection-cards {
+              gap: 8px !important;
+            }
+
+            .mode-selection-cards > div {
+              padding: 16px 6px !important;
+            }
+
+            .mode-selection-cards h2 {
+              font-size: 0.8rem !important;
+            }
+
+            .mode-selection-cards p {
+              font-size: 0.65rem !important;
             }
           }
         `}</style>
