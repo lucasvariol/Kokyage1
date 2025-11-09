@@ -338,85 +338,136 @@ export default function Page() {
             {/* Cartes 60/40 pour hôte - dans la zone orange */}
             {activeTab === 'hote' && (
               <div className="revenue-split-cards" style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '32px',
-                maxWidth: '1000px',
-                margin: '0 auto'
+                display: 'flex', 
+                justifyContent: 'center',
+                gap: '24px',
+                maxWidth: '900px',
+                margin: '0 auto',
+                flexWrap: 'wrap'
               }}>
                 <div style={{ 
-                  background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
-                  padding: '40px 32px',
-                  borderRadius: '20px',
+                  background: 'rgba(255,255,255,0.25)',
+                  backdropFilter: 'blur(10px)',
+                  padding: '32px 28px',
+                  borderRadius: '24px',
                   textAlign: 'center',
-                  border: 'none',
+                  border: '2px solid rgba(255,255,255,0.3)',
                   transition: 'all 0.3s ease',
                   cursor: 'default',
                   color: 'white',
-                  boxShadow: '0 10px 30px rgba(96,162,157,0.25)'
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  flex: '1',
+                  minWidth: '260px',
+                  maxWidth: '320px',
+                  position: 'relative',
+                  overflow: 'hidden'
                 }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: '-20px',
+                    right: '-20px',
+                    width: '100px',
+                    height: '100px',
+                    background: 'rgba(255,255,255,0.08)',
+                    borderRadius: '50%'
+                  }}></div>
                   <div style={{ 
-                    fontSize: '4.5rem', 
-                    fontWeight: 900, 
-                    marginBottom: '12px',
-                    color: '#FFE66D',
-                    textShadow: '0 4px 12px rgba(0,0,0,0.2)'
-                  }}>
-                    60%
-                  </div>
-                  <h3 style={{ 
-                    fontSize: '1.5rem', 
-                    fontWeight: 700, 
-                    marginBottom: '12px',
-                    color: 'white'
-                  }}>
-                    Pour le locataire
-                  </h3>
-                  <p style={{ 
-                    fontSize: '1rem', 
+                    fontSize: '1.1rem', 
+                    fontWeight: 600, 
+                    marginBottom: '16px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1.5px',
                     opacity: 0.95,
-                    lineHeight: 1.6,
-                    color: 'white'
+                    position: 'relative',
+                    zIndex: 1
                   }}>
-                    Celui qui gère les réservations et accueille les voyageurs
+                    Locataire
+                  </div>
+                  <div style={{ 
+                    fontSize: '5rem', 
+                    fontWeight: 900, 
+                    marginBottom: '16px',
+                    color: '#FFE66D',
+                    textShadow: '0 4px 16px rgba(0,0,0,0.25)',
+                    lineHeight: 1,
+                    position: 'relative',
+                    zIndex: 1
+                  }}>
+                    60<span style={{ fontSize: '3rem', verticalAlign: 'super' }}>%</span>
+                  </div>
+                  <p style={{ 
+                    fontSize: '0.95rem', 
+                    opacity: 0.95,
+                    lineHeight: 1.5,
+                    color: 'white',
+                    position: 'relative',
+                    zIndex: 1,
+                    margin: 0
+                  }}>
+                    Gère les réservations et accueille les voyageurs
                   </p>
                 </div>
 
                 <div style={{ 
-                  background: 'linear-gradient(135deg, #CAAD78 0%, #B5935F 100%)',
-                  padding: '40px 32px',
-                  borderRadius: '20px',
+                  background: 'rgba(255,255,255,0.25)',
+                  backdropFilter: 'blur(10px)',
+                  padding: '32px 28px',
+                  borderRadius: '24px',
                   textAlign: 'center',
-                  border: 'none',
+                  border: '2px solid rgba(255,255,255,0.3)',
                   transition: 'all 0.3s ease',
                   cursor: 'default',
                   color: 'white',
-                  boxShadow: '0 10px 30px rgba(202,173,120,0.25)'
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  flex: '1',
+                  minWidth: '260px',
+                  maxWidth: '320px',
+                  position: 'relative',
+                  overflow: 'hidden'
                 }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: '-20px',
+                    right: '-20px',
+                    width: '100px',
+                    height: '100px',
+                    background: 'rgba(255,255,255,0.08)',
+                    borderRadius: '50%'
+                  }}></div>
                   <div style={{ 
-                    fontSize: '4.5rem', 
-                    fontWeight: 900, 
-                    marginBottom: '12px',
-                    color: '#FFE66D',
-                    textShadow: '0 4px 12px rgba(0,0,0,0.2)'
-                  }}>
-                    40%
-                  </div>
-                  <h3 style={{ 
-                    fontSize: '1.5rem', 
-                    fontWeight: 700, 
-                    marginBottom: '12px',
-                    color: 'white'
-                  }}>
-                    Pour le propriétaire
-                  </h3>
-                  <p style={{ 
-                    fontSize: '1rem', 
+                    fontSize: '1.1rem', 
+                    fontWeight: 600, 
+                    marginBottom: '16px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1.5px',
                     opacity: 0.95,
-                    lineHeight: 1.6,
-                    color: 'white'
+                    position: 'relative',
+                    zIndex: 1
                   }}>
-                    Revenus passifs sans aucun effort de gestion
+                    Propriétaire
+                  </div>
+                  <div style={{ 
+                    fontSize: '5rem', 
+                    fontWeight: 900, 
+                    marginBottom: '16px',
+                    color: '#FFE66D',
+                    textShadow: '0 4px 16px rgba(0,0,0,0.25)',
+                    lineHeight: 1,
+                    position: 'relative',
+                    zIndex: 1
+                  }}>
+                    40<span style={{ fontSize: '3rem', verticalAlign: 'super' }}>%</span>
+                  </div>
+                  <p style={{ 
+                    fontSize: '0.95rem', 
+                    opacity: 0.95,
+                    lineHeight: 1.5,
+                    color: 'white',
+                    position: 'relative',
+                    zIndex: 1,
+                    margin: 0
+                  }}>
+                    Revenus passifs sans effort de gestion
                   </p>
                 </div>
               </div>
