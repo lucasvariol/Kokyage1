@@ -2017,6 +2017,5 @@ export default function Page() {
         }
       }
     `}</style>
-  </>
-  ;
-            }
+  </>;
+}
