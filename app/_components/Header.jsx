@@ -139,6 +139,7 @@ export default function Header({ activeTab, setActiveTab }) {
             {/* Tab Switcher - Only show on homepage */}
             {pathname === '/' && setActiveTab && (
               <button
+                className="mode-switcher-btn"
                 onClick={() => setActiveTab(activeTab === 'voyageur' ? 'hote' : 'voyageur')}
                 style={{
                   background: 'rgba(96,162,157,0.12)',
@@ -501,11 +502,23 @@ export default function Header({ activeTab, setActiveTab }) {
           .desktop-button {
             display: none !important;
           }
+
+          .mode-switcher-btn {
+            padding: 8px 12px !important;
+            font-size: 11px !important;
+            border-radius: 20px !important;
+          }
         }
         
         @media (max-width: 480px) {
           header {
             padding: 14px 0px !important;
+          }
+
+          .mode-switcher-btn {
+            padding: 6px 10px !important;
+            font-size: 10px !important;
+            border-radius: 18px !important;
           }
           
           header > div {
