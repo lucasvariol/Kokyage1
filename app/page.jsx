@@ -393,14 +393,17 @@ export default function Page() {
             0% {
               transform: translate(0, 0) scale(1) rotate(0deg);
             }
-            25% {
-              transform: translate(12px, -35px) scale(1.05) rotate(3deg);
+            20% {
+              transform: translate(40px, -60px) scale(1.08) rotate(8deg);
             }
-            50% {
-              transform: translate(-18px, -15px) scale(0.98) rotate(-2deg);
+            40% {
+              transform: translate(-50px, -30px) scale(0.95) rotate(-6deg);
             }
-            75% {
-              transform: translate(10px, 25px) scale(1.03) rotate(2deg);
+            60% {
+              transform: translate(30px, 45px) scale(1.06) rotate(5deg);
+            }
+            80% {
+              transform: translate(-35px, 20px) scale(0.98) rotate(-4deg);
             }
             100% {
               transform: translate(0, 0) scale(1) rotate(0deg);
