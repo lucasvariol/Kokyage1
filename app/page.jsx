@@ -1272,7 +1272,7 @@ export default function Page() {
               position: 'absolute',
               left: 0
             }}>
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              {['apartment,interior', 'modern,house', 'home,living', 'bedroom,cozy', 'kitchen,modern', 'apartment,view', 'home,design', 'house,exterior'].map((keywords, i) => (
                 <div key={i} style={{
                   minWidth: '400px',
                   height: '300px',
@@ -1294,8 +1294,8 @@ export default function Page() {
                 }}
                 >
                   <img 
-                    src={`https://picsum.photos/400/300?random=${i}`}
-                    alt={`Logement ${i}`}
+                    src={`https://source.unsplash.com/400x300/?${keywords}`}
+                    alt={`Logement ${i + 1}`}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -1305,7 +1305,7 @@ export default function Page() {
                 </div>
               ))}
               {/* Duplicate pour boucle infinie */}
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              {['apartment,interior', 'modern,house', 'home,living', 'bedroom,cozy', 'kitchen,modern', 'apartment,view', 'home,design', 'house,exterior'].map((keywords, i) => (
                 <div key={`dup-${i}`} style={{
                   minWidth: '400px',
                   height: '300px',
@@ -1327,8 +1327,8 @@ export default function Page() {
                 }}
                 >
                   <img 
-                    src={`https://picsum.photos/400/300?random=${i}`}
-                    alt={`Logement ${i}`}
+                    src={`https://source.unsplash.com/400x300/?${keywords}`}
+                    alt={`Logement ${i + 1}`}
                     style={{
                       width: '100%',
                       height: '100%',
