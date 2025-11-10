@@ -241,6 +241,7 @@ export default function Page() {
             return (
               <div
                 key={i}
+                className="floating-bubble"
                 style={{
                   position: 'absolute',
                   width: `${size}px`,
@@ -436,6 +437,13 @@ export default function Page() {
           }
 
           @media (max-width: 768px) {
+            .floating-bubble {
+              width: 120px !important;
+              height: 120px !important;
+              max-width: 120px !important;
+              max-height: 120px !important;
+            }
+            
             .mode-selection-container {
               padding: 28px 16px !important;
             }
@@ -2454,6 +2462,13 @@ export default function Page() {
       }
 
       @media (max-width: 768px) {
+        .floating-bubble {
+          width: 100px !important;
+          height: 100px !important;
+          max-width: 100px !important;
+          max-height: 100px !important;
+        }
+        
         .desktop-only {
           display: none !important;
         }
@@ -2634,6 +2649,12 @@ export default function Page() {
       }
       
       @media (max-width: 480px) {
+        .floating-bubble {
+          width: 80px !important;
+          height: 80px !important;
+          max-width: 80px !important;
+          max-height: 80px !important;
+        }
         .search-card-modern {
           padding: 20px 16px !important;
           margin: 0 20px !important;
