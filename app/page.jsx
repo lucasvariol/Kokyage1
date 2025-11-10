@@ -244,7 +244,7 @@ export default function Page() {
                 width: `${Math.random() * 300 + 50}px`,
                 height: `${Math.random() * 300 + 50}px`,
                 borderRadius: '50%',
-                background: `radial-gradient(circle, ${i % 2 === 0 ? 'rgba(215,144,119,0.5)' : 'rgba(96,162,157,0.5)'} 0%, transparent 50%)`,
+                background: `radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 50%)`,
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
                 animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
