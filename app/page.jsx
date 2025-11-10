@@ -304,7 +304,9 @@ export default function Page() {
             <div
               onClick={() => handleModeSelection('voyageur')}
               style={{
-                background: 'linear-gradient(135deg, rgba(96,162,157,0.1) 0%, rgba(78,205,196,0.15) 100%)',
+                backgroundImage: 'linear-gradient(135deg, rgba(96,162,157,0.85) 0%, rgba(78,205,196,0.9) 100%), url(/plage-floue.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 backdropFilter: 'blur(20px)',
                 border: '2px solid rgba(96,162,157,0.3)',
                 borderRadius: '32px',
@@ -323,13 +325,13 @@ export default function Page() {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
                 e.currentTarget.style.borderColor = 'rgba(96,162,157,0.6)';
                 e.currentTarget.style.boxShadow = '0 30px 80px rgba(96,162,157,0.4)';
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(96,162,157,0.2) 0%, rgba(78,205,196,0.25) 100%)';
+                e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, rgba(96,162,157,0.9) 0%, rgba(78,205,196,0.95) 100%), url(/plage-floue.png)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
                 e.currentTarget.style.borderColor = 'rgba(96,162,157,0.3)';
                 e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(96,162,157,0.1) 0%, rgba(78,205,196,0.15) 100%)';
+                e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, rgba(96,162,157,0.85) 0%, rgba(78,205,196,0.9) 100%), url(/plage-floue.png)';
               }}
             >
               {/* Glow effect */}
@@ -375,7 +377,9 @@ export default function Page() {
             <div
               onClick={() => handleModeSelection('hote')}
               style={{
-                background: 'linear-gradient(135deg, rgba(215,144,119,0.1) 0%, rgba(201,103,69,0.15) 100%)',
+                backgroundImage: 'linear-gradient(135deg, rgba(215,144,119,0.85) 0%, rgba(201,103,69,0.9) 100%), url(/interieur-flou.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 backdropFilter: 'blur(20px)',
                 border: '2px solid rgba(215,144,119,0.3)',
                 borderRadius: '32px',
@@ -394,13 +398,13 @@ export default function Page() {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
                 e.currentTarget.style.borderColor = 'rgba(215,144,119,0.6)';
                 e.currentTarget.style.boxShadow = '0 30px 80px rgba(215,144,119,0.4)';
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(215,144,119,0.2) 0%, rgba(201,103,69,0.25) 100%)';
+                e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, rgba(215,144,119,0.9) 0%, rgba(201,103,69,0.95) 100%), url(/interieur-flou.png)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
                 e.currentTarget.style.borderColor = 'rgba(215,144,119,0.3)';
                 e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(215,144,119,0.1) 0%, rgba(201,103,69,0.15) 100%)';
+                e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, rgba(215,144,119,0.85) 0%, rgba(201,103,69,0.9) 100%), url(/interieur-flou.png)';
               }}
             >
               {/* Glow effect */}
