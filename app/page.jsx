@@ -587,7 +587,7 @@ export default function Page() {
               textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
             }}>
               {activeTab === 'voyageur' ? (
-                <> Chez l'habitant, <br /><span style={{ color: '#ffffffff' }}> vraiment </span></>
+                <> Chez l'habitant, <br /><span style={{ color: '#ffffffff' }}> vraiment. </span></>
               ) : (
                 <>Sous-louez enfin<br /><span style={{ color: '#ffffffff' }}>en partageant les revenus</span></>
               )}
@@ -2456,14 +2456,14 @@ export default function Page() {
         }
         
         .search-card-modern {
-          padding: 20px 16px !important;
-          border-radius: 20px !important;
+          padding: 28px 20px !important;
+          border-radius: 24px !important;
         }
         
         .search-form-modern {
           flex-direction: row !important;
-          gap: 12px !important;
-          padding: 12px !important;
+          gap: 16px !important;
+          padding: 16px !important;
         }
         
         .search-input-container {
@@ -2472,10 +2472,10 @@ export default function Page() {
         }
         
         .btn-search-modern {
-          min-width: 56px !important;
-          width: 56px !important;
-          padding: 18px !important;
-          border-radius: 12px !important;
+          min-width: 60px !important;
+          width: 60px !important;
+          padding: 20px !important;
+          border-radius: 14px !important;
         }
         
         .search-text {
@@ -2483,69 +2483,69 @@ export default function Page() {
         }
         
         .search-icon {
-          font-size: 18px !important;
+          font-size: 20px !important;
         }
         
         .hero-section {
-          padding-bottom: 60px !important;
+          padding-bottom: 80px !important;
         }
 
         .estimator-section {
-          padding: 0 16px 40px !important;
+          padding: 0 20px 50px !important;
           margin-top: 0 !important;
         }
         
         .estimator-card {
-          padding: 32px 24px !important;
-          border-radius: 20px !important;
+          padding: 40px 28px !important;
+          border-radius: 24px !important;
           margin-top: -150px !important;
         }
 
         .concept-section {
-          padding: 40px 16px 30px !important;
+          padding: 50px 20px 40px !important;
         }
 
         .concept-section + section {
-          padding: 30px 16px 40px !important;
+          padding: 40px 20px 50px !important;
         }
 
         .estimator-heading {
-          margin-bottom: 24px !important;
+          margin-bottom: 28px !important;
         }
 
         .search-title {
-          font-size: 1.3rem !important;
+          font-size: 1.4rem !important;
           white-space: nowrap !important;
-          margin-bottom: 24px !important;
+          margin-bottom: 28px !important;
         }
 
         .estimator-heading h3 {
-          font-size: 1.6rem !important;
-          margin-bottom: 10px !important;
+          font-size: 1.8rem !important;
+          margin-bottom: 12px !important;
         }
 
         .estimator-subtitle {
-          font-size: 1rem !important;
+          font-size: 1.05rem !important;
         }
 
         .price-input-section {
-          padding: 20px !important;
-          margin-bottom: 12px !important;
+          padding: 24px !important;
+          margin-bottom: 16px !important;
         }
 
         .price-input-text {
-          font-size: 16px !important;
-          margin-bottom: 12px !important;
+          font-size: 17px !important;
+          margin-bottom: 14px !important;
         }
         
         .revenue-cards {
           grid-template-columns: 1fr 1fr !important;
-          gap: 12px !important;
+          gap: 16px !important;
         }
         
         .revenue-cards > a {
-          padding: clamp(8px, 1.5vw, 10px) clamp(5px, 1vw, 6px) !important;
-          border-radius: 16px !important;
+          padding: clamp(12px, 2vw, 16px) clamp(8px, 1.5vw, 10px) !important;
+          border-radius: 18px !important;
         }
         
         .revenue-cards img {
@@ -2559,15 +2559,15 @@ export default function Page() {
         
         .cta-buttons {
           flex-direction: row !important;
-          gap: 10px !important;
+          gap: 14px !important;
         }
         
         .cta-buttons > a {
           min-width: unset !important;
           max-width: unset !important;
           flex: 1 !important;
-          padding: 16px 12px !important;
-          font-size: 14px !important;
+          padding: 18px 14px !important;
+          font-size: 15px !important;
         }
         
         .date-field {
@@ -2582,36 +2582,36 @@ export default function Page() {
         
         /* Onglets responsive - ne débordent pas */
         .hero-section > div > div:first-of-type {
-          max-width: calc(100vw - 32px) !important;
-          margin: 0 auto 40px !important;
-          padding: 6px !important;
+          max-width: calc(100vw - 40px) !important;
+          margin: 0 auto 48px !important;
+          padding: 8px !important;
         }
         
         .hero-section > div > div:first-of-type button {
-          padding: 12px 16px !important;
-          font-size: 0.9rem !important;
+          padding: 14px 20px !important;
+          font-size: 0.95rem !important;
           white-space: nowrap !important;
         }
         
         /* Titre principal - ajuste taille pour garder même nombre de lignes */
         h1 {
-          font-size: clamp(1.8rem, 8vw, 4rem) !important;
-          line-height: 1.2 !important;
-          padding: 0 8px !important;
+          font-size: clamp(2rem, 8.5vw, 4rem) !important;
+          line-height: 1.25 !important;
+          padding: 0 12px !important;
         }
         
         /* Cases 60% et 40% côte à côte sur mobile */
         .revenue-split-cards {
           display: flex !important;
           flex-wrap: nowrap !important;
-          gap: 12px !important;
+          gap: 16px !important;
           justify-content: center !important;
-          padding: 0 8px !important;
-          margin-bottom: 20px !important;
+          padding: 0 12px !important;
+          margin-bottom: 28px !important;
         }
         
         .revenue-split-cards > div {
-          padding: clamp(16px, 3vw, 20px) clamp(10px, 2vw, 12px) !important;
+          padding: clamp(20px, 3.5vw, 24px) clamp(14px, 2.5vw, 16px) !important;
           min-width: 0 !important;
           flex: 1 !important;
           max-width: none !important;
@@ -2622,72 +2622,72 @@ export default function Page() {
       
       @media (max-width: 480px) {
         .search-card-modern {
-          padding: 16px 12px !important;
-          margin: 0 16px !important;
+          padding: 20px 16px !important;
+          margin: 0 20px !important;
         }
         
         .search-form-modern {
-          padding: 8px !important;
+          padding: 12px !important;
         }
         
         .estimator-section {
-          padding: 0 12px !important;
+          padding: 0 16px !important;
         }
         
         .estimator-card {
-          padding: 24px 16px !important;
+          padding: 32px 20px !important;
         }
 
         .estimator-heading {
-          margin-bottom: 16px !important;
+          margin-bottom: 20px !important;
         }
 
         .estimator-heading h3 {
-          font-size: 1.3rem !important;
-          margin-bottom: 8px !important;
-        }
-
-        .estimator-subtitle {
-          font-size: 0.95rem !important;
-        }
-
-        .price-input-section {
-          padding: 16px !important;
-          margin-bottom: 12px !important;
-          border-radius: 12px !important;
-        }
-
-        .price-input-text {
-          font-size: 14px !important;
+          font-size: 1.5rem !important;
           margin-bottom: 10px !important;
         }
 
+        .estimator-subtitle {
+          font-size: 1rem !important;
+        }
+
+        .price-input-section {
+          padding: 20px !important;
+          margin-bottom: 16px !important;
+          border-radius: 14px !important;
+        }
+
+        .price-input-text {
+          font-size: 15px !important;
+          margin-bottom: 12px !important;
+        }
+
         .price-input-text input {
-          width: 50px !important;
-          font-size: 16px !important;
+          width: 60px !important;
+          font-size: 17px !important;
         }
 
         .search-title {
-          font-size: 1.1rem !important;
+          font-size: 1.2rem !important;
           white-space: nowrap !important;
           overflow: hidden !important;
           text-overflow: ellipsis !important;
         }
         
         .btn-search-modern {
-          padding: 16px 20px !important;
-          font-size: 15px !important;
+          padding: 18px 22px !important;
+          font-size: 16px !important;
         }
         
         /* Hero section mobile */
         section:first-of-type {
-          padding: 60px 16px 80px !important;
+          padding: 70px 20px 90px !important;
         }
         
         /* Stats grid mobile */
         section:last-of-type > div > div:nth-of-type(2) {
           grid-template-columns: 1fr 1fr !important;
-          gap: 20px !important;
+          gap: 24px !important;
           text-align: center !important;
         }
         
@@ -2698,7 +2698,7 @@ export default function Page() {
         /* CTA buttons mobile */
         section:last-of-type > div > div:last-of-type {
           flex-direction: column !important;
-          gap: 12px !important;
+          gap: 16px !important;
         }
         
         section:last-of-type > div > div:last-of-type > a {
@@ -2708,7 +2708,7 @@ export default function Page() {
         }
         
         .revenue-cards > a {
-          padding: clamp(6px, 1.25vw, 8px) clamp(3px, 0.75vw, 4px) !important;
+          padding: clamp(10px, 2vw, 14px) clamp(6px, 1.5vw, 10px) !important;
           aspect-ratio: 1 !important;
         }
 
@@ -2722,31 +2722,31 @@ export default function Page() {
         }
         
         .revenue-card-label {
-          font-size: 9px !important;
-          margin-bottom: 2px !important;
+          font-size: 10px !important;
+          margin-bottom: 3px !important;
         }
         
         .revenue-amount {
-          font-size: clamp(1rem, 3vw, 1.5rem) !important;
-          margin-bottom: 1px !important;
+          font-size: clamp(1.1rem, 3.5vw, 1.6rem) !important;
+          margin-bottom: 2px !important;
         }
         
         .cta-buttons > a {
-          padding: 14px 8px !important;
-          font-size: 13px !important;
+          padding: 16px 10px !important;
+          font-size: 14px !important;
         }
         
         .cta-buttons > a > div:last-child {
-          font-size: 16px !important;
+          font-size: 17px !important;
         }
         
         /* Cases 60% et 40% encore plus compactes sur petits écrans */
         .revenue-split-cards {
-          gap: clamp(8px, 2vw, 12px) !important;
+          gap: clamp(12px, 2.5vw, 16px) !important;
         }
         
         .revenue-split-cards > div {
-          padding: clamp(14px, 2.5vw, 20px) clamp(8px, 1.5vw, 12px) !important;
+          padding: clamp(18px, 3vw, 24px) clamp(12px, 2vw, 16px) !important;
           aspect-ratio: 1.2 !important;
         }
 
