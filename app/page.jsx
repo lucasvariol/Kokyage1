@@ -1192,14 +1192,14 @@ export default function Page() {
           {/* Carrousel 3D de logements */}
           <div style={{
             perspective: '1000px',
-            height: '350px',
+            height: 'clamp(200px, 50vw, 350px)',
             position: 'relative',
-            marginBottom: '80px',
+            marginBottom: 'clamp(32px, 8vw, 80px)',
             overflow: 'visible'
           }}>
             <div className="carousel-3d" style={{
               display: 'flex',
-              gap: '24px',
+              gap: 'clamp(16px, 4vw, 24px)',
               animation: 'scroll3d 40s linear infinite',
               transformStyle: 'preserve-3d',
               position: 'absolute',
@@ -1216,8 +1216,8 @@ export default function Page() {
                 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop'
               ].map((imageUrl, i) => (
                 <div key={i} style={{
-                  minWidth: '400px',
-                  height: '300px',
+                  minWidth: 'clamp(220px, 55vw, 400px)',
+                  height: 'clamp(150px, 40vw, 300px)',
                   borderRadius: '20px',
                   overflow: 'hidden',
                   boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
@@ -1259,8 +1259,8 @@ export default function Page() {
                 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop'
               ].map((imageUrl, i) => (
                 <div key={`dup-${i}`} style={{
-                  minWidth: '400px',
-                  height: '300px',
+                  minWidth: 'clamp(220px, 55vw, 400px)',
+                  height: 'clamp(150px, 40vw, 300px)',
                   borderRadius: '20px',
                   overflow: 'hidden',
                   boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
