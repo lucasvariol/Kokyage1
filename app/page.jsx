@@ -1733,10 +1733,16 @@ export default function Page() {
             </p>
           </div>
 
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '32px'
+          <div className="guarantees-container" style={{ 
+            display: 'flex',
+            gap: '32px',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            scrollSnapType: 'x mandatory',
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(96,162,157,0.3) transparent',
+            paddingBottom: '16px'
           }}>
             {/* Empreinte bancaire */}
             <div style={{
@@ -1746,7 +1752,11 @@ export default function Page() {
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
               transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-              textAlign: 'center'
+              textAlign: 'center',
+              minWidth: '300px',
+              flex: '1 0 auto',
+              maxWidth: '400px',
+              scrollSnapAlign: 'start'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -1781,7 +1791,11 @@ export default function Page() {
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
               transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-              textAlign: 'center'
+              textAlign: 'center',
+              minWidth: '300px',
+              flex: '1 0 auto',
+              maxWidth: '400px',
+              scrollSnapAlign: 'start'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -1816,7 +1830,11 @@ export default function Page() {
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
               transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-              textAlign: 'center'
+              textAlign: 'center',
+              minWidth: '300px',
+              flex: '1 0 auto',
+              maxWidth: '400px',
+              scrollSnapAlign: 'start'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -2103,6 +2121,30 @@ export default function Page() {
 
     {/* CSS Responsive + Animations */}
     <style jsx>{`
+      .guarantees-container::-webkit-scrollbar {
+        height: 8px;
+      }
+      
+      .guarantees-container::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+      }
+      
+      .guarantees-container::-webkit-scrollbar-thumb {
+        background: rgba(96, 162, 157, 0.3);
+        border-radius: 4px;
+      }
+      
+      .guarantees-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(96, 162, 157, 0.5);
+      }
+
+      @media (min-width: 1100px) {
+        .guarantees-container {
+          justify-content: center !important;
+        }
+      }
+
       @media (max-width: 768px) {
         .desktop-only {
           display: none !important;
