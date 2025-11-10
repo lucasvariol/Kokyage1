@@ -1296,7 +1296,7 @@ export default function Page() {
             <p style={{ 
               fontSize: '1.2rem', 
               color: '#718096', 
-              maxWidth: '700px',
+              maxWidth: '900px',
               margin: '0 auto 60px',
               lineHeight: 1.6
             }}>
