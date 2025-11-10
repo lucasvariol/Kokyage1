@@ -803,7 +803,7 @@ export default function Page() {
                     zIndex: 1,
                     margin: 0
                   }}>
-                    Revenus passifs sans effort de gestion et avec des risques minimisés
+                    Revenus passifs sans effort de gestion et des risques minimisés
                   </p>
                 </div>
               </div>
@@ -1534,66 +1534,158 @@ export default function Page() {
           </p>
           
           {/* Features Grid */}
-          <div className="features-badges" style={{ 
-            display: 'flex', 
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '24px',
+          <div style={{ 
+            display: 'grid', 
+            gap: '24px', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             marginTop: '48px'
           }}>
-            <div className="feature-badge" style={{ textAlign: 'center', flex: '0 1 auto' }}>
-              <div style={{ 
-                width: '70px', 
-                height: '70px', 
-                background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 12px',
-                fontSize: '1.8rem'
+            <div style={{
+              background: 'white',
+              padding: '32px 24px',
+              borderRadius: '16px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+              border: '1px solid #f0f0f0',
+              textAlign: 'center',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(96,162,157,0.15)';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.06)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>✅</div>
+              <h4 style={{
+                fontSize: '1.3rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '12px'
               }}>
-                ⚖️
-              </div>
-              <h4 style={{ fontSize: '1rem', fontWeight: '700', color: '#2D3748', marginBottom: '6px' }}>100% Légal</h4>
-              <p style={{ color: '#718096', fontSize: '0.85rem', margin: 0 }}>Cadre juridique sécurisé</p>
+                100% légal
+              </h4>
+              <p style={{
+                fontSize: '1rem',
+                lineHeight: 1.6,
+                color: '#4A5568',
+                margin: 0
+              }}>
+                Accord électronique validé par des juristes, conforme à la loi.
+              </p>
             </div>
-            
-            <div className="feature-badge" style={{ textAlign: 'center', flex: '0 1 auto' }}>
-              <div style={{ 
-                width: '70px', 
-                height: '70px', 
-                background: 'linear-gradient(135deg, #CAAD78 0%, #B5935F 100%)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 12px',
-                fontSize: '1.8rem'
+
+            <div style={{
+              background: 'white',
+              padding: '32px 24px',
+              borderRadius: '16px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+              border: '1px solid #f0f0f0',
+              textAlign: 'center',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(96,162,157,0.15)';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.06)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🛡️</div>
+              <h4 style={{
+                fontSize: '1.3rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '12px'
               }}>
-                🛡️
-              </div>
-              <h4 style={{ fontSize: '1rem', fontWeight: '700', color: '#2D3748', marginBottom: '6px' }}>Sécurisé</h4>
-              <p style={{ color: '#718096', fontSize: '0.85rem', margin: 0 }}>enregistrement empreinte bancaire</p>
+                100% sécurisé
+              </h4>
+              <p style={{
+                fontSize: '1rem',
+                lineHeight: 1.6,
+                color: '#4A5568',
+                margin: 0
+              }}>
+                Caution, modération et système de notation.
+              </p>
             </div>
-            
-            <div className="feature-badge" style={{ textAlign: 'center', flex: '0 1 auto' }}>
-              <div style={{ 
-                width: '70px', 
-                height: '70px', 
-                background: 'linear-gradient(135deg, #e28060ff 0%, #741b05ff 100%)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 12px',
-                fontSize: '1.8rem'
+
+            <div style={{
+              background: 'white',
+              padding: '32px 24px',
+              borderRadius: '16px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+              border: '1px solid #f0f0f0',
+              textAlign: 'center',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(96,162,157,0.15)';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.06)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🤝</div>
+              <h4 style={{
+                fontSize: '1.3rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '12px'
               }}>
-                👌
-              </div>
-              <h4 style={{ fontSize: '1rem', fontWeight: '700', color: '#2D3748', marginBottom: '6px' }}>Simple</h4>
-              <p style={{ color: '#718096', fontSize: '0.85rem', margin: 0 }}>Processus automatisé</p>
+                100% équitable
+              </h4>
+              <p style={{
+                fontSize: '1rem',
+                lineHeight: 1.6,
+                color: '#4A5568',
+                margin: 0
+              }}>
+                Chaque acteur est gagnant : locataire, propriétaire et voyageur.
+              </p>
+            </div>
+
+            <div style={{
+              background: 'white',
+              padding: '32px 24px',
+              borderRadius: '16px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+              border: '1px solid #f0f0f0',
+              textAlign: 'center',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(96,162,157,0.15)';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.06)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
+              <h4 style={{
+                fontSize: '1.3rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '12px'
+              }}>
+                100% responsable
+              </h4>
+              <p style={{
+                fontSize: '1rem',
+                lineHeight: 1.6,
+                color: '#4A5568',
+                margin: 0
+              }}>
+                Contre la spéculation immobilière, pour un usage raisonné du logement.
+              </p>
             </div>
           </div>
         </div>
@@ -2047,7 +2139,7 @@ export default function Page() {
         .estimator-card {
           padding: 32px 24px !important;
           border-radius: 20px !important;
-          margin-top: -80px !important;
+          margin-top: -100px !important;
         }
 
         .concept-section {
@@ -2188,26 +2280,7 @@ export default function Page() {
           font-size: 0.8rem !important;
           line-height: 1.3 !important;
         }
-        
-        /* Badges features toujours en ligne mais plus compacts */
-        .features-badges {
-          gap: 16px !important;
-        }
-        
-        .feature-badge > div:first-child {
-          width: 60px !important;
-          height: 60px !important;
-          font-size: 1.5rem !important;
-          margin-bottom: 10px !important;
-        }
-        
-        .feature-badge h4 {
-          font-size: 0.9rem !important;
-        }
-        
-        .feature-badge p {
-          font-size: 0.75rem !important;
-        }
+
       }
       
       @media (max-width: 480px) {
@@ -2346,26 +2419,7 @@ export default function Page() {
         .revenue-split-cards > div > p {
           font-size: 0.8rem !important;
         }
-        
-        /* Badges features encore plus compacts sur petits écrans */
-        .features-badges {
-          gap: 12px !important;
-        }
-        
-        .feature-badge > div:first-child {
-          width: 50px !important;
-          height: 50px !important;
-          font-size: 1.3rem !important;
-          margin-bottom: 8px !important;
-        }
-        
-        .feature-badge h4 {
-          font-size: 0.85rem !important;
-        }
-        
-        .feature-badge p {
-          font-size: 0.7rem !important;
-        }
+
       }
     `}</style>
   </>;
