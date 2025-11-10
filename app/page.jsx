@@ -390,11 +390,20 @@ export default function Page() {
         {/* Animations CSS */}
         <style jsx>{`
           @keyframes float {
-            0%, 100% {
-              transform: translateY(0px);
+            0% {
+              transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            25% {
+              transform: translate(12px, -35px) scale(1.05) rotate(3deg);
             }
             50% {
-              transform: translateY(-30px);
+              transform: translate(-18px, -15px) scale(0.98) rotate(-2deg);
+            }
+            75% {
+              transform: translate(10px, 25px) scale(1.03) rotate(2deg);
+            }
+            100% {
+              transform: translate(0, 0) scale(1) rotate(0deg);
             }
           }
 
