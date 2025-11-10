@@ -259,7 +259,7 @@ export default function Page() {
           position: 'relative',
           zIndex: 1,
           textAlign: 'center',
-          padding: '40px 20px',
+          padding: '20px 20px 40px',
           maxWidth: '1100px',
           width: '100%',
           opacity: isTransitioning ? 0 : 1,
@@ -273,7 +273,7 @@ export default function Page() {
               src="/logo.png" 
               alt="Kokyage" 
               style={{ 
-                height: 'clamp(80px, 10vw, 120px)', 
+                height: 'clamp(120px, 15vw, 150px)', 
                 filter: 'brightness(0) invert(1)',
                 marginBottom: '20px',
                 display: 'block'
