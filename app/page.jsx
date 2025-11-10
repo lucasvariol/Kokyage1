@@ -48,7 +48,6 @@ export default function Page() {
 
   // État pour gérer l'onglet actif et l'écran de choix initial
   const [activeTab, setActiveTab] = useState(null); // null, 'voyageur' ou 'hote'
-  const [showWelcome, setShowWelcome] = useState(true); // Afficher l'écran d'accueil
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showModeSelection, setShowModeSelection] = useState(true);
   const [isPageReady, setIsPageReady] = useState(false);
@@ -600,173 +599,6 @@ export default function Page() {
             }
           }
         `}</style>
-      </div>
-    );
-  }
-
-  // Écran d'accueil moderne avec choix voyageur/hôte
-  if (showWelcome) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #1a2332 0%, #0f1419 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '24px',
-        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-      }}>
-        <div style={{
-          maxWidth: '900px',
-          width: '100%',
-          textAlign: 'center'
-        }}>
-          {/* Logo */}
-          <div style={{
-            marginBottom: '60px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px'
-          }}>
-            <div style={{
-              fontSize: '3rem',
-              color: 'white'
-            }}>🏡</div>
-            <h1 style={{
-              fontSize: 'clamp(2rem, 5vw, 3rem)',
-              fontWeight: 700,
-              color: 'white',
-              margin: 0
-            }}>Kokyage</h1>
-          </div>
-
-          {/* Titre principal */}
-          <h2 style={{
-            fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
-            fontWeight: 700,
-            color: 'white',
-            marginBottom: '16px',
-            letterSpacing: '-0.01em'
-          }}>
-            Bienvenue sur Kokyage
-          </h2>
-          
-          <p style={{
-            fontSize: 'clamp(1rem, 2vw, 1.2rem)',
-            color: 'rgba(255,255,255,0.7)',
-            marginBottom: '60px',
-            maxWidth: '600px',
-            margin: '0 auto 60px'
-          }}>
-            Trouvez ou partagez votre logement de confiance.
-          </p>
-
-          {/* Deux grandes cartes */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '24px',
-            maxWidth: '800px',
-            margin: '0 auto'
-          }}>
-            {/* Carte Voyageur */}
-            <div
-              onClick={() => {
-                setActiveTab('voyageur');
-                setShowWelcome(false);
-              }}
-              style={{
-                background: 'rgba(96, 162, 157, 0.15)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '24px',
-                padding: '48px 32px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                border: '2px solid rgba(96, 162, 157, 0.3)',
-                textAlign: 'center'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.borderColor = 'rgba(96, 162, 157, 0.6)';
-                e.currentTarget.style.background = 'rgba(96, 162, 157, 0.25)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.borderColor = 'rgba(96, 162, 157, 0.3)';
-                e.currentTarget.style.background = 'rgba(96, 162, 157, 0.15)';
-              }}
-            >
-              <div style={{
-                fontSize: '4rem',
-                marginBottom: '24px'
-              }}>🧳</div>
-              <h3 style={{
-                fontSize: 'clamp(1.3rem, 3vw, 1.6rem)',
-                fontWeight: 700,
-                color: 'white',
-                marginBottom: '12px'
-              }}>
-                Je cherche<br />un séjour
-              </h3>
-              <p style={{
-                fontSize: '1rem',
-                color: 'rgba(255,255,255,0.8)',
-                marginBottom: '24px'
-              }}>
-                Commencer
-              </p>
-            </div>
-
-            {/* Carte Hôte */}
-            <div
-              onClick={() => {
-                setActiveTab('hote');
-                setShowWelcome(false);
-              }}
-              style={{
-                background: 'rgba(215, 144, 119, 0.15)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '24px',
-                padding: '48px 32px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                border: '2px solid rgba(215, 144, 119, 0.3)',
-                textAlign: 'center'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.borderColor = 'rgba(215, 144, 119, 0.6)';
-                e.currentTarget.style.background = 'rgba(215, 144, 119, 0.25)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.borderColor = 'rgba(215, 144, 119, 0.3)';
-                e.currentTarget.style.background = 'rgba(215, 144, 119, 0.15)';
-              }}
-            >
-              <div style={{
-                fontSize: '4rem',
-                marginBottom: '24px'
-              }}>🏠</div>
-              <h3 style={{
-                fontSize: 'clamp(1.3rem, 3vw, 1.6rem)',
-                fontWeight: 700,
-                color: 'white',
-                marginBottom: '12px'
-              }}>
-                Je sous-loue mon<br />logement
-              </h3>
-              <p style={{
-                fontSize: '1rem',
-                color: 'rgba(255,255,255,0.8)',
-                marginBottom: '24px'
-              }}>
-                Commencer
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     );
   }
@@ -1440,7 +1272,16 @@ export default function Page() {
               position: 'absolute',
               left: 0
             }}>
-              {['apartment,interior', 'modern,house', 'home,living', 'bedroom,cozy', 'kitchen,modern', 'apartment,view', 'home,design', 'house,exterior'].map((keywords, i) => (
+              {[
+                'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop'
+              ].map((imageUrl, i) => (
                 <div key={i} style={{
                   minWidth: '400px',
                   height: '300px',
@@ -1462,18 +1303,28 @@ export default function Page() {
                 }}
                 >
                   <img 
-                    src={`https://source.unsplash.com/400x300/?${keywords}`}
+                    src={imageUrl}
                     alt={`Logement ${i + 1}`}
                     style={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover'
                     }}
+                    loading="lazy"
                   />
                 </div>
               ))}
               {/* Duplicate pour boucle infinie */}
-              {['apartment,interior', 'modern,house', 'home,living', 'bedroom,cozy', 'kitchen,modern', 'apartment,view', 'home,design', 'house,exterior'].map((keywords, i) => (
+              {[
+                'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=400&h=300&fit=crop',
+                'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop'
+              ].map((imageUrl, i) => (
                 <div key={`dup-${i}`} style={{
                   minWidth: '400px',
                   height: '300px',
@@ -1495,13 +1346,14 @@ export default function Page() {
                 }}
                 >
                   <img 
-                    src={`https://source.unsplash.com/400x300/?${keywords}`}
+                    src={imageUrl}
                     alt={`Logement ${i + 1}`}
                     style={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover'
                     }}
+                    loading="lazy"
                   />
                 </div>
               ))}
