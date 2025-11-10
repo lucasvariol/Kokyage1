@@ -1377,144 +1377,160 @@ export default function Page() {
             </p>
           </div>
 
-          <div className="arguments-container" style={{
-            display: 'flex',
-            gap: '24px',
-            overflowX: 'auto',
-            overflowY: 'hidden',
-            scrollSnapType: 'x mandatory',
-            WebkitOverflowScrolling: 'touch',
-            scrollbarWidth: 'thin',
-            scrollbarColor: 'rgba(96,162,157,0.3) transparent',
-            paddingBottom: '16px',
-            justifyContent: 'flex-start',
-            maxWidth: '1100px',
-            margin: '0 auto'
-          }}>
-            {/* Argument 1 - Équitable */}
-            <div style={{
-              background: 'white',
-              padding: '32px',
-              borderRadius: '20px',
-              border: '2px solid #E2E8F0',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-              transition: 'all 0.3s ease',
-              minWidth: '300px',
-              width: '300px',
-              flex: '0 0 300px',
-              scrollSnapAlign: 'start'
+          <div
+            style={{
+              maxWidth: '1100px',
+              margin: '0 auto',
+              width: '100%'
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 12px 40px rgba(96,162,157,0.15)';
-              e.currentTarget.style.borderColor = '#60A29D';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
-              e.currentTarget.style.borderColor = '#E2E8F0';
-            }}
+          >
+            <div
+              className="arguments-container"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'nowrap',
+                gap: '24px',
+                overflowX: 'auto',
+                overflowY: 'hidden',
+                scrollSnapType: 'x mandatory',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(96,162,157,0.3) transparent',
+                padding: '0 8px 16px',
+                justifyContent: 'flex-start',
+                alignItems: 'stretch',
+                touchAction: 'pan-x'
+              }}
             >
-              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🤝</div>
-              <h3 style={{
-                fontSize: '1.4rem',
-                fontWeight: 700,
-                color: '#2D3748',
-                marginBottom: '16px'
-              }}>
-                Partage équitable
-              </h3>
-              <p style={{
-                color: '#4A5568',
-                lineHeight: 1.7,
-                fontSize: '1rem'
-              }}>
-                60% des revenus vont directement au locataire qui habite réellement le logement, pas à des investisseurs. Un modèle qui redistribue la valeur aux habitants.
-              </p>
-            </div>
+              {/* Argument 1 - Équitable */}
+              <div
+                style={{
+                  background: 'white',
+                  padding: '28px',
+                  borderRadius: '20px',
+                  border: '2px solid #E2E8F0',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+                  transition: 'all 0.3s ease',
+                  minWidth: '260px',
+                  width: '260px',
+                  flex: '0 0 260px',
+                  scrollSnapAlign: 'start'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(96,162,157,0.15)';
+                  e.currentTarget.style.borderColor = '#60A29D';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+                  e.currentTarget.style.borderColor = '#E2E8F0';
+                }}
+              >
+                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🤝</div>
+                <h3 style={{
+                  fontSize: '1.4rem',
+                  fontWeight: 700,
+                  color: '#2D3748',
+                  marginBottom: '16px'
+                }}>
+                  Partage équitable
+                </h3>
+                <p style={{
+                  color: '#4A5568',
+                  lineHeight: 1.7,
+                  fontSize: '1rem'
+                }}>
+                  60% des revenus vont directement au locataire qui habite réellement le logement, pas à des investisseurs. Un modèle qui redistribue la valeur aux habitants.
+                </p>
+              </div>
 
-            {/* Argument 2 - Authentique */}
-            <div style={{
-              background: 'white',
-              padding: '32px',
-              borderRadius: '20px',
-              border: '2px solid #E2E8F0',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-              transition: 'all 0.3s ease',
-              minWidth: '300px',
-              width: '300px',
-              flex: '0 0 300px',
-              scrollSnapAlign: 'start'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 12px 40px rgba(202,173,120,0.15)';
-              e.currentTarget.style.borderColor = '#CAAD78';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
-              e.currentTarget.style.borderColor = '#E2E8F0';
-            }}
-            >
-              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🏡</div>
-              <h3 style={{
-                fontSize: '1.4rem',
-                fontWeight: 700,
-                color: '#2D3748',
-                marginBottom: '16px'
-              }}>
-                Hébergements authentiques
-              </h3>
-              <p style={{
-                color: '#4A5568',
-                lineHeight: 1.7,
-                fontSize: '1rem'
-              }}>
-                Des logements habités, entretenus avec soin par leurs locataires. Vivez l'expérience d'un vrai chez-soi, pas d'un appartement optimisé pour la rentabilité.
-              </p>
-            </div>
+              {/* Argument 2 - Authentique */}
+              <div
+                style={{
+                  background: 'white',
+                  padding: '28px',
+                  borderRadius: '20px',
+                  border: '2px solid #E2E8F0',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+                  transition: 'all 0.3s ease',
+                  minWidth: '260px',
+                  width: '260px',
+                  flex: '0 0 260px',
+                  scrollSnapAlign: 'start'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(202,173,120,0.15)';
+                  e.currentTarget.style.borderColor = '#CAAD78';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+                  e.currentTarget.style.borderColor = '#E2E8F0';
+                }}
+              >
+                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🏡</div>
+                <h3 style={{
+                  fontSize: '1.4rem',
+                  fontWeight: 700,
+                  color: '#2D3748',
+                  marginBottom: '16px'
+                }}>
+                  Hébergements authentiques
+                </h3>
+                <p style={{
+                  color: '#4A5568',
+                  lineHeight: 1.7,
+                  fontSize: '1rem'
+                }}>
+                  Des logements habités, entretenus avec soin par leurs locataires. Vivez l'expérience d'un vrai chez-soi, pas d'un appartement optimisé pour la rentabilité.
+                </p>
+              </div>
 
-            {/* Argument 3 - Contre spéculation */}
-            <div style={{
-              background: 'white',
-              padding: '32px',
-              borderRadius: '20px',
-              border: '2px solid #E2E8F0',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-              transition: 'all 0.3s ease',
-              minWidth: '300px',
-              width: '300px',
-              flex: '0 0 300px',
-              scrollSnapAlign: 'start'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.boxShadow = '0 12px 40px rgba(215,144,119,0.15)';
-              e.currentTarget.style.borderColor = '#D79077';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
-              e.currentTarget.style.borderColor = '#E2E8F0';
-            }}
-            >
-              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
-              <h3 style={{
-                fontSize: '1.4rem',
-                fontWeight: 700,
-                color: '#2D3748',
-                marginBottom: '16px'
-              }}>
-                Contre la spéculation
-              </h3>
-              <p style={{
-                color: '#4A5568',
-                lineHeight: 1.7,
-                fontSize: '1rem'
-              }}>
-                Pas de multipropriétaires qui monopolisent le marché. Kokyage favorise un usage raisonné et responsable du logement, pour préserver nos villes.
-              </p>
+              {/* Argument 3 - Contre spéculation */}
+              <div
+                style={{
+                  background: 'white',
+                  padding: '28px',
+                  borderRadius: '20px',
+                  border: '2px solid #E2E8F0',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+                  transition: 'all 0.3s ease',
+                  minWidth: '260px',
+                  width: '260px',
+                  flex: '0 0 260px',
+                  scrollSnapAlign: 'start'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(215,144,119,0.15)';
+                  e.currentTarget.style.borderColor = '#D79077';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+                  e.currentTarget.style.borderColor = '#E2E8F0';
+                }}
+              >
+                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
+                <h3 style={{
+                  fontSize: '1.4rem',
+                  fontWeight: 700,
+                  color: '#2D3748',
+                  marginBottom: '16px'
+                }}>
+                  Contre la spéculation
+                </h3>
+                <p style={{
+                  color: '#4A5568',
+                  lineHeight: 1.7,
+                  fontSize: '1rem'
+                }}>
+                  Pas de multipropriétaires qui monopolisent le marché. Kokyage favorise un usage raisonné et responsable du logement, pour préserver nos villes.
+                </p>
+              </div>
             </div>
           </div>
         </div>
