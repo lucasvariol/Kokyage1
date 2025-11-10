@@ -216,7 +216,7 @@ export default function Page() {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)',
+        background: 'linear-gradient(135deg, #F5E6D3 0%, #E8D4BA 50%, #D79077 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -274,6 +274,7 @@ export default function Page() {
               alt="Kokyage" 
               style={{ 
                 height: 'clamp(80px, 10vw, 120px)', 
+                filter: 'brightness(0) invert(1)',
                 marginBottom: '20px',
                 display: 'block'
               }} 
@@ -281,9 +282,10 @@ export default function Page() {
             <h1 style={{
               fontSize: 'clamp(2rem, 5vw, 3.5rem)',
               fontWeight: 800,
-              color: '#2D3748',
+              color: 'white',
               marginBottom: '0',
-              letterSpacing: '-0.02em'
+              letterSpacing: '-0.02em',
+              textShadow: '0 4px 30px rgba(0,0,0,0.3)'
             }}>
               Bienvenue sur Kokyage
             </h1>
