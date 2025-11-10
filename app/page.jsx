@@ -2432,7 +2432,7 @@ export default function Page() {
               }}
             />
             <img 
-              src="/CSE.png" 
+              src="/CSE.jpeg" 
               alt="CSE" 
               style={{ 
                 height: '60px', 
