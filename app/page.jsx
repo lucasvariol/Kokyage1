@@ -422,120 +422,87 @@ export default function Page() {
 
           @media (max-width: 768px) {
             .mode-selection-container {
-              padding: 24px 16px !important;
+              padding: 36px 16px !important;
             }
 
             .mode-selection-container > div:first-child {
-              margin-bottom: 32px !important;
+              margin-bottom: 36px !important;
+            }
+
+            .mode-selection-container > div:first-child img {
+              height: clamp(110px, 26vw, 140px) !important;
+              margin-bottom: 20px !important;
             }
 
             .mode-selection-container h1 {
-              font-size: 1.75rem !important;
-              margin-bottom: 12px !important;
-            }
-
-            .mode-selection-container > div:first-child p {
-              font-size: 0.95rem !important;
+              font-size: clamp(2.4rem, 7vw, 3rem) !important;
+              margin-bottom: 0 !important;
             }
 
             .mode-selection-cards {
-              gap: 12px !important;
-              padding: 0 8px !important;
-              grid-template-columns: repeat(2, 1fr) !important;
+              grid-template-columns: 1fr !important;
+              gap: 24px !important;
+              padding: 0 !important;
+              max-width: 440px !important;
+              margin: 0 auto !important;
             }
             
             .mode-selection-cards > div {
-              padding: 24px 12px !important;
-              border-radius: 20px !important;
+              padding: 52px 32px !important;
+              border-radius: 30px !important;
             }
             
             .mode-selection-cards h2 {
-              font-size: 0.95rem !important;
-              margin-bottom: 12px !important;
-              line-height: 1.3 !important;
-              min-height: 2.8rem !important;
-            }
-            
-            .mode-selection-cards > div > div > h2 + div {
-              font-size: 2.5rem !important;
-              margin-bottom: 16px !important;
-            }
-
-            .mode-selection-cards > div > div:last-child {
-              font-size: 0.85rem !important;
+              font-size: clamp(2.4rem, 7.5vw, 2.9rem) !important;
+              line-height: 1.1 !important;
+              margin-bottom: 0 !important;
+              min-height: auto !important;
             }
           }
 
           @media (max-width: 480px) {
             .mode-selection-container {
-              padding: 20px 12px !important;
+              padding: 32px 14px !important;
             }
 
             .mode-selection-container > div:first-child img {
-              height: 60px !important;
-              margin-bottom: 16px !important;
+              height: clamp(100px, 32vw, 130px) !important;
             }
 
             .mode-selection-container h1 {
-              font-size: 1.5rem !important;
+              font-size: clamp(2.2rem, 8.5vw, 2.8rem) !important;
             }
 
             .mode-selection-cards {
-              gap: 10px !important;
-              padding: 0 4px !important;
+              gap: 22px !important;
             }
             
             .mode-selection-cards > div {
-              padding: 20px 8px !important;
-              border-radius: 16px !important;
+              padding: 48px 26px !important;
+              border-radius: 26px !important;
             }
             
             .mode-selection-cards h2 {
-              font-size: 0.85rem !important;
-              margin-bottom: 8px !important;
-              min-height: 2.4rem !important;
-            }
-            
-            .mode-selection-cards > div > div > h2 + div {
-              font-size: 2rem !important;
-              margin-bottom: 12px !important;
-            }
-
-            .mode-selection-cards > div > div:last-child {
-              font-size: 0.8rem !important;
-            }
-
-            .mode-selection-cards > div > div:last-child span {
-              font-size: 1rem !important;
+              font-size: clamp(2.2rem, 8.5vw, 2.7rem) !important;
             }
           }
 
           @media (max-width: 380px) {
             .mode-selection-container {
-              padding: 16px 8px !important;
+              padding: 28px 12px !important;
             }
 
             .mode-selection-container h1 {
-              font-size: 1.3rem !important;
-            }
-
-            .mode-selection-cards {
-              gap: 8px !important;
+              font-size: clamp(2rem, 9.5vw, 2.4rem) !important;
             }
 
             .mode-selection-cards > div {
-              padding: 16px 6px !important;
+              padding: 42px 22px !important;
+              border-radius: 24px !important;
             }
 
             .mode-selection-cards h2 {
-              font-size: 0.8rem !important;
-              margin-bottom: 6px !important;
-              min-height: 2.2rem !important;
-            }
-
-            .mode-selection-cards > div > div > h2 + div {
-              font-size: 1.8rem !important;
-              margin-bottom: 10px !important;
+              font-size: clamp(2rem, 9.5vw, 2.4rem) !important;
             }
           }
         `}</style>
