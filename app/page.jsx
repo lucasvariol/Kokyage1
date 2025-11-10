@@ -319,7 +319,7 @@ export default function Page() {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'center'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
@@ -330,32 +330,17 @@ export default function Page() {
                 e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
               }}
             >
-              <div style={{ position: 'relative', zIndex: 3 }}>
-                <h2 style={{
-                  fontSize: '1.75rem',
-                  fontWeight: 700,
-                  color: 'white',
-                  marginBottom: '16px',
-                  letterSpacing: '-0.01em',
-                  minHeight: '4.2rem'
-                }}>
-                  Je cherche un séjour
-                </h2>
-              </div>
-              <div style={{ fontSize: '4rem', marginBottom: '24px', position: 'relative', zIndex: 3 }}></div>
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#4ECDC4',
-                fontWeight: 600,
-                fontSize: '1rem',
+              <h2 style={{
+                fontSize: 'clamp(2rem, 5vw, 2.5rem)',
+                fontWeight: 700,
+                color: 'white',
+                letterSpacing: '-0.01em',
                 position: 'relative',
-                zIndex: 3
+                zIndex: 3,
+                textAlign: 'center'
               }}>
-                Commencer
-                <span style={{ fontSize: '1.2rem' }}>→</span>
-              </div>
+                Je cherche un séjour
+              </h2>
             </div>
 
             {/* Card Hôte */}
@@ -376,7 +361,7 @@ export default function Page() {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'center'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
@@ -387,32 +372,17 @@ export default function Page() {
                 e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
               }}
             >
-              <div style={{ position: 'relative', zIndex: 3 }}>
-                <h2 style={{
-                  fontSize: '1.75rem',
-                  fontWeight: 700,
-                  color: 'white',
-                  marginBottom: '16px',
-                  letterSpacing: '-0.01em',
-                  minHeight: '4.2rem'
-                }}>
-                  Je sous-loue mon logement
-                </h2>
-              </div>
-              <div style={{ fontSize: '4rem', marginBottom: '24px', position: 'relative', zIndex: 3 }}></div>
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#D79077',
-                fontWeight: 600,
-                fontSize: '1rem',
+              <h2 style={{
+                fontSize: 'clamp(2rem, 5vw, 2.5rem)',
+                fontWeight: 700,
+                color: 'white',
+                letterSpacing: '-0.01em',
                 position: 'relative',
-                zIndex: 3
+                zIndex: 3,
+                textAlign: 'center'
               }}>
-                Commencer
-                <span style={{ fontSize: '1.2rem' }}>→</span>
-              </div>
+                Je sous-loue mon logement
+              </h2>
             </div>
           </div>
         </div>
