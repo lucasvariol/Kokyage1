@@ -216,7 +216,7 @@ export default function Page() {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'linear-gradient(135deg, #F5E6D3 0%, #E8D4BA 50%, #D79077 100%)',
+        background: 'linear-gradient(135deg, #995741ff 0%, #D68E74 50%, #C96745  100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
