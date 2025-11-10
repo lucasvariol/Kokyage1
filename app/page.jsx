@@ -507,27 +507,28 @@ export default function Page() {
             }
 
             .mode-selection-cards {
-              flex-direction: column !important;
-              gap: 16px !important;
-              padding: 0 16px !important;
+              flex-wrap: wrap !important;
+              justify-content: center !important;
+              gap: 12px !important;
+              padding: 0 12px !important;
               max-width: 100% !important;
             }
             
             .mode-selection-cards > div {
-              min-width: 100% !important;
-              max-width: 100% !important;
-              flex: 1 1 auto !important;
-              padding: 32px 24px !important;
-              gap: 16px !important;
+              flex: 1 1 calc(50% - 12px) !important;
+              min-width: calc(50% - 12px) !important;
+              max-width: calc(50% - 12px) !important;
+              padding: 28px 22px !important;
+              gap: 14px !important;
             }
             
             .mode-selection-cards > div > div:first-child {
-              font-size: 3rem !important;
+              font-size: 2.8rem !important;
             }
             
             .mode-selection-cards h2 {
-              font-size: clamp(1.3rem, 4vw, 1.5rem) !important;
-              line-height: 1.3 !important;
+              font-size: clamp(1.25rem, 3.8vw, 1.6rem) !important;
+              line-height: 1.28 !important;
             }
             
             .mode-selection-cards > div > div:last-child {
@@ -549,25 +550,28 @@ export default function Page() {
             }
 
             .mode-selection-cards {
-              gap: 12px !important;
-              padding: 0 12px !important;
+              gap: 10px !important;
+              padding: 0 8px !important;
             }
             
             .mode-selection-cards > div {
-              padding: 28px 20px !important;
-              gap: 14px !important;
+              flex: 1 1 calc(50% - 10px) !important;
+              min-width: calc(50% - 10px) !important;
+              max-width: calc(50% - 10px) !important;
+              padding: 24px 18px !important;
+              gap: 12px !important;
             }
             
             .mode-selection-cards > div > div:first-child {
-              font-size: 2.5rem !important;
+              font-size: 2.4rem !important;
             }
             
             .mode-selection-cards h2 {
-              font-size: clamp(1.2rem, 4.5vw, 1.4rem) !important;
+              font-size: clamp(1.1rem, 4.2vw, 1.35rem) !important;
             }
             
             .mode-selection-cards > div > div:last-child {
-              font-size: 0.8rem !important;
+              font-size: 0.78rem !important;
             }
           }
 
@@ -581,16 +585,28 @@ export default function Page() {
             }
 
             .mode-selection-cards {
-              gap: 12px !important;
+              gap: 8px !important;
             }
 
             .mode-selection-cards > div {
-              padding: clamp(18px, 7vw, 24px) clamp(12px, 6vw, 16px) !important;
+              flex: 1 1 calc(50% - 8px) !important;
+              min-width: calc(50% - 8px) !important;
+              max-width: calc(50% - 8px) !important;
+              padding: clamp(18px, 7vw, 22px) clamp(12px, 6vw, 16px) !important;
               border-radius: 18px !important;
+              gap: 10px !important;
+            }
+
+            .mode-selection-cards > div > div:first-child {
+              font-size: 2.2rem !important;
             }
 
             .mode-selection-cards h2 {
-              font-size: clamp(1.25rem, 5.8vw, 1.6rem) !important;
+              font-size: clamp(1.05rem, 5.2vw, 1.3rem) !important;
+            }
+
+            .mode-selection-cards > div > div:last-child {
+              font-size: 0.74rem !important;
             }
           }
         `}</style>
