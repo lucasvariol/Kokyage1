@@ -2487,7 +2487,17 @@ export default function Page() {
         }
         
         .hero-section {
-          padding-bottom: 80px !important;
+          padding: 60px 24px 60px !important;
+        }
+        
+        .hero-section > div > div:nth-of-type(2) {
+          height: 250px !important;
+          margin-bottom: 50px !important;
+        }
+        
+        .hero-section > div > div:nth-of-type(2) > div > div {
+          min-width: 280px !important;
+          height: 200px !important;
         }
 
         .estimator-section {
@@ -2681,7 +2691,17 @@ export default function Page() {
         
         /* Hero section mobile */
         section:first-of-type {
-          padding: 70px 20px 90px !important;
+          padding: 50px 16px 50px !important;
+        }
+        
+        .hero-section > div > div:nth-of-type(2) {
+          height: 200px !important;
+          margin-bottom: 40px !important;
+        }
+        
+        .hero-section > div > div:nth-of-type(2) > div > div {
+          min-width: 240px !important;
+          height: 160px !important;
         }
         
         /* Stats grid mobile */
