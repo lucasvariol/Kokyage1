@@ -304,9 +304,10 @@ export default function Page() {
             <div
               onClick={() => handleModeSelection('voyageur')}
               style={{
-                backgroundImage: 'linear-gradient(135deg, rgba(96,162,157,0.3) 0%, rgba(78,205,196,0.4) 100%), url(/plage-floue.png)',
+                backgroundImage: 'url(/plage-floue.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
+                position: 'relative',
                 backdropFilter: 'blur(20px)',
                 border: '2px solid rgba(96,162,157,0.3)',
                 borderRadius: '32px',
@@ -325,15 +326,26 @@ export default function Page() {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
                 e.currentTarget.style.borderColor = 'rgba(96,162,157,0.6)';
                 e.currentTarget.style.boxShadow = '0 30px 80px rgba(96,162,157,0.4)';
-                e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, rgba(96,162,157,0.5) 0%, rgba(78,205,196,0.6) 100%), url(/plage-floue.png)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
                 e.currentTarget.style.borderColor = 'rgba(96,162,157,0.3)';
                 e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
-                e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, rgba(96,162,157,0.3) 0%, rgba(78,205,196,0.4) 100%), url(/plage-floue.png)';
               }}
             >
+              {/* Overlay de couleur */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(135deg, rgba(96,162,157,0.3) 0%, rgba(78,205,196,0.4) 100%)',
+                borderRadius: '32px',
+                pointerEvents: 'none',
+                zIndex: 1
+              }} />
+              
               {/* Glow effect */}
               <div style={{
                 position: 'absolute',
@@ -344,10 +356,11 @@ export default function Page() {
                 background: 'radial-gradient(circle, rgba(96,162,157,0.3) 0%, transparent 70%)',
                 opacity: 0,
                 transition: 'opacity 0.5s ease',
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                zIndex: 2
               }} className="glow-effect" />
               
-              <div>
+              <div style={{ position: 'relative', zIndex: 3 }}>
                 <h2 style={{
                   fontSize: '1.75rem',
                   fontWeight: 700,
@@ -359,14 +372,16 @@ export default function Page() {
                   Je cherche un séjour
                 </h2>
               </div>
-              <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏖️</div>
+              <div style={{ fontSize: '4rem', marginBottom: '24px', position: 'relative', zIndex: 3 }}>🏖️</div>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
                 color: '#4ECDC4',
                 fontWeight: 600,
-                fontSize: '1rem'
+                fontSize: '1rem',
+                position: 'relative',
+                zIndex: 3
               }}>
                 Commencer
                 <span style={{ fontSize: '1.2rem' }}>→</span>
@@ -377,9 +392,10 @@ export default function Page() {
             <div
               onClick={() => handleModeSelection('hote')}
               style={{
-                backgroundImage: 'linear-gradient(135deg, rgba(215,144,119,0.3) 0%, rgba(201,103,69,0.4) 100%), url(/interieur-flou.png)',
+                backgroundImage: 'url(/interieur-flou.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
+                position: 'relative',
                 backdropFilter: 'blur(20px)',
                 border: '2px solid rgba(215,144,119,0.3)',
                 borderRadius: '32px',
@@ -398,15 +414,26 @@ export default function Page() {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
                 e.currentTarget.style.borderColor = 'rgba(215,144,119,0.6)';
                 e.currentTarget.style.boxShadow = '0 30px 80px rgba(215,144,119,0.4)';
-                e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, rgba(215,144,119,0.5) 0%, rgba(201,103,69,0.6) 100%), url(/interieur-flou.png)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
                 e.currentTarget.style.borderColor = 'rgba(215,144,119,0.3)';
                 e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
-                e.currentTarget.style.backgroundImage = 'linear-gradient(135deg, rgba(215,144,119,0.3) 0%, rgba(201,103,69,0.4) 100%), url(/interieur-flou.png)';
               }}
             >
+              {/* Overlay de couleur */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(135deg, rgba(215,144,119,0.3) 0%, rgba(201,103,69,0.4) 100%)',
+                borderRadius: '32px',
+                pointerEvents: 'none',
+                zIndex: 1
+              }} />
+              
               {/* Glow effect */}
               <div style={{
                 position: 'absolute',
@@ -417,10 +444,11 @@ export default function Page() {
                 background: 'radial-gradient(circle, rgba(215,144,119,0.3) 0%, transparent 70%)',
                 opacity: 0,
                 transition: 'opacity 0.5s ease',
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                zIndex: 2
               }} className="glow-effect" />
               
-              <div>
+              <div style={{ position: 'relative', zIndex: 3 }}>
                 <h2 style={{
                   fontSize: '1.75rem',
                   fontWeight: 700,
@@ -432,14 +460,16 @@ export default function Page() {
                   Je sous-loue mon logement
                 </h2>
               </div>
-              <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🏠</div>
+              <div style={{ fontSize: '4rem', marginBottom: '24px', position: 'relative', zIndex: 3 }}>🏠</div>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
                 color: '#D79077',
                 fontWeight: 600,
-                fontSize: '1rem'
+                fontSize: '1rem',
+                position: 'relative',
+                zIndex: 3
               }}>
                 Commencer
                 <span style={{ fontSize: '1.2rem' }}>→</span>
