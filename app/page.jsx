@@ -1735,28 +1735,33 @@ export default function Page() {
 
           <div className="guarantees-container" style={{ 
             display: 'flex',
-            gap: '32px',
+            gap: '24px',
             overflowX: 'auto',
             overflowY: 'hidden',
             scrollSnapType: 'x mandatory',
             WebkitOverflowScrolling: 'touch',
             scrollbarWidth: 'thin',
             scrollbarColor: 'rgba(96,162,157,0.3) transparent',
-            paddingBottom: '16px'
+            paddingBottom: '16px',
+            justifyContent: 'flex-start'
           }}>
             {/* Empreinte bancaire */}
             <div style={{
               background: 'white',
-              padding: 'clamp(20px, 4vw, 32px)',
+              padding: 'clamp(24px, 4vw, 32px) clamp(16px, 3vw, 20px)',
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
               transition: 'transform 0.3s ease, box-shadow 0.3s ease',
               textAlign: 'center',
-              minWidth: '300px',
-              flex: '1 0 auto',
-              maxWidth: '400px',
-              scrollSnapAlign: 'start'
+              minWidth: '220px',
+              width: '220px',
+              flex: '0 0 220px',
+              minHeight: '400px',
+              scrollSnapAlign: 'start',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -1786,16 +1791,20 @@ export default function Page() {
             {/* Assurance RC */}
             <div style={{
               background: 'white',
-              padding: 'clamp(20px, 4vw, 32px)',
+              padding: 'clamp(24px, 4vw, 32px) clamp(16px, 3vw, 20px)',
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
               transition: 'transform 0.3s ease, box-shadow 0.3s ease',
               textAlign: 'center',
-              minWidth: '300px',
-              flex: '1 0 auto',
-              maxWidth: '400px',
-              scrollSnapAlign: 'start'
+              minWidth: '220px',
+              width: '220px',
+              flex: '0 0 220px',
+              minHeight: '400px',
+              scrollSnapAlign: 'start',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -1825,16 +1834,20 @@ export default function Page() {
             {/* Responsabilité locataire */}
             <div style={{
               background: 'white',
-              padding: 'clamp(20px, 4vw, 32px)',
+              padding: 'clamp(24px, 4vw, 32px) clamp(16px, 3vw, 20px)',
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
               transition: 'transform 0.3s ease, box-shadow 0.3s ease',
               textAlign: 'center',
-              minWidth: '300px',
-              flex: '1 0 auto',
-              maxWidth: '400px',
-              scrollSnapAlign: 'start'
+              minWidth: '220px',
+              width: '220px',
+              flex: '0 0 220px',
+              minHeight: '400px',
+              scrollSnapAlign: 'start',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start'
             }}
             onMouseOver={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -2139,9 +2152,15 @@ export default function Page() {
         background: rgba(96, 162, 157, 0.5);
       }
 
-      @media (min-width: 1100px) {
+      @media (min-width: 900px) {
         .guarantees-container {
           justify-content: center !important;
+          flex-wrap: wrap !important;
+        }
+        
+        .guarantees-container > div {
+          flex: 0 0 220px !important;
+          width: 220px !important;
         }
       }
 
