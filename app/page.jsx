@@ -665,9 +665,9 @@ export default function Page() {
               textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
             }}>
               {activeTab === 'voyageur' ? (
-                <>Des hébergements <br /><span style={{ color: '#4ECDC4' }}> équitables et authentiques </span></>
+                <>Des hébergements <br /><span style={{ color: '#ffffffff' }}> équitables et authentiques </span></>
               ) : (
-                <>Sous-louez enfin<br /><span style={{ color: '#4ECDC4' }}>en partageant les revenus</span></>
+                <>Sous-louez enfin<br /><span style={{ color: '#ffffffff' }}>en partageant les revenus</span></>
               )}
             </h1>
             
@@ -717,7 +717,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    Locataire
+                    Gains Locataire
                   </div>
                   <div style={{ 
                     fontSize: '5rem', 
@@ -780,7 +780,7 @@ export default function Page() {
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    Propriétaire
+                    Gains Propriétaire
                   </div>
                   <div style={{ 
                     fontSize: '5rem', 
@@ -803,7 +803,7 @@ export default function Page() {
                     zIndex: 1,
                     margin: 0
                   }}>
-                    Revenus passifs sans effort de gestion
+                    Revenus passifs sans effort de gestion et avec des risques minimisés
                   </p>
                 </div>
               </div>
@@ -2047,7 +2047,7 @@ export default function Page() {
         .estimator-card {
           padding: 32px 24px !important;
           border-radius: 20px !important;
-          margin-top: -40px !important;
+          margin-top: -80px !important;
         }
 
         .concept-section {
