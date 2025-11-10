@@ -216,7 +216,7 @@ export default function Page() {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+        background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -274,7 +274,6 @@ export default function Page() {
               alt="Kokyage" 
               style={{ 
                 height: 'clamp(80px, 10vw, 120px)', 
-                filter: 'brightness(0) invert(1)',
                 marginBottom: '20px',
                 display: 'block'
               }} 
@@ -282,10 +281,9 @@ export default function Page() {
             <h1 style={{
               fontSize: 'clamp(2rem, 5vw, 3.5rem)',
               fontWeight: 800,
-              color: 'white',
+              color: '#2D3748',
               marginBottom: '0',
-              letterSpacing: '-0.02em',
-              textShadow: '0 4px 30px rgba(0,0,0,0.3)'
+              letterSpacing: '-0.02em'
             }}>
               Bienvenue sur Kokyage
             </h1>
@@ -372,7 +370,7 @@ export default function Page() {
                   Je cherche un séjour
                 </h2>
               </div>
-              <div style={{ fontSize: '4rem', marginBottom: '24px', position: 'relative', zIndex: 3 }}>🏖️</div>
+              <div style={{ fontSize: '4rem', marginBottom: '24px', position: 'relative', zIndex: 3 }}></div>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -460,7 +458,7 @@ export default function Page() {
                   Je sous-loue mon logement
                 </h2>
               </div>
-              <div style={{ fontSize: '4rem', marginBottom: '24px', position: 'relative', zIndex: 3 }}>🏠</div>
+              <div style={{ fontSize: '4rem', marginBottom: '24px', position: 'relative', zIndex: 3 }}></div>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
