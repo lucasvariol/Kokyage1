@@ -744,7 +744,7 @@ export default function Page() {
                     zIndex: 1,
                     margin: 0
                   }}>
-                    Gère les réservations et accueille les voyageurs
+                    Un complément de revenus pour se payer des vacances
                   </p>
                 </div>
 
@@ -811,7 +811,7 @@ export default function Page() {
                     zIndex: 1,
                     margin: 0
                   }}>
-                    Revenus passifs sans effort de gestion et des risques minimisés
+                    Revenus passifs sans effort de gestion
                   </p>
                 </div>
               </div>
@@ -1339,11 +1339,11 @@ export default function Page() {
                   borderRadius: '50%'
                 }}></div>
                 <div className="revenue-card-label" style={{ fontSize: 'clamp(11px, 2vw, 16px)', fontWeight: '600', marginBottom: 'clamp(6px, 1.5vw, 12px)', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Locataire</div>
-                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(8px, 2vw, 16px)' }}>
+                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(4px, 1vw, 8px)' }}>
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.6))}
                 </div>
                 <img src="/images/locataire_evaluation.png" alt="Locataire" style={{ 
-                  margin: 'clamp(10px, 3vw, 20px) auto 0', 
+                  margin: 'clamp(4px, 1.5vw, 10px) auto 0', 
                   width: '100%', 
                   maxWidth: '320px',
                   height: 'auto',
@@ -1392,11 +1392,11 @@ export default function Page() {
                   borderRadius: '50%'
                 }}></div>
                 <div className="revenue-card-label" style={{ fontSize: 'clamp(11px, 2vw, 16px)', fontWeight: '600', marginBottom: 'clamp(6px, 1.5vw, 12px)', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Propriétaire</div>
-                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(8px, 2vw, 16px)' }}>
+                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(4px, 1vw, 8px)' }}>
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.4))}
                 </div>
                 <img src="/images/proprietaire_evaluation.png" alt="Propriétaire" style={{ 
-                  margin: 'clamp(10px, 3vw, 20px) auto 0', 
+                  margin: 'clamp(4px, 1.5vw, 10px) auto 0', 
                   width: '100%', 
                   maxWidth: '320px',
                   maxHeight: '220px',
