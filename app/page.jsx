@@ -744,7 +744,7 @@ export default function Page() {
                     zIndex: 1,
                     margin: 0
                   }}>
-                    Un complément de revenus pour se payer des vacances
+                  En complément de revenus 
                   </p>
                 </div>
 
@@ -1305,7 +1305,7 @@ export default function Page() {
                 textAlign: 'center', 
                 background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
                 borderRadius: '20px',
-                padding: '32px 24px',
+                padding: 'clamp(16px, 2.5vw, 24px) clamp(12px, 2vw, 20px)',
                 color: 'white',
                 boxShadow: '0 10px 30px rgba(96,162,157,0.3)',
                 position: 'relative',
@@ -1338,8 +1338,8 @@ export default function Page() {
                   background: 'rgba(255,255,255,0.1)',
                   borderRadius: '50%'
                 }}></div>
-                <div className="revenue-card-label" style={{ fontSize: 'clamp(11px, 2vw, 16px)', fontWeight: '600', marginBottom: 'clamp(6px, 1.5vw, 12px)', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Locataire</div>
-                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(4px, 1vw, 8px)' }}>
+                <div className="revenue-card-label" style={{ fontSize: 'clamp(11px, 2vw, 16px)', fontWeight: '600', marginBottom: 'clamp(4px, 1vw, 8px)', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Locataire</div>
+                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(2px, 0.5vw, 4px)' }}>
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.6))}
                 </div>
                 <img src="/images/locataire_evaluation.png" alt="Locataire" style={{ 
@@ -1356,7 +1356,7 @@ export default function Page() {
                 textAlign: 'center', 
                 background: 'linear-gradient(135deg, #CAAD78 0%, #B5935F 100%)',
                 borderRadius: '20px',
-                padding: '32px 24px',
+                padding: 'clamp(16px, 2.5vw, 24px) clamp(12px, 2vw, 20px)',
                 color: 'white',
                 boxShadow: '0 10px 30px rgba(202,173,120,0.3)',
                 position: 'relative',
@@ -1389,8 +1389,8 @@ export default function Page() {
                   background: 'rgba(255,255,255,0.1)',
                   borderRadius: '50%'
                 }}></div>
-                <div className="revenue-card-label" style={{ fontSize: 'clamp(11px, 2vw, 16px)', fontWeight: '600', marginBottom: 'clamp(6px, 1.5vw, 12px)', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Propriétaire</div>
-                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(4px, 1vw, 8px)' }}>
+                <div className="revenue-card-label" style={{ fontSize: 'clamp(11px, 2vw, 16px)', fontWeight: '600', marginBottom: 'clamp(4px, 1vw, 8px)', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Propriétaire</div>
+                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(2px, 0.5vw, 4px)' }}>
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.4))}
                 </div>
                 <img src="/images/proprietaire_evaluation.png" alt="Propriétaire" style={{ 
