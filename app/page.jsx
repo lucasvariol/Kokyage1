@@ -2159,8 +2159,9 @@ export default function Page() {
         }
         
         .guarantees-container > div {
-          flex: 0 0 220px !important;
-          width: 220px !important;
+          flex: 0 0 280px !important;
+          width: 280px !important;
+          min-width: 280px !important;
         }
       }
 
