@@ -1288,7 +1288,7 @@ export default function Page() {
                   borderRadius: '20px',
                   overflow: 'hidden',
                   boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                  transform: 'rotateY(-15deg) rotateX(5deg)',
+                  transform: 'rotateY(15deg) rotateX(5deg)',
                   transition: 'transform 0.3s ease',
                   cursor: 'pointer',
                   background: '#f0f0f0'
@@ -1298,7 +1298,7 @@ export default function Page() {
                   e.currentTarget.style.zIndex = '10';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'rotateY(-15deg) rotateX(5deg)';
+                  e.currentTarget.style.transform = 'rotateY(15deg) rotateX(5deg)';
                   e.currentTarget.style.zIndex = '1';
                 }}
                 >
@@ -1331,7 +1331,7 @@ export default function Page() {
                   borderRadius: '20px',
                   overflow: 'hidden',
                   boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                  transform: 'rotateY(-15deg) rotateX(5deg)',
+                  transform: 'rotateY(15deg) rotateX(5deg)',
                   transition: 'transform 0.3s ease',
                   cursor: 'pointer',
                   background: '#f0f0f0'
@@ -1341,7 +1341,7 @@ export default function Page() {
                   e.currentTarget.style.zIndex = '10';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'rotateY(-15deg) rotateX(5deg)';
+                  e.currentTarget.style.transform = 'rotateY(15deg) rotateX(5deg)';
                   e.currentTarget.style.zIndex = '1';
                 }}
                 >
