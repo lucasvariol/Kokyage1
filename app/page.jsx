@@ -695,8 +695,12 @@ export default function Page() {
                   flex: '1',
                   minWidth: '260px',
                   maxWidth: '320px',
+                  aspectRatio: '1.2',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
                 }}>
                   <div style={{
                     position: 'absolute',
@@ -758,8 +762,12 @@ export default function Page() {
                   flex: '1',
                   minWidth: '260px',
                   maxWidth: '320px',
+                  aspectRatio: '1.2',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
                 }}>
                   <div style={{
                     position: 'absolute',
@@ -1302,7 +1310,10 @@ export default function Page() {
                 boxShadow: '0 10px 30px rgba(96,162,157,0.3)',
                 position: 'relative',
                 overflow: 'hidden',
-                display: 'block',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                aspectRatio: '1',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease'
@@ -1351,7 +1362,10 @@ export default function Page() {
                 boxShadow: '0 10px 30px rgba(202,173,120,0.3)',
                 position: 'relative',
                 overflow: 'hidden',
-                display: 'block',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                aspectRatio: '1',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease'
@@ -2139,7 +2153,7 @@ export default function Page() {
         .estimator-card {
           padding: 32px 24px !important;
           border-radius: 20px !important;
-          margin-top: -100px !important;
+          margin-top: -150px !important;
         }
 
         .concept-section {
@@ -2187,9 +2201,6 @@ export default function Page() {
         .revenue-cards > a {
           padding: 20px 12px !important;
           border-radius: 16px !important;
-          display: flex !important;
-          flex-direction: column !important;
-          align-items: center !important;
         }
         
         .revenue-card-label {
@@ -2266,6 +2277,7 @@ export default function Page() {
           min-width: 0 !important;
           flex: 1 !important;
           max-width: none !important;
+          aspect-ratio: 1.2 !important;
         }
         
         .revenue-split-cards > div > div:nth-child(2) {
@@ -2372,6 +2384,7 @@ export default function Page() {
         
         .revenue-cards > a {
           padding: 16px 8px !important;
+          aspect-ratio: 1 !important;
         }
 
         .revenue-card-label {
@@ -2386,8 +2399,10 @@ export default function Page() {
         
         .revenue-cards img {
           max-width: 200px !important;
-          height: 135px !important;
+          height: auto !important;
           margin: 6px auto 0 !important;
+          flex-shrink: 1 !important;
+          object-fit: contain !important;
         }
         
         .cta-buttons > a {
@@ -2406,6 +2421,7 @@ export default function Page() {
         
         .revenue-split-cards > div {
           padding: 20px 12px !important;
+          aspect-ratio: 1.2 !important;
         }
         
         .revenue-split-cards > div > div:first-child {
