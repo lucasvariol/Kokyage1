@@ -1246,6 +1246,246 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+      {/* Carrousel 3D + Arguments - Visible uniquement pour voyageur */}
+      {activeTab === 'voyageur' && (
+      <section style={{ 
+        background: 'white',
+        padding: '60px 24px 80px',
+        overflow: 'hidden',
+        position: 'relative'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          {/* Carrousel 3D de logements */}
+          <div style={{
+            perspective: '1000px',
+            height: '350px',
+            position: 'relative',
+            marginBottom: '80px',
+            overflow: 'visible'
+          }}>
+            <div className="carousel-3d" style={{
+              display: 'flex',
+              gap: '24px',
+              animation: 'scroll3d 40s linear infinite',
+              transformStyle: 'preserve-3d',
+              position: 'absolute',
+              left: 0
+            }}>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} style={{
+                  minWidth: '400px',
+                  height: '300px',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                  transform: 'rotateY(-15deg) rotateX(5deg)',
+                  transition: 'transform 0.3s ease',
+                  cursor: 'pointer',
+                  background: '#f0f0f0'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1.05)';
+                  e.currentTarget.style.zIndex = '10';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'rotateY(-15deg) rotateX(5deg)';
+                  e.currentTarget.style.zIndex = '1';
+                }}
+                >
+                  <img 
+                    src={`https://picsum.photos/400/300?random=${i}`}
+                    alt={`Logement ${i}`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </div>
+              ))}
+              {/* Duplicate pour boucle infinie */}
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={`dup-${i}`} style={{
+                  minWidth: '400px',
+                  height: '300px',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                  transform: 'rotateY(-15deg) rotateX(5deg)',
+                  transition: 'transform 0.3s ease',
+                  cursor: 'pointer',
+                  background: '#f0f0f0'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1.05)';
+                  e.currentTarget.style.zIndex = '10';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'rotateY(-15deg) rotateX(5deg)';
+                  e.currentTarget.style.zIndex = '1';
+                }}
+                >
+                  <img 
+                    src={`https://picsum.photos/400/300?random=${i}`}
+                    alt={`Logement ${i}`}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Arguments pour le modèle équitable */}
+          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+            <h2 style={{ 
+              fontSize: 'clamp(2rem, 4vw, 3rem)', 
+              fontWeight: 800, 
+              color: '#2D3748', 
+              marginBottom: '20px',
+              letterSpacing: '-0.01em'
+            }}>
+              Voyagez <span style={{ color: '#D79077' }}>autrement</span>
+            </h2>
+            <p style={{ 
+              fontSize: '1.2rem', 
+              color: '#718096', 
+              maxWidth: '700px',
+              margin: '0 auto 60px',
+              lineHeight: 1.6
+            }}>
+              Des hébergements authentiques qui profitent à ceux qui habitent vraiment les lieux
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '32px',
+            maxWidth: '1100px',
+            margin: '0 auto'
+          }}>
+            {/* Argument 1 - Équitable */}
+            <div style={{
+              background: 'white',
+              padding: '32px',
+              borderRadius: '20px',
+              border: '2px solid #E2E8F0',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(96,162,157,0.15)';
+              e.currentTarget.style.borderColor = '#60A29D';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+              e.currentTarget.style.borderColor = '#E2E8F0';
+            }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🤝</div>
+              <h3 style={{
+                fontSize: '1.4rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '16px'
+              }}>
+                Partage équitable
+              </h3>
+              <p style={{
+                color: '#4A5568',
+                lineHeight: 1.7,
+                fontSize: '1rem'
+              }}>
+                60% des revenus vont directement au locataire qui habite réellement le logement, pas à des investisseurs. Un modèle qui redistribue la valeur aux habitants.
+              </p>
+            </div>
+
+            {/* Argument 2 - Authentique */}
+            <div style={{
+              background: 'white',
+              padding: '32px',
+              borderRadius: '20px',
+              border: '2px solid #E2E8F0',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(202,173,120,0.15)';
+              e.currentTarget.style.borderColor = '#CAAD78';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+              e.currentTarget.style.borderColor = '#E2E8F0';
+            }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🏡</div>
+              <h3 style={{
+                fontSize: '1.4rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '16px'
+              }}>
+                Hébergements authentiques
+              </h3>
+              <p style={{
+                color: '#4A5568',
+                lineHeight: 1.7,
+                fontSize: '1rem'
+              }}>
+                Des logements habités, entretenus avec soin par leurs locataires. Vivez l'expérience d'un vrai chez-soi, pas d'un appartement optimisé pour la rentabilité.
+              </p>
+            </div>
+
+            {/* Argument 3 - Contre spéculation */}
+            <div style={{
+              background: 'white',
+              padding: '32px',
+              borderRadius: '20px',
+              border: '2px solid #E2E8F0',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(215,144,119,0.15)';
+              e.currentTarget.style.borderColor = '#D79077';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)';
+              e.currentTarget.style.borderColor = '#E2E8F0';
+            }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
+              <h3 style={{
+                fontSize: '1.4rem',
+                fontWeight: 700,
+                color: '#2D3748',
+                marginBottom: '16px'
+              }}>
+                Contre la spéculation
+              </h3>
+              <p style={{
+                color: '#4A5568',
+                lineHeight: 1.7,
+                fontSize: '1rem'
+              }}>
+                Pas de multipropriétaires qui monopolisent le marché. Kokyage favorise un usage raisonné et responsable du logement, pour préserver nos villes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      )}
       
       {/* Contenu avec animation fluide */}
       <div style={{
@@ -2134,6 +2374,19 @@ export default function Page() {
 
     {/* CSS Responsive + Animations */}
     <style jsx>{`
+      @keyframes scroll3d {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      .carousel-3d:hover {
+        animation-play-state: paused;
+      }
+
       .guarantees-container::-webkit-scrollbar {
         height: 8px;
       }
