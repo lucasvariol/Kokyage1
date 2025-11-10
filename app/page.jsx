@@ -331,7 +331,7 @@ export default function Page() {
               }}
             >
               <h2 style={{
-                fontSize: 'clamp(2rem, 5vw, 2.5rem)',
+                fontSize: 'clamp(2.5rem, 7vw, 3rem)',
                 fontWeight: 700,
                 color: 'white',
                 letterSpacing: '-0.01em',
@@ -373,7 +373,7 @@ export default function Page() {
               }}
             >
               <h2 style={{
-                fontSize: 'clamp(2rem, 5vw, 2.5rem)',
+                fontSize: 'clamp(2.5rem, 7vw, 3rem)',
                 fontWeight: 700,
                 color: 'white',
                 letterSpacing: '-0.01em',
