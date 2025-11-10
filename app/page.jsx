@@ -315,7 +315,7 @@ export default function Page() {
                 position: 'relative',
                 overflow: 'hidden',
                 transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: 'none',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -323,9 +323,11 @@ export default function Page() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
+                e.currentTarget.style.boxShadow = '0 30px 80px rgba(0,0,0,0.4)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
               }}
             >
               <div style={{ position: 'relative', zIndex: 3 }}>
@@ -370,7 +372,7 @@ export default function Page() {
                 cursor: 'pointer',
                 overflow: 'hidden',
                 transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: 'none',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -378,9 +380,11 @@ export default function Page() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
+                e.currentTarget.style.boxShadow = '0 30px 80px rgba(0,0,0,0.4)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
               }}
             >
               <div style={{ position: 'relative', zIndex: 3 }}>
