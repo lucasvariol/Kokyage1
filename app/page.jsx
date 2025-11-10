@@ -1378,9 +1378,16 @@ export default function Page() {
           </div>
 
           <div className="arguments-container" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '32px',
+            display: 'flex',
+            gap: '24px',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            scrollSnapType: 'x mandatory',
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(96,162,157,0.3) transparent',
+            paddingBottom: '16px',
+            justifyContent: 'flex-start',
             maxWidth: '1100px',
             margin: '0 auto'
           }}>
@@ -1391,7 +1398,11 @@ export default function Page() {
               borderRadius: '20px',
               border: '2px solid #E2E8F0',
               boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              minWidth: '300px',
+              width: '300px',
+              flex: '0 0 300px',
+              scrollSnapAlign: 'start'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-8px)';
@@ -1429,7 +1440,11 @@ export default function Page() {
               borderRadius: '20px',
               border: '2px solid #E2E8F0',
               boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              minWidth: '300px',
+              width: '300px',
+              flex: '0 0 300px',
+              scrollSnapAlign: 'start'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-8px)';
@@ -1467,7 +1482,11 @@ export default function Page() {
               borderRadius: '20px',
               border: '2px solid #E2E8F0',
               boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              minWidth: '300px',
+              width: '300px',
+              flex: '0 0 300px',
+              scrollSnapAlign: 'start'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-8px)';
@@ -2579,41 +2598,6 @@ export default function Page() {
           min-width: 280px !important;
           height: 200px !important;
         }
-        
-        .arguments-container {
-          display: flex !important;
-          overflow-x: auto !important;
-          scroll-snap-type: x mandatory !important;
-          -webkit-overflow-scrolling: touch !important;
-          gap: 20px !important;
-          padding: 0 16px !important;
-          margin: 0 !important;
-          max-width: 100% !important;
-        }
-        
-        .arguments-container > div {
-          min-width: 280px !important;
-          flex: 0 0 280px !important;
-          scroll-snap-align: start !important;
-        }
-        
-        .arguments-container::-webkit-scrollbar {
-          height: 8px !important;
-        }
-        
-        .arguments-container::-webkit-scrollbar-track {
-          background: rgba(0,0,0,0.05) !important;
-          border-radius: 10px !important;
-        }
-        
-        .arguments-container::-webkit-scrollbar-thumb {
-          background: rgba(96,162,157,0.3) !important;
-          border-radius: 10px !important;
-        }
-        
-        .arguments-container::-webkit-scrollbar-thumb:hover {
-          background: rgba(96,162,157,0.5) !important;
-        }
 
         .estimator-section {
           padding: 0 20px 50px !important;
@@ -2759,21 +2743,6 @@ export default function Page() {
         
         .search-form-modern {
           padding: 12px !important;
-        }
-        
-        .arguments-container {
-          display: flex !important;
-          overflow-x: auto !important;
-          scroll-snap-type: x mandatory !important;
-          -webkit-overflow-scrolling: touch !important;
-          gap: 16px !important;
-          padding: 0 12px !important;
-        }
-        
-        .arguments-container > div {
-          min-width: 260px !important;
-          flex: 0 0 260px !important;
-          scroll-snap-align: start !important;
         }
         
         .estimator-section {
