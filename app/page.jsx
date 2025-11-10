@@ -328,33 +328,6 @@ export default function Page() {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
               }}
             >
-              {/* Overlay de couleur */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'linear-gradient(135deg, rgba(96,162,157,0.3) 0%, rgba(78,205,196,0.4) 100%)',
-                borderRadius: '32px',
-                pointerEvents: 'none',
-                zIndex: 1
-              }} />
-              
-              {/* Glow effect */}
-              <div style={{
-                position: 'absolute',
-                top: '-50%',
-                left: '-50%',
-                width: '200%',
-                height: '200%',
-                background: 'radial-gradient(circle, rgba(96,162,157,0.3) 0%, transparent 70%)',
-                opacity: 0,
-                transition: 'opacity 0.5s ease',
-                pointerEvents: 'none',
-                zIndex: 2
-              }} className="glow-effect" />
-              
               <div style={{ position: 'relative', zIndex: 3 }}>
                 <h2 style={{
                   fontSize: '1.75rem',
@@ -410,33 +383,6 @@ export default function Page() {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
               }}
             >
-              {/* Overlay de couleur */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'linear-gradient(135deg, rgba(215,144,119,0.3) 0%, rgba(201,103,69,0.4) 100%)',
-                borderRadius: '32px',
-                pointerEvents: 'none',
-                zIndex: 1
-              }} />
-              
-              {/* Glow effect */}
-              <div style={{
-                position: 'absolute',
-                top: '-50%',
-                left: '-50%',
-                width: '200%',
-                height: '200%',
-                background: 'radial-gradient(circle, rgba(215,144,119,0.3) 0%, transparent 70%)',
-                opacity: 0,
-                transition: 'opacity 0.5s ease',
-                pointerEvents: 'none',
-                zIndex: 2
-              }} className="glow-effect" />
-              
               <div style={{ position: 'relative', zIndex: 3 }}>
                 <h2 style={{
                   fontSize: '1.75rem',
