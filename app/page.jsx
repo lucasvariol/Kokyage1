@@ -431,87 +431,90 @@ export default function Page() {
 
           @media (max-width: 768px) {
             .mode-selection-container {
-              padding: 36px 16px !important;
+              padding: 28px 16px !important;
             }
 
             .mode-selection-container > div:first-child {
-              margin-bottom: 36px !important;
+              margin-bottom: 28px !important;
             }
 
             .mode-selection-container > div:first-child img {
-              height: clamp(110px, 26vw, 140px) !important;
-              margin-bottom: 20px !important;
+              height: clamp(90px, 20vw, 120px) !important;
+              margin-bottom: 16px !important;
             }
 
             .mode-selection-container h1 {
-              font-size: clamp(2.4rem, 7vw, 3rem) !important;
-              margin-bottom: 0 !important;
+              font-size: clamp(1.9rem, 5.5vw, 2.5rem) !important;
+              margin-bottom: 4px !important;
             }
 
             .mode-selection-cards {
-              grid-template-columns: 1fr !important;
-              gap: 24px !important;
-              padding: 0 !important;
-              max-width: 440px !important;
+              grid-template-columns: repeat(2, minmax(140px, 1fr)) !important;
+              gap: 16px !important;
+              padding: 0 4px !important;
+              max-width: 520px !important;
               margin: 0 auto !important;
             }
             
             .mode-selection-cards > div {
-              padding: 52px 32px !important;
-              border-radius: 30px !important;
+              padding: clamp(26px, 6vw, 34px) clamp(18px, 5vw, 24px) !important;
+              border-radius: 22px !important;
             }
             
             .mode-selection-cards h2 {
-              font-size: clamp(2.4rem, 7.5vw, 2.9rem) !important;
-              line-height: 1.1 !important;
+              font-size: clamp(1.5rem, 4.4vw, 2rem) !important;
+              line-height: 1.25 !important;
               margin-bottom: 0 !important;
-              min-height: auto !important;
             }
           }
 
           @media (max-width: 480px) {
             .mode-selection-container {
-              padding: 32px 14px !important;
+              padding: 24px 12px !important;
             }
 
             .mode-selection-container > div:first-child img {
-              height: clamp(100px, 32vw, 130px) !important;
+              height: clamp(80px, 24vw, 110px) !important;
             }
 
             .mode-selection-container h1 {
-              font-size: clamp(2.2rem, 8.5vw, 2.8rem) !important;
+              font-size: clamp(1.75rem, 6.3vw, 2.2rem) !important;
             }
 
             .mode-selection-cards {
-              gap: 22px !important;
+              gap: 14px !important;
             }
             
             .mode-selection-cards > div {
-              padding: 48px 26px !important;
-              border-radius: 26px !important;
+              padding: clamp(22px, 7vw, 28px) clamp(14px, 6vw, 20px) !important;
+              border-radius: 20px !important;
             }
             
             .mode-selection-cards h2 {
-              font-size: clamp(2.2rem, 8.5vw, 2.7rem) !important;
+              font-size: clamp(1.35rem, 5.4vw, 1.7rem) !important;
             }
           }
 
           @media (max-width: 380px) {
             .mode-selection-container {
-              padding: 28px 12px !important;
+              padding: 20px 10px !important;
             }
 
             .mode-selection-container h1 {
-              font-size: clamp(2rem, 9.5vw, 2.4rem) !important;
+              font-size: clamp(1.6rem, 6.8vw, 2rem) !important;
+            }
+
+            .mode-selection-cards {
+              gap: 12px !important;
             }
 
             .mode-selection-cards > div {
-              padding: 42px 22px !important;
-              border-radius: 24px !important;
+              padding: clamp(18px, 7vw, 24px) clamp(12px, 6vw, 16px) !important;
+              border-radius: 18px !important;
             }
 
             .mode-selection-cards h2 {
-              font-size: clamp(2rem, 9.5vw, 2.4rem) !important;
+              font-size: clamp(1.25rem, 5.8vw, 1.6rem) !important;
             }
           }
         `}</style>
