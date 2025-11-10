@@ -2385,6 +2385,96 @@ export default function Page() {
         </div>
       </section>
       )}
+
+      {/* Section Propulsé par - Visible pour hôte et voyageur */}
+      {(activeTab === 'hote' || activeTab === 'voyageur') && (
+      <section style={{ 
+        background: 'white', 
+        padding: '60px 24px',
+        borderTop: '1px solid #E5E7EB'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ 
+            fontSize: '1rem', 
+            color: '#9CA3AF', 
+            marginBottom: '32px',
+            fontWeight: 500,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase'
+          }}>
+            Propulsé par
+          </p>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            gap: '60px',
+            flexWrap: 'wrap'
+          }}>
+            <img 
+              src="/BGE.png" 
+              alt="BGE" 
+              style={{ 
+                height: '60px', 
+                width: 'auto',
+                objectFit: 'contain',
+                opacity: 0.7,
+                transition: 'opacity 0.3s ease',
+                filter: 'grayscale(100%)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = '1';
+                e.currentTarget.style.filter = 'grayscale(0%)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = '0.7';
+                e.currentTarget.style.filter = 'grayscale(100%)';
+              }}
+            />
+            <img 
+              src="/CSE.png" 
+              alt="CSE" 
+              style={{ 
+                height: '60px', 
+                width: 'auto',
+                objectFit: 'contain',
+                opacity: 0.7,
+                transition: 'opacity 0.3s ease',
+                filter: 'grayscale(100%)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = '1';
+                e.currentTarget.style.filter = 'grayscale(0%)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = '0.7';
+                e.currentTarget.style.filter = 'grayscale(100%)';
+              }}
+            />
+            <img 
+              src="/POLD.png" 
+              alt="POLD" 
+              style={{ 
+                height: '60px', 
+                width: 'auto',
+                objectFit: 'contain',
+                opacity: 0.7,
+                transition: 'opacity 0.3s ease',
+                filter: 'grayscale(100%)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = '1';
+                e.currentTarget.style.filter = 'grayscale(0%)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = '0.7';
+                e.currentTarget.style.filter = 'grayscale(100%)';
+              }}
+            />
+          </div>
+        </div>
+      </section>
+      )}
       
       </div>
       
