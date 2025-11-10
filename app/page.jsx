@@ -236,22 +236,25 @@ export default function Page() {
           overflow: 'hidden',
           zIndex: 0
         }}>
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              style={{
-                position: 'absolute',
-                width: `${Math.random() * 300 + 50}px`,
-                height: `${Math.random() * 300 + 50}px`,
-                borderRadius: '50%',
-                background: `radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 50%)`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 5}s`
-              }}
-            />
-          ))}
+          {[...Array(20)].map((_, i) => {
+            const size = Math.random() * 300 + 50;
+            return (
+              <div
+                key={i}
+                style={{
+                  position: 'absolute',
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  borderRadius: '50%',
+                  background: `radial-gradient(circle, rgba(245,230,211,0.6) 0%, transparent 50%)`,
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
+                  animationDelay: `${Math.random() * 5}s`
+                }}
+              />
+            );
+          })}
         </div>
 
         {/* Main content */}
