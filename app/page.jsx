@@ -744,7 +744,7 @@ export default function Page() {
                     zIndex: 1,
                     margin: 0
                   }}>
-                  En complément de revenus 
+                  En complément de revenus
                   </p>
                 </div>
 
@@ -2239,7 +2239,7 @@ export default function Page() {
         }
         
         .revenue-cards > a {
-          padding: clamp(16px, 3vw, 20px) clamp(10px, 2vw, 12px) !important;
+          padding: clamp(8px, 1.5vw, 10px) clamp(5px, 1vw, 6px) !important;
           border-radius: 16px !important;
         }
         
@@ -2403,7 +2403,7 @@ export default function Page() {
         }
         
         .revenue-cards > a {
-          padding: clamp(12px, 2.5vw, 16px) clamp(6px, 1.5vw, 8px) !important;
+          padding: clamp(6px, 1.25vw, 8px) clamp(3px, 0.75vw, 4px) !important;
           aspect-ratio: 1 !important;
         }
 
@@ -2414,6 +2414,16 @@ export default function Page() {
           flex-grow: 1 !important;
           min-height: 0 !important;
           object-fit: contain !important;
+        }
+        
+        .revenue-card-label {
+          font-size: 9px !important;
+          margin-bottom: 2px !important;
+        }
+        
+        .revenue-amount {
+          font-size: clamp(1rem, 3vw, 1.5rem) !important;
+          margin-bottom: 1px !important;
         }
         
         .cta-buttons > a {

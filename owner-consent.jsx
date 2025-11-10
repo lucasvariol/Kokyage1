@@ -32,10 +32,10 @@ export function OwnerConsentAgreement({ ownerName = 'Le Propriétaire', tenantNa
       <p>En cas de non-respect des CGU, Kokyage.com se réserve le droit d’annuler toutes les réservations sans préavis ainsi que de clôturer l’annonce.</p>
       <p>Cette disposition vise à garantir une exécution loyale des engagements envers les voyageurs, tout en respectant la volonté du Propriétaire.</p>
 
-      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 5 – Clause de non-transfert</div>
+      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 4 – Clause de non-transfert</div>
       <p style={{ marginTop: 4 }}>Le présent accord est strictement personnel au Locataire Principal et ne peut être cédé à un tiers, même en cas de transfert du bail.</p>
 
-      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 6 – Information du propriétaire</div>
+      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 5 – Information du propriétaire</div>
       <p style={{ marginTop: 4 }}>Reconnaît avoir été pleinement informé du fonctionnement de la plateforme Kokyage.com et des conditions de sous-location. Il déclare donner son accord en toute connaissance de cause.</p>
     </div>
   );
