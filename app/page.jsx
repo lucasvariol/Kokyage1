@@ -1315,7 +1315,7 @@ export default function Page() {
             </p>
           </div>
 
-          <div style={{
+          <div className="arguments-container" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: '32px',
@@ -2516,6 +2516,41 @@ export default function Page() {
         .hero-section > div > div:nth-of-type(2) > div > div {
           min-width: 280px !important;
           height: 200px !important;
+        }
+        
+        .arguments-container {
+          display: flex !important;
+          overflow-x: auto !important;
+          scroll-snap-type: x mandatory !important;
+          -webkit-overflow-scrolling: touch !important;
+          gap: 20px !important;
+          padding: 0 16px !important;
+          margin: 0 !important;
+          max-width: 100% !important;
+        }
+        
+        .arguments-container > div {
+          min-width: 280px !important;
+          flex: 0 0 280px !important;
+          scroll-snap-align: start !important;
+        }
+        
+        .arguments-container::-webkit-scrollbar {
+          height: 8px !important;
+        }
+        
+        .arguments-container::-webkit-scrollbar-track {
+          background: rgba(0,0,0,0.05) !important;
+          border-radius: 10px !important;
+        }
+        
+        .arguments-container::-webkit-scrollbar-thumb {
+          background: rgba(96,162,157,0.3) !important;
+          border-radius: 10px !important;
+        }
+        
+        .arguments-container::-webkit-scrollbar-thumb:hover {
+          background: rgba(96,162,157,0.5) !important;
         }
 
         .estimator-section {
