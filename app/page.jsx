@@ -1343,14 +1343,12 @@ export default function Page() {
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.6))}
                 </div>
                 <img src="/images/locataire_evaluation.png" alt="Locataire" style={{ 
-                  margin: 'clamp(4px, 1.5vw, 10px) auto 0', 
-                  width: '100%', 
-                  maxWidth: '320px',
+                  margin: '0',
+                  width: '100%',
                   height: 'auto',
-                  maxHeight: '220px', 
-                  objectFit: 'contain', 
-                  borderRadius: '12px',
-                  border: '3px solid rgba(255, 255, 255, 0)'
+                  objectFit: 'contain',
+                  flexGrow: 1,
+                  minHeight: 0
                 }} loading="lazy" />
               </a>
               
@@ -1396,14 +1394,12 @@ export default function Page() {
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.4))}
                 </div>
                 <img src="/images/proprietaire_evaluation.png" alt="Propriétaire" style={{ 
-                  margin: 'clamp(4px, 1.5vw, 10px) auto 0', 
-                  width: '100%', 
-                  maxWidth: '320px',
-                  maxHeight: '220px',
-                  height: '220px', 
-                  objectFit: 'contain', 
-                  borderRadius: '12px',
-                  border: '3px solid rgba(255, 255, 255, 0)'
+                  margin: '0',
+                  width: '100%',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  flexGrow: 1,
+                  minHeight: 0
                 }} loading="lazy" />
               </a>
             </div>
@@ -2206,9 +2202,12 @@ export default function Page() {
         }
         
         .revenue-cards img {
-          max-width: clamp(200px, 40vw, 240px) !important;
+          width: 100% !important;
           height: auto !important;
-          margin: clamp(6px, 1.5vw, 8px) auto 0 !important;
+          margin: 0 !important;
+          flex-grow: 1 !important;
+          min-height: 0 !important;
+          object-fit: contain !important;
         }
         
         .cta-buttons {
@@ -2362,15 +2361,16 @@ export default function Page() {
         }
         
         .revenue-cards > a {
-          padding: 16px 8px !important;
+          padding: clamp(12px, 2.5vw, 16px) clamp(6px, 1.5vw, 8px) !important;
           aspect-ratio: 1 !important;
         }
 
         .revenue-cards img {
-          max-width: clamp(160px, 35vw, 200px) !important;
+          width: 100% !important;
           height: auto !important;
-          margin: clamp(4px, 1vw, 6px) auto 0 !important;
-          flex-shrink: 1 !important;
+          margin: 0 !important;
+          flex-grow: 1 !important;
+          min-height: 0 !important;
           object-fit: contain !important;
         }
         
