@@ -234,7 +234,7 @@ export default function Page() {
           right: 0,
           bottom: 0,
           overflow: 'hidden',
-          opacity: 0.6
+          zIndex: 0
         }}>
           {[...Array(20)].map((_, i) => (
             <div
@@ -244,7 +244,7 @@ export default function Page() {
                 width: `${Math.random() * 300 + 50}px`,
                 height: `${Math.random() * 300 + 50}px`,
                 borderRadius: '50%',
-                background: `radial-gradient(circle, ${i % 2 === 0 ? 'rgba(215,144,119,0.4)' : 'rgba(96,162,157,0.4)'} 0%, transparent 50%)`,
+                background: `radial-gradient(circle, ${i % 2 === 0 ? 'rgba(215,144,119,0.5)' : 'rgba(96,162,157,0.5)'} 0%, transparent 50%)`,
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
                 animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
@@ -587,7 +587,7 @@ export default function Page() {
               textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
             }}>
               {activeTab === 'voyageur' ? (
-                <>Des hébergements <br /><span style={{ color: '#ffffffff' }}> équitables et authentiques </span></>
+                <>Des hébergements <br /><span style={{ color: '#ffffffff' }}> éthiques et authentiques </span></>
               ) : (
                 <>Sous-louez enfin<br /><span style={{ color: '#ffffffff' }}>en partageant les revenus</span></>
               )}
