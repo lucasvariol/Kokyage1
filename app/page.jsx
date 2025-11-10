@@ -295,98 +295,142 @@ export default function Page() {
             </h1>
           </div>
 
-          {/* Cards de sélection */}
+          {/* Cards de sélection modernes */}
           <div className="mode-selection-cards" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '30px',
-            maxWidth: '900px',
+            display: 'flex',
+            gap: '24px',
+            maxWidth: '800px',
             margin: '0 auto',
-            animation: 'fadeInUp 1s ease-out 0.3s both'
+            animation: 'fadeInUp 1s ease-out 0.3s both',
+            justifyContent: 'center',
+            flexWrap: 'wrap'
           }}>
             {/* Card Voyageur */}
             <div
               onClick={() => handleModeSelection('voyageur')}
               style={{
-                backgroundImage: 'url(/plage-floue.png)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                position: 'relative',
-                border: 'none',
-                borderRadius: '32px',
-                padding: '60px 40px',
+                background: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: '24px',
+                padding: '40px 32px',
                 cursor: 'pointer',
-                position: 'relative',
                 overflow: 'hidden',
-                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                gap: '20px',
+                flex: '1 1 360px',
+                minWidth: '280px',
+                maxWidth: '400px',
+                position: 'relative'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
-                e.currentTarget.style.boxShadow = '0 30px 80px rgba(0,0,0,0.4)';
+                e.currentTarget.style.transform = 'translateY(-8px)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
+                e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.15)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
               }}
             >
+              <div style={{
+                fontSize: '4rem',
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))'
+              }}>
+                🏖️
+              </div>
               <h2 style={{
-                fontSize: 'clamp(2.5rem, 7vw, 3rem)',
-                fontWeight: 700,
+                fontSize: 'clamp(1.5rem, 3vw, 1.8rem)',
+                fontWeight: 600,
                 color: 'white',
-                letterSpacing: '-0.01em',
-                position: 'relative',
-                zIndex: 3,
-                textAlign: 'center'
+                letterSpacing: '-0.02em',
+                textAlign: 'center',
+                margin: 0,
+                textShadow: '0 2px 8px rgba(0,0,0,0.15)'
               }}>
                 Je cherche un séjour
               </h2>
+              <div style={{
+                fontSize: '0.9rem',
+                color: 'rgba(255,255,255,0.9)',
+                textAlign: 'center',
+                fontWeight: 400
+              }}>
+                Trouvez votre logement idéal →
+              </div>
             </div>
 
             {/* Card Hôte */}
             <div
               onClick={() => handleModeSelection('hote')}
               style={{
-                backgroundImage: 'url(/interieur-flou.png)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                position: 'relative',
-                border: 'none',
-                borderRadius: '32px',
-                padding: '60px 40px',
+                background: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: '24px',
+                padding: '40px 32px',
                 cursor: 'pointer',
                 overflow: 'hidden',
-                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                gap: '20px',
+                flex: '1 1 360px',
+                minWidth: '280px',
+                maxWidth: '400px',
+                position: 'relative'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
-                e.currentTarget.style.boxShadow = '0 30px 80px rgba(0,0,0,0.4)';
+                e.currentTarget.style.transform = 'translateY(-8px)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
+                e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.15)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
               }}
             >
+              <div style={{
+                fontSize: '4rem',
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))'
+              }}>
+                🏠
+              </div>
               <h2 style={{
-                fontSize: 'clamp(2.5rem, 7vw, 3rem)',
-                fontWeight: 700,
+                fontSize: 'clamp(1.5rem, 3vw, 1.8rem)',
+                fontWeight: 600,
                 color: 'white',
-                letterSpacing: '-0.01em',
-                position: 'relative',
-                zIndex: 3,
-                textAlign: 'center'
+                letterSpacing: '-0.02em',
+                textAlign: 'center',
+                margin: 0,
+                textShadow: '0 2px 8px rgba(0,0,0,0.15)'
               }}>
                 Je sous-loue mon logement
               </h2>
+              <div style={{
+                fontSize: '0.9rem',
+                color: 'rgba(255,255,255,0.9)',
+                textAlign: 'center',
+                fontWeight: 400
+              }}>
+                Rentabilisez votre bien →
+              </div>
             </div>
           </div>
         </div>
@@ -463,22 +507,31 @@ export default function Page() {
             }
 
             .mode-selection-cards {
-              grid-template-columns: repeat(2, minmax(140px, 1fr)) !important;
+              flex-direction: column !important;
               gap: 16px !important;
-              padding: 0 4px !important;
-              max-width: 520px !important;
-              margin: 0 auto !important;
+              padding: 0 16px !important;
+              max-width: 100% !important;
             }
             
             .mode-selection-cards > div {
-              padding: clamp(26px, 6vw, 34px) clamp(18px, 5vw, 24px) !important;
-              border-radius: 22px !important;
+              min-width: 100% !important;
+              max-width: 100% !important;
+              flex: 1 1 auto !important;
+              padding: 32px 24px !important;
+              gap: 16px !important;
+            }
+            
+            .mode-selection-cards > div > div:first-child {
+              font-size: 3rem !important;
             }
             
             .mode-selection-cards h2 {
-              font-size: clamp(1.5rem, 4.4vw, 2rem) !important;
-              line-height: 1.25 !important;
-              margin-bottom: 0 !important;
+              font-size: clamp(1.3rem, 4vw, 1.5rem) !important;
+              line-height: 1.3 !important;
+            }
+            
+            .mode-selection-cards > div > div:last-child {
+              font-size: 0.85rem !important;
             }
           }
 
@@ -496,16 +549,25 @@ export default function Page() {
             }
 
             .mode-selection-cards {
-              gap: 14px !important;
+              gap: 12px !important;
+              padding: 0 12px !important;
             }
             
             .mode-selection-cards > div {
-              padding: clamp(22px, 7vw, 28px) clamp(14px, 6vw, 20px) !important;
-              border-radius: 20px !important;
+              padding: 28px 20px !important;
+              gap: 14px !important;
+            }
+            
+            .mode-selection-cards > div > div:first-child {
+              font-size: 2.5rem !important;
             }
             
             .mode-selection-cards h2 {
-              font-size: clamp(1.35rem, 5.4vw, 1.7rem) !important;
+              font-size: clamp(1.2rem, 4.5vw, 1.4rem) !important;
+            }
+            
+            .mode-selection-cards > div > div:last-child {
+              font-size: 0.8rem !important;
             }
           }
 
