@@ -712,9 +712,9 @@ export default function Page() {
                     borderRadius: '50%'
                   }}></div>
                   <div style={{ 
-                    fontSize: '1.1rem', 
+                    fontSize: 'clamp(0.75rem, 1.5vw, 1.1rem)', 
                     fontWeight: 600, 
-                    marginBottom: '16px',
+                    marginBottom: 'clamp(8px, 2vw, 16px)',
                     textTransform: 'uppercase',
                     letterSpacing: '1.5px',
                     opacity: 0.95,
@@ -724,19 +724,19 @@ export default function Page() {
                     Gains Locataire
                   </div>
                   <div style={{ 
-                    fontSize: '5rem', 
+                    fontSize: 'clamp(2.5rem, 7vw, 5rem)', 
                     fontWeight: 900, 
-                    marginBottom: '16px',
+                    marginBottom: 'clamp(8px, 2vw, 16px)',
                     color: '#FFE66D',
                     textShadow: '0 4px 16px rgba(0,0,0,0.25)',
                     lineHeight: 1,
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    60<span style={{ fontSize: '3rem' }}>%</span>
+                    60<span style={{ fontSize: 'clamp(1.5rem, 4.2vw, 3rem)' }}>%</span>
                   </div>
                   <p style={{ 
-                    fontSize: '0.95rem', 
+                    fontSize: 'clamp(0.75rem, 1.3vw, 0.95rem)', 
                     opacity: 0.95,
                     lineHeight: 1.5,
                     color: 'white',
@@ -779,9 +779,9 @@ export default function Page() {
                     borderRadius: '50%'
                   }}></div>
                   <div style={{ 
-                    fontSize: '1.1rem', 
+                    fontSize: 'clamp(0.75rem, 1.5vw, 1.1rem)', 
                     fontWeight: 600, 
-                    marginBottom: '16px',
+                    marginBottom: 'clamp(8px, 2vw, 16px)',
                     textTransform: 'uppercase',
                     letterSpacing: '1.5px',
                     opacity: 0.95,
@@ -791,19 +791,19 @@ export default function Page() {
                     Gains Propriétaire
                   </div>
                   <div style={{ 
-                    fontSize: '5rem', 
+                    fontSize: 'clamp(2.5rem, 7vw, 5rem)', 
                     fontWeight: 900, 
-                    marginBottom: '16px',
+                    marginBottom: 'clamp(8px, 2vw, 16px)',
                     color: '#FFE66D',
                     textShadow: '0 4px 16px rgba(0,0,0,0.25)',
                     lineHeight: 1,
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    40<span style={{ fontSize: '3rem' }}>%</span>
+                    40<span style={{ fontSize: 'clamp(1.5rem, 4.2vw, 3rem)' }}>%</span>
                   </div>
                   <p style={{ 
-                    fontSize: '0.95rem', 
+                    fontSize: 'clamp(0.75rem, 1.3vw, 0.95rem)', 
                     opacity: 0.95,
                     lineHeight: 1.5,
                     color: 'white',
@@ -1338,15 +1338,16 @@ export default function Page() {
                   background: 'rgba(255,255,255,0.1)',
                   borderRadius: '50%'
                 }}></div>
-                <div className="revenue-card-label" style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Locataire</div>
-                <div className="revenue-amount" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: '800', marginBottom: '16px' }}>
+                <div className="revenue-card-label" style={{ fontSize: 'clamp(11px, 2vw, 16px)', fontWeight: '600', marginBottom: 'clamp(6px, 1.5vw, 12px)', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Locataire</div>
+                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(8px, 2vw, 16px)' }}>
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.6))}
                 </div>
                 <img src="/images/locataire_evaluation.png" alt="Locataire" style={{ 
-                  margin: '20px auto 0', 
+                  margin: 'clamp(10px, 3vw, 20px) auto 0', 
                   width: '100%', 
                   maxWidth: '320px',
-                  height: '220px', 
+                  height: 'auto',
+                  maxHeight: '220px', 
                   objectFit: 'contain', 
                   borderRadius: '12px',
                   border: '3px solid rgba(255, 255, 255, 0)'
@@ -1390,14 +1391,15 @@ export default function Page() {
                   background: 'rgba(255,255,255,0.1)',
                   borderRadius: '50%'
                 }}></div>
-                <div className="revenue-card-label" style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Propriétaire</div>
-                <div className="revenue-amount" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: '800', marginBottom: '16px' }}>
+                <div className="revenue-card-label" style={{ fontSize: 'clamp(11px, 2vw, 16px)', fontWeight: '600', marginBottom: 'clamp(6px, 1.5vw, 12px)', opacity: 0.9, textTransform: 'uppercase', letterSpacing: '1px' }}>Propriétaire</div>
+                <div className="revenue-amount" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: '800', marginBottom: 'clamp(8px, 2vw, 16px)' }}>
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(priceNum * nbNuits * 0.97 * 0.4))}
                 </div>
                 <img src="/images/proprietaire_evaluation.png" alt="Propriétaire" style={{ 
-                  margin: '20px auto 0', 
+                  margin: 'clamp(10px, 3vw, 20px) auto 0', 
                   width: '100%', 
                   maxWidth: '320px',
+                  maxHeight: '220px',
                   height: '220px', 
                   objectFit: 'contain', 
                   borderRadius: '12px',
@@ -1556,7 +1558,7 @@ export default function Page() {
           }}>
             <div style={{
               background: 'white',
-              padding: '32px 24px',
+              padding: 'clamp(20px, 4vw, 32px) clamp(16px, 3vw, 24px)',
               borderRadius: '16px',
               boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
               border: '1px solid #f0f0f0',
@@ -1572,17 +1574,17 @@ export default function Page() {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
             >
-              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>✅</div>
+              <div style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: 'clamp(10px, 2vw, 16px)' }}>✅</div>
               <h4 style={{
-                fontSize: '1.3rem',
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '12px'
+                marginBottom: 'clamp(8px, 1.5vw, 12px)'
               }}>
                 100% légal
               </h4>
               <p style={{
-                fontSize: '1rem',
+                fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
                 lineHeight: 1.6,
                 color: '#4A5568',
                 margin: 0
@@ -1593,7 +1595,7 @@ export default function Page() {
 
             <div style={{
               background: 'white',
-              padding: '32px 24px',
+              padding: 'clamp(20px, 4vw, 32px) clamp(16px, 3vw, 24px)',
               borderRadius: '16px',
               boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
               border: '1px solid #f0f0f0',
@@ -1609,17 +1611,17 @@ export default function Page() {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
             >
-              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🛡️</div>
+              <div style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: 'clamp(10px, 2vw, 16px)' }}>🛡️</div>
               <h4 style={{
-                fontSize: '1.3rem',
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '12px'
+                marginBottom: 'clamp(8px, 1.5vw, 12px)'
               }}>
                 100% sécurisé
               </h4>
               <p style={{
-                fontSize: '1rem',
+                fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
                 lineHeight: 1.6,
                 color: '#4A5568',
                 margin: 0
@@ -1630,7 +1632,7 @@ export default function Page() {
 
             <div style={{
               background: 'white',
-              padding: '32px 24px',
+              padding: 'clamp(20px, 4vw, 32px) clamp(16px, 3vw, 24px)',
               borderRadius: '16px',
               boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
               border: '1px solid #f0f0f0',
@@ -1646,17 +1648,17 @@ export default function Page() {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
             >
-              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🤝</div>
+              <div style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: 'clamp(10px, 2vw, 16px)' }}>🤝</div>
               <h4 style={{
-                fontSize: '1.3rem',
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '12px'
+                marginBottom: 'clamp(8px, 1.5vw, 12px)'
               }}>
                 100% équitable
               </h4>
               <p style={{
-                fontSize: '1rem',
+                fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
                 lineHeight: 1.6,
                 color: '#4A5568',
                 margin: 0
@@ -1667,7 +1669,7 @@ export default function Page() {
 
             <div style={{
               background: 'white',
-              padding: '32px 24px',
+              padding: 'clamp(20px, 4vw, 32px) clamp(16px, 3vw, 24px)',
               borderRadius: '16px',
               boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
               border: '1px solid #f0f0f0',
@@ -1683,17 +1685,17 @@ export default function Page() {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
             >
-              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
+              <div style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: 'clamp(10px, 2vw, 16px)' }}>🌍</div>
               <h4 style={{
-                fontSize: '1.3rem',
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '12px'
+                marginBottom: 'clamp(8px, 1.5vw, 12px)'
               }}>
                 100% responsable
               </h4>
               <p style={{
-                fontSize: '1rem',
+                fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
                 lineHeight: 1.6,
                 color: '#4A5568',
                 margin: 0
@@ -1743,7 +1745,7 @@ export default function Page() {
             {/* Empreinte bancaire */}
             <div style={{
               background: 'white',
-              padding: '32px',
+              padding: 'clamp(20px, 4vw, 32px)',
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
@@ -1759,17 +1761,17 @@ export default function Page() {
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
             }}>
               <h3 style={{
-                fontSize: '1.4rem',
+                fontSize: 'clamp(1.1rem, 2.2vw, 1.4rem)',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '20px'
+                marginBottom: 'clamp(12px, 2.5vw, 20px)'
               }}>
                 Caution de 300€
               </h3>
               <p style={{
                 color: '#718096',
                 lineHeight: 1.7,
-                fontSize: '1.05rem'
+                fontSize: 'clamp(0.9rem, 1.6vw, 1.05rem)'
               }}>
                 Une empreinte bancaire est enregistrée auprès de chaque voyageur avant le séjour. Dans les rares cas de dégradations et après validation par nos modérateurs, jusqu'à 300€ peuvent être prélevés pour couvrir les réparations.
               </p>
@@ -1778,7 +1780,7 @@ export default function Page() {
             {/* Assurance RC */}
             <div style={{
               background: 'white',
-              padding: '32px',
+              padding: 'clamp(20px, 4vw, 32px)',
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
@@ -1794,17 +1796,17 @@ export default function Page() {
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
             }}>
               <h3 style={{
-                fontSize: '1.4rem',
+                fontSize: 'clamp(1.1rem, 2.2vw, 1.4rem)',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '20px'
+                marginBottom: 'clamp(12px, 2.5vw, 20px)'
               }}>
               Assurance du voyageur
               </h3>
               <p style={{
                 color: '#718096',
                 lineHeight: 1.7,
-                fontSize: '1.05rem'
+                fontSize: 'clamp(0.9rem, 1.6vw, 1.05rem)'
               }}>
                 Pour les dommages plus importants, l'assurance responsabilité civile du voyageur est sollicitée en priorité. Il est fortement recommandé de demander une attestation de villégiature avant le séjour.
               </p>
@@ -1813,7 +1815,7 @@ export default function Page() {
             {/* Responsabilité locataire */}
             <div style={{
               background: 'white',
-              padding: '32px',
+              padding: 'clamp(20px, 4vw, 32px)',
               borderRadius: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               border: '1px solid #E2E8F0',
@@ -1829,17 +1831,17 @@ export default function Page() {
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
             }}>
               <h3 style={{
-                fontSize: '1.4rem',
+                fontSize: 'clamp(1.1rem, 2.2vw, 1.4rem)',
                 fontWeight: 700,
                 color: '#2D3748',
-                marginBottom: '20px'
+                marginBottom: 'clamp(12px, 2.5vw, 20px)'
               }}>
               Locataire garant
               </h3>
               <p style={{
                 color: '#718096',
                 lineHeight: 1.7,
-                fontSize: '1.05rem'
+                fontSize: 'clamp(0.9rem, 1.6vw, 1.05rem)'
               }}>
                 Le locataire principal reste juridiquement responsable du logement si les deux garanties précédentes ne couvrent pas l'intégralité des réparations.
               </p>
@@ -2199,24 +2201,14 @@ export default function Page() {
         }
         
         .revenue-cards > a {
-          padding: 20px 12px !important;
+          padding: clamp(16px, 3vw, 20px) clamp(10px, 2vw, 12px) !important;
           border-radius: 16px !important;
         }
         
-        .revenue-card-label {
-          font-size: 12px !important;
-          margin-bottom: 6px !important;
-        }
-
-        .revenue-amount {
-          font-size: 1.3rem !important;
-          margin-bottom: 8px !important;
-        }
-        
         .revenue-cards img {
-          max-width: 240px !important;
-          height: 165px !important;
-          margin: 8px auto 0 !important;
+          max-width: clamp(200px, 40vw, 240px) !important;
+          height: auto !important;
+          margin: clamp(6px, 1.5vw, 8px) auto 0 !important;
         }
         
         .cta-buttons {
@@ -2273,24 +2265,11 @@ export default function Page() {
         }
         
         .revenue-split-cards > div {
-          padding: 20px 12px !important;
+          padding: clamp(16px, 3vw, 20px) clamp(10px, 2vw, 12px) !important;
           min-width: 0 !important;
           flex: 1 !important;
           max-width: none !important;
           aspect-ratio: 1.2 !important;
-        }
-        
-        .revenue-split-cards > div > div:nth-child(2) {
-          font-size: 0.85rem !important;
-        }
-        
-        .revenue-split-cards > div > div:nth-child(3) {
-          font-size: 3.5rem !important;
-        }
-        
-        .revenue-split-cards > div > p {
-          font-size: 0.8rem !important;
-          line-height: 1.3 !important;
         }
 
       }
@@ -2387,20 +2366,10 @@ export default function Page() {
           aspect-ratio: 1 !important;
         }
 
-        .revenue-card-label {
-          font-size: 11px !important;
-          margin-bottom: 4px !important;
-        }
-
-        .revenue-amount {
-          font-size: 1.1rem !important;
-          margin-bottom: 6px !important;
-        }
-        
         .revenue-cards img {
-          max-width: 200px !important;
+          max-width: clamp(160px, 35vw, 200px) !important;
           height: auto !important;
-          margin: 6px auto 0 !important;
+          margin: clamp(4px, 1vw, 6px) auto 0 !important;
           flex-shrink: 1 !important;
           object-fit: contain !important;
         }
@@ -2416,24 +2385,12 @@ export default function Page() {
         
         /* Cases 60% et 40% encore plus compactes sur petits écrans */
         .revenue-split-cards {
-          gap: 12px !important;
+          gap: clamp(8px, 2vw, 12px) !important;
         }
         
         .revenue-split-cards > div {
-          padding: 20px 12px !important;
+          padding: clamp(14px, 2.5vw, 20px) clamp(8px, 1.5vw, 12px) !important;
           aspect-ratio: 1.2 !important;
-        }
-        
-        .revenue-split-cards > div > div:first-child {
-          font-size: 2.5rem !important;
-        }
-        
-        .revenue-split-cards > div > h3 {
-          font-size: 1rem !important;
-        }
-        
-        .revenue-split-cards > div > p {
-          font-size: 0.8rem !important;
         }
 
       }
