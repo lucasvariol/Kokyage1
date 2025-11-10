@@ -587,7 +587,7 @@ export default function Page() {
               textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
             }}>
               {activeTab === 'voyageur' ? (
-                <>Des hébergements <br /><span style={{ color: '#ffffffff' }}> éthiques et authentiques </span></>
+                <> Chez l'habitant, <br /><span style={{ color: '#ffffffff' }}> vraiment </span></>
               ) : (
                 <>Sous-louez enfin<br /><span style={{ color: '#ffffffff' }}>en partageant les revenus</span></>
               )}
