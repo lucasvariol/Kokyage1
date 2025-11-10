@@ -2761,6 +2761,21 @@ export default function Page() {
           padding: 12px !important;
         }
         
+        .arguments-container {
+          display: flex !important;
+          overflow-x: auto !important;
+          scroll-snap-type: x mandatory !important;
+          -webkit-overflow-scrolling: touch !important;
+          gap: 16px !important;
+          padding: 0 12px !important;
+        }
+        
+        .arguments-container > div {
+          min-width: 260px !important;
+          flex: 0 0 260px !important;
+          scroll-snap-align: start !important;
+        }
+        
         .estimator-section {
           padding: 0 16px !important;
         }
