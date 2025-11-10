@@ -308,15 +308,14 @@ export default function Page() {
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 position: 'relative',
-                backdropFilter: 'blur(20px)',
-                border: '2px solid rgba(96,162,157,0.3)',
+                border: 'none',
                 borderRadius: '32px',
                 padding: '60px 40px',
                 cursor: 'pointer',
                 position: 'relative',
                 overflow: 'hidden',
                 transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                boxShadow: 'none',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -324,13 +323,9 @@ export default function Page() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
-                e.currentTarget.style.borderColor = 'rgba(96,162,157,0.6)';
-                e.currentTarget.style.boxShadow = '0 30px 80px rgba(96,162,157,0.4)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.borderColor = 'rgba(96,162,157,0.3)';
-                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
               }}
             >
               {/* Overlay de couleur */}
@@ -396,15 +391,13 @@ export default function Page() {
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 position: 'relative',
-                backdropFilter: 'blur(20px)',
-                border: '2px solid rgba(215,144,119,0.3)',
+                border: 'none',
                 borderRadius: '32px',
                 padding: '60px 40px',
                 cursor: 'pointer',
-                position: 'relative',
                 overflow: 'hidden',
                 transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                boxShadow: 'none',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -412,13 +405,9 @@ export default function Page() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-12px) scale(1.03)';
-                e.currentTarget.style.borderColor = 'rgba(215,144,119,0.6)';
-                e.currentTarget.style.boxShadow = '0 30px 80px rgba(215,144,119,0.4)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.borderColor = 'rgba(215,144,119,0.3)';
-                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.3)';
               }}
             >
               {/* Overlay de couleur */}
