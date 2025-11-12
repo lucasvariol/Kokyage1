@@ -85,7 +85,7 @@ if (typeof window !== 'undefined') {
 }
 
 // Map component with multiple price markers for listings
-function ListingsMap({ items, center, onCenterChange, searchView }) {
+function ListingsMap({ items, center, onCenterChange, searchView, ratings = {} }) {
   const mapDivRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
@@ -2290,7 +2290,7 @@ function LogementsInner() {
             boxShadow: isMobile ? 'inset 0 14px 24px -12px rgba(0,0,0,0.28)' : 'none'
           }}>
             {mounted && (
-              <ListingsMap items={filteredItems} center={mapCenter} onCenterChange={setMapCenter} searchView={searchView} />
+              <ListingsMap items={filteredItems} center={mapCenter} onCenterChange={setMapCenter} searchView={searchView} ratings={ratings} />
             )}
             
             {/* Scroll indicator - mobile only */}
