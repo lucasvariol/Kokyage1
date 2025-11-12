@@ -190,7 +190,14 @@ export default function Page(){
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
-      setError('Erreur de connexion');
+      // Messages d'erreur plus explicites
+      if (error.message.includes('Invalid login credentials')) {
+        setError('Email ou mot de passe incorrect');
+      } else if (error.message.includes('Email not confirmed')) {
+        setError('Veuillez confirmer votre adresse email avant de vous connecter');
+      } else {
+        setError(error.message || 'Erreur de connexion');
+      }
       setLoading(false);
       return;
     }
