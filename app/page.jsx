@@ -1881,7 +1881,7 @@ export default function Page() {
           position: 'relative',
           zIndex: 30,
           maxWidth: '1040px',
-          margin: '-120px auto 0' // seul le bloc carte chevauche la zone orange
+          margin: '-80px auto 0' // seul le bloc carte chevauche la zone orange
         }}>
           <div className="estimator-heading" style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h3 style={{ 
@@ -2953,7 +2953,7 @@ export default function Page() {
         .estimator-card {
           padding: 40px 28px !important;
           border-radius: 24px !important;
-          margin-top: -150px !important;
+          margin-top: -100px !important;
         }
 
         .concept-section {
