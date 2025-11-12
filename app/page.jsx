@@ -505,8 +505,10 @@ export default function Page() {
               flex: 1 1 calc(50% - 12px) !important;
               min-width: calc(50% - 12px) !important;
               max-width: calc(50% - 12px) !important;
-              padding: 28px 22px !important;
-              gap: 14px !important;
+              padding: clamp(22px, 5.5vw, 28px) clamp(16px, 4.5vw, 22px) !important;
+              gap: clamp(12px, 3.6vw, 16px) !important;
+              min-height: auto !important;
+              height: auto !important;
             }
             
             .mode-selection-cards > div > div:first-child {
@@ -541,8 +543,10 @@ export default function Page() {
               flex: 1 1 calc(50% - 10px) !important;
               min-width: calc(50% - 10px) !important;
               max-width: calc(50% - 10px) !important;
-              padding: 24px 18px !important;
-              gap: 12px !important;
+              padding: clamp(20px, 6vw, 24px) clamp(14px, 5vw, 18px) !important;
+              gap: clamp(10px, 4vw, 14px) !important;
+              min-height: auto !important;
+              height: auto !important;
             }
             
             .mode-selection-cards > div > div:first-child {
@@ -571,9 +575,11 @@ export default function Page() {
               flex: 1 1 calc(50% - 8px) !important;
               min-width: calc(50% - 8px) !important;
               max-width: calc(50% - 8px) !important;
-              padding: clamp(18px, 7vw, 22px) clamp(12px, 6vw, 16px) !important;
+              padding: clamp(18px, 7vw, 22px) clamp(12px, 5.5vw, 16px) !important;
               border-radius: 18px !important;
-              gap: 10px !important;
+              gap: clamp(8px, 4.5vw, 12px) !important;
+              min-height: auto !important;
+              height: auto !important;
             }
 
             .mode-selection-cards > div > div:first-child {
