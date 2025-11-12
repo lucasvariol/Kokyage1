@@ -322,6 +322,51 @@ function StarIcon({ size = 18, color = "#C96745" }) {
   );
 }
 
+// Display-only stars with half-fill support based on value (0.5 increments)
+function StarAverageInline({ value = 0, size = 18 }) {
+  const rounded = Math.round((Number(value) || 0) * 2) / 2; // nearest 0.5
+  const full = Math.floor(rounded);
+  const hasHalf = rounded - full === 0.5;
+
+  return (
+    <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+      {[1,2,3,4,5].map((i) => {
+        let fill = 0;
+        if (i <= full) fill = 100;
+        else if (i === full + 1 && hasHalf) fill = 50;
+        return <StarInline key={i} fillPercent={fill} size={size} />;
+      })}
+    </div>
+  );
+}
+
+function StarInline({ fillPercent = 0, size = 18 }) {
+  return (
+    <div style={{ position: 'relative', width: size, height: size }}>
+      {/* Outline */}
+      <svg width={size} height={size} viewBox="0 0 24 24" style={{ position: 'absolute', inset: 0 }}>
+        <polygon
+          points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+          fill="none"
+          stroke="#d1d5db"
+          strokeWidth="1.5"
+        />
+      </svg>
+      {/* Filled overlay clipped by width */}
+      <div style={{ position: 'absolute', inset: 0, width: `${fillPercent}%`, overflow: 'hidden' }}>
+        <svg width={size} height={size} viewBox="0 0 24 24">
+          <polygon
+            points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+            fill="#fbbf24"
+            stroke="#f59e0b"
+            strokeWidth="1.5"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 // Fonction pour récupérer les données du logement
 async function getListing(id) {
   const { data, error } = await supabase
@@ -784,19 +829,17 @@ export default function Page({ params }) {
         setAvailableDates(normalized);
         setAvailabilityLoading(false);
 
-        // Récupérer avis
-        const { data: revData } = await supabase
-          .from('reviews')
-          .select('id, rating, comment, created_at, user:users(full_name, avatar_url)')
-          .eq('listing_id', params.id)
-          .order('created_at', { ascending: false });
-        setReviews(revData || []);
-
-        // Statistiques
-        if (revData && revData.length > 0) {
-          const avg = (revData.reduce((acc, r) => acc + r.rating, 0) / revData.length).toFixed(2);
-          setStats({ count: revData.length, avg });
-        } else {
+        // Récupérer statistiques des avis via API (plus robuste)
+        try {
+          const res = await fetch(`/api/reviews?listing_id=${params.id}&limit=1&offset=0`, { cache: 'no-store' });
+          if (res.ok) {
+            const dataJson = await res.json();
+            const summary = dataJson?.summary || { review_count: 0, average_rating: 0 };
+            setStats({ count: summary.review_count || 0, avg: Number(summary.average_rating || 0) });
+          } else {
+            setStats({ count: 0, avg: 0 });
+          }
+        } catch (e) {
           setStats({ count: 0, avg: 0 });
         }
       }
@@ -1761,24 +1804,15 @@ export default function Page({ params }) {
                           borderTop: '1px solid #f1f5f9',
                           borderBottom: '1px solid #f1f5f9'
                         }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <div style={{ 
-                              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                              padding: 8,
-                              borderRadius: 10,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}>
-                              <StarIcon size={20} color="#f59e0b" />
-                            </div>
-                            <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                              <StarAverageInline value={stats.avg} size={18} />
                               <div style={{ fontWeight: 800, fontSize: 18, color: '#0f172a' }}>
-                                {stats.avg > 0 ? stats.avg : '—'}
+                                {stats.avg > 0 ? (Number(stats.avg).toFixed(1)) : '—'}
                               </div>
-                              <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>
-                                {stats.count} avis
-                              </div>
+                            </div>
+                            <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>
+                              {stats.count} avis
                             </div>
                           </div>
                           <div className="stats-divider" style={{ width: 1, background: '#e2e8f0' }} />
