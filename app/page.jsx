@@ -1114,12 +1114,15 @@ export default function Page() {
             background: 'white',
             borderRadius: '24px',
             zIndex: 9999,
-            maxHeight: '90vh',
+            maxHeight: '85vh',
+            minHeight: '500px',
             overflowY: 'auto',
             animation: 'slideInRight 0.3s ease',
             boxShadow: '0 8px 60px rgba(0,0,0,0.3)',
             width: '90vw',
-            maxWidth: '500px'
+            maxWidth: '500px',
+            display: 'flex',
+            flexDirection: 'column'
           }}>
             {/* Header */}
             <div style={{
@@ -1173,7 +1176,12 @@ export default function Page() {
             </div>
 
             {/* Content */}
-            <div style={{ padding: '24px' }}>
+            <div style={{ 
+              padding: '24px',
+              flex: 1,
+              overflowY: 'auto',
+              minHeight: 0
+            }}>
               {/* Step 1: Destination */}
               {desktopStep === 1 && (
                 <div>
