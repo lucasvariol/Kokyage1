@@ -834,14 +834,15 @@ export default function Page() {
               display: 'flex', 
               gap: '12px', 
               alignItems: 'stretch', 
-              flexWrap: 'wrap', 
+              flexWrap: 'nowrap', 
               justifyContent: 'center',
               background: 'white',
               borderRadius: '16px',
               padding: '8px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              overflowX: 'auto'
             }}>
-            <div className="search-input-container" style={{ position: 'relative', flex: '2.4', minWidth: '280px', maxWidth: '420px', zIndex: 10000 }}>
+            <div className="search-input-container" style={{ position: 'relative', flex: '1 1 320px', minWidth: '240px', maxWidth: '420px', flexShrink: 1, zIndex: 10000 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                   <input
                     name="destination"
@@ -2574,14 +2575,17 @@ export default function Page() {
         
         .search-form-modern {
           flex-direction: row !important;
-          gap: 16px !important;
+          flex-wrap: nowrap !important;
+          gap: 12px !important;
           padding: 16px !important;
+          overflow-x: auto !important;
+          justify-content: space-between !important;
         }
         
         .search-input-container {
-          min-width: 100% !important;
-          max-width: 100% !important;
-          flex: 1 1 100% !important;
+          min-width: 0 !important;
+          max-width: none !important;
+          flex: 1 1 auto !important;
         }
         
         .btn-search-modern {
