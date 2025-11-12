@@ -1221,6 +1221,50 @@ export default function Page() {
                 </ul>
               )}
             </div>
+
+            {/* Bouton Rechercher - Uniquement sur desktop */}
+            {!isMobile && (
+              <button
+                className="btn-search-modern"
+                type="button"
+                onClick={() => {
+                  const params = new URLSearchParams();
+                  if (lieu) params.append('destination', lieu);
+                  if (arrivee) params.append('arrivee', arrivee);
+                  if (depart) params.append('depart', depart);
+                  if (voyageurs) params.append('voyageurs', voyageurs);
+                  window.location.href = `/logements${params.toString() ? '?' + params.toString() : ''}`;
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '0 24px',
+                  height: '56px',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 20px rgba(96,162,157,0.3)',
+                  minWidth: '140px'
+                }}
+                onMouseEnter={e => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 25px rgba(96,162,157,0.4)';
+                }}
+                onMouseLeave={e => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 20px rgba(96,162,157,0.3)';
+                }}
+              >
+                🔍 Rechercher
+              </button>
+            )}
           </div>
             </form>
           </div>
