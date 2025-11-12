@@ -328,6 +328,9 @@ const btnStyle = {
 function LogementsInner() {
   const [slideDirection, setSlideDirection] = useState({});
   const [imageIndexes, setImageIndexes] = useState({});
+  // Keep a ref to latest imageIndexes to avoid stale values in touch handlers
+  const imageIndexesRef = useRef({});
+  useEffect(() => { imageIndexesRef.current = imageIndexes; }, [imageIndexes]);
   const [hoveredCard, setHoveredCard] = useState(null);
   const searchParams = useSearchParams();
   const initialVoyageurs = parseInt(searchParams.get('voyageurs'), 10) || 2;
@@ -910,15 +913,16 @@ function LogementsInner() {
   useEffect(() => {
     if (!mounted || typeof window === 'undefined') return;
     
-    const touchHandlers = {}; // Track handlers to clean up later
+    const touchHandlers = {}; // Track handlers by element id for cleanup
     
     const initSwipe = (listingId, totalImages, prefix = 'listing') => {
-      const carousel = document.getElementById(`${prefix}-carousel-${listingId}`);
+      const elId = `${prefix}-carousel-${listingId}`;
+      const carousel = document.getElementById(elId);
       if (!carousel) return;
       
-      // Remove old listeners if they exist
-      if (touchHandlers[listingId]) {
-        const { handleTouchStart, handleTouchMove, handleTouchEnd } = touchHandlers[listingId];
+      // Remove old listeners if they exist for this element
+      if (touchHandlers[elId]) {
+        const { handleTouchStart, handleTouchMove, handleTouchEnd } = touchHandlers[elId];
         carousel.removeEventListener('touchstart', handleTouchStart);
         carousel.removeEventListener('touchmove', handleTouchMove);
         carousel.removeEventListener('touchend', handleTouchEnd);
@@ -930,14 +934,18 @@ function LogementsInner() {
       
       const handleTouchStart = (e) => {
         startX = e.touches[0].clientX;
+        currentX = startX;
         isDragging = true;
+        // Disable transition during drag for immediate response
+        carousel.style.transition = 'none';
       };
       
       const handleTouchMove = (e) => {
         if (!isDragging) return;
+        if (e.cancelable) e.preventDefault(); // prevent page scroll while swiping
         currentX = e.touches[0].clientX;
         const diff = currentX - startX;
-        const currentIndex = imageIndexes[listingId] || 0;
+        const currentIndex = imageIndexesRef.current[listingId] || 0;
         carousel.style.transform = `translateX(calc(-${currentIndex * 100}% + ${diff}px))`;
       };
       
@@ -945,33 +953,31 @@ function LogementsInner() {
         if (!isDragging) return;
         isDragging = false;
         const diff = currentX - startX;
+        const threshold = 50;
+        const currentIndex = imageIndexesRef.current[listingId] || 0;
+        let nextIndex = currentIndex;
         
-        if (Math.abs(diff) > 50) {
-          const currentIndex = imageIndexes[listingId] || 0;
+        if (Math.abs(diff) > threshold) {
           if (diff > 0 && currentIndex > 0) {
-            // Swipe right - previous image
-            setImageIndexes(idx => ({ 
-              ...idx, 
-              [listingId]: currentIndex - 1 
-            }));
+            nextIndex = currentIndex - 1; // Swipe right -> previous
           } else if (diff < 0 && currentIndex < totalImages - 1) {
-            // Swipe left - next image
-            setImageIndexes(idx => ({ 
-              ...idx, 
-              [listingId]: currentIndex + 1 
-            }));
+            nextIndex = currentIndex + 1; // Swipe left -> next
           }
-        } else {
-          // Snap back
-          const currentIndex = imageIndexes[listingId] || 0;
-          carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+        // Restore transition for snap/slide and set final position
+        carousel.style.transition = 'transform 0.3s ease';
+        carousel.style.transform = `translateX(-${nextIndex * 100}%)`;
+        
+        if (nextIndex !== currentIndex) {
+          setImageIndexes(idx => ({ ...idx, [listingId]: nextIndex }));
         }
       };
       
       // Store handlers and attach listeners
-      touchHandlers[listingId] = { handleTouchStart, handleTouchMove, handleTouchEnd };
+      touchHandlers[elId] = { handleTouchStart, handleTouchMove, handleTouchEnd };
       carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
-      carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
+      // touchmove must be non-passive to allow preventDefault
+      carousel.addEventListener('touchmove', handleTouchMove, { passive: false });
       carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
     };
     
@@ -1013,11 +1019,11 @@ function LogementsInner() {
       });
     }
     
-    // Cleanup: remove old listeners on unmount
+    // Cleanup: remove old listeners on unmount or before re-init
     return () => {
-      Object.keys(touchHandlers).forEach(listingId => {
-        const { handleTouchStart, handleTouchMove, handleTouchEnd } = touchHandlers[listingId];
-        const carousel = document.getElementById(`listing-carousel-${listingId}`) || document.getElementById(`alt-carousel-${listingId}`);
+      Object.keys(touchHandlers).forEach(elId => {
+        const { handleTouchStart, handleTouchMove, handleTouchEnd } = touchHandlers[elId];
+        const carousel = document.getElementById(elId);
         if (carousel) {
           carousel.removeEventListener('touchstart', handleTouchStart);
           carousel.removeEventListener('touchmove', handleTouchMove);
