@@ -16,7 +16,7 @@ export async function GET(req) {
       return Response.json({ error: 'listing_id requis' }, { status: 400 });
     }
 
-    // Fetch reviews with user profile info
+    // Fetch reviews (no join to user profiles to avoid schema dependency)
     const { data: reviews, error: reviewsError } = await supabase
       .from('reviews')
       .select(`
@@ -25,11 +25,7 @@ export async function GET(req) {
         comment,
         created_at,
         updated_at,
-        user_id,
-        profiles:user_id (
-          nom,
-          prenom
-        )
+        user_id
       `)
       .eq('listing_id', listing_id)
       .order('created_at', { ascending: false })
