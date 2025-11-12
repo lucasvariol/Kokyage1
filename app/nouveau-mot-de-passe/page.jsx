@@ -18,14 +18,58 @@ function NouveauMotDePasseContent() {
   const [showConfirm, setShowConfirm] = useState(false);
   const router = useRouter();
 
-  // Vérifier la présence du token de récupération au chargement
+  // État de session récupéré depuis le lien de récupération
+  const [sessionReady, setSessionReady] = useState(false);
+
+  // Vérifier la présence du token de récupération et initialiser la session Supabase
   useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const hash = window.location.hash?.substring(1) || '';
+    const hashParams = new URLSearchParams(hash);
+
     const type = hashParams.get('type');
-    
+    const access_token = hashParams.get('access_token');
+    const refresh_token = hashParams.get('refresh_token');
+
     if (type !== 'recovery') {
       setError('Lien invalide ou expiré. Veuillez demander un nouveau lien de réinitialisation.');
+      return;
     }
+
+    async function initSession() {
+      try {
+        if (access_token && refresh_token) {
+          const { data, error: setErr } = await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          });
+          if (setErr) {
+            console.error('Erreur setSession:', setErr);
+            setError("Le lien de réinitialisation a expiré ou n'est pas valide. Veuillez en demander un nouveau.");
+            setSessionReady(false);
+            return;
+          }
+          setSessionReady(true);
+          // Nettoyer l'URL (enlève les tokens du hash)
+          window.history.replaceState({}, document.title, window.location.pathname);
+          return;
+        }
+
+        // Si pas de tokens dans l'URL, essayer de récupérer une session existante
+        const { data: sess } = await supabase.auth.getSession();
+        if (sess?.session) {
+          setSessionReady(true);
+        } else {
+          setError("Session de récupération introuvable. Veuillez rouvrir le lien depuis l'email.");
+          setSessionReady(false);
+        }
+      } catch (e) {
+        console.error('Erreur initialisation session:', e);
+        setError('Impossible de vérifier la session. Veuillez réessayer via le lien de l’email.');
+        setSessionReady(false);
+      }
+    }
+
+    initSession();
   }, []);
 
   async function handleSubmit(e) {
@@ -270,24 +314,24 @@ function NouveauMotDePasseContent() {
 
               <button
                 type="submit"
-                disabled={loading || !password || !confirmPassword}
+                disabled={loading || !password || !confirmPassword || !sessionReady}
                 style={{
                   width: '100%',
                   padding: '18px 24px',
                   borderRadius: '12px',
                   border: 'none',
-                  background: (loading || !password || !confirmPassword)
+                  background: (loading || !password || !confirmPassword || !sessionReady)
                     ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)'
                     : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                   color: 'white',
                   fontSize: '16px',
                   fontWeight: '700',
-                  cursor: (loading || !password || !confirmPassword) ? 'not-allowed' : 'pointer',
+                  cursor: (loading || !password || !confirmPassword || !sessionReady) ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s ease',
-                  boxShadow: (loading || !password || !confirmPassword)
+                  boxShadow: (loading || !password || !confirmPassword || !sessionReady)
                     ? 'none'
                     : '0 4px 20px rgba(201,103,69,0.3)',
-                  opacity: (loading || !password || !confirmPassword) ? 0.7 : 1
+                  opacity: (loading || !password || !confirmPassword || !sessionReady) ? 0.7 : 1
                 }}
               >
                 {loading ? (
@@ -307,6 +351,12 @@ function NouveauMotDePasseContent() {
                   'Confirmer le nouveau mot de passe'
                 )}
               </button>
+
+              {!sessionReady && !error && (
+                <p style={{ color: '#718096', fontSize: '14px', textAlign: 'center' }}>
+                  Initialisation de la session… Si rien ne se passe, ouvrez le lien directement depuis l’email.
+                </p>
+              )}
 
               {error && (
                 <div style={{
