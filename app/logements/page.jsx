@@ -2264,7 +2264,12 @@ function LogementsInner() {
           `}</style>
           
           {/* Liste des logements */}
-          <div ref={logementsListRef} className="logements-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 24 }}>
+          <div ref={logementsListRef} className="logements-list" style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', 
+            gap: 'clamp(16px, 3vw, 24px)',
+            padding: '0 clamp(12px, 3vw, 0)'
+          }}>
             {sortedItems.map((it) => {
               // Parse images array
               let imagesArr = [];
@@ -2292,23 +2297,23 @@ function LogementsInner() {
                   className="logement-card" 
                   style={{ 
                     background: '#fff', 
-                    borderRadius: 20, 
-                    boxShadow: '0 2px 12px rgba(0,0,0,0.08)', 
+                    borderRadius: 'clamp(12px, 2.5vw, 16px)', 
+                    boxShadow: '0 1px 8px rgba(0,0,0,0.06)', 
                     overflow: 'hidden',
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)';
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.1)';
                     setHoveredCard(it.id);
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)';
+                    e.currentTarget.style.boxShadow = '0 1px 8px rgba(0,0,0,0.06)';
                     setHoveredCard(null);
                   }}
                   onClick={() => window.location.href = `/logement/${it.id}`}
@@ -2316,8 +2321,8 @@ function LogementsInner() {
                   {/* Image container */}
                   <div style={{ 
                     width: '100%', 
-                    height: 240, 
-                    background: 'linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%)', 
+                    aspectRatio: '4 / 3',
+                    background: 'linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%)', 
                     position: 'relative',
                     overflow: 'hidden'
                   }}>
@@ -2360,19 +2365,19 @@ function LogementsInner() {
                               aria-label="Précédent"
                               style={{ 
                                 position: 'absolute', 
-                                left: 12, 
+                                left: 8, 
                                 top: '50%', 
                                 transform: 'translateY(-50%)', 
-                                background: 'rgba(255,255,255,0.95)', 
+                                background: 'rgba(255,255,255,0.9)', 
                                 border: 'none', 
                                 borderRadius: '50%', 
-                                width: 36, 
-                                height: 36, 
+                                width: 30, 
+                                height: 30, 
                                 display: 'flex', 
                                 alignItems: 'center', 
                                 justifyContent: 'center', 
                                 cursor: 'pointer', 
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                                 transition: 'all 0.2s',
                                 zIndex: 10
                               }}
@@ -2384,16 +2389,16 @@ function LogementsInner() {
                                 }));
                               }}
                               onMouseEnter={e => {
-                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
                                 e.currentTarget.style.background = '#fff';
                               }}
                               onMouseLeave={e => {
                                 e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-                                e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
+                                e.currentTarget.style.background = 'rgba(255,255,255,0.9)';
                               }}
                             >
-                              <svg width="20" height="20" viewBox="0 0 20 20">
-                                <polyline points="13 5 7 10 13 15" fill="none" stroke="#222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              <svg width="16" height="16" viewBox="0 0 20 20">
+                                <polyline points="13 5 7 10 13 15" fill="none" stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
                             </button>
                             <button
@@ -2401,19 +2406,19 @@ function LogementsInner() {
                               aria-label="Suivant"
                               style={{ 
                                 position: 'absolute', 
-                                right: 12, 
+                                right: 8, 
                                 top: '50%', 
                                 transform: 'translateY(-50%)', 
-                                background: 'rgba(255,255,255,0.95)', 
+                                background: 'rgba(255,255,255,0.9)', 
                                 border: 'none', 
                                 borderRadius: '50%', 
-                                width: 36, 
-                                height: 36, 
+                                width: 30, 
+                                height: 30, 
                                 display: 'flex', 
                                 alignItems: 'center', 
                                 justifyContent: 'center', 
                                 cursor: 'pointer', 
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                                 transition: 'all 0.2s',
                                 zIndex: 10
                               }}
@@ -2425,16 +2430,16 @@ function LogementsInner() {
                                 }));
                               }}
                               onMouseEnter={e => {
-                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
                                 e.currentTarget.style.background = '#fff';
                               }}
                               onMouseLeave={e => {
                                 e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-                                e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
+                                e.currentTarget.style.background = 'rgba(255,255,255,0.9)';
                               }}
                             >
-                              <svg width="20" height="20" viewBox="0 0 20 20">
-                                <polyline points="7 5 13 10 7 15" fill="none" stroke="#222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              <svg width="16" height="16" viewBox="0 0 20 20">
+                                <polyline points="7 5 13 10 7 15" fill="none" stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
                             </button>
                           </>
@@ -2443,23 +2448,23 @@ function LogementsInner() {
                         {imagesArr.length > 1 && (
                           <div style={{
                             position: 'absolute',
-                            bottom: 12,
+                            bottom: 8,
                             left: '50%',
                             transform: 'translateX(-50%)',
                             display: 'flex',
-                            gap: 6,
+                            gap: 4,
                             zIndex: 5
                           }}>
                             {imagesArr.map((_, idx) => (
                               <div
                                 key={idx}
                                 style={{
-                                  width: 6,
-                                  height: 6,
-                                  borderRadius: '50%',
+                                  width: idx === imgIdx ? 16 : 5,
+                                  height: 5,
+                                  borderRadius: 3,
                                   background: idx === imgIdx ? '#fff' : 'rgba(255,255,255,0.5)',
-                                  transition: 'all 0.3s',
-                                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                  transition: 'all 0.25s',
+                                  boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
                                 }}
                               />
                             ))}
@@ -2484,21 +2489,21 @@ function LogementsInner() {
                     {distance != null && isFinite(distance) && (
                       <div style={{
                         position: 'absolute',
-                        top: 12,
-                        right: 12,
-                        background: 'rgba(255,255,255,0.95)',
-                        backdropFilter: 'blur(8px)',
-                        padding: '6px 12px',
-                        borderRadius: 20,
-                        fontSize: 13,
+                        top: 10,
+                        right: 10,
+                        background: 'rgba(255,255,255,0.92)',
+                        backdropFilter: 'blur(6px)',
+                        padding: 'clamp(4px, 1vw, 5px) clamp(8px, 2vw, 10px)',
+                        borderRadius: 16,
+                        fontSize: 'clamp(11px, 2vw, 12px)',
                         fontWeight: 600,
-                        color: '#222',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        color: '#1a1a1a',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 4
+                        gap: 3
                       }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C96745" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C96745" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                           <circle cx="12" cy="10" r="3"/>
                         </svg>
@@ -2510,21 +2515,21 @@ function LogementsInner() {
                     {arrivee && depart && (
                       <div style={{
                         position: 'absolute',
-                        top: 12,
-                        left: 12,
-                        background: 'rgba(34,197,94,0.95)',
-                        backdropFilter: 'blur(8px)',
-                        padding: '6px 12px',
-                        borderRadius: 20,
-                        fontSize: 12,
+                        top: 10,
+                        left: 10,
+                        background: 'rgba(34,197,94,0.92)',
+                        backdropFilter: 'blur(6px)',
+                        padding: 'clamp(4px, 1vw, 5px) clamp(8px, 2vw, 10px)',
+                        borderRadius: 16,
+                        fontSize: 'clamp(11px, 2vw, 12px)',
                         fontWeight: 600,
                         color: '#fff',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 4
+                        gap: 3
                       }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12"/>
                         </svg>
                         Disponible
@@ -2533,34 +2538,36 @@ function LogementsInner() {
                   </div>
 
                   {/* Content */}
-                  <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
+                  <div style={{ padding: 'clamp(14px, 3vw, 18px)', display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 2vw, 10px)', flex: 1 }}>
                     {/* City and rating */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ 
-                          fontSize: 14, 
-                          color: '#666', 
-                          fontWeight: 500,
-                          marginBottom: 4
-                        }}>
-                        {it.city || 'Non spécifié'}
-                        </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                      <div style={{ 
+                        fontSize: 'clamp(12px, 2.2vw, 13px)', 
+                        color: '#666', 
+                        fontWeight: 500,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        flex: 1
+                      }}>
+                      {it.city || 'Non spécifié'}
                       </div>
                       <div style={{ 
                         display: 'flex', 
                         alignItems: 'center', 
-                        gap: 4,
-                        background: '#fff7ed',
-                        padding: '4px 10px',
-                        borderRadius: 12
+                        gap: 3,
+                        background: '#fffbf5',
+                        padding: '3px 8px',
+                        borderRadius: 10,
+                        flexShrink: 0
                       }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="none">
                           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                         </svg>
-                        <span style={{ fontSize: 14, fontWeight: 600, color: '#222' }}>
+                        <span style={{ fontSize: 'clamp(11px, 2vw, 12px)', fontWeight: 600, color: '#1a1a1a' }}>
                           {rating.toFixed(1)}
                         </span>
-                        <span style={{ fontSize: 13, color: '#888' }}>
+                        <span style={{ fontSize: 'clamp(10px, 1.8vw, 11px)', color: '#999' }}>
                           ({reviewCount})
                         </span>
                       </div>
@@ -2568,16 +2575,17 @@ function LogementsInner() {
 
                     {/* Title */}
                     <h3 style={{ 
-                      fontSize: 18, 
+                      fontSize: 'clamp(14px, 2.8vw, 16px)', 
                       fontWeight: 700, 
-                      color: '#222',
+                      color: '#1a1a1a',
                       margin: 0,
-                      lineHeight: 1.3,
+                      lineHeight: 1.25,
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical'
+                      WebkitBoxOrient: 'vertical',
+                      minHeight: 'clamp(36px, 7vw, 40px)'
                     }}>
                       {it.title}
                     </h3>
@@ -2586,14 +2594,14 @@ function LogementsInner() {
                     <div style={{ 
                       display: 'flex', 
                       alignItems: 'center', 
-                      gap: 16,
-                      fontSize: 14,
+                      gap: 'clamp(10px, 2.5vw, 14px)',
+                      fontSize: 'clamp(11px, 2.2vw, 13px)',
                       color: '#666',
                       flexWrap: 'wrap'
                     }}>
                       {it.nb_voyageurs && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                             <circle cx="9" cy="7" r="4"/>
                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
@@ -2603,8 +2611,8 @@ function LogementsInner() {
                         </div>
                       )}
                       {it.bedrooms && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 10.07 10h3.86a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 18.07 7H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
                             <path d="M3 9v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/>
                           </svg>
@@ -2612,8 +2620,8 @@ function LogementsInner() {
                         </div>
                       )}
                       {it.bathrooms && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M9 22v-4H7a2 2 0 0 1-2-2V7a4 4 0 0 1 8 0v9a2 2 0 0 1-2 2h-2Z"/>
                             <path d="M13 9h5a2 2 0 0 1 2 2v5"/>
                           </svg>
@@ -2625,11 +2633,12 @@ function LogementsInner() {
                     {/* Price and CTA */}
                     <div style={{ 
                       marginTop: 'auto',
-                      paddingTop: 16,
-                      borderTop: '1px solid #f0f0f0',
+                      paddingTop: 'clamp(10px, 2vw, 12px)',
+                      borderTop: '1px solid #f3f3f3',
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      gap: 10
                     }}>
                       <div>
                         {(() => {
@@ -2640,14 +2649,14 @@ function LogementsInner() {
                           return (
                             <>
                               <div style={{ 
-                                fontSize: 22, 
+                                fontSize: 'clamp(18px, 3.5vw, 20px)', 
                                 fontWeight: 700, 
                                 color: '#C96745',
                                 lineHeight: 1
                               }}>
                                 {Math.round(total)}€
                               </div>
-                              <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
+                              <div style={{ fontSize: 'clamp(10px, 2vw, 11px)', color: '#999', marginTop: 2 }}>
                                 par nuit
                               </div>
                             </>
@@ -2658,28 +2667,29 @@ function LogementsInner() {
                         href={`/logement/${it.id}`}
                         onClick={(e) => e.stopPropagation()}
                         style={{
-                          padding: '10px 20px',
-                          borderRadius: 12,
+                          padding: 'clamp(8px, 2vw, 10px) clamp(14px, 3vw, 18px)',
+                          borderRadius: 10,
                           background: '#C96745',
                           color: '#fff',
                           border: 'none',
-                          fontSize: 15,
+                          fontSize: 'clamp(12px, 2.3vw, 14px)',
                           fontWeight: 600,
                           cursor: 'pointer',
                           textDecoration: 'none',
                           display: 'inline-block',
                           transition: 'all 0.2s',
-                          boxShadow: '0 2px 8px rgba(201,103,69,0.2)'
+                          boxShadow: '0 2px 6px rgba(201,103,69,0.18)',
+                          whiteSpace: 'nowrap'
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = '#b85a3e';
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(201,103,69,0.3)';
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 10px rgba(201,103,69,0.25)';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.background = '#C96745';
                           e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(201,103,69,0.2)';
+                          e.currentTarget.style.boxShadow = '0 2px 6px rgba(201,103,69,0.18)';
                         }}
                       >
                         Voir plus
