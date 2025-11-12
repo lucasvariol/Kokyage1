@@ -835,7 +835,7 @@ export default function Page() {
               padding: '8px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
             }}>
-            <div className="search-input-container" style={{ position: 'relative', flex: '2', minWidth: '200px', zIndex: 10000 }}>
+            <div className="search-input-container" style={{ position: 'relative', flex: '2.4', minWidth: '280px', maxWidth: '420px', zIndex: 10000 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                   <input
                     name="destination"
@@ -2573,8 +2573,9 @@ export default function Page() {
         }
         
         .search-input-container {
-          min-width: unset !important;
-          flex: 1 !important;
+          min-width: 100% !important;
+          max-width: 100% !important;
+          flex: 1 1 100% !important;
         }
         
         .btn-search-modern {
