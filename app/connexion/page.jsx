@@ -14,6 +14,7 @@ function ConnexionContent(){
   const [success, setSuccess] = useState('');
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [activeTab, setActiveTab] = useState('connexion');
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/profil';
@@ -25,12 +26,22 @@ function ConnexionContent(){
     setSuccess('');
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      setError(error.message || 'Erreur');
+      setError(error.message || 'Erreur de connexion');
       setLoading(false);
       return;
     }
 
     const user = data.user;
+    
+    // Vérifier si l'email est confirmé
+    if (user && !user.email_confirmed_at) {
+      setError('Veuillez confirmer votre adresse email avant de vous connecter. Consultez votre boîte mail.');
+      setLoading(false);
+      
+      // Déconnecter l'utilisateur
+      await supabase.auth.signOut();
+      return;
+    }
     if (user) {
       const { data: existingProfile } = await supabase
         .from('profiles')
@@ -96,6 +107,60 @@ function ConnexionContent(){
         }}></div>
 
         <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          {/* Onglets Connexion / Inscription */}
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            justifyContent: 'center',
+            marginBottom: '36px',
+            background: 'rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(10px)',
+            padding: '8px',
+            borderRadius: '16px',
+            maxWidth: '400px',
+            margin: '0 auto 36px'
+          }}>
+            <button
+              onClick={() => setActiveTab('connexion')}
+              style={{
+                flex: 1,
+                padding: '14px 28px',
+                borderRadius: '12px',
+                border: 'none',
+                background: activeTab === 'connexion' 
+                  ? 'rgba(255,255,255,0.95)' 
+                  : 'transparent',
+                color: activeTab === 'connexion' ? '#C96745' : 'white',
+                fontSize: '1rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: activeTab === 'connexion' 
+                  ? '0 4px 12px rgba(0,0,0,0.1)' 
+                  : 'none'
+              }}
+            >
+              Connexion
+            </button>
+            <button
+              onClick={() => router.push('/inscription')}
+              style={{
+                flex: 1,
+                padding: '14px 28px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'transparent',
+                color: 'white',
+                fontSize: '1rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Inscription
+            </button>
+          </div>
+
           <h1 style={{
             fontSize: 'clamp(2rem, 4vw, 3.25rem)',
             fontWeight: 800,
@@ -103,18 +168,8 @@ function ConnexionContent(){
             letterSpacing: '-0.02em',
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
           }}>
-            Heureux de vous revoir
+            Bon retour
           </h1>
-          <p style={{
-            fontSize: '1.15rem',
-            opacity: 0.9,
-            marginBottom: '32px',
-            lineHeight: 1.6,
-            maxWidth: '520px',
-            margin: '0 auto 32px'
-          }}>
-            Connectez-vous pour accéder à votre espace Kokyage et suivre vos réservations, messages et demandes en cours.
-          </p>
         </div>
       </section>
 
@@ -133,14 +188,10 @@ function ConnexionContent(){
             <h2 style={{
               fontSize: '1.65rem',
               fontWeight: 700,
-              color: '#2D3748',
-              marginBottom: '8px'
+              color: '#2D3748'
             }}>
               Se connecter
             </h2>
-            <p style={{ color: '#718096', fontSize: '1rem' }}>
-              Entrez vos identifiants pour continuer
-            </p>
           </div>
 
           <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>

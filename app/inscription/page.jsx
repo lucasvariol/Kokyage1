@@ -211,6 +211,55 @@ export default function Page(){
         }}></div>
         
         <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          {/* Onglets Connexion / Inscription */}
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            justifyContent: 'center',
+            marginBottom: '36px',
+            background: 'rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(10px)',
+            padding: '8px',
+            borderRadius: '16px',
+            maxWidth: '400px',
+            margin: '0 auto 36px'
+          }}>
+            <button
+              onClick={() => router.push('/connexion')}
+              style={{
+                flex: 1,
+                padding: '14px 28px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'transparent',
+                color: 'white',
+                fontSize: '1rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Connexion
+            </button>
+            <button
+              style={{
+                flex: 1,
+                padding: '14px 28px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'rgba(255,255,255,0.95)',
+                color: '#C96745',
+                fontSize: '1rem',
+                fontWeight: 700,
+                cursor: 'default',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+              }}
+            >
+              Inscription
+            </button>
+          </div>
+
           <h1 style={{ 
             fontSize: 'clamp(2rem, 4vw, 3.5rem)', 
             fontWeight: 800, 
@@ -239,14 +288,10 @@ export default function Page(){
             <h2 style={{ 
               fontSize: '1.75rem', 
               fontWeight: 700, 
-              color: '#2D3748', 
-              marginBottom: '8px'
+              color: '#2D3748'
             }}>
               Créer mon compte
             </h2>
-            <p style={{ color: '#718096', fontSize: '1rem' }}>
-              Remplissez vos informations pour commencer
-            </p>
           </div>
 
           <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
