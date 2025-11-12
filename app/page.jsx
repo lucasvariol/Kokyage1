@@ -2617,7 +2617,7 @@ export default function Page() {
         }
         
         .hero-section > div > div:nth-of-type(2) > div > div {
-          min-width: 200px !important;
+          min-width: 150px !important;
           height: 180px !important;
         }
 
@@ -2742,7 +2742,7 @@ export default function Page() {
         }
         
         .revenue-split-cards > div {
-          padding: clamp(22px, 4vw, 26px) clamp(16px, 3vw, 20px) !important;
+          padding: clamp(12px, 2.5vw, 16px) clamp(16px, 3vw, 20px) !important;
           min-width: 0 !important;
           flex: 1 1 48% !important;
           max-width: none !important;
@@ -2894,7 +2894,7 @@ export default function Page() {
         }
         
         .revenue-split-cards > div {
-          padding: clamp(20px, 3.8vw, 26px) clamp(14px, 2.8vw, 18px) !important;
+          padding: clamp(10px, 2.2vw, 13px) clamp(14px, 2.8vw, 18px) !important;
           aspect-ratio: 1 !important;
           min-height: 220px !important;
         }
