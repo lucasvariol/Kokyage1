@@ -1396,7 +1396,7 @@ export default function Page() {
                 scrollbarWidth: 'thin',
                 scrollbarColor: 'rgba(96,162,157,0.3) transparent',
                 padding: '0 8px 16px',
-                justifyContent: 'flex-start',
+                justifyContent: 'center',
                 alignItems: 'stretch',
                 touchAction: 'pan-x'
               }}
@@ -2580,6 +2580,10 @@ export default function Page() {
           padding: 16px !important;
           overflow-x: auto !important;
           justify-content: space-between !important;
+        }
+
+        .arguments-container {
+          justify-content: flex-start !important;
         }
         
         .search-input-container {
