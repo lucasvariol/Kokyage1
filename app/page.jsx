@@ -1401,7 +1401,7 @@ export default function Page() {
                 touchAction: 'pan-x'
               }}
             >
-              {/* Argument 1 - Équitable */}
+              {/* Argument 1 - Contre la spéculation */}
               <div
                 style={{
                   background: 'white',
@@ -1426,25 +1426,25 @@ export default function Page() {
                   e.currentTarget.style.borderColor = '#E2E8F0';
                 }}
               >
-                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🤝</div>
+                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
                 <h3 style={{
                   fontSize: '1.4rem',
                   fontWeight: 700,
                   color: '#2D3748',
                   marginBottom: '16px'
                 }}>
-                  Partage équitable
+                  Contre la spéculation
                 </h3>
                 <p style={{
                   color: '#4A5568',
                   lineHeight: 1.7,
                   fontSize: '1rem'
                 }}>
-                  60% des revenus vont directement au locataire qui habite réellement le logement, pas à des investisseurs. Un modèle qui redistribue la valeur aux habitants.
+                  Pour préserver nos villes, Kokyage met fin à la concurrence entre habitants et touristes qui agrave la crise du logement. Voyagez enfin sans le sentiment de nuire aux locaux.
                 </p>
               </div>
 
-              {/* Argument 2 - Authentique */}
+              {/* Argument 2 - Modèle juste */}
               <div
                 style={{
                   background: 'white',
@@ -1469,25 +1469,25 @@ export default function Page() {
                   e.currentTarget.style.borderColor = '#E2E8F0';
                 }}
               >
-                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🏡</div>
+                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🤝</div>
                 <h3 style={{
                   fontSize: '1.4rem',
                   fontWeight: 700,
                   color: '#2D3748',
                   marginBottom: '16px'
                 }}>
-                  Hébergements authentiques
+                  Un modèle juste
                 </h3>
                 <p style={{
                   color: '#4A5568',
                   lineHeight: 1.7,
                   fontSize: '1rem'
                 }}>
-                  Des logements habités, entretenus avec soin par leurs locataires. Vivez l'expérience d'un vrai chez-soi, pas d'un appartement optimisé pour la rentabilité.
+                  Kokyage permet enfin la sous location en partageant les revenus entre le locataire principal (60%) et le propriétaire (40%). 
                 </p>
               </div>
 
-              {/* Argument 3 - Contre spéculation */}
+              {/* Argument 3 - Authentique */}
               <div
                 style={{
                   background: 'white',
@@ -1512,21 +1512,21 @@ export default function Page() {
                   e.currentTarget.style.borderColor = '#E2E8F0';
                 }}
               >
-                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
+                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🏡</div>
                 <h3 style={{
                   fontSize: '1.4rem',
                   fontWeight: 700,
                   color: '#2D3748',
                   marginBottom: '16px'
                 }}>
-                  Contre la spéculation
+                  Hébergements authentiques
                 </h3>
                 <p style={{
                   color: '#4A5568',
                   lineHeight: 1.7,
                   fontSize: '1rem'
                 }}>
-                  Pas de multipropriétaires qui monopolisent le marché. Kokyage favorise un usage raisonné et responsable du logement, pour préserver nos villes.
+                  Des logements habités, entretenus avec soin par leurs locataires. Vivez l'expérience d'un vrai chez-soi, loin des logements standardisés.
                 </p>
               </div>
             </div>
