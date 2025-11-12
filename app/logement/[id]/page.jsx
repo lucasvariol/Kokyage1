@@ -1558,34 +1558,6 @@ export default function Page({ params }) {
                               {item.title}
                             </h1>
 
-                            {/* Bandeau d'information pour annonces non publiées */}
-                            {item.status !== 'validé modérateur' && (
-                              <div style={{
-                                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                                border: '2px solid #fbbf24',
-                                borderRadius: 12,
-                                padding: '12px 16px',
-                                marginBottom: 16,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 10
-                              }}>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2">
-                                  <circle cx="12" cy="12" r="10"></circle>
-                                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                                </svg>
-                                <div style={{ flex: 1 }}>
-                                  <div style={{ fontWeight: 700, color: '#92400e', fontSize: 14, marginBottom: 2 }}>
-                                    Annonce non publiée
-                                  </div>
-                                  <div style={{ fontSize: 13, color: '#78350f' }}>
-                                    Cette annonce est uniquement visible par vous. Elle sera accessible publiquement après validation.
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
                             <div style={{ 
                               fontSize: 16, 
                               color: '#64748b',
