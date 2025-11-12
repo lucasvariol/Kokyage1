@@ -689,15 +689,27 @@ function LogementsInner() {
     
     // Load disponibilities from database
     async function loadDisponibilities() {
-      const { data: dispoData, error: dispoError } = await supabase
-        .from('disponibilities')
-        .select('listing_id, date, booked');
-      
-      if (!dispoError && Array.isArray(dispoData)) {
+      try {
+        const { data: dispoData, error: dispoError } = await supabase
+          .from('disponibilities')
+          .select('listing_id, date, booked');
+        
+        if (dispoError) {
+          console.error('Error loading disponibilities:', dispoError);
+          return;
+        }
+
+        if (!Array.isArray(dispoData) || dispoData.length === 0) {
+          console.log('No disponibilities data available');
+          setDisponibilities({});
+          return;
+        }
+
         // Regroupe par logement + date et détermine si la date est réellement libre
         const groupedByListing = {};
 
         dispoData.forEach(item => {
+          if (!item) return;
           const listingId = item?.listing_id;
           if (!listingId) return;
 
@@ -735,16 +747,32 @@ function LogementsInner() {
 
         console.log('Disponibilities loaded (available only, deduped):', dispoByListing);
         setDisponibilities(dispoByListing);
-      } else if (dispoError) {
-        console.error('Error loading disponibilities:', dispoError);
+      } catch (err) {
+        console.error('Exception loading disponibilities:', err);
+        setDisponibilities({});
       }
     }
 
     // Load only listings that have been validated by a moderator
     supabase.from('listings').select('*').eq('status', 'validé modérateur').order('created_at', { ascending: false }).then(async ({ data, error }) => {
-      if (!error && Array.isArray(data)) {
+      try {
+        if (error) {
+          console.error('Error loading listings:', error);
+          setItems([]);
+          setFilteredItems([]);
+          return;
+        }
+
+        if (!Array.isArray(data)) {
+          console.log('No listings data available');
+          setItems([]);
+          setFilteredItems([]);
+          return;
+        }
+
         // Géocode les adresses manquantes
         const geocoded = await Promise.all(data.map(async (item) => {
+          if (!item) return null;
           if (typeof item.latitude === 'number' && typeof item.longitude === 'number') return item;
           if (item.address) {
             try {
@@ -762,9 +790,15 @@ function LogementsInner() {
           }
           return item;
         }));
-        setItems(geocoded);
+        
+        const validGeocoded = geocoded.filter(item => item !== null);
+        setItems(validGeocoded);
         // Initially show all items, filters will be applied by useEffect
-        setFilteredItems(geocoded);
+        setFilteredItems(validGeocoded);
+      } catch (err) {
+        console.error('Exception loading listings:', err);
+        setItems([]);
+        setFilteredItems([]);
       }
     });
     
