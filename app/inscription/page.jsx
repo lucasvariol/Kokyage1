@@ -197,14 +197,32 @@ export default function Page(){
 
     const user = data.user;
     
-    // Vérifier si l'email est confirmé
-    if (user && !user.email_confirmed_at) {
-      setError('Veuillez confirmer votre adresse email avant de vous connecter. Consultez votre boîte mail.');
-      setLoading(false);
-      
-      // Déconnecter l'utilisateur
-      await supabase.auth.signOut();
-      return;
+    // Vérifier si l'email est confirmé dans Supabase Auth
+    console.log('User email_confirmed_at:', user?.email_confirmed_at);
+    console.log('User confirmed_at:', user?.confirmed_at);
+    
+    // Vérifier dans notre table personnalisée aussi
+    const { data: verificationData, error: verifyError } = await supabase
+      .from('email_verifications')
+      .select('verified_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    
+    console.log('Verification data:', verificationData);
+    
+    // Bloquer si l'email n'est pas vérifié (vérifier les deux sources)
+    if (user && !user.email_confirmed_at && !user.confirmed_at) {
+      // Si une vérification existe dans notre table mais pas marquée comme vérifiée
+      if (!verificationData || !verificationData.verified_at) {
+        setError('⚠️ Veuillez confirmer votre adresse email avant de vous connecter. Vérifiez votre boîte mail (et le dossier spam).');
+        setLoading(false);
+        
+        // Déconnecter l'utilisateur
+        await supabase.auth.signOut();
+        return;
+      }
     }
 
     if (user) {
