@@ -2,6 +2,7 @@
 
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
+import MobileSearchBar from '../_components/MobileSearchBar';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { supabase } from '@/lib/supabaseClient';
@@ -359,6 +360,7 @@ function LogementsInner() {
 
   // Responsive helper to stabilize search bar layout on mobile
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   useEffect(() => {
     const update = () => setIsMobile(typeof window !== 'undefined' && window.innerWidth <= 768);
     update();
@@ -951,9 +953,27 @@ function LogementsInner() {
     });
   }, [mounted, sortedItems, alternativeListings, imageIndexes]);
 
+  const handleMobileSearchUpdate = (updates) => {
+    setDestination(updates.destination);
+    setArrivee(updates.arrivee);
+    setDepart(updates.depart);
+    setVoyageurs(updates.voyageurs);
+  };
+
   return (
     <>
       <Header />
+      
+      {/* Mobile sticky search bar */}
+      {isMobile && (
+        <MobileSearchBar
+          destination={destination}
+          arrivee={arrivee}
+          depart={depart}
+          voyageurs={voyageurs}
+          onUpdate={handleMobileSearchUpdate}
+        />
+      )}
       
       {/* Hero Section */}
       <section style={{
@@ -1004,18 +1024,19 @@ function LogementsInner() {
             Des logements authentiques, loués par des hôtes de confiance
           </p>
 
-          {/* Barre de recherche moderne */}
+          {/* Barre de recherche moderne - cachée sur mobile */}
+          {!isMobile && (
           <div style={{
             background: 'white',
             borderRadius: '24px',
-            padding: isMobile ? '16px' : '12px',
+            padding: '12px',
             boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
             maxWidth: '1100px',
             margin: '0 auto',
             display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            flexWrap: isMobile ? 'nowrap' : 'wrap',
-            gap: isMobile ? 12 : 8,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: 8,
             alignItems: 'stretch',
             justifyContent: 'center',
             position: 'relative',
@@ -1345,6 +1366,7 @@ function LogementsInner() {
               </button>
             </div>
           </div>
+          )}
         </div>
       </section>
       
