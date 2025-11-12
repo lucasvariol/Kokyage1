@@ -262,7 +262,7 @@ export default function Page(){
 
       setSuccess('Connexion réussie ! Redirection en cours...');
       setLoading(false);
-      setTimeout(() => router.push('/profil'), 1200);
+      setTimeout(() => router.push('/logements'), 1200);
       
     } catch (err) {
       console.error('Erreur lors de la connexion:', err);
