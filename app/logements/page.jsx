@@ -101,6 +101,7 @@ function ListingsMap({ items, center, onCenterChange, searchView }) {
         center: center || [48.8566, 2.3522], // Paris coordinates by default
         zoom: 11,
         scrollWheelZoom: true,
+        zoomControl: false, // Masque les boutons +/-
       });
 
       // Add tile layer (OSM - same as MapPreview)
