@@ -303,6 +303,7 @@ export default function Page() {
             margin: '0 auto',
             animation: 'fadeInUp 1s ease-out 0.3s both',
             justifyContent: 'center',
+            alignItems: 'stretch',
             flexWrap: 'wrap'
           }}>
             {/* Card Voyageur */}
@@ -322,8 +323,9 @@ export default function Page() {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                gap: '20px',
+                justifyContent: 'flex-start',
+                gap: '18px',
+                minHeight: '220px',
                 flex: '1 1 360px',
                 minWidth: '280px',
                 maxWidth: '400px',
@@ -359,14 +361,6 @@ export default function Page() {
               }}>
                 Je cherche un séjour
               </h2>
-              <div style={{
-                fontSize: '0.9rem',
-                color: 'rgba(255,255,255,0.9)',
-                textAlign: 'center',
-                fontWeight: 400
-              }}>
-                Trouvez votre logement idéal →
-              </div>
             </div>
 
             {/* Card Hôte */}
@@ -386,8 +380,9 @@ export default function Page() {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                gap: '20px',
+                justifyContent: 'flex-start',
+                gap: '18px',
+                minHeight: '220px',
                 flex: '1 1 360px',
                 minWidth: '280px',
                 maxWidth: '400px',
@@ -423,14 +418,6 @@ export default function Page() {
               }}>
                 Je sous-loue mon logement
               </h2>
-              <div style={{
-                fontSize: '0.9rem',
-                color: 'rgba(255,255,255,0.9)',
-                textAlign: 'center',
-                fontWeight: 400
-              }}>
-                Rentabilisez votre bien →
-              </div>
             </div>
           </div>
         </div>
@@ -530,10 +517,6 @@ export default function Page() {
               font-size: clamp(1.25rem, 3.8vw, 1.6rem) !important;
               line-height: 1.28 !important;
             }
-            
-            .mode-selection-cards > div > div:last-child {
-              font-size: 0.85rem !important;
-            }
           }
 
           @media (max-width: 480px) {
@@ -569,10 +552,6 @@ export default function Page() {
             .mode-selection-cards h2 {
               font-size: clamp(1.1rem, 4.2vw, 1.35rem) !important;
             }
-            
-            .mode-selection-cards > div > div:last-child {
-              font-size: 0.78rem !important;
-            }
           }
 
           @media (max-width: 380px) {
@@ -603,10 +582,6 @@ export default function Page() {
 
             .mode-selection-cards h2 {
               font-size: clamp(1.05rem, 5.2vw, 1.3rem) !important;
-            }
-
-            .mode-selection-cards > div > div:last-child {
-              font-size: 0.74rem !important;
             }
           }
         `}</style>
