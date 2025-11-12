@@ -57,6 +57,15 @@ export default function Page() {
   const voyageursBtnRef = useRef(null);
   const voyageursMenuRef = useRef(null);
 
+  const formatDateForState = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const parseDateFromState = (value) => value ? new Date(`${value}T00:00:00`) : null;
+
   // État pour gérer l'onglet actif et l'écran de choix initial
   const [activeTab, setActiveTab] = useState(null); // null, 'voyageur' ou 'hote'
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -139,8 +148,8 @@ export default function Page() {
   }, [suggestions]);
 
   // Conversion string <-> Date pour react-datepicker
-  const arriveeDate = arrivee ? new Date(arrivee) : null;
-  const departDate = depart ? new Date(depart) : null;
+  const arriveeDate = parseDateFromState(arrivee);
+  const departDate = parseDateFromState(depart);
 
   // Gestion clavier pour suggestions
   function handleLieuKeyDown(e) {
@@ -905,7 +914,7 @@ export default function Page() {
                     <div style={{ fontSize: '13px', color: '#718096', fontWeight: 600, marginBottom: '4px' }}>Dates</div>
                     <div style={{ fontSize: '15px', fontWeight: 600, color: (arrivee && depart) ? '#2D3748' : '#A0AEC0' }}>
                       {arrivee && depart
-                        ? `${new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → ${new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}`
+                        ? `${parseDateFromState(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → ${parseDateFromState(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}`
                         : 'Ajouter des dates'}
                     </div>
                   </div>
@@ -1324,7 +1333,7 @@ export default function Page() {
                       textAlign: 'center'
                     }}>
                       <span style={{ fontSize: '14px', color: '#0369A1', fontWeight: 500 }}>
-                        {new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → {new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}
+                        {parseDateFromState(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → {parseDateFromState(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}
                       </span>
                     </div>
                   )}
@@ -1376,15 +1385,15 @@ export default function Page() {
                         if (!date) return <div key={idx} />;
 
                         const dateStr = date.toDateString();
-                        const isArrivee = arrivee && dateStr === new Date(arrivee).toDateString();
-                        const isDepart = depart && dateStr === new Date(depart).toDateString();
+                        const parsedArrivee = parseDateFromState(arrivee);
+                        const parsedDepart = parseDateFromState(depart);
+                        const isArrivee = parsedArrivee && dateStr === parsedArrivee.toDateString();
+                        const isDepart = parsedDepart && dateStr === parsedDepart.toDateString();
                         const isPast = date < today;
 
                         let isInRange = false;
-                        if (arrivee && depart) {
-                          const arriveeDate = new Date(arrivee);
-                          const departDate = new Date(depart);
-                          isInRange = date > arriveeDate && date < departDate;
+                        if (parsedArrivee && parsedDepart) {
+                          isInRange = date > parsedArrivee && date < parsedDepart;
                         }
 
                         return (
@@ -1393,16 +1402,15 @@ export default function Page() {
                             onClick={() => {
                               if (isPast) return;
                               
-                              if (!arrivee || (arrivee && depart)) {
-                                setArrivee(date.toISOString().split('T')[0]);
+                              if (!parsedArrivee || (parsedArrivee && parsedDepart)) {
+                                setArrivee(formatDateForState(date));
                                 setDepart("");
                               } else {
-                                const arriveeDate = new Date(arrivee);
-                                if (date > arriveeDate) {
-                                  setDepart(date.toISOString().split('T')[0]);
+                                if (date > parsedArrivee) {
+                                  setDepart(formatDateForState(date));
                                   setTimeout(() => setDesktopStep(3), 500);
                                 } else {
-                                  setArrivee(date.toISOString().split('T')[0]);
+                                  setArrivee(formatDateForState(date));
                                   setDepart("");
                                 }
                               }
