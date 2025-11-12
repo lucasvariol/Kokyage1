@@ -1113,16 +1113,18 @@ export default function Page() {
             right: 0,
             bottom: 0,
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             justifyContent: 'center',
+            paddingTop: '8vh',
+            paddingBottom: '4vh',
             zIndex: 9999,
             pointerEvents: 'none'
           }}>
             <div style={{
               background: 'white',
               borderRadius: '24px',
-              maxHeight: '85vh',
-              minHeight: '500px',
+              maxHeight: '88vh',
+              minHeight: '460px',
               overflow: 'hidden',
               animation: 'slideInRight 0.3s ease',
               boxShadow: '0 8px 60px rgba(0,0,0,0.3)',
