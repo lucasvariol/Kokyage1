@@ -45,15 +45,22 @@ export async function GET(req) {
       .from('listing_ratings')
       .select('*')
       .eq('listing_id', listing_id)
-      .single();
+      .maybeSingle(); // Use maybeSingle instead of single to avoid error if no rows
 
-    if (summaryError && summaryError.code !== 'PGRST116') { // PGRST116 = no rows
-      console.error('Fetch summary error:', summaryError);
+    // If view doesn't exist or no reviews, calculate manually
+    let summaryData = summary || { review_count: 0, average_rating: 0 };
+    
+    if (!summary && reviews && reviews.length > 0) {
+      const totalRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+      summaryData = {
+        review_count: reviews.length,
+        average_rating: Math.round((totalRating / reviews.length) * 10) / 10
+      };
     }
 
     return Response.json({
       reviews: reviews || [],
-      summary: summary || { review_count: 0, average_rating: 0 },
+      summary: summaryData,
       has_more: reviews && reviews.length === limit
     }, { status: 200 });
   } catch (error) {

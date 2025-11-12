@@ -28,6 +28,10 @@ export async function GET(req) {
 
     if (error) {
       console.error('Fetch batch ratings error:', error);
+      // If view doesn't exist, return empty ratings instead of error
+      if (error.code === '42P01') { // Table/view doesn't exist
+        return Response.json({ ratings: {} }, { status: 200 });
+      }
       return Response.json({ error: 'Erreur lors de la récupération des notes' }, { status: 500 });
     }
 
