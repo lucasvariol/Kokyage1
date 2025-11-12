@@ -2264,10 +2264,6 @@ export default function Page({ params }) {
                               {range?.from ? range.from.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) : 'Arrivée'}
                               {' — '}
                               {range?.to ? range.to.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Départ'}
-                              {nights > 0 ? ` • ${nights} nuit${nights > 1 ? 's' : ''}` : ''}
-                            </div>
-                            <div style={{ fontWeight: 900, color: '#0f172a' }}>
-                              {nights > 0 ? formatEUR(total) : `${formatEUR(perNightBaseWithFees)} / nuit`}
                             </div>
                           </div>
 
@@ -2383,6 +2379,65 @@ export default function Page({ params }) {
                                 marginTop: 6
                               }}>
                                 Maximum : {item.nb_voyageurs} voyageurs
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Section Prix moderne */}
+                          <div style={{
+                            marginTop: 12,
+                            background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
+                            border: '2px solid #e2e8f0',
+                            borderRadius: 14,
+                            padding: '16px 18px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between'
+                          }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ 
+                                fontSize: nights > 0 ? 32 : 28, 
+                                fontWeight: 900, 
+                                color: '#0f172a',
+                                lineHeight: 1,
+                                marginBottom: 4,
+                                background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text'
+                              }}>
+                                {nights > 0 ? formatEUR(total) : formatEUR(perNightBaseWithFees)}
+                              </div>
+                              <div style={{ 
+                                fontSize: 12, 
+                                color: '#64748b', 
+                                fontWeight: 600 
+                              }}>
+                                {nights > 0 ? 'Total du séjour' : 'Par nuit'}
+                              </div>
+                            </div>
+                            {nights > 0 && (
+                              <div style={{
+                                textAlign: 'right',
+                                paddingLeft: 12,
+                                borderLeft: '1px solid #e2e8f0'
+                              }}>
+                                <div style={{ 
+                                  fontSize: 20, 
+                                  fontWeight: 800, 
+                                  color: '#2563eb',
+                                  lineHeight: 1,
+                                  marginBottom: 4
+                                }}>
+                                  {nights}
+                                </div>
+                                <div style={{ 
+                                  fontSize: 11, 
+                                  color: '#64748b', 
+                                  fontWeight: 600 
+                                }}>
+                                  nuit{nights > 1 ? 's' : ''}
+                                </div>
                               </div>
                             )}
                           </div>
