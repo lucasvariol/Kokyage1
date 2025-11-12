@@ -2096,7 +2096,7 @@ export default function Page({ params }) {
                       )}
 
                       {/* Card Avis - Nouveau composant interactif */}
-                      <ReviewsSection listingId={item.id} />
+                      {item && item.id && <ReviewsSection listingId={item.id} />}
                     </div>
 
                     {/* Colonne droite - Card de réservation sticky (masquée pour le propriétaire) */}
