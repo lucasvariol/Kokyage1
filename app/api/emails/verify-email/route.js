@@ -34,8 +34,13 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Erreur lors de la création du token' }, { status: 500 });
     }
 
-    // URL de vérification
-    const verificationUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/verification-email/${verificationToken}`;
+    // URL de vérification - détection automatique de l'environnement
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 
+                    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 
+                    'https://kokyage.com';
+    const verificationUrl = `${siteUrl}/verification-email/${verificationToken}`;
+
+    console.log('URL de vérification générée:', verificationUrl);
 
     // Envoyer l'email via Resend avec le template
     const emailData = await resend.emails.send({
