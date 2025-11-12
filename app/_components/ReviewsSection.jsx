@@ -407,7 +407,7 @@ export default function ReviewsSection({ listingId }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 12 }}>
                 <div>
                   <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16, marginBottom: 4 }}>
-                    {review.profiles?.prenom || 'Voyageur'} {review.profiles?.nom?.[0] || ''}.
+                    {review.author_first_name || 'Voyageur'}
                   </div>
                   <StarRating rating={review.rating} readonly />
                 </div>

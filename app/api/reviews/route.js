@@ -2,8 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function GET(req) {
   try {
@@ -36,6 +38,32 @@ export async function GET(req) {
       return Response.json({ error: 'Erreur lors de la récupération des avis' }, { status: 500 });
     }
 
+    // Enrich with author's first name from auth metadata (best-effort)
+    let enrichedReviews = reviews || [];
+    if (enrichedReviews.length > 0) {
+      const uniqueUserIds = [...new Set(enrichedReviews.map(r => r.user_id).filter(Boolean))];
+      const nameMap = new Map();
+
+      // Fetch names sequentially to avoid admin rate limits; small batch size (<=10)
+      for (const uid of uniqueUserIds) {
+        try {
+          const { data: userResp } = await supabaseAdmin.auth.admin.getUserById(uid);
+          const meta = userResp?.user?.user_metadata || {};
+          const full = meta.full_name || meta.name || '';
+          const first = meta.prenom || meta.first_name || (full ? String(full).split(/\s+/)[0] : null);
+          nameMap.set(uid, first || null);
+        } catch (e) {
+          // ignore per-user failures
+          nameMap.set(uid, null);
+        }
+      }
+
+      enrichedReviews = enrichedReviews.map(r => ({
+        ...r,
+        author_first_name: nameMap.get(r.user_id) || 'Voyageur'
+      }));
+    }
+
     // Fetch rating summary
     const { data: summary, error: summaryError } = await supabase
       .from('listing_ratings')
@@ -55,7 +83,7 @@ export async function GET(req) {
     }
 
     return Response.json({
-      reviews: reviews || [],
+      reviews: enrichedReviews,
       summary: summaryData,
       has_more: reviews && reviews.length === limit
     }, { status: 200 });
