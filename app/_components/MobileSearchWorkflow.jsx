@@ -35,7 +35,7 @@ export default function MobileSearchWorkflow({ isOpen, onClose }) {
     }
   }, [isOpen, step]);
 
-  // Fetch suggestions from Nominatim API
+  // Fetch suggestions from API Adresse (Base Adresse Nationale)
   useEffect(() => {
     if (lieu.length < 3) {
       setSuggestions([]);
@@ -46,10 +46,10 @@ export default function MobileSearchWorkflow({ isOpen, onClose }) {
       setIsLoadingSuggestions(true);
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(lieu)}&limit=5&accept-language=fr`
+          `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(lieu)}&limit=5`
         );
         const data = await res.json();
-        setSuggestions(data);
+        setSuggestions(data.features || []);
       } catch (err) {
         console.error('Erreur suggestions:', err);
         setSuggestions([]);
@@ -62,7 +62,7 @@ export default function MobileSearchWorkflow({ isOpen, onClose }) {
   }, [lieu]);
 
   const handleLieuSelect = (suggestion) => {
-    setLieu(suggestion.display_name);
+    setLieu(suggestion.properties.label);
     setSuggestions([]);
     setTimeout(() => setStep(2), 300);
   };
@@ -307,7 +307,7 @@ export default function MobileSearchWorkflow({ isOpen, onClose }) {
                         e.target.style.borderColor = '#E5E7EB';
                       }}
                     >
-                      📍 {sug.display_name}
+                      📍 {sug.properties.label}
                     </button>
                   ))}
                 </div>
