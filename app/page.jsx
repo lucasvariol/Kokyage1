@@ -1108,22 +1108,30 @@ export default function Page() {
 
           <div style={{
             position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            background: 'white',
-            borderRadius: '24px',
-            zIndex: 9999,
-            maxHeight: '85vh',
-            minHeight: '500px',
-            overflowY: 'auto',
-            animation: 'slideInRight 0.3s ease',
-            boxShadow: '0 8px 60px rgba(0,0,0,0.3)',
-            width: '90vw',
-            maxWidth: '500px',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             display: 'flex',
-            flexDirection: 'column'
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            pointerEvents: 'none'
           }}>
+            <div style={{
+              background: 'white',
+              borderRadius: '24px',
+              maxHeight: '85vh',
+              minHeight: '500px',
+              overflow: 'hidden',
+              animation: 'slideInRight 0.3s ease',
+              boxShadow: '0 8px 60px rgba(0,0,0,0.3)',
+              width: '90vw',
+              maxWidth: '500px',
+              display: 'flex',
+              flexDirection: 'column',
+              pointerEvents: 'auto'
+            }}>
             {/* Header */}
             <div style={{
               padding: '24px',
@@ -1533,6 +1541,7 @@ export default function Page() {
               )}
             </div>
           </div>
+        </div>
         </>
       )}
 
