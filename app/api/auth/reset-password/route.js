@@ -25,14 +25,10 @@ export async function POST(req) {
       });
     }
 
-    // Détecter l'URL du site
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL 
-      || process.env.VERCEL_URL 
-      || 'https://kokyage.com';
-    
-    const redirectUrl = siteUrl.startsWith('http') 
-      ? `${siteUrl}/nouveau-mot-de-passe`
-      : `https://${siteUrl}/nouveau-mot-de-passe`;
+    // Forcer l'URL de production
+    const redirectUrl = 'https://kokyage.com/nouveau-mot-de-passe';
+
+    console.log('redirectTo configuré:', redirectUrl);
 
     // Générer un lien de réinitialisation via Supabase
     const { data, error: resetError } = await supabaseAdmin.auth.admin.generateLink({
