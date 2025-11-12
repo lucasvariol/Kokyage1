@@ -1947,27 +1947,7 @@ export default function Page({ params }) {
                             </button>
                           </div>
                         )}
-                        {role === 'owner' && (
-                          <div style={{ 
-                            marginTop: 16,
-                            padding: '12px 16px',
-                            background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                            borderRadius: 10,
-                            border: '1px solid #cbd5e1',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 10
-                          }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2">
-                              <circle cx="12" cy="12" r="10"></circle>
-                              <line x1="12" y1="16" x2="12" y2="12"></line>
-                              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                            </svg>
-                            <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>
-                              Vous êtes propriétaire de ce logement. Seul le locataire peut le modifier.
-                            </span>
-                          </div>
-                        )}
+                        {/* Removed owner info box when not tenant, per request */}
                       </div>
 
                       {/* Card Description */}
