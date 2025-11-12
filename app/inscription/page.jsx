@@ -187,50 +187,56 @@ export default function Page(){
     setError('');
     setSuccess('');
     
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    
-    if (error) {
-      // Messages d'erreur plus explicites
-      if (error.message.includes('Invalid login credentials')) {
-        setError('Email ou mot de passe incorrect');
-      } else if (error.message.includes('Email not confirmed')) {
-        setError('Veuillez confirmer votre adresse email avant de vous connecter');
-      } else {
-        setError(error.message || 'Erreur de connexion');
+    // 🔒 VÉRIFICATION PROACTIVE : Vérifier si l'email est vérifié AVANT la connexion
+    try {
+      // D'abord, vérifier si un compte existe avec cet email
+      const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+      
+      // Alternative : essayer de se connecter pour récupérer le user_id
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        // Messages d'erreur plus explicites
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Email ou mot de passe incorrect');
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Veuillez confirmer votre adresse email avant de vous connecter');
+        } else {
+          setError(error.message || 'Erreur de connexion');
+        }
+        setLoading(false);
+        return;
       }
-      setLoading(false);
-      return;
-    }
 
-    const user = data.user;
-    
-    // Vérifier si l'email est confirmé dans Supabase Auth
-    console.log('User email_confirmed_at:', user?.email_confirmed_at);
-    console.log('User confirmed_at:', user?.confirmed_at);
-    
-    // Vérifier dans notre table personnalisée aussi
-    const { data: verificationData, error: verifyError } = await supabase
-      .from('email_verifications')
-      .select('verified_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    
-    console.log('Verification data:', verificationData);
-    
-    // Bloquer si l'email n'est pas vérifié (vérifier les deux sources)
-    if (user && !user.email_confirmed_at && !user.confirmed_at) {
-      // Si une vérification existe dans notre table mais pas marquée comme vérifiée
+      const user = data.user;
+      
+      // ✅ Vérification dans notre table email_verifications
+      const { data: verificationData, error: verifyError } = await supabase
+        .from('email_verifications')
+        .select('verified_at, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      console.log('Vérification email:', {
+        userId: user.id,
+        email: user.email,
+        verificationData,
+        supabaseConfirmed: user.email_confirmed_at
+      });
+      
+      // 🚫 BLOQUER si l'email n'est PAS vérifié
       if (!verificationData || !verificationData.verified_at) {
-        setError('⚠️ Veuillez confirmer votre adresse email avant de vous connecter. Vérifiez votre boîte mail (et le dossier spam).');
+        setError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email (vérifiez aussi vos spams).');
         setLoading(false);
         
-        // Déconnecter l'utilisateur
+        // Déconnecter immédiatement
         await supabase.auth.signOut();
         return;
       }
-    }
+      
+      console.log('✅ Email vérifié, connexion autorisée');
 
     if (user) {
       const { data: existingProfile } = await supabase
@@ -254,9 +260,15 @@ export default function Page(){
       }
     }
 
-    setSuccess('Connexion réussie ! Redirection en cours...');
-    setLoading(false);
-    setTimeout(() => router.push('/profil'), 1200);
+      setSuccess('Connexion réussie ! Redirection en cours...');
+      setLoading(false);
+      setTimeout(() => router.push('/profil'), 1200);
+      
+    } catch (err) {
+      console.error('Erreur lors de la connexion:', err);
+      setError('Une erreur est survenue lors de la connexion');
+      setLoading(false);
+    }
   }
 
   return (<>

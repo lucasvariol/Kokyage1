@@ -6,19 +6,36 @@ Par défaut, Supabase permet la connexion même si l'email n'est pas confirmé, 
 
 ## Solution : Configuration dans Supabase Dashboard
 
-### 1. Désactiver l'auto-confirmation
+### 1. ⚠️ IMPORTANT : Désactiver les emails automatiques de Supabase
 
-Allez dans votre dashboard Supabase :
+Pour éviter que Supabase envoie ses propres emails en plus des nôtres :
 
-1. **Authentication** → **Settings** → **Email Auth**
-2. Décochez **"Enable email confirmations"** si vous voulez que les utilisateurs se connectent immédiatement
-3. OU gardez coché pour forcer la confirmation
+1. **Authentication** → **Email Templates**
+2. **Confirm signup** template → Cliquez sur l'onglet
+3. **Désactivez complètement ce template** ou videz son contenu
+4. OU dans **Authentication** → **Settings** → cochez **"Disable email confirmations"**
 
-### 2. Configurer la confirmation d'email obligatoire
+**Configuration recommandée** :
+- **Enable email confirmations** : ❌ **DÉSACTIVÉ** (pour éviter les doubles emails)
+- Notre code vérifie manuellement via la table `email_verifications`
+
+### 2. Alternative : Garder la vérification Supabase mais sans envoyer d'email
+
+Si vous voulez garder le système de vérification Supabase :
+
+Dans **Authentication** → **Email Templates** → **Confirm signup** :
+
+Remplacez le contenu du template par un template vide ou modifiez-le pour qu'il ne s'envoie jamais :
+
+```
+<!-- Template vide - ne pas envoyer -->
+```
+
+### 3. Configuration recommandée finale
 
 Dans **Authentication** → **Settings** :
 
-- **Enable email confirmations** : ✅ **Activé**
+- **Enable email confirmations** : ❌ Désactivé (on gère manuellement)
 - **Secure email change** : ✅ Activé (recommandé)
 - **Double confirm email changes** : ✅ Activé (recommandé)
 
