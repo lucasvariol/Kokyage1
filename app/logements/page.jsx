@@ -3,8 +3,6 @@
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 import MobileSearchBar from '../_components/MobileSearchBar';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { supabase } from '@/lib/supabaseClient';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -351,6 +349,9 @@ function LogementsInner() {
   const [voyageurs, setVoyageurs] = useState(initialVoyageurs);
   const [showVoyageursMenu, setShowVoyageursMenu] = useState(false);
   const [hasTypedDestination, setHasTypedDestination] = useState(false);
+  const [showArriveeCalendar, setShowArriveeCalendar] = useState(false);
+  const [showDepartCalendar, setShowDepartCalendar] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
   const destinationBoxRef = useRef(null);
   const mapContainerRef = useRef(null);
   const resultsIndicatorRef = useRef(null);
@@ -984,7 +985,7 @@ function LogementsInner() {
         color: 'white',
         position: 'relative',
         overflow: 'visible',
-        zIndex: 10000
+        zIndex: 1
       }}>
         {/* Decorative circles */}
         <div style={{
@@ -1037,15 +1038,15 @@ function LogementsInner() {
             margin: '0 auto',
             display: 'flex',
             flexDirection: 'row',
-            flexWrap: 'wrap',
+            flexWrap: 'nowrap',
             gap: 8,
             alignItems: 'stretch',
             justifyContent: 'center',
             position: 'relative',
-            zIndex: 100000
+            zIndex: 10
           }}>
             {/* Destination avec autocomplétion */}
-            <div ref={destinationBoxRef} style={{ position: 'relative', flex: isMobile ? '0 0 auto' : '1 1 240px', minWidth: isMobile ? '0' : '200px', width: isMobile ? '100%' : 'auto' }}>
+            <div ref={destinationBoxRef} style={{ position: 'relative', flex: '1 1 240px', minWidth: '200px' }}>
               <input
                 type="text"
                 placeholder="Où allez-vous ?"
@@ -1060,9 +1061,9 @@ function LogementsInner() {
                   width: '100%',
                   minWidth: 'unset',
                   maxWidth: 'unset',
-                  height: isMobile ? 54 : inputStyle.height,
-                  fontSize: isMobile ? 15 : 16,
-                  padding: isMobile ? '0 16px' : '14px 18px'
+                  height: 65,
+                  fontSize: 16,
+                  padding: '14px 18px'
                 }}
                 autoComplete="off"
               />
@@ -1077,7 +1078,7 @@ function LogementsInner() {
                   border: '1px solid #ddd', 
                   borderRadius: 12, 
                   boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                  zIndex: 999999, 
+                  zIndex: 10000, 
                   listStyle: 'none', 
                   margin: '4px 0 0 0', 
                   padding: 0, 
@@ -1117,7 +1118,7 @@ function LogementsInner() {
                   background: '#fff',
                   border: '1px solid #ddd', 
                   borderRadius: 12, 
-                  zIndex: 999999, 
+                  zIndex: 10000, 
                   padding: '12px 16px',
                   fontSize: 14, 
                   color: '#888', 
@@ -1128,91 +1129,14 @@ function LogementsInner() {
               )}
             </div>
 
-            {/* Dates container - wraps Arrivée and Départ on mobile to share space equally */}
-            <div style={{ 
-              display: 'flex', 
-              gap: isMobile ? 12 : 8, 
-              flex: isMobile ? '1 1 0%' : '0 0 auto',
-              width: isMobile ? '100%' : 'auto'
-            }}>
-              {/* Date d'arrivée */}
-              <div style={{ flex: isMobile ? '1 1 0%' : '0 0 auto', width: isMobile ? 'calc(50% - 6px)' : 'auto', minWidth: 0 }}>
-                <DatePicker
-                  selected={arrivee ? new Date(arrivee) : null}
-                  onChange={date => setArrivee(date ? formatDateLocal(date) : "")}
-                  dateFormat="dd/MM/yyyy"
-                  minDate={new Date()}
-                  placeholderText="Arrivée"
-                  customInput={
-                    <button type="button" style={{
-                      ...btnStyle,
-                      width: '100%',
-                      minWidth: isMobile ? '0' : 160,
-                      maxWidth: 'none',
-                      textAlign: 'center',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingLeft: 12,
-                      paddingRight: 12,
-                      height: isMobile ? 54 : btnStyle.height
-                    }}>
-                      <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Arrivée</span>
-                      <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
-                        {arrivee
-                          ? new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-                          : "Date"}
-                      </span>
-                    </button>
-                  }
-                />
-              </div>
-
-              {/* Date de départ */}
-              <div style={{ flex: isMobile ? '1 1 0%' : '0 0 auto', width: isMobile ? 'calc(50% - 6px)' : 'auto', minWidth: 0 }}>
-                <DatePicker
-                  selected={depart ? new Date(depart) : null}
-                  onChange={date => setDepart(date ? formatDateLocal(date) : "")}
-                  dateFormat="dd/MM/yyyy"
-                  minDate={arrivee ? new Date(arrivee) : new Date()}
-                  placeholderText="Départ"
-                  customInput={
-                    <button type="button" style={{
-                      ...btnStyle,
-                      width: '100%',
-                      minWidth: isMobile ? '0' : 160,
-                      maxWidth: 'none',
-                      textAlign: 'center',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingLeft: 12,
-                      paddingRight: 12,
-                      height: isMobile ? 54 : btnStyle.height
-                    }}>
-                      <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Départ</span>
-                      <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
-                        {depart
-                          ? new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-                          : "Date"}
-                      </span>
-                    </button>
-                  }
-                />
-              </div>
-            </div>
-
-            {/* Voyageurs */}
-            <div style={{ position: 'relative', flex: '0 0 auto', width: isMobile ? '100%' : 'auto' }}>
+            {/* Date d'arrivée - Sans DatePicker */}
+            <div style={{ position: 'relative', flex: '0 0 160px' }}>
               <button
                 type="button"
+                onClick={() => setShowArriveeCalendar(!showArriveeCalendar)}
                 style={{
                   ...btnStyle,
-                  width: isMobile ? '100%' : 140,
-                  minWidth: isMobile ? 'auto' : 140,
-                  maxWidth: isMobile ? '100%' : 140,
+                  width: '100%',
                   textAlign: 'center',
                   display: 'flex',
                   flexDirection: 'column',
@@ -1220,7 +1144,60 @@ function LogementsInner() {
                   justifyContent: 'center',
                   paddingLeft: 12,
                   paddingRight: 12,
-                  height: isMobile ? 54 : btnStyle.height
+                  height: 65
+                }}
+              >
+                <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Arrivée</span>
+                <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
+                  {arrivee
+                    ? new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+                    : "Date"}
+                </span>
+              </button>
+            </div>
+
+            {/* Date de départ - Sans DatePicker */}
+            <div style={{ position: 'relative', flex: '0 0 160px' }}>
+              <button
+                type="button"
+                onClick={() => setShowDepartCalendar(!showDepartCalendar)}
+                style={{
+                  ...btnStyle,
+                  width: '100%',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingLeft: 12,
+                  paddingRight: 12,
+                  height: 65
+                }}
+              >
+                <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Départ</span>
+                <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
+                  {depart
+                    ? new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+                    : "Date"}
+                </span>
+              </button>
+            </div>
+
+            {/* Voyageurs */}
+            <div style={{ position: 'relative', flex: '0 0 140px' }}>
+              <button
+                type="button"
+                style={{
+                  ...btnStyle,
+                  width: '100%',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingLeft: 12,
+                  paddingRight: 12,
+                  height: 65
                 }}
                 onClick={() => setShowVoyageursMenu(v => !v)}
               >
@@ -1243,7 +1220,7 @@ function LogementsInner() {
                   margin: '4px 0 0 0', 
                   padding: '8px 0', 
                   listStyle: 'none', 
-                  zIndex: 999999
+                  zIndex: 10000
                 }}>
                   {[1, 2, 3, 4, 5, 6, 8, 10].map((num) => (
                     <li
@@ -1276,101 +1253,376 @@ function LogementsInner() {
               )}
             </div>
 
-            {/* Action buttons container - wraps Rechercher and Filtres on mobile */}
-            <div style={{ 
-              display: 'flex', 
-              gap: isMobile ? 12 : 8, 
-              flex: isMobile ? '0 0 auto' : '0 0 auto',
-              width: isMobile ? '100%' : 'auto'
-            }}>
-              {/* Bouton Rechercher */}
-              <button
-                type="button"
-                style={{
-                  background: '#C96745',
-                  border: 'none',
-                  borderRadius: 12,
-                  width: isMobile ? '100%' : 56,
-                  height: isMobile ? 54 : 65,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(201,103,69,0.25)',
-                  transition: 'all 0.2s',
-                  flex: isMobile ? '1 1 0' : '0 0 auto',
-                  fontSize: isMobile ? 15 : 16,
-                  fontWeight: 600,
-                  color: '#fff',
-                  gap: 8
-                }}
-                onClick={handleSearch}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'scale(1.05)';
-                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(201,103,69,0.35)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(201,103,69,0.25)';
-                }}
-                aria-label="Rechercher"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="m21 21-4.35-4.35"/>
-                </svg>
-                {isMobile && <span>Rechercher</span>}
-              </button>
+            {/* Bouton Rechercher */}
+            <button
+              type="button"
+              style={{
+                background: '#C96745',
+                border: 'none',
+                borderRadius: 12,
+                width: 56,
+                height: 65,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(201,103,69,0.25)',
+                transition: 'all 0.2s',
+                flex: '0 0 56px'
+              }}
+              onClick={handleSearch}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(201,103,69,0.35)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(201,103,69,0.25)';
+              }}
+              aria-label="Rechercher"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+              </svg>
+            </button>
 
-              {/* Bouton Filtres avancés */}
-              <button
-                type="button"
-                onClick={() => setShowAdvancedFilters(true)}
-                style={{
-                  padding: isMobile ? '0 16px' : '0 20px',
-                  borderRadius: 12,
-                  fontSize: 15,
-                  fontWeight: 600,
-                  background: '#fff',
-                  color: '#C96745',
-                  border: '2px solid #C96745',
-                  height: isMobile ? 54 : 65,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  flex: isMobile ? '1 1 0' : '0 0 auto',
-                  minWidth: 0
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.background = '#C96745';
-                  e.currentTarget.style.color = '#fff';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.background = '#fff';
-                  e.currentTarget.style.color = '#C96745';
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="4" y1="21" x2="4" y2="14"/>
-                  <line x1="4" y1="10" x2="4" y2="3"/>
-                  <line x1="12" y1="21" x2="12" y2="12"/>
-                  <line x1="12" y1="8" x2="12" y2="3"/>
-                  <line x1="20" y1="21" x2="20" y2="16"/>
-                  <line x1="20" y1="12" x2="20" y2="3"/>
-                  <line x1="1" y1="14" x2="7" y2="14"/>
-                  <line x1="9" y1="8" x2="15" y2="8"/>
-                  <line x1="17" y1="16" x2="23" y2="16"/>
-                </svg>
-                Filtres
-              </button>
-            </div>
+            {/* Bouton Filtres avancés */}
+            <button
+              type="button"
+              onClick={() => setShowAdvancedFilters(true)}
+              style={{
+                padding: '0 20px',
+                borderRadius: 12,
+                fontSize: 15,
+                fontWeight: 600,
+                background: '#fff',
+                color: '#C96745',
+                border: '2px solid #C96745',
+                height: 65,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                flex: '0 0 auto',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = '#C96745';
+                e.currentTarget.style.color = '#fff';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = '#fff';
+                e.currentTarget.style.color = '#C96745';
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="21" x2="4" y2="14"/>
+                <line x1="4" y1="10" x2="4" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12" y2="3"/>
+                <line x1="20" y1="21" x2="20" y2="16"/>
+                <line x1="20" y1="12" x2="20" y2="3"/>
+                <line x1="1" y1="14" x2="7" y2="14"/>
+                <line x1="9" y1="8" x2="15" y2="8"/>
+                <line x1="17" y1="16" x2="23" y2="16"/>
+              </svg>
+              Filtres
+            </button>
           </div>
           )}
         </div>
       </section>
+      )}
+
+      {/* Calendrier Arrivée - Modal desktop */}
+      {!isMobile && showArriveeCalendar && (
+        <>
+          <div 
+            onClick={() => setShowArriveeCalendar(false)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 9998
+            }}
+          />
+          <div style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'white',
+            borderRadius: '16px',
+            padding: '24px',
+            zIndex: 9999,
+            boxShadow: '0 8px 40px rgba(0,0,0,0.2)',
+            maxWidth: '400px',
+            width: '90vw'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <button
+                onClick={() => {
+                  const newDate = new Date(selectedMonth);
+                  newDate.setMonth(newDate.getMonth() - 1);
+                  setSelectedMonth(newDate);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  padding: '8px',
+                  color: '#2D3748'
+                }}
+              >
+                ‹
+              </button>
+              <span style={{ fontSize: '16px', fontWeight: 600, color: '#2D3748' }}>
+                {selectedMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+              </span>
+              <button
+                onClick={() => {
+                  const newDate = new Date(selectedMonth);
+                  newDate.setMonth(newDate.getMonth() + 1);
+                  setSelectedMonth(newDate);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  padding: '8px',
+                  color: '#2D3748'
+                }}
+              >
+                ›
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginBottom: '8px' }}>
+              {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map(day => (
+                <div key={day} style={{ textAlign: 'center', fontSize: '12px', fontWeight: 600, color: '#6B7280', padding: '8px 0' }}>
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+              {(() => {
+                const year = selectedMonth.getFullYear();
+                const month = selectedMonth.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDayOfWeek = firstDay.getDay();
+                const days = [];
+                
+                for (let i = 0; i < startingDayOfWeek; i++) {
+                  days.push(null);
+                }
+                for (let day = 1; day <= daysInMonth; day++) {
+                  days.push(new Date(year, month, day));
+                }
+
+                return days.map((date, idx) => {
+                  if (!date) return <div key={idx} />;
+
+                  const isSelected = arrivee && date.toDateString() === new Date(arrivee).toDateString();
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  const isPast = date < today;
+
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        if (!isPast) {
+                          setArrivee(date.toISOString().split('T')[0]);
+                          setShowArriveeCalendar(false);
+                        }
+                      }}
+                      disabled={isPast}
+                      style={{
+                        padding: '12px 4px',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: isPast ? 'not-allowed' : 'pointer',
+                        fontSize: '14px',
+                        fontWeight: isSelected ? 600 : 400,
+                        background: isSelected ? '#60A29D' : 'transparent',
+                        color: isSelected ? 'white' : isPast ? '#D1D5DB' : '#2D3748',
+                        transition: 'all 0.2s ease',
+                        opacity: isPast ? 0.4 : 1
+                      }}
+                      onMouseEnter={e => {
+                        if (!isPast && !isSelected) {
+                          e.target.style.background = '#F3F4F6';
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (!isPast && !isSelected) {
+                          e.target.style.background = 'transparent';
+                        }
+                      }}
+                    >
+                      {date.getDate()}
+                    </button>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Calendrier Départ - Modal desktop */}
+      {!isMobile && showDepartCalendar && (
+        <>
+          <div 
+            onClick={() => setShowDepartCalendar(false)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 9998
+            }}
+          />
+          <div style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'white',
+            borderRadius: '16px',
+            padding: '24px',
+            zIndex: 9999,
+            boxShadow: '0 8px 40px rgba(0,0,0,0.2)',
+            maxWidth: '400px',
+            width: '90vw'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <button
+                onClick={() => {
+                  const newDate = new Date(selectedMonth);
+                  newDate.setMonth(newDate.getMonth() - 1);
+                  setSelectedMonth(newDate);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  padding: '8px',
+                  color: '#2D3748'
+                }}
+              >
+                ‹
+              </button>
+              <span style={{ fontSize: '16px', fontWeight: 600, color: '#2D3748' }}>
+                {selectedMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+              </span>
+              <button
+                onClick={() => {
+                  const newDate = new Date(selectedMonth);
+                  newDate.setMonth(newDate.getMonth() + 1);
+                  setSelectedMonth(newDate);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  padding: '8px',
+                  color: '#2D3748'
+                }}
+              >
+                ›
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginBottom: '8px' }}>
+              {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map(day => (
+                <div key={day} style={{ textAlign: 'center', fontSize: '12px', fontWeight: 600, color: '#6B7280', padding: '8px 0' }}>
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+              {(() => {
+                const year = selectedMonth.getFullYear();
+                const month = selectedMonth.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDayOfWeek = firstDay.getDay();
+                const days = [];
+                
+                for (let i = 0; i < startingDayOfWeek; i++) {
+                  days.push(null);
+                }
+                for (let day = 1; day <= daysInMonth; day++) {
+                  days.push(new Date(year, month, day));
+                }
+
+                return days.map((date, idx) => {
+                  if (!date) return <div key={idx} />;
+
+                  const isSelected = depart && date.toDateString() === new Date(depart).toDateString();
+                  const minDate = arrivee ? new Date(arrivee) : new Date();
+                  minDate.setHours(0, 0, 0, 0);
+                  const isPast = date <= minDate;
+
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        if (!isPast) {
+                          setDepart(date.toISOString().split('T')[0]);
+                          setShowDepartCalendar(false);
+                        }
+                      }}
+                      disabled={isPast}
+                      style={{
+                        padding: '12px 4px',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: isPast ? 'not-allowed' : 'pointer',
+                        fontSize: '14px',
+                        fontWeight: isSelected ? 600 : 400,
+                        background: isSelected ? '#60A29D' : 'transparent',
+                        color: isSelected ? 'white' : isPast ? '#D1D5DB' : '#2D3748',
+                        transition: 'all 0.2s ease',
+                        opacity: isPast ? 0.4 : 1
+                      }}
+                      onMouseEnter={e => {
+                        if (!isPast && !isSelected) {
+                          e.target.style.background = '#F3F4F6';
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (!isPast && !isSelected) {
+                          e.target.style.background = 'transparent';
+                        }
+                      }}
+                    >
+                      {date.getDate()}
+                    </button>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+        </>
       )}
       
       {/* Global override moved to app/globals.css to avoid styled-jsx transform issues */}
