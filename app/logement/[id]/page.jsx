@@ -4,7 +4,7 @@ import Header from '../../_components/Header';
 import Footer from '../../_components/Footer';
 import { OwnerConsentAgreement } from '@/owner-consent';
 import { supabase } from '@/lib/supabaseClient';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { getFeeMultiplier, percentLabel } from '@/lib/commissions';
@@ -35,55 +35,81 @@ function Gallery({ images }) {
   }, [modalOpen, current]);
 
   // Support du swipe sur mobile
+  const currentRef = useRef(current);
+  useEffect(() => { currentRef.current = current; }, [current]);
+
   useEffect(() => {
     if (!images || images.length <= 1) return;
-    
+
     const carousel = document.getElementById('gallery-carousel');
     if (!carousel) return;
-    
+
     let startX = 0;
-    let currentX = 0;
+    let lastX = 0;
     let isDragging = false;
-    
-    const handleTouchStart = (e) => {
-      startX = e.touches[0].clientX;
-      isDragging = true;
+
+    const snapToIndex = (idx) => {
+      carousel.style.transition = 'transform 0.25s ease';
+      carousel.style.transform = `translateX(-${idx * 100}%)`;
     };
-    
+
+    const handleTouchStart = (e) => {
+      if (!e.touches || e.touches.length === 0) return;
+      startX = e.touches[0].clientX;
+      lastX = startX;
+      isDragging = true;
+      // disable transition during drag for smoother feel
+      carousel.style.transition = 'none';
+    };
+
     const handleTouchMove = (e) => {
       if (!isDragging) return;
-      currentX = e.touches[0].clientX;
-      const diff = currentX - startX;
-      carousel.style.transform = `translateX(calc(-${current * 100}% + ${diff}px))`;
+      if (e.cancelable) e.preventDefault(); // avoid page scroll while dragging
+      const x = e.touches[0].clientX;
+      lastX = x;
+      const diff = x - startX;
+      const idx = currentRef.current;
+      carousel.style.transform = `translateX(calc(-${idx * 100}% + ${diff}px))`;
     };
-    
-    const handleTouchEnd = () => {
+
+    const endDrag = () => {
       if (!isDragging) return;
       isDragging = false;
-      const diff = currentX - startX;
-      
-      if (Math.abs(diff) > 50) {
-        if (diff > 0 && current > 0) {
-          prevImage();
-        } else if (diff < 0 && current < images.length - 1) {
-          nextImage();
-        }
+      const diff = lastX - startX;
+      const threshold = 50;
+      const idx = currentRef.current;
+
+      if (diff < -threshold && idx < images.length - 1) {
+        // swipe left -> next
+        const nextIdx = idx + 1;
+        currentRef.current = nextIdx;
+        setCurrent(nextIdx);
+        snapToIndex(nextIdx);
+      } else if (diff > threshold && idx > 0) {
+        // swipe right -> prev
+        const prevIdx = idx - 1;
+        currentRef.current = prevIdx;
+        setCurrent(prevIdx);
+        snapToIndex(prevIdx);
       } else {
-        // Snap back
-        carousel.style.transform = `translateX(-${current * 100}%)`;
+        // snap back
+        snapToIndex(idx);
       }
     };
-    
+
     carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
-    carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
-    carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
-    
+    // touchmove MUST be non-passive to allow preventDefault
+    carousel.addEventListener('touchmove', handleTouchMove, { passive: false });
+    carousel.addEventListener('touchend', endDrag, { passive: true });
+    carousel.addEventListener('touchcancel', endDrag, { passive: true });
+
     return () => {
       carousel.removeEventListener('touchstart', handleTouchStart);
       carousel.removeEventListener('touchmove', handleTouchMove);
-      carousel.removeEventListener('touchend', handleTouchEnd);
+      carousel.removeEventListener('touchend', endDrag);
+      carousel.removeEventListener('touchcancel', endDrag);
     };
-  }, [images, current]);
+  }, [images]);
 
   if (!images || images.length === 0) {
     return (
