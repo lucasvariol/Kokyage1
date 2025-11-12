@@ -707,16 +707,17 @@ export default function Page() {
               <div className="revenue-split-cards" style={{ 
                 display: 'flex', 
                 justifyContent: 'center',
-                gap: '24px',
+                gap: 'clamp(16px, 2.5vw, 24px)',
                 maxWidth: '900px',
                 margin: '0 auto',
-                flexWrap: 'wrap'
+                flexWrap: 'wrap',
+                padding: '0 clamp(12px, 2vw, 0px)'
               }}>
                 <div style={{ 
                   background: 'rgba(255,255,255,0.25)',
                   backdropFilter: 'blur(10px)',
-                  padding: '32px 28px',
-                  borderRadius: '24px',
+                  padding: 'clamp(20px, 3.5vw, 32px) clamp(18px, 3vw, 28px)',
+                  borderRadius: 'clamp(18px, 2.5vw, 24px)',
                   textAlign: 'center',
                   border: '2px solid rgba(255,255,255,0.3)',
                   transition: 'all 0.3s ease',
@@ -724,7 +725,7 @@ export default function Page() {
                   color: 'white',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
                   flex: '1',
-                  minWidth: '260px',
+                  minWidth: 'clamp(140px, 42vw, 260px)',
                   maxWidth: '320px',
                   aspectRatio: '1.2',
                   position: 'relative',
@@ -737,17 +738,17 @@ export default function Page() {
                     position: 'absolute',
                     top: '-20px',
                     right: '-20px',
-                    width: '100px',
-                    height: '100px',
+                    width: 'clamp(60px, 10vw, 100px)',
+                    height: 'clamp(60px, 10vw, 100px)',
                     background: 'rgba(255,255,255,0.08)',
                     borderRadius: '50%'
                   }}></div>
                   <div style={{ 
-                    fontSize: 'clamp(0.75rem, 1.5vw, 1.1rem)', 
+                    fontSize: 'clamp(0.65rem, 2.2vw, 1.1rem)', 
                     fontWeight: 600, 
-                    marginBottom: 'clamp(8px, 2vw, 16px)',
+                    marginBottom: 'clamp(6px, 1.8vw, 16px)',
                     textTransform: 'uppercase',
-                    letterSpacing: '1.5px',
+                    letterSpacing: 'clamp(0.8px, 0.15vw, 1.5px)',
                     opacity: 0.95,
                     position: 'relative',
                     zIndex: 1
@@ -755,19 +756,19 @@ export default function Page() {
                     Gains Locataire
                   </div>
                   <div style={{ 
-                    fontSize: 'clamp(2.5rem, 7vw, 5rem)', 
+                    fontSize: 'clamp(2rem, 10vw, 5rem)', 
                     fontWeight: 900, 
-                    marginBottom: 'clamp(8px, 2vw, 16px)',
+                    marginBottom: 'clamp(6px, 1.8vw, 16px)',
                     color: '#FFE66D',
                     textShadow: '0 4px 16px rgba(0,0,0,0.25)',
                     lineHeight: 1,
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    60<span style={{ fontSize: 'clamp(1.5rem, 4.2vw, 3rem)' }}>%</span>
+                    60<span style={{ fontSize: 'clamp(1.2rem, 6vw, 3rem)' }}>%</span>
                   </div>
                   <p style={{ 
-                    fontSize: 'clamp(0.75rem, 1.3vw, 0.95rem)', 
+                    fontSize: 'clamp(0.65rem, 2vw, 0.95rem)', 
                     opacity: 0.95,
                     lineHeight: 1.5,
                     color: 'white',
@@ -782,8 +783,8 @@ export default function Page() {
                 <div style={{ 
                   background: 'rgba(255,255,255,0.25)',
                   backdropFilter: 'blur(10px)',
-                  padding: '32px 28px',
-                  borderRadius: '24px',
+                  padding: 'clamp(20px, 3.5vw, 32px) clamp(18px, 3vw, 28px)',
+                  borderRadius: 'clamp(18px, 2.5vw, 24px)',
                   textAlign: 'center',
                   border: '2px solid rgba(255,255,255,0.3)',
                   transition: 'all 0.3s ease',
@@ -791,7 +792,7 @@ export default function Page() {
                   color: 'white',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
                   flex: '1',
-                  minWidth: '260px',
+                  minWidth: 'clamp(140px, 42vw, 260px)',
                   maxWidth: '320px',
                   aspectRatio: '1.2',
                   position: 'relative',
@@ -804,17 +805,17 @@ export default function Page() {
                     position: 'absolute',
                     top: '-20px',
                     right: '-20px',
-                    width: '100px',
-                    height: '100px',
+                    width: 'clamp(60px, 10vw, 100px)',
+                    height: 'clamp(60px, 10vw, 100px)',
                     background: 'rgba(255,255,255,0.08)',
                     borderRadius: '50%'
                   }}></div>
                   <div style={{ 
-                    fontSize: 'clamp(0.75rem, 1.5vw, 1.1rem)', 
+                    fontSize: 'clamp(0.65rem, 2.2vw, 1.1rem)', 
                     fontWeight: 600, 
-                    marginBottom: 'clamp(8px, 2vw, 16px)',
+                    marginBottom: 'clamp(6px, 1.8vw, 16px)',
                     textTransform: 'uppercase',
-                    letterSpacing: '1.5px',
+                    letterSpacing: 'clamp(0.8px, 0.15vw, 1.5px)',
                     opacity: 0.95,
                     position: 'relative',
                     zIndex: 1
@@ -822,19 +823,19 @@ export default function Page() {
                     Gains Propriétaire
                   </div>
                   <div style={{ 
-                    fontSize: 'clamp(2.5rem, 7vw, 5rem)', 
+                    fontSize: 'clamp(2rem, 10vw, 5rem)', 
                     fontWeight: 900, 
-                    marginBottom: 'clamp(8px, 2vw, 16px)',
+                    marginBottom: 'clamp(6px, 1.8vw, 16px)',
                     color: '#FFE66D',
                     textShadow: '0 4px 16px rgba(0,0,0,0.25)',
                     lineHeight: 1,
                     position: 'relative',
                     zIndex: 1
                   }}>
-                    40<span style={{ fontSize: 'clamp(1.5rem, 4.2vw, 3rem)' }}>%</span>
+                    40<span style={{ fontSize: 'clamp(1.2rem, 6vw, 3rem)' }}>%</span>
                   </div>
                   <p style={{ 
-                    fontSize: 'clamp(0.75rem, 1.3vw, 0.95rem)', 
+                    fontSize: 'clamp(0.65rem, 2vw, 0.95rem)', 
                     opacity: 0.95,
                     lineHeight: 1.5,
                     color: 'white',
@@ -3054,23 +3055,21 @@ export default function Page() {
           padding: 0 12px !important;
         }
         
-        /* Cases 60% et 40% côte à côte sur mobile */
+        /* Cases 60% et 40% côte à côte sur mobile - gardent les proportions */
         .revenue-split-cards {
           display: flex !important;
           flex-wrap: nowrap !important;
-          gap: 16px !important;
+          gap: clamp(12px, 2.5vw, 24px) !important;
           justify-content: center !important;
-          padding: 0 12px !important;
-          margin-bottom: 28px !important;
+          padding: 0 clamp(12px, 2vw, 0px) !important;
+          margin-bottom: clamp(24px, 3vw, 28px) !important;
         }
         
         .revenue-split-cards > div {
-          padding: clamp(12px, 2.5vw, 16px) clamp(16px, 3vw, 20px) !important;
-          min-width: 0 !important;
           flex: 1 1 48% !important;
-          max-width: none !important;
-          aspect-ratio: 1 !important;
-          min-height: 210px !important;
+          min-width: clamp(140px, 42vw, 260px) !important;
+          max-width: 320px !important;
+          aspect-ratio: 1.2 !important;
         }
 
       }
@@ -3211,15 +3210,16 @@ export default function Page() {
           font-size: 17px !important;
         }
         
-        /* Cases 60% et 40% encore plus compactes sur petits écrans */
+        /* Cases 60% et 40% - ajustement pour très petits écrans */
         .revenue-split-cards {
-          gap: clamp(12px, 2.5vw, 16px) !important;
+          gap: clamp(10px, 2vw, 16px) !important;
+          padding: 0 clamp(8px, 1.5vw, 12px) !important;
         }
         
         .revenue-split-cards > div {
-          padding: clamp(10px, 2.2vw, 13px) clamp(14px, 2.8vw, 18px) !important;
-          aspect-ratio: 1 !important;
-          min-height: 220px !important;
+          flex: 1 1 48% !important;
+          min-width: clamp(130px, 40vw, 200px) !important;
+          aspect-ratio: 1.2 !important;
         }
 
       }
