@@ -1222,40 +1222,6 @@ export default function Page() {
               )}
             </div>
           </div>
-
-            <button 
-              className="btn-search-modern" 
-              type="submit" 
-              style={{ 
-                background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '16px 32px',
-                fontSize: '16px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 15px rgba(215,144,119,0.4)',
-                height: '56px',
-                minWidth: '140px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}
-              onMouseOver={e => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 8px 25px rgba(102,126,234,0.6)';
-              }}
-              onMouseOut={e => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(102,126,234,0.4)';
-              }}
-            >
-              <span className="search-icon">🔍</span>
-              <span className="search-text">Rechercher</span>
-            </button>
             </form>
           </div>
           )}
