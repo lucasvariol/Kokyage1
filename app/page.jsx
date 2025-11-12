@@ -846,7 +846,7 @@ export default function Page() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                   <input
                     name="destination"
-                    placeholder="On va où ?"
+                    placeholder="Où souhaitez-vous aller ?"
                     value={lieu}
                     onChange={e => {
                       setLieu(e.target.value);
@@ -2735,27 +2735,19 @@ export default function Page() {
         .revenue-split-cards {
           display: flex !important;
           flex-wrap: nowrap !important;
-          gap: clamp(16px, 3vw, 20px) !important;
-          justify-content: flex-start !important;
-          padding: 0 16px 12px !important;
-          margin: 0 auto 32px !important;
-          overflow-x: auto !important;
-          scroll-snap-type: x mandatory !important;
-          -webkit-overflow-scrolling: touch !important;
-        }
-        
-        .revenue-split-cards::-webkit-scrollbar {
-          display: none !important;
+          gap: 16px !important;
+          justify-content: center !important;
+          padding: 0 12px !important;
+          margin-bottom: 28px !important;
         }
         
         .revenue-split-cards > div {
-          padding: clamp(24px, 4vw, 32px) clamp(18px, 3vw, 24px) !important;
-          flex: 0 0 clamp(220px, 68vw, 280px) !important;
-          min-width: clamp(220px, 68vw, 280px) !important;
+          padding: clamp(22px, 4vw, 26px) clamp(16px, 3vw, 20px) !important;
+          min-width: 0 !important;
+          flex: 1 1 48% !important;
           max-width: none !important;
-          min-height: clamp(220px, 60vw, 260px) !important;
-          aspect-ratio: unset !important;
-          scroll-snap-align: center !important;
+          aspect-ratio: 1 !important;
+          min-height: 210px !important;
         }
 
       }
@@ -2896,17 +2888,15 @@ export default function Page() {
           font-size: 17px !important;
         }
         
-        /* Cases 60% et 40% plus larges et faciles à lire sur petits écrans */
+        /* Cases 60% et 40% encore plus compactes sur petits écrans */
         .revenue-split-cards {
-          padding: 0 18px 14px !important;
-          gap: clamp(18px, 4vw, 22px) !important;
+          gap: clamp(12px, 2.5vw, 16px) !important;
         }
         
         .revenue-split-cards > div {
-          padding: clamp(24px, 5vw, 36px) clamp(18px, 4vw, 26px) !important;
-          flex: 0 0 clamp(240px, 78vw, 300px) !important;
-          min-width: clamp(240px, 78vw, 300px) !important;
-          min-height: clamp(240px, 78vw, 300px) !important;
+          padding: clamp(20px, 3.8vw, 26px) clamp(14px, 2.8vw, 18px) !important;
+          aspect-ratio: 1 !important;
+          min-height: 220px !important;
         }
 
       }
