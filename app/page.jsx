@@ -846,7 +846,7 @@ export default function Page() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                   <input
                     name="destination"
-                    placeholder="Où souhaitez-vous aller ?"
+                    placeholder="On va où ?"
                     value={lieu}
                     onChange={e => {
                       setLieu(e.target.value);
