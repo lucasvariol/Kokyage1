@@ -144,8 +144,8 @@ function ListingsMap({ items, center, onCenterChange, searchView }) {
         if (!imagesArr.length && logement.image_url) imagesArr = [logement.image_url];
         
         // Rating data
-        const rating = logement.rating || 4.8;
-        const reviewCount = logement.review_count || Math.floor(Math.random() * 50) + 5;
+        const rating = ratings[logement.id]?.average_rating || 0;
+        const reviewCount = ratings[logement.id]?.review_count || 0;
 
         const popupHtml = `
           <div style="min-width:280px;max-width:300px;font-family:system-ui,-apple-system,sans-serif;">
@@ -180,10 +180,12 @@ function ListingsMap({ items, center, onCenterChange, searchView }) {
                 <div style="font-size:11px;color:#666;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">${logement.city || 'Paris'}</div>
                 <div style="font-size:16px;font-weight:700;color:#222;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${logement.title || ''}</div>
               </div>
-              <div style="display:flex;align-items:center;gap:4px;background:#fff7ed;padding:4px 8px;border-radius:8px;margin-left:8px;flex-shrink:0;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <span style="font-size:13px;font-weight:600;color:#222;">${rating.toFixed(1)}</span>
-              </div>
+              ${reviewCount > 0 ? `
+                <div style="display:flex;align-items:center;gap:4px;background:#fff7ed;padding:4px 8px;border-radius:8px;margin-left:8px;flex-shrink:0;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <span style="font-size:13px;font-weight:600;color:#222;">${rating.toFixed(1)}</span>
+                </div>
+              ` : ''}
             </div>
             ${logement.nb_voyageurs || logement.bedrooms || logement.bathrooms ? `
               <div style="display:flex;gap:12px;margin-bottom:10px;font-size:13px;color:#666;">
@@ -362,6 +364,7 @@ function LogementsInner() {
   const logementsListRef = useRef(null);
   const [searchView, setSearchView] = useState(null); // { center: [lat, lng], zoom }
   const [disponibilities, setDisponibilities] = useState({}); // { listing_id: [date1, date2, ...] }
+  const [ratings, setRatings] = useState({}); // { listing_id: { review_count, average_rating } }
 
   // Responsive helper to stabilize search bar layout on mobile
   const [isMobile, setIsMobile] = useState(false);
@@ -801,6 +804,20 @@ function LogementsInner() {
         setItems(validGeocoded);
         // Initially show all items, filters will be applied by useEffect
         setFilteredItems(validGeocoded);
+        
+        // Load ratings for all listings
+        if (validGeocoded.length > 0) {
+          const listingIds = validGeocoded.map(item => item.id).join(',');
+          try {
+            const ratingsRes = await fetch(`/api/reviews/batch?listing_ids=${listingIds}`);
+            const ratingsData = await ratingsRes.json();
+            if (ratingsRes.ok && ratingsData.ratings) {
+              setRatings(ratingsData.ratings);
+            }
+          } catch (err) {
+            console.error('Error loading ratings:', err);
+          }
+        }
       } catch (err) {
         console.error('Exception loading listings:', err);
         setItems([]);
@@ -2361,8 +2378,8 @@ function LogementsInner() {
               const distance = hasCoords ? Math.round(haversineKm(mapCenter, [it.latitude, it.longitude]) * 10) / 10 : null;
 
               // Mock rating data (replace with real data from database when available)
-              const rating = it.rating || 4.8;
-              const reviewCount = it.review_count || Math.floor(Math.random() * 50) + 5;
+              const rating = ratings[it.id]?.average_rating || 0;
+              const reviewCount = ratings[it.id]?.review_count || 0;
 
               return (
                 <article 
@@ -2663,6 +2680,33 @@ function LogementsInner() {
                       {it.title}
                     </h3>
 
+                    {/* Rating badge */}
+                    {ratings[it.id] && ratings[it.id].review_count > 0 && (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        marginTop: 6
+                      }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5">
+                          <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                        </svg>
+                        <span style={{ 
+                          fontSize: 'clamp(12px, 2.3vw, 13px)', 
+                          fontWeight: 600, 
+                          color: '#92400e' 
+                        }}>
+                          {ratings[it.id].average_rating}
+                        </span>
+                        <span style={{ 
+                          fontSize: 'clamp(10px, 2vw, 11px)', 
+                          color: '#999' 
+                        }}>
+                          ({ratings[it.id].review_count})
+                        </span>
+                      </div>
+                    )}
+
                     {/* Property details */}
                     <div style={{ 
                       display: 'flex', 
@@ -2838,8 +2882,8 @@ function LogementsInner() {
                   const distance = hasCoords ? Math.round(haversineKm(mapCenter, [it.latitude, it.longitude]) * 10) / 10 : null;
 
                   // Mock rating data
-                  const rating = it.rating || 4.8;
-                  const reviewCount = it.review_count || Math.floor(Math.random() * 50) + 5;
+                  const rating = ratings[it.id]?.average_rating || 0;
+                  const reviewCount = ratings[it.id]?.review_count || 0;
 
                   const range = it.availabilityRange;
 
@@ -3117,24 +3161,26 @@ function LogementsInner() {
                               📍 {it.city || 'Non spécifié'}
                             </div>
                           </div>
-                          <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: 4,
-                            background: '#fff7ed',
-                            padding: '4px 10px',
-                            borderRadius: 12
-                          }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                            </svg>
-                            <span style={{ fontSize: 14, fontWeight: 600, color: '#222' }}>
-                              {rating.toFixed(1)}
-                            </span>
-                            <span style={{ fontSize: 13, color: '#888' }}>
-                              ({reviewCount})
-                            </span>
-                          </div>
+                          {reviewCount > 0 && (
+                            <div style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: 4,
+                              background: '#fff7ed',
+                              padding: '4px 10px',
+                              borderRadius: 12
+                            }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                              </svg>
+                              <span style={{ fontSize: 14, fontWeight: 600, color: '#222' }}>
+                                {rating.toFixed(1)}
+                              </span>
+                              <span style={{ fontSize: 13, color: '#888' }}>
+                                ({reviewCount})
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         {/* Title */}

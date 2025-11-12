@@ -8,6 +8,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { getFeeMultiplier, percentLabel } from '@/lib/commissions';
+import ReviewsSection from '../../_components/ReviewsSection';
 
 const MapPreview = dynamic(() => import('../../_components/MapPreview'), { ssr: false });
 // Sélecteur de dates et formats
@@ -339,8 +340,6 @@ export default function Page({ params }) {
   const [images, setImages] = useState([]);
   const [copied, setCopied] = useState(false);
   const [reservations, setReservations] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [stats, setStats] = useState({ count: 0, avg: 0 });
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState('');
   // Sélection de dates et prix
@@ -2096,88 +2095,8 @@ export default function Page({ params }) {
                         </div>
                       )}
 
-                      {/* Card Avis */}
-                      {reviews.length > 0 && (
-                        <div className="card-reviews" style={{
-                          background: '#fff',
-                          borderRadius: 20,
-                          padding: '32px',
-                          boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-                          border: '1px solid #f1f5f9'
-                        }}>
-                          <h2 style={{ 
-                            fontSize: 24, 
-                            fontWeight: 800, 
-                            color: '#0f172a', 
-                            marginBottom: 20,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 10
-                          }}>
-                            <div style={{
-                              background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                              padding: 10,
-                              borderRadius: 10,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}>
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5">
-                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-                              </svg>
-                            </div>
-                            Avis voyageurs ({reviews.length})
-                          </h2>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                            {reviews.map(r => (
-                              <div key={r.id} className="review-item" style={{
-                                background: 'linear-gradient(135deg, #fefce8 0%, #fef9c3 100%)',
-                                borderRadius: 14,
-                                padding: '20px',
-                                display: 'flex',
-                                alignItems: 'flex-start',
-                                gap: 16,
-                                border: '1px solid #fde68a'
-                              }}>
-                                <img 
-                                  src={r.user?.avatar_url || "/default-avatar.png"} 
-                                  alt="avatar" 
-                                  style={{
-                                    width: 48, 
-                                    height: 48, 
-                                    borderRadius: '50%', 
-                                    objectFit: 'cover',
-                                    border: '3px solid #fbbf24'
-                                  }} 
-                                />
-                                <div style={{ flex: 1 }}>
-                                  <div style={{ 
-                                    display: 'flex', 
-                                    justifyContent: 'space-between', 
-                                    alignItems: 'center',
-                                    marginBottom: 8
-                                  }}>
-                                    <div style={{ fontWeight: 800, color: '#92400e', fontSize: 16 }}>
-                                      {r.user?.full_name || "Voyageur"}
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                      {Array(r.rating).fill(0).map((_, i) => (
-                                        <StarIcon key={i} size={16} color="#f59e0b" />
-                                      ))}
-                                    </div>
-                                  </div>
-                                  <div style={{ fontSize: 15, color: '#374151', lineHeight: 1.6, marginBottom: 8 }}>
-                                    {r.comment}
-                                  </div>
-                                  <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>
-                                    {new Date(r.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      {/* Card Avis - Nouveau composant interactif */}
+                      <ReviewsSection listingId={item.id} />
                     </div>
 
                     {/* Colonne droite - Card de réservation sticky (masquée pour le propriétaire) */}
