@@ -826,28 +826,95 @@ export default function Page() {
             
             {/* Modern Search Card - Visible uniquement pour voyageur */}
             {activeTab === 'voyageur' && (
-            <div className="search-card-modern" style={{ 
-            background: 'rgba(255,255,255,0.95)', 
-            backdropFilter: 'blur(10px)',
-            borderRadius: '24px', 
-            padding: '24px', 
-            boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
-            border: '1px solid rgba(255,255,255,0.2)',
-            maxWidth: '900px',
-            margin: '0 auto'
-          }}>
-            <h2 className="search-title" style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: 700, 
-              color: '#2D3748', 
-              marginBottom: '32px',
-              textAlign: 'center'
-            }}>
-              Trouvez votre logement idéal
-            </h2>
-            <form className="search-form-modern" action="/logements" style={{ 
-              display: 'flex', 
-              gap: '12px', 
+            <>
+            {/* Version mobile compacte */}
+            {isMobile ? (
+              <div 
+                onClick={() => setMobileSearchOpen(true)}
+                className="mobile-search-compact"
+                style={{
+                  background: 'rgba(255,255,255,0.98)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '16px',
+                  padding: '14px 18px',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                  border: '1px solid rgba(201,103,69,0.2)',
+                  maxWidth: '500px',
+                  margin: '0 auto',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontSize: '20px' }}>🔍</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ 
+                      fontSize: '15px', 
+                      fontWeight: 600, 
+                      color: '#2D3748',
+                      marginBottom: '4px'
+                    }}>
+                      {lieu || 'Où allez-vous ?'}
+                    </div>
+                    <div style={{ 
+                      fontSize: '13px', 
+                      color: '#6B7280',
+                      display: 'flex',
+                      gap: '8px',
+                      flexWrap: 'wrap'
+                    }}>
+                      {arrivee && depart ? (
+                        <span>
+                          📅 {new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} - {new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                        </span>
+                      ) : (
+                        <span>Quand ? • Qui ?</span>
+                      )}
+                      {voyageurs > 0 && arrivee && (
+                        <span>• 👥 {voyageurs}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '8px',
+                    background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '16px',
+                    fontWeight: 700
+                  }}>
+                    ✏️
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Version desktop classique */
+              <div className="search-card-modern" style={{ 
+                background: 'rgba(255,255,255,0.95)', 
+                backdropFilter: 'blur(10px)',
+                borderRadius: '24px', 
+                padding: '24px', 
+                boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                maxWidth: '900px',
+                margin: '0 auto'
+              }}>
+                <h2 className="search-title" style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 700, 
+                  color: '#2D3748', 
+                  marginBottom: '32px',
+                  textAlign: 'center'
+                }}>
+                  Trouvez votre logement idéal
+                </h2>
+                <form className="search-form-modern" action="/logements" style={{ 
+                  display: 'flex', 
+                  gap: '12px', 
               alignItems: 'stretch', 
               flexWrap: 'nowrap', 
               justifyContent: 'center',
@@ -1224,6 +1291,8 @@ export default function Page() {
           </div>
             </form>
           </div>
+            )}
+            </>
           )}
           </div>
         </div>
