@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 
-export default function NouveauMotDePassePage() {
+function NouveauMotDePasseContent() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,6 @@ export default function NouveauMotDePassePage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Vérifier la présence du token de récupération au chargement
   useEffect(() => {
@@ -355,5 +354,34 @@ export default function NouveauMotDePassePage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function NouveauMotDePassePage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            display: 'inline-block',
+            width: '50px',
+            height: '50px',
+            border: '4px solid rgba(201,103,69,0.2)',
+            borderTop: '4px solid #C96745',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <p style={{ marginTop: '20px', color: '#2D3748', fontSize: '16px' }}>Chargement...</p>
+        </div>
+      </div>
+    }>
+      <NouveauMotDePasseContent />
+    </Suspense>
   );
 }
