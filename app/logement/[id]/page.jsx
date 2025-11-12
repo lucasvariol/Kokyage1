@@ -716,7 +716,7 @@ export default function Page({ params }) {
           // Annonce non publiée : vérifier les droits d'accès
           if (!currentUser) {
             // Utilisateur non connecté : redirection
-            router.push('/connexion');
+            router.push('/inscription');
             return;
           }
           

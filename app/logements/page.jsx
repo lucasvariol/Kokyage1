@@ -512,12 +512,15 @@ function LogementsInner() {
   // Get alternative listings when dates are selected - always show them as suggestions
   const alternativeListings = useMemo(() => {
     if (!arrivee || !depart) return [];
+    if (!Array.isArray(items) || items.length === 0) return [];
+    if (!Array.isArray(filteredItems)) return [];
 
     // Get IDs of already displayed items to exclude them from alternatives
     const displayedIds = new Set(filteredItems.map(item => item.id));
 
     // Get items that match all filters except exact availability
     let alternatives = items.filter(item => {
+      if (!item) return false;
       // Exclude items already displayed
       if (displayedIds.has(item.id)) return false;
       
@@ -962,36 +965,42 @@ function LogementsInner() {
     };
     
     // Initialize swipe for main listings
-    sortedItems.forEach(item => {
-      let imagesArr = [];
-      if (item.images) {
-        if (Array.isArray(item.images)) imagesArr = item.images;
-        else if (typeof item.images === 'string') {
-          try { const arr = JSON.parse(item.images); if (Array.isArray(arr)) imagesArr = arr; } catch {}
+    if (Array.isArray(sortedItems)) {
+      sortedItems.forEach(item => {
+        if (!item) return;
+        let imagesArr = [];
+        if (item.images) {
+          if (Array.isArray(item.images)) imagesArr = item.images;
+          else if (typeof item.images === 'string') {
+            try { const arr = JSON.parse(item.images); if (Array.isArray(arr)) imagesArr = arr; } catch {}
+          }
         }
-      }
-      if (!imagesArr.length && item.image_url) imagesArr = [item.image_url];
-      
-      if (imagesArr.length > 1) {
-        setTimeout(() => initSwipe(item.id, imagesArr.length, 'listing'), 100);
-      }
-    });
+        if (!imagesArr.length && item.image_url) imagesArr = [item.image_url];
+        
+        if (imagesArr.length > 1) {
+          setTimeout(() => initSwipe(item.id, imagesArr.length, 'listing'), 100);
+        }
+      });
+    }
     
     // Initialize swipe for alternative listings
-    alternativeListings.forEach(item => {
-      let imagesArr = [];
-      if (item.images) {
-        if (Array.isArray(item.images)) imagesArr = item.images;
-        else if (typeof item.images === 'string') {
-          try { const arr = JSON.parse(item.images); if (Array.isArray(arr)) imagesArr = arr; } catch {}
+    if (Array.isArray(alternativeListings)) {
+      alternativeListings.forEach(item => {
+        if (!item) return;
+        let imagesArr = [];
+        if (item.images) {
+          if (Array.isArray(item.images)) imagesArr = item.images;
+          else if (typeof item.images === 'string') {
+            try { const arr = JSON.parse(item.images); if (Array.isArray(arr)) imagesArr = arr; } catch {}
+          }
         }
-      }
-      if (!imagesArr.length && item.image_url) imagesArr = [item.image_url];
-      
-      if (imagesArr.length > 1) {
-        setTimeout(() => initSwipe(item.id, imagesArr.length, 'alt'), 100);
-      }
-    });
+        if (!imagesArr.length && item.image_url) imagesArr = [item.image_url];
+        
+        if (imagesArr.length > 1) {
+          setTimeout(() => initSwipe(item.id, imagesArr.length, 'alt'), 100);
+        }
+      });
+    }
   }, [mounted, sortedItems, alternativeListings, imageIndexes]);
 
   const handleMobileSearchUpdate = (updates) => {
@@ -2736,7 +2745,7 @@ function LogementsInner() {
           </div>
 
           {/* Alternative listings section - shown when dates are selected */}
-          {arrivee && depart && alternativeListings.length > 0 && (
+          {arrivee && depart && Array.isArray(alternativeListings) && alternativeListings.length > 0 && (
             <div style={{ marginTop: 48 }}>
               <div style={{ 
                 textAlign: 'center', 
