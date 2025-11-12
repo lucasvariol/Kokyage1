@@ -292,31 +292,31 @@ export default function VerificationProprietaire() {
         {/* Hero */}
         <section style={{
           background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
-          padding: '60px 24px 90px',
+          padding: 'clamp(40px, 8vw, 60px) clamp(16px, 4vw, 24px) clamp(60px, 12vw, 90px)',
           textAlign: 'center',
           color: 'white',
           position: 'relative',
           overflow: 'hidden'
         }}>
-          <div style={{ position: 'absolute', top: '18%', left: '10%', width: 150, height: 150, background: 'rgba(255,255,255,0.1)', borderRadius: '50%', animation: 'float 6s ease-in-out infinite' }} />
-          <div style={{ position: 'absolute', top: '55%', right: '12%', width: 120, height: 120, background: 'rgba(255,255,255,0.08)', borderRadius: '50%', animation: 'float 8s ease-in-out infinite reverse' }} />
+          <div style={{ position: 'absolute', top: '18%', left: '10%', width: 'clamp(80px, 15vw, 150px)', height: 'clamp(80px, 15vw, 150px)', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', animation: 'float 6s ease-in-out infinite' }} />
+          <div style={{ position: 'absolute', top: '55%', right: '12%', width: 'clamp(60px, 12vw, 120px)', height: 'clamp(60px, 12vw, 120px)', background: 'rgba(255,255,255,0.08)', borderRadius: '50%', animation: 'float 8s ease-in-out infinite reverse' }} />
           <div style={{ maxWidth: 640, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-            <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3.1rem)', fontWeight: 800, marginBottom: 12, letterSpacing: '-0.02em', textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)' }}>
+            <h1 style={{ fontSize: 'clamp(1.5rem, 5vw, 3.1rem)', fontWeight: 800, marginBottom: 12, letterSpacing: '-0.02em', textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)' }}>
               Confirmez la propriété de votre logement
             </h1>
-            <p style={{ fontSize: '1.05rem', opacity: 0.92, lineHeight: 1.6, maxWidth: 560, margin: '0 auto' }}>
+            <p style={{ fontSize: 'clamp(0.9rem, 2.5vw, 1.05rem)', opacity: 0.92, lineHeight: 1.6, maxWidth: 560, margin: '0 auto' }}>
               Connectez-vous ou créez un compte pour lier ce logement à votre profil hôte.
             </p>
           </div>
         </section>
 
         {/* Carte d'auth moderne */}
-        <section style={{ padding: '0 24px 80px', transform: 'translateY(-50px)' }}>
+        <section style={{ padding: '0 clamp(12px, 3vw, 24px) clamp(40px, 10vw, 80px)', transform: 'translateY(clamp(-30px, -5vw, -50px))' }}>
           <div style={{
             background: 'rgba(255,255,255,0.95)',
             backdropFilter: 'blur(20px)',
-            borderRadius: '24px',
-            padding: '44px',
+            borderRadius: 'clamp(16px, 3vw, 24px)',
+            padding: 'clamp(20px, 5vw, 44px)',
             boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
             border: '1px solid rgba(255,255,255,0.2)',
             width: '100%',
@@ -325,47 +325,47 @@ export default function VerificationProprietaire() {
           }}>
             {/* Listing info */}
             {listingInfo && (
-              <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: 12, borderRadius: 12, marginBottom: 18 }}>
-                <div style={{ fontWeight: 700, color: '#1F2937' }}>{listingInfo.title}</div>
-                <div style={{ color: '#64748B', fontSize: 14 }}>{listingInfo.address}, {listingInfo.city}</div>
+              <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: 'clamp(10px, 2vw, 12px)', borderRadius: 12, marginBottom: 18 }}>
+                <div style={{ fontWeight: 700, color: '#1F2937', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>{listingInfo.title}</div>
+                <div style={{ color: '#64748B', fontSize: 'clamp(0.8rem, 1.8vw, 0.875rem)' }}>{listingInfo.address}, {listingInfo.city}</div>
               </div>
             )}
 
             {/* Messages */}
             {error && (
-              <div style={{ padding: 12, borderRadius: 12, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#B91C1C', marginBottom: 16 }}>⚠️ {error}</div>
+              <div style={{ padding: 'clamp(10px, 2vw, 12px)', borderRadius: 12, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#B91C1C', marginBottom: 16, fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>⚠️ {error}</div>
             )}
             {success && (
-              <div style={{ padding: 12, borderRadius: 12, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#065F46', marginBottom: 16 }}>✅ {success}</div>
+              <div style={{ padding: 'clamp(10px, 2vw, 12px)', borderRadius: 12, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#065F46', marginBottom: 16, fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>✅ {success}</div>
             )}
 
             {/* Si connecté */}
             {user ? (
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 2vw, 16px)', marginBottom: 'clamp(12px, 2.5vw, 16px)' }}>
                   <div>
-                    <div style={{ fontWeight: 700, color: '#1F2937' }}>Connecté en tant que</div>
-                    <div style={{ color: '#64748B', fontSize: 14 }}>{user.email}</div>
+                    <div style={{ fontWeight: 700, color: '#1F2937', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>Connecté en tant que</div>
+                    <div style={{ color: '#64748B', fontSize: 'clamp(0.8rem, 1.8vw, 0.875rem)' }}>{user.email}</div>
                   </div>
-                  <button onClick={handleLogout} style={{ border: '1px solid #E2E8F0', background: '#fff', color: '#1F2937', borderRadius: 10, padding: '8px 12px', fontWeight: 600 }}>Se déconnecter</button>
+                  <button onClick={handleLogout} style={{ border: '1px solid #E2E8F0', background: '#fff', color: '#1F2937', borderRadius: 10, padding: 'clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px)', fontWeight: 600, fontSize: 'clamp(0.85rem, 2vw, 1rem)', alignSelf: 'flex-start' }}>Se déconnecter</button>
                 </div>
                 
                 {/* Avertissement si le compte connecté est le locataire */}
                 {tenant && tenant.id === user.id && (
                   <div style={{ 
-                    padding: '16px', 
+                    padding: 'clamp(12px, 3vw, 16px)', 
                     borderRadius: '12px', 
                     background: 'rgba(239,68,68,0.08)', 
                     border: '2px solid rgba(239,68,68,0.3)', 
                     marginBottom: '16px'
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                      <span style={{ fontSize: '1.5rem' }}>⚠️</span>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'clamp(8px, 2vw, 12px)' }}>
+                      <span style={{ fontSize: 'clamp(1.2rem, 3vw, 1.5rem)' }}>⚠️</span>
                       <div>
-                        <div style={{ fontWeight: 700, color: '#B91C1C', marginBottom: '6px' }}>
+                        <div style={{ fontWeight: 700, color: '#B91C1C', marginBottom: '6px', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
                           Compte non autorisé
                         </div>
-                        <div style={{ color: '#7F1D1D', fontSize: '0.95rem', lineHeight: 1.5 }}>
+                        <div style={{ color: '#7F1D1D', fontSize: 'clamp(0.8rem, 1.8vw, 0.95rem)', lineHeight: 1.5 }}>
                           Vous êtes connecté avec le compte qui a créé cette annonce (locataire). 
                           Le propriétaire du logement doit utiliser un <strong>compte différent</strong> pour confirmer la propriété.
                           <br /><br />
@@ -376,16 +376,16 @@ export default function VerificationProprietaire() {
                   </div>
                 )}
                 {/* Consentement propriétaire (visible seulement connecté) */}
-                <div style={{ border: '1px solid #E2E8F0', borderRadius: 12, padding: 12, marginBottom: 14, background: '#F8FAFC' }}>
+                <div style={{ border: '1px solid #E2E8F0', borderRadius: 12, padding: 'clamp(10px, 2vw, 12px)', marginBottom: 14, background: '#F8FAFC' }}>
                   <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
-                    <input type="checkbox" checked={consentChecked} onChange={(e) => setConsentChecked(e.target.checked)} />
-                    <span style={{ color: '#0F172A', fontWeight: 600 }}>J'ai lu et j'accepte l'accord de consentement du propriétaire</span>
+                    <input type="checkbox" checked={consentChecked} onChange={(e) => setConsentChecked(e.target.checked)} style={{ marginTop: 2 }} />
+                    <span style={{ color: '#0F172A', fontWeight: 600, fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>J'ai lu et j'accepte l'accord de consentement du propriétaire</span>
                   </label>
-                  <button type="button" onClick={() => setConsentOpen(v => !v)} style={{ marginTop: 10, background: 'transparent', border: 'none', color: '#C96745', fontWeight: 700, padding: 0 }}>
+                  <button type="button" onClick={() => setConsentOpen(v => !v)} style={{ marginTop: 10, background: 'transparent', border: 'none', color: '#C96745', fontWeight: 700, padding: 0, fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>
                     {consentOpen ? 'Masquer le détail' : 'Afficher le détail'}
                   </button>
                   {consentOpen && (
-                    <div style={{ marginTop: 10, maxHeight: '70vh', minHeight: '40vh', overflowY: 'auto', padding: 20, background: 'white', border: '1px solid #E2E8F0', borderRadius: 12, lineHeight: 1.6, fontSize: 14 }}>
+                    <div style={{ marginTop: 10, maxHeight: '70vh', minHeight: '40vh', overflowY: 'auto', padding: 'clamp(12px, 3vw, 20px)', background: 'white', border: '1px solid #E2E8F0', borderRadius: 12, lineHeight: 1.6, fontSize: 'clamp(0.8rem, 1.8vw, 0.875rem)' }}>
                       <OwnerConsentAgreement
                         ownerName={(user?.user_metadata?.full_name || user?.user_metadata?.name || `${user?.user_metadata?.prenom || ''} ${user?.user_metadata?.nom || ''}`.trim() || user?.email || 'Le Propriétaire')}
                         tenantName={(tenant?.name || 'Nom du locataire principal')}
@@ -400,12 +400,13 @@ export default function VerificationProprietaire() {
                   disabled={!consentChecked || (tenant && tenant.id === user.id)} 
                   style={{ 
                     width: '100%', 
-                    padding: '14px 18px', 
+                    padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 18px)', 
                     borderRadius: 12, 
                     border: 'none', 
                     background: (consentChecked && !(tenant && tenant.id === user.id)) ? 'linear-gradient(135deg, #D79077 0%, #C96745 100%)' : '#94A3B8', 
                     color: 'white', 
                     fontWeight: 800, 
+                    fontSize: 'clamp(0.9rem, 2vw, 1rem)',
                     boxShadow: (consentChecked && !(tenant && tenant.id === user.id)) ? '0 10px 20px rgba(201,103,69,0.3)' : 'none', 
                     cursor: (consentChecked && !(tenant && tenant.id === user.id)) ? 'pointer' : 'not-allowed' 
                   }}
@@ -416,38 +417,40 @@ export default function VerificationProprietaire() {
             ) : (
               <div>
                 {/* Tabs */}
-                <div style={{ display: 'flex', gap: 8, background: '#F1F5F9', padding: 6, borderRadius: 999, marginBottom: 20 }}>
-                  <button onClick={() => setActiveTab('login')} style={{ flex: 1, padding: '10px 14px', borderRadius: 999, fontWeight: 800, border: 'none', background: activeTab === 'login' ? '#0F172A' : 'transparent', color: activeTab === 'login' ? 'white' : '#0F172A' }}>Se connecter</button>
-                  <button onClick={() => setActiveTab('signup')} style={{ flex: 1, padding: '10px 14px', borderRadius: 999, fontWeight: 800, border: 'none', background: activeTab === 'signup' ? '#0F172A' : 'transparent', color: activeTab === 'signup' ? 'white' : '#0F172A' }}>Créer un compte</button>
+                <div style={{ display: 'flex', gap: 'clamp(6px, 1.5vw, 8px)', background: '#F1F5F9', padding: 'clamp(4px, 1vw, 6px)', borderRadius: 999, marginBottom: 'clamp(16px, 3vw, 20px)' }}>
+                  <button onClick={() => setActiveTab('login')} style={{ flex: 1, padding: 'clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px)', borderRadius: 999, fontWeight: 800, border: 'none', background: activeTab === 'login' ? '#0F172A' : 'transparent', color: activeTab === 'login' ? 'white' : '#0F172A', fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>Se connecter</button>
+                  <button onClick={() => setActiveTab('signup')} style={{ flex: 1, padding: 'clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px)', borderRadius: 999, fontWeight: 800, border: 'none', background: activeTab === 'signup' ? '#0F172A' : 'transparent', color: activeTab === 'signup' ? 'white' : '#0F172A', fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>Créer un compte</button>
                 </div>
 
                 {/* Google */}
-                <button onClick={handleGoogleAuth} disabled={authLoading} style={{ width: '100%', background: 'white', border: '1px solid #E2E8F0', padding: '12px 16px', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontWeight: 700 }}>
+                <button onClick={handleGoogleAuth} disabled={authLoading} style={{ width: '100%', background: 'white', border: '1px solid #E2E8F0', padding: 'clamp(10px, 2vw, 12px) clamp(12px, 2.5vw, 16px)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(6px, 1.5vw, 10px)', fontWeight: 700, fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>
                   <img alt="Google" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width={20} height={20} />
                   {activeTab === 'login' ? 'Se connecter avec Google' : "S'inscrire avec Google"}
                 </button>
 
                 {/* Separator */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '16px 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: 'clamp(12px, 2.5vw, 16px) 0' }}>
                   <div style={{ height: 1, background: '#E2E8F0', flex: 1 }} />
-                  <span style={{ color: '#64748B', fontWeight: 600 }}>ou</span>
+                  <span style={{ color: '#64748B', fontWeight: 600, fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>ou</span>
                   <div style={{ height: 1, background: '#E2E8F0', flex: 1 }} />
                 </div>
 
                 {activeTab === 'login' ? (
-                  <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                    <input type="email" placeholder="john.doe@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC' }} />
-                    <input type="password" placeholder="Mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC' }} />
-                    <button type="submit" disabled={authLoading} style={{ width: '100%', padding: '14px 18px', borderRadius: 12, border: 'none', background: authLoading ? '#94A3B8' : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', color: 'white', fontWeight: 800 }}>{authLoading ? 'Connexion...' : 'Continuer'}</button>
+                  <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 2.5vw, 14px)' }}>
+                    <input type="email" placeholder="john.doe@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }} />
+                    <input type="password" placeholder="Mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }} />
+                    <button type="submit" disabled={authLoading} style={{ width: '100%', padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 18px)', borderRadius: 12, border: 'none', background: authLoading ? '#94A3B8' : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', color: 'white', fontWeight: 800, fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>{authLoading ? 'Connexion...' : 'Continuer'}</button>
                   </form>
                 ) : (
-                  <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                    <div style={{ display: 'flex', gap: 10 }}>
-                      <input type="text" placeholder="Votre prénom" value={prenom} onChange={(e) => setPrenom(e.target.value)} required style={{ flex: 1, padding: '14px 16px', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC' }} />
-                      <input type="text" placeholder="Votre nom" value={nom} onChange={(e) => setNom(e.target.value)} required style={{ flex: 1, padding: '14px 16px', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC' }} />
+                  <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 2.5vw, 14px)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 2.5vw, 14px)' }}>
+                      <input type="text" placeholder="Votre prénom" value={prenom} onChange={(e) => setPrenom(e.target.value)} required style={{ flex: 1, padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }} />
+                      <input type="text" placeholder="Votre nom" value={nom} onChange={(e) => setNom(e.target.value)} required style={{ flex: 1, padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }} />
                     </div>
+                    <input type="email" placeholder="Adresse email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }} />
+                    <input type="password" placeholder="Mot de passe (minimum 6 caractères)" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} style={{ width: '100%', padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }} />
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      <label style={{ fontSize: 14, fontWeight: 700, color: '#1F2937' }}>Date de naissance</label>
+                      <label style={{ fontSize: 'clamp(0.8rem, 1.8vw, 0.875rem)', fontWeight: 700, color: '#1F2937' }}>Date de naissance</label>
                       <input
                         type="date"
                         placeholder="jj/mm/aaaa"
@@ -457,21 +460,21 @@ export default function VerificationProprietaire() {
                         min={minBirthDate}
                         max={maxBirthDate}
                         aria-label="Date de naissance"
-                        style={{ width: '100%', padding: '14px 16px', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC' }}
+                        style={{ width: '100%', padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 16px)', borderRadius: 12, border: '2px solid #E2E8F0', background: '#F7FAFC', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}
                       />
                       {dateNaissance ? (
-                        <span style={{ fontSize: 12, color: isAdult ? '#16A34A' : '#B91C1C' }}>
+                        <span style={{ fontSize: 'clamp(0.75rem, 1.6vw, 0.75rem)', color: isAdult ? '#16A34A' : '#B91C1C' }}>
                           {isAdult ? `✓ Âge: ${calculateAge(dateNaissance)} ans (éligible)` : `⚠️ Âge: ${calculateAge(dateNaissance)} ans (minimum 18 ans requis)`}
                         </span>
                       ) : (
-                        <span style={{ fontSize: 12, color: '#64748B' }}>Vous devez avoir au moins 18 ans</span>
+                        <span style={{ fontSize: 'clamp(0.75rem, 1.6vw, 0.75rem)', color: '#64748B' }}>Vous devez avoir au moins 18 ans</span>
                       )}
                     </div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#334155', fontSize: 14 }}>
-                      <input type="checkbox" checked={acceptCGU} onChange={(e) => setAcceptCGU(e.target.checked)} />
+                    <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#334155', fontSize: 'clamp(0.8rem, 1.8vw, 0.875rem)' }}>
+                      <input type="checkbox" checked={acceptCGU} onChange={(e) => setAcceptCGU(e.target.checked)} style={{ marginTop: 2 }} />
                       <span>J'ai lu et j'accepte les <a href="/cgu" style={{ color: '#C96745', fontWeight: 600 }}>Conditions générales d'utilisation</a> et la <a href="/privacy" style={{ color: '#C96745', fontWeight: 600 }}>Politique de confidentialité</a></span>
                     </label>
-                    <button type="submit" disabled={authLoading || !acceptCGU || !isAdult} style={{ width: '100%', padding: '14px 18px', borderRadius: 12, border: 'none', background: (authLoading || !acceptCGU || !isAdult) ? '#94A3B8' : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', color: 'white', fontWeight: 800 }}>
+                    <button type="submit" disabled={authLoading || !acceptCGU || !isAdult} style={{ width: '100%', padding: 'clamp(12px, 2.5vw, 14px) clamp(14px, 3vw, 18px)', borderRadius: 12, border: 'none', background: (authLoading || !acceptCGU || !isAdult) ? '#94A3B8' : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', color: 'white', fontWeight: 800, fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
                       {authLoading ? "Création..." : !isAdult ? "Minimum 18 ans requis" : !acceptCGU ? "Accepter les CGU" : "S'enregistrer"}
                     </button>
                   </form>
