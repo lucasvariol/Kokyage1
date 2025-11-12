@@ -349,6 +349,9 @@ export default function Page({ params }) {
   const [activeField, setActiveField] = useState('from');
   const [showPriceDetail, setShowPriceDetail] = useState(false);
   const [selectedGuests, setSelectedGuests] = useState(1);
+  // Avis et statistiques d'avis
+  const [reviews, setReviews] = useState([]);
+  const [stats, setStats] = useState({ count: 0, avg: 0 });
   // Pause accord propriétaire
   const [showPauseModal, setShowPauseModal] = useState(false);
   const [confirmPauseChecked, setConfirmPauseChecked] = useState(false);
