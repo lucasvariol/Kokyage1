@@ -975,7 +975,8 @@ function LogementsInner() {
         />
       )}
       
-      {/* Hero Section */}
+      {/* Hero Section - cachée sur mobile */}
+      {!isMobile && (
       <section style={{
         background: 'linear-gradient(135deg, #60A29D 0%, #4A8985 100%)',
         padding: '60px 20px 40px',
@@ -1369,6 +1370,7 @@ function LogementsInner() {
           )}
         </div>
       </section>
+      )}
       
       {/* Global override moved to app/globals.css to avoid styled-jsx transform issues */}
 
