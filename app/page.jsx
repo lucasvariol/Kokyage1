@@ -17,6 +17,11 @@ export default function Page() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  // État pour le modal desktop
+  const [desktopSearchOpen, setDesktopSearchOpen] = useState(false);
+  const [desktopStep, setDesktopStep] = useState(1); // 1: lieu, 2: dates, 3: voyageurs
+  const desktopInputRef = useRef(null);
+
   const [arrivee, setArrivee] = useState("");
   const [depart, setDepart] = useState("");
   const arriveeRef = useRef(null);
@@ -90,6 +95,15 @@ export default function Page() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Reset du step desktop et auto-focus quand le modal s'ouvre
+  useEffect(() => {
+    if (desktopSearchOpen) {
+      setDesktopStep(1);
+      setSelectedMonth(new Date());
+      setTimeout(() => desktopInputRef.current?.focus(), 100);
+    }
+  }, [desktopSearchOpen]);
 
   // Fermer le menu voyageurs si clic en dehors
   useEffect(() => {
@@ -834,7 +848,7 @@ export default function Page() {
             padding: '24px', 
             boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
             border: '1px solid rgba(255,255,255,0.2)',
-            maxWidth: '900px',
+            maxWidth: '600px',
             margin: '0 auto'
           }}>
             <h2 className="search-title" style={{ 
@@ -846,6 +860,81 @@ export default function Page() {
             }}>
               Trouvez votre logement idéal
             </h2>
+            
+            {/* Barre de recherche compacte sur desktop */}
+            {!isMobile && (
+              <button
+                type="button"
+                onClick={() => setDesktopSearchOpen(true)}
+                style={{
+                  width: '100%',
+                  padding: '18px 24px',
+                  borderRadius: '16px',
+                  border: '2px solid #E2E8F0',
+                  fontSize: '16px',
+                  background: 'white',
+                  color: '#2D3748',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontWeight: '500',
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '16px'
+                }}
+                onMouseEnter={e => {
+                  e.target.style.borderColor = '#60A29D';
+                  e.target.style.boxShadow = '0 6px 25px rgba(96,162,157,0.2)';
+                }}
+                onMouseLeave={e => {
+                  e.target.style.borderColor = '#E2E8F0';
+                  e.target.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flex: 1 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '13px', color: '#718096', fontWeight: 600, marginBottom: '4px' }}>Destination</div>
+                    <div style={{ fontSize: '15px', fontWeight: 600, color: lieu ? '#2D3748' : '#A0AEC0' }}>
+                      {lieu || 'Où allez-vous ?'}
+                    </div>
+                  </div>
+                  <div style={{ width: '1px', height: '40px', background: '#E2E8F0' }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '13px', color: '#718096', fontWeight: 600, marginBottom: '4px' }}>Dates</div>
+                    <div style={{ fontSize: '15px', fontWeight: 600, color: (arrivee && depart) ? '#2D3748' : '#A0AEC0' }}>
+                      {arrivee && depart
+                        ? `${new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → ${new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}`
+                        : 'Ajouter des dates'}
+                    </div>
+                  </div>
+                  <div style={{ width: '1px', height: '40px', background: '#E2E8F0' }} />
+                  <div style={{ minWidth: '100px' }}>
+                    <div style={{ fontSize: '13px', color: '#718096', fontWeight: 600, marginBottom: '4px' }}>Voyageurs</div>
+                    <div style={{ fontSize: '15px', fontWeight: 600, color: '#2D3748' }}>
+                      {voyageurs} {voyageurs > 1 ? 'pers.' : 'pers.'}
+                    </div>
+                  </div>
+                </div>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '20px',
+                  flexShrink: 0
+                }}>
+                  🔍
+                </div>
+              </button>
+            )}
+
+            {/* Barre mobile (inchangée) */}
+            {isMobile && (
             <form className="search-form-modern" action="/logements" style={{ 
               display: 'flex', 
               gap: '8px', 
@@ -992,411 +1081,448 @@ export default function Page() {
               )}
             </div>
           </div>
-
-            {/* Dates (Arrivée + Départ) */}
-            <div className="date-field desktop-only" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '0 0 auto', minWidth: '180px' }}>
-              <div style={{ position: 'relative', width: '100%' }}>
-                <button
-                  type="button"
-                  ref={arriveeRef}
-                  onClick={() => {
-                    setShowArriveeCalendar(!showArriveeCalendar);
-                  }}
-                  onFocus={() => setArriveeFocused(true)}
-                  onBlur={() => setArriveeFocused(false)}
-                  style={{
-                    width: '100%',
-                    padding: '16px 12px',
-                    borderRadius: '12px',
-                    border: arriveeFocused ? '2px solid #60A29D' : '2px solid transparent',
-                    fontSize: '13px',
-                    background: '#F5F1ED',
-                    color: (arrivee || depart) ? '#2D3748' : '#718096',
-                    boxShadow: arriveeFocused ? '0 4px 20px rgba(96,162,157,0.15)' : '0 2px 8px rgba(0,0,0,0.04)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '4px',
-                    cursor: 'pointer',
-                    height: '56px',
-                    boxSizing: 'border-box',
-                    outline: 'none',
-                    transition: 'all 0.3s ease',
-                    fontWeight: '500'
-                  }}
-                >
-                  <span style={{ fontSize: '10px', color: '#718096', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dates</span>
-                  <span style={{ fontSize: '13px', fontWeight: '600' }}>
-                    {arrivee && depart
-                      ? `${new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → ${new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}`
-                      : arrivee
-                      ? new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')
-                      : "Sélectionner"}
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            {/* Voyageurs */}
-            <div className="travelers-field desktop-only" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '0 0 auto', minWidth: '120px', zIndex: 10000 }}>
-              {/* Masqué */}
-              <select
-                name="voyageurs"
-                id="voyageurs"
-                value={voyageurs}
-                style={{ display: 'none' }}
-                readOnly
-              >
-                {[...Array(10)].map((_, i) => (
-                  <option key={i + 1} value={i + 1}>{i + 1}</option>
-                ))}
-              </select>
-              <div style={{ position: 'relative', width: '100%' }}>
-                <button
-                  type="button"
-                  ref={voyageursBtnRef}
-                  onClick={() => {
-                    setVoyageursOpen(v => !v);
-                    setVoyageurIndex(voyageurs - 1);
-                  }}
-                  onFocus={() => setVoyageursFocused(true)}
-                  onBlur={() => setVoyageursFocused(false)}
-                  onKeyDown={handleVoyageursKeyDown}
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                    padding: '16px 8px',
-                    borderRadius: '12px',
-                    border: voyageursFocused ? '2px solid #60A29D' : '2px solid transparent',
-                    fontSize: '13px',
-                    background: '#F5F1ED',
-                    color: '#2D3748',
-                    boxShadow: voyageursFocused ? '0 4px 20px rgba(96,162,157,0.15)' : '0 2px 8px rgba(0,0,0,0.04)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '4px',
-                    cursor: 'pointer',
-                    height: '56px',
-                    boxSizing: 'border-box',
-                    outline: 'none',
-                    transition: 'all 0.3s ease',
-                    fontWeight: '500'
-                  }}
-                >
-                  <span style={{ fontSize: '10px', color: '#718096', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Voyageurs</span>
-                  <span style={{ fontSize: '13px', fontWeight: '600' }}>{voyageurs} {voyageurs > 1 ? 'pers.' : 'pers.'}</span>
-                </button>
-              {voyageursOpen && (
-                <ul
-                  ref={voyageursMenuRef}
-                  tabIndex={-1}
-                  style={{
-                    position: 'absolute',
-                    top: '60px',
-                    left: 0,
-                    width: '100%',
-                    background: 'white',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
-                    margin: 0,
-                    padding: '8px 0',
-                    listStyle: 'none',
-                    zIndex: 10000,
-                    backdropFilter: 'blur(8px)'
-                  }}>
-                  {[...Array(10)].map((_, i) => (
-                    <li
-                      key={i + 1}
-                      style={{
-                        padding: '12px 20px',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        background: voyageurIndex === i ? '#60A29D' : (voyageurs === i + 1 ? '#F5F1ED' : 'white'),
-                        color: voyageurIndex === i ? 'white' : (voyageurs === i + 1 ? '#60A29D' : '#2D3748'),
-                        transition: 'all 0.2s ease',
-                        fontWeight: voyageurs === i + 1 ? '600' : '500',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
-                      }}
-                      onMouseEnter={e => {
-                        if (voyageurIndex !== i && voyageurs !== i + 1) {
-                          e.target.style.background = '#F5F1ED';
-                        }
-                      }}
-                      onMouseLeave={e => {
-                        if (voyageurIndex !== i && voyageurs !== i + 1) {
-                          e.target.style.background = 'white';
-                        }
-                      }}
-                      onMouseDown={() => {
-                        setVoyageurs(i + 1);
-                        setVoyageursOpen(false);
-                        document.querySelector('.btn-search-modern')?.focus();
-                      }}
-                    >
-                      <span>{i + 1} {i + 1 > 1 ? 'personnes' : 'personne'}</span>
-                      {voyageurs === i + 1 && <span style={{ color: '#60A29D' }}>✓</span>}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {/* Bouton Rechercher - Uniquement sur desktop */}
-            {!isMobile && (
-              <button
-                className="btn-search-modern"
-                type="button"
-                onClick={() => {
-                  const params = new URLSearchParams();
-                  if (lieu) params.append('destination', lieu);
-                  if (arrivee) params.append('arrivee', arrivee);
-                  if (depart) params.append('depart', depart);
-                  if (voyageurs) params.append('voyageurs', voyageurs);
-                  window.location.href = `/logements${params.toString() ? '?' + params.toString() : ''}`;
-                }}
-                style={{
-                  background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '0 20px',
-                  height: '56px',
-                  cursor: 'pointer',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 20px rgba(96,162,157,0.3)',
-                  flex: '0 0 auto',
-                  whiteSpace: 'nowrap'
-                }}
-                onMouseEnter={e => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 25px rgba(96,162,157,0.4)';
-                }}
-                onMouseLeave={e => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 20px rgba(96,162,157,0.3)';
-                }}
-              >
-                🔍 Rechercher
-              </button>
-            )}
-          </div>
             </form>
+          )}
           </div>
           )}
           </div>
         </div>
       </section>
 
-      {/* Calendrier unifié - Modal desktop */}
-      {!isMobile && showArriveeCalendar && (
+      {/* Modal Desktop Search Workflow */}
+      {!isMobile && desktopSearchOpen && (
         <>
           <div 
-            onClick={() => setShowArriveeCalendar(false)}
+            onClick={() => setDesktopSearchOpen(false)}
             style={{
               position: 'fixed',
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 9998
+              background: 'rgba(0, 0, 0, 0.6)',
+              zIndex: 9998,
+              animation: 'fadeIn 0.3s ease'
             }}
           />
+
           <div style={{
             position: 'fixed',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             background: 'white',
-            borderRadius: '16px',
-            padding: '24px',
+            borderRadius: '24px',
             zIndex: 9999,
-            boxShadow: '0 8px 40px rgba(0,0,0,0.2)',
-            maxWidth: '400px',
-            width: '90vw'
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            animation: 'slideInRight 0.3s ease',
+            boxShadow: '0 8px 60px rgba(0,0,0,0.3)',
+            width: '90vw',
+            maxWidth: '500px'
           }}>
-            {/* Affichage des dates sélectionnées */}
-            {arrivee && depart && (
-              <div style={{
-                background: '#F0F9FF',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '1px solid #BAE6FD',
-                textAlign: 'center'
-              }}>
-                <span style={{ fontSize: '14px', color: '#0369A1', fontWeight: 500 }}>
-                  {new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → {new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}
-                </span>
+            {/* Header */}
+            <div style={{
+              padding: '24px',
+              borderBottom: '1px solid #E5E7EB',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              position: 'sticky',
+              top: 0,
+              background: 'white',
+              zIndex: 1,
+              borderRadius: '24px 24px 0 0'
+            }}>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                {desktopStep > 1 && (
+                  <button
+                    onClick={() => setDesktopStep(desktopStep - 1)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '24px',
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      color: '#2D3748'
+                    }}
+                  >
+                    ←
+                  </button>
+                )}
+                <h3 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: '#2D3748' }}>
+                  {desktopStep === 1 && 'Où allez-vous ?'}
+                  {desktopStep === 2 && 'Quand ?'}
+                  {desktopStep === 3 && 'Combien de voyageurs ?'}
+                </h3>
               </div>
-            )}
-
-            {arrivee && !depart && (
-              <div style={{
-                background: '#FEF3C7',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '1px solid #FDE68A',
-                textAlign: 'center'
-              }}>
-                <span style={{ fontSize: '14px', color: '#92400E', fontWeight: 500 }}>
-                  Sélectionnez la date de départ
-                </span>
-              </div>
-            )}
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <button
-                onClick={() => {
-                  const newDate = new Date(selectedMonth);
-                  newDate.setMonth(newDate.getMonth() - 1);
-                  setSelectedMonth(newDate);
-                }}
+                onClick={() => setDesktopSearchOpen(false)}
                 style={{
                   background: 'none',
                   border: 'none',
-                  fontSize: '24px',
+                  fontSize: '32px',
                   cursor: 'pointer',
-                  padding: '8px',
-                  color: '#2D3748'
+                  padding: '4px',
+                  color: '#6B7280',
+                  lineHeight: 1
                 }}
               >
-                ‹
-              </button>
-              <span style={{ fontSize: '16px', fontWeight: 600, color: '#2D3748' }}>
-                {selectedMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-              </span>
-              <button
-                onClick={() => {
-                  const newDate = new Date(selectedMonth);
-                  newDate.setMonth(newDate.getMonth() + 1);
-                  setSelectedMonth(newDate);
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '24px',
-                  cursor: 'pointer',
-                  padding: '8px',
-                  color: '#2D3748'
-                }}
-              >
-                ›
+                ×
               </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginBottom: '8px' }}>
-              {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map(day => (
-                <div key={day} style={{ textAlign: 'center', fontSize: '12px', fontWeight: 600, color: '#6B7280', padding: '8px 0' }}>
-                  {day}
+            {/* Content */}
+            <div style={{ padding: '24px' }}>
+              {/* Step 1: Destination */}
+              {desktopStep === 1 && (
+                <div>
+                  <input
+                    ref={desktopInputRef}
+                    type="text"
+                    placeholder="Rechercher une destination..."
+                    value={lieu}
+                    onChange={e => {
+                      setLieu(e.target.value);
+                      setHasTypedLieu(true);
+                    }}
+                    autoComplete="off"
+                    style={{
+                      width: '100%',
+                      padding: '16px 20px',
+                      borderRadius: '12px',
+                      border: '2px solid #E5E7EB',
+                      fontSize: '16px',
+                      outline: 'none',
+                      transition: 'all 0.2s ease',
+                      fontFamily: 'inherit'
+                    }}
+                    onFocus={e => e.target.style.borderColor = '#60A29D'}
+                    onBlur={e => e.target.style.borderColor = '#E5E7EB'}
+                  />
+
+                  {isLoadingSuggestions && (
+                    <div style={{ padding: '20px', textAlign: 'center', color: '#6B7280' }}>
+                      Chargement...
+                    </div>
+                  )}
+
+                  {suggestions.length > 0 && (
+                    <div style={{ marginTop: '16px' }}>
+                      {suggestions.map((sug, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setLieu(sug.properties.label);
+                            setSuggestions([]);
+                            setTimeout(() => setDesktopStep(2), 300);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '16px',
+                            textAlign: 'left',
+                            background: 'white',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '12px',
+                            marginBottom: '8px',
+                            cursor: 'pointer',
+                            fontSize: '15px',
+                            color: '#2D3748',
+                            transition: 'all 0.2s ease',
+                            fontFamily: 'inherit'
+                          }}
+                          onMouseEnter={e => {
+                            e.target.style.background = '#F9FAFB';
+                            e.target.style.borderColor = '#60A29D';
+                          }}
+                          onMouseLeave={e => {
+                            e.target.style.background = 'white';
+                            e.target.style.borderColor = '#E5E7EB';
+                          }}
+                        >
+                          📍 {sug.properties.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+              )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
-              {(() => {
-                const year = selectedMonth.getFullYear();
-                const month = selectedMonth.getMonth();
-                const firstDay = new Date(year, month, 1);
-                const lastDay = new Date(year, month + 1, 0);
-                const daysInMonth = lastDay.getDate();
-                const startingDayOfWeek = firstDay.getDay();
-                const days = [];
-                
-                for (let i = 0; i < startingDayOfWeek; i++) {
-                  days.push(null);
-                }
-                for (let day = 1; day <= daysInMonth; day++) {
-                  days.push(new Date(year, month, day));
-                }
-
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                return days.map((date, idx) => {
-                  if (!date) return <div key={idx} />;
-
-                  const dateStr = date.toDateString();
-                  const isArrivee = arrivee && dateStr === new Date(arrivee).toDateString();
-                  const isDepart = depart && dateStr === new Date(depart).toDateString();
-                  const isPast = date < today;
-
-                  // Vérifier si la date est dans la plage sélectionnée
-                  let isInRange = false;
-                  if (arrivee && depart) {
-                    const arriveeDate = new Date(arrivee);
-                    const departDate = new Date(depart);
-                    isInRange = date > arriveeDate && date < departDate;
-                  }
-
-                  return (
+              {/* Step 2: Dates */}
+              {desktopStep === 2 && (
+                <div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '20px'
+                  }}>
                     <button
-                      key={idx}
                       onClick={() => {
-                        if (isPast) return;
-                        
-                        if (!arrivee || (arrivee && depart)) {
-                          // Réinitialiser et définir nouvelle arrivée
-                          setArrivee(date.toISOString().split('T')[0]);
-                          setDepart("");
-                        } else {
-                          // Vérifier si la date est après l'arrivée
-                          const arriveeDate = new Date(arrivee);
-                          if (date > arriveeDate) {
-                            // Définir le départ et fermer automatiquement
-                            setDepart(date.toISOString().split('T')[0]);
-                            setTimeout(() => setShowArriveeCalendar(false), 300);
-                          } else {
-                            // Redéfinir l'arrivée
-                            setArrivee(date.toISOString().split('T')[0]);
-                            setDepart("");
-                          }
-                        }
+                        const newDate = new Date(selectedMonth);
+                        newDate.setMonth(newDate.getMonth() - 1);
+                        setSelectedMonth(newDate);
                       }}
-                      disabled={isPast}
                       style={{
-                        padding: '12px 4px',
+                        background: 'none',
                         border: 'none',
-                        borderRadius: '8px',
-                        cursor: isPast ? 'not-allowed' : 'pointer',
-                        fontSize: '14px',
-                        fontWeight: (isArrivee || isDepart) ? 600 : 400,
-                        background: (isArrivee || isDepart) ? '#C96745' : isInRange ? '#FEE2E2' : 'transparent',
-                        color: (isArrivee || isDepart) ? 'white' : isPast ? '#D1D5DB' : isInRange ? '#DC2626' : '#2D3748',
-                        transition: 'all 0.2s ease',
-                        opacity: isPast ? 0.4 : 1
-                      }}
-                      onMouseEnter={e => {
-                        if (!isPast && !isArrivee && !isDepart) {
-                          e.target.style.background = '#F3F4F6';
-                        }
-                      }}
-                      onMouseLeave={e => {
-                        if (!isPast && !isArrivee && !isDepart && !isInRange) {
-                          e.target.style.background = 'transparent';
-                        } else if (isInRange) {
-                          e.target.style.background = '#FEE2E2';
-                        }
+                        fontSize: '24px',
+                        cursor: 'pointer',
+                        padding: '8px',
+                        color: '#2D3748'
                       }}
                     >
-                      {date.getDate()}
+                      ‹
                     </button>
-                  );
-                });
-              })()}
+                    <span style={{ fontSize: '16px', fontWeight: 600, color: '#2D3748' }}>
+                      {selectedMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                    </span>
+                    <button
+                      onClick={() => {
+                        const newDate = new Date(selectedMonth);
+                        newDate.setMonth(newDate.getMonth() + 1);
+                        setSelectedMonth(newDate);
+                      }}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        fontSize: '24px',
+                        cursor: 'pointer',
+                        padding: '8px',
+                        color: '#2D3748'
+                      }}
+                    >
+                      ›
+                    </button>
+                  </div>
+
+                  {arrivee && depart && (
+                    <div style={{
+                      background: '#F0F9FF',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      marginBottom: '16px',
+                      border: '1px solid #BAE6FD',
+                      textAlign: 'center'
+                    }}>
+                      <span style={{ fontSize: '14px', color: '#0369A1', fontWeight: 500 }}>
+                        {new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → {new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}
+                      </span>
+                    </div>
+                  )}
+
+                  {arrivee && !depart && (
+                    <div style={{
+                      background: '#FEF3C7',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      marginBottom: '16px',
+                      border: '1px solid #FDE68A',
+                      textAlign: 'center'
+                    }}>
+                      <span style={{ fontSize: '14px', color: '#92400E', fontWeight: 500 }}>
+                        Sélectionnez la date de départ
+                      </span>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginBottom: '8px' }}>
+                    {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map(day => (
+                      <div key={day} style={{ textAlign: 'center', fontSize: '12px', fontWeight: 600, color: '#6B7280', padding: '8px 0' }}>
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+                    {(() => {
+                      const year = selectedMonth.getFullYear();
+                      const month = selectedMonth.getMonth();
+                      const firstDay = new Date(year, month, 1);
+                      const lastDay = new Date(year, month + 1, 0);
+                      const daysInMonth = lastDay.getDate();
+                      const startingDayOfWeek = firstDay.getDay();
+                      const days = [];
+                      
+                      for (let i = 0; i < startingDayOfWeek; i++) {
+                        days.push(null);
+                      }
+                      for (let day = 1; day <= daysInMonth; day++) {
+                        days.push(new Date(year, month, day));
+                      }
+
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+
+                      return days.map((date, idx) => {
+                        if (!date) return <div key={idx} />;
+
+                        const dateStr = date.toDateString();
+                        const isArrivee = arrivee && dateStr === new Date(arrivee).toDateString();
+                        const isDepart = depart && dateStr === new Date(depart).toDateString();
+                        const isPast = date < today;
+
+                        let isInRange = false;
+                        if (arrivee && depart) {
+                          const arriveeDate = new Date(arrivee);
+                          const departDate = new Date(depart);
+                          isInRange = date > arriveeDate && date < departDate;
+                        }
+
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => {
+                              if (isPast) return;
+                              
+                              if (!arrivee || (arrivee && depart)) {
+                                setArrivee(date.toISOString().split('T')[0]);
+                                setDepart("");
+                              } else {
+                                const arriveeDate = new Date(arrivee);
+                                if (date > arriveeDate) {
+                                  setDepart(date.toISOString().split('T')[0]);
+                                  setTimeout(() => setDesktopStep(3), 500);
+                                } else {
+                                  setArrivee(date.toISOString().split('T')[0]);
+                                  setDepart("");
+                                }
+                              }
+                            }}
+                            disabled={isPast}
+                            style={{
+                              padding: '12px 4px',
+                              border: 'none',
+                              borderRadius: '8px',
+                              cursor: isPast ? 'not-allowed' : 'pointer',
+                              fontSize: '14px',
+                              fontWeight: (isArrivee || isDepart) ? 600 : 400,
+                              background: (isArrivee || isDepart) ? '#C96745' : isInRange ? '#FEE2E2' : 'transparent',
+                              color: (isArrivee || isDepart) ? 'white' : isPast ? '#D1D5DB' : isInRange ? '#DC2626' : '#2D3748',
+                              transition: 'all 0.2s ease',
+                              opacity: isPast ? 0.4 : 1
+                            }}
+                            onMouseEnter={e => {
+                              if (!isPast && !isArrivee && !isDepart) {
+                                e.target.style.background = '#F3F4F6';
+                              }
+                            }}
+                            onMouseLeave={e => {
+                              if (!isPast && !isArrivee && !isDepart && !isInRange) {
+                                e.target.style.background = 'transparent';
+                              } else if (isInRange) {
+                                e.target.style.background = '#FEE2E2';
+                              }
+                            }}
+                          >
+                            {date.getDate()}
+                          </button>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              {/* Step 3: Voyageurs */}
+              {desktopStep === 3 && (
+                <div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '24px',
+                    background: '#F9FAFB',
+                    borderRadius: '16px',
+                    marginBottom: '24px'
+                  }}>
+                    <span style={{ fontSize: '18px', fontWeight: 600, color: '#2D3748' }}>
+                      Nombre de voyageurs
+                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <button
+                        onClick={() => setVoyageurs(Math.max(1, voyageurs - 1))}
+                        style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          border: '2px solid #E5E7EB',
+                          background: 'white',
+                          fontSize: '20px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.2s ease',
+                          color: '#2D3748'
+                        }}
+                        onMouseEnter={e => e.target.style.borderColor = '#60A29D'}
+                        onMouseLeave={e => e.target.style.borderColor = '#E5E7EB'}
+                      >
+                        −
+                      </button>
+                      <span style={{ fontSize: '24px', fontWeight: 700, color: '#2D3748', minWidth: '40px', textAlign: 'center' }}>
+                        {voyageurs}
+                      </span>
+                      <button
+                        onClick={() => setVoyageurs(Math.min(20, voyageurs + 1))}
+                        style={{
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '50%',
+                          border: '2px solid #E5E7EB',
+                          background: 'white',
+                          fontSize: '20px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.2s ease',
+                          color: '#2D3748'
+                        }}
+                        onMouseEnter={e => e.target.style.borderColor = '#60A29D'}
+                        onMouseLeave={e => e.target.style.borderColor = '#E5E7EB'}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      const params = new URLSearchParams();
+                      if (lieu) params.append('destination', lieu);
+                      if (arrivee) params.append('arrivee', arrivee);
+                      if (depart) params.append('depart', depart);
+                      if (voyageurs) params.append('voyageurs', voyageurs);
+                      window.location.href = `/logements${params.toString() ? '?' + params.toString() : ''}`;
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '16px',
+                      background: 'linear-gradient(135deg, #C96745 0%, #D79077 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '16px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 15px rgba(201, 103, 69, 0.3)'
+                    }}
+                    onMouseEnter={e => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 6px 20px rgba(201, 103, 69, 0.4)';
+                    }}
+                    onMouseLeave={e => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 15px rgba(201, 103, 69, 0.3)';
+                    }}
+                  >
+                    🔍 Rechercher
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </>
