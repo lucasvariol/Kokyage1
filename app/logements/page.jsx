@@ -1374,8 +1374,8 @@ function LogementsInner() {
       
       {/* Global override moved to app/globals.css to avoid styled-jsx transform issues */}
 
-      {/* Indicateur de résultats */}
-      {mounted && (
+      {/* Indicateur de résultats - masqué sur mobile */}
+      {mounted && !isMobile && (
         <section ref={resultsIndicatorRef} style={{
           background: '#fff',
           borderBottom: '1px solid #e5e7eb',
@@ -1919,8 +1919,8 @@ function LogementsInner() {
       )}
 
       {/* Contenu principal */}
-      <main style={{ background: '#f7f8fa', minHeight: '100vh', paddingBottom: 32 }}>
-        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 16px' }}>
+      <main style={{ background: '#f7f8fa', minHeight: '100vh', paddingBottom: 32, paddingTop: isMobile ? 0 : undefined }}>
+        <section style={{ maxWidth: 1100, margin: '0 auto', padding: isMobile ? '0' : '0 16px' }}>
           <div
             ref={mapContainerRef}
             style={{
@@ -1931,11 +1931,12 @@ function LogementsInner() {
             height: isMobile ? 540 : 400,
             borderRadius: isMobile ? 0 : 16,
             marginBottom: 32,
+            marginTop: isMobile ? 0 : undefined,
             overflow: 'hidden',
             background: '#ddd',
             // full-bleed on mobile
-            marginLeft: isMobile ? 'calc(50% - 50vw)' : 0,
-            marginRight: isMobile ? 'calc(50% - 50vw)' : 0,
+            marginLeft: isMobile ? 0 : 0,
+            marginRight: isMobile ? 0 : 0,
             // subtle top inner shadow to hint draggability
             boxShadow: isMobile ? 'inset 0 14px 24px -12px rgba(0,0,0,0.28)' : 'none'
           }}>

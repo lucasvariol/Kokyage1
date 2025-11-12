@@ -169,7 +169,7 @@ export default function MobileSearchBar({
         onClick={() => setIsOpen(true)}
         style={{
           position: 'fixed',
-          top: '60px',
+          top: '70px',
           left: '50%',
           transform: 'translateX(-50%)',
           width: 'calc(100% - 32px)',
@@ -182,7 +182,7 @@ export default function MobileSearchBar({
           alignItems: 'center',
           gap: '12px',
           cursor: 'pointer',
-          zIndex: 1000,
+          zIndex: 900,
           border: '1px solid #E5E7EB',
           transition: 'all 0.3s ease'
         }}
