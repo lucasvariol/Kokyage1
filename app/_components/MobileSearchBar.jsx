@@ -12,6 +12,9 @@ export default function MobileSearchBar({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1); // 1: lieu, 2: dates, 3: voyageurs
+  // Suggestions state for lieu autocomplete
+  const [suggestions, setSuggestions] = useState([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
 
   const formatDateForState = (date) => {
     if (!date) return '';
