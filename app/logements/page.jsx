@@ -972,6 +972,7 @@ function LogementsInner() {
           depart={depart}
           voyageurs={voyageurs}
           onUpdate={handleMobileSearchUpdate}
+          onFiltersClick={() => setShowAdvancedFilters(true)}
         />
       )}
       

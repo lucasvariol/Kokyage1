@@ -7,7 +7,8 @@ export default function MobileSearchBar({
   arrivee, 
   depart, 
   voyageurs,
-  onUpdate
+  onUpdate,
+  onFiltersClick
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1); // 1: lieu, 2: dates, 3: voyageurs
@@ -164,59 +165,107 @@ export default function MobileSearchBar({
 
   if (!isOpen) {
     return (
-      /* Sticky compact bar */
-      <div
-        onClick={() => setIsOpen(true)}
-        style={{
-          position: 'fixed',
-          top: '70px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 'calc(100% - 32px)',
-          maxWidth: '600px',
-          background: 'white',
-          borderRadius: '50px',
-          padding: '12px 20px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          cursor: 'pointer',
-          zIndex: 900,
-          border: '1px solid #E5E7EB',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        <div style={{ 
-          fontSize: '18px',
-          flexShrink: 0
-        }}>
-          🔍
+      <>
+        {/* Sticky compact bar */}
+        <div
+          onClick={() => setIsOpen(true)}
+          style={{
+            position: 'fixed',
+            top: '70px',
+            left: '16px',
+            right: onFiltersClick ? '68px' : '16px',
+            background: 'white',
+            borderRadius: '50px',
+            padding: '12px 20px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            cursor: 'pointer',
+            zIndex: 900,
+            border: '1px solid #E5E7EB',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <div style={{ 
+            fontSize: '18px',
+            flexShrink: 0
+          }}>
+            🔍
+          </div>
+          <div style={{ 
+            flex: 1,
+            fontSize: '14px',
+            color: '#2D3748',
+            fontWeight: 500,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}>
+            {getSummary()}
+          </div>
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0
+          }}>
+            <span style={{ color: 'white', fontSize: '18px', lineHeight: 1 }}>⚙️</span>
+          </div>
         </div>
-        <div style={{ 
-          flex: 1,
-          fontSize: '14px',
-          color: '#2D3748',
-          fontWeight: 500,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap'
-        }}>
-          {getSummary()}
-        </div>
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0
-        }}>
-          <span style={{ color: 'white', fontSize: '18px', lineHeight: 1 }}>⚙️</span>
-        </div>
-      </div>
+
+        {/* Bouton Filtres */}
+        {onFiltersClick && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onFiltersClick();
+            }}
+            style={{
+              position: 'fixed',
+              top: '70px',
+              right: '16px',
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              background: 'white',
+              border: '2px solid #C96745',
+              color: '#C96745',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+              zIndex: 900,
+              transition: 'all 0.3s ease'
+            }}
+            onTouchStart={(e) => {
+              e.currentTarget.style.background = '#C96745';
+              e.currentTarget.style.color = 'white';
+            }}
+            onTouchEnd={(e) => {
+              e.currentTarget.style.background = 'white';
+              e.currentTarget.style.color = '#C96745';
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="4" y1="21" x2="4" y2="14"/>
+              <line x1="4" y1="10" x2="4" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12" y2="3"/>
+              <line x1="20" y1="21" x2="20" y2="16"/>
+              <line x1="20" y1="12" x2="20" y2="3"/>
+              <line x1="1" y1="14" x2="7" y2="14"/>
+              <line x1="9" y1="8" x2="15" y2="8"/>
+              <line x1="17" y1="16" x2="23" y2="16"/>
+            </svg>
+          </button>
+        )}
+      </>
     );
   }
 
