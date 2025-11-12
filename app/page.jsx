@@ -4,6 +4,7 @@ import { useRef, useState, createRef, useEffect } from "react";
 import Header from './_components/Header';
 import Footer from './_components/Footer';
 import Chatbot from './_components/Chatbot';
+import MobileSearchWorkflow from './_components/MobileSearchWorkflow';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,6 +14,10 @@ export default function Page() {
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
   const suggestionsMenuRef = useRef(null);
+  
+  // État pour le modal mobile
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const [arrivee, setArrivee] = useState("");
   const [depart, setDepart] = useState("");
@@ -74,6 +79,16 @@ export default function Page() {
       setIsTransitioning(false);
     }, 150); // Changement rapide après le début du fondu
   };
+
+  // Détecter si on est sur mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Fermer le menu voyageurs si clic en dehors
   useEffect(() => {
@@ -854,9 +869,16 @@ export default function Page() {
                       setHasTypedLieu(true);
                     }}
                     autoComplete="off"
-                    onFocus={() => setLieuFocused(true)}
+                    onFocus={(e) => {
+                      setLieuFocused(true);
+                      if (isMobile) {
+                        e.target.blur();
+                        setMobileSearchOpen(true);
+                      }
+                    }}
                     onBlur={() => setLieuFocused(false)}
                     onKeyDown={handleLieuKeyDown}
+                    readOnly={isMobile}
                     style={{
                       width: '100%',
                       padding: '16px 20px',
@@ -870,7 +892,8 @@ export default function Page() {
                       boxSizing: 'border-box',
                       outline: 'none',
                       transition: 'all 0.3s ease',
-                      fontWeight: '500'
+                      fontWeight: '500',
+                      cursor: isMobile ? 'pointer' : 'text'
                     }}
                   />
                   {/* Champs cachés pour transmettre les dates et voyageurs en query params */}
@@ -2509,6 +2532,10 @@ export default function Page() {
     </main>
     <Footer />
     <Chatbot />
+    <MobileSearchWorkflow 
+      isOpen={mobileSearchOpen} 
+      onClose={() => setMobileSearchOpen(false)} 
+    />
 
     {/* CSS Responsive + Animations */}
     <style jsx>{`
