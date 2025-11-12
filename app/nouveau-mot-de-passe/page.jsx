@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import Header from '../../_components/Header';
-import Footer from '../../_components/Footer';
+import { supabase } from '@/lib/supabaseClient';
+import Header from '../_components/Header';
+import Footer from '../_components/Footer';
 
 export default function NouveauMotDePassePage() {
   const [password, setPassword] = useState('');
@@ -18,7 +18,6 @@ export default function NouveauMotDePassePage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClientComponentClient();
 
   // Vérifier la présence du token de récupération au chargement
   useEffect(() => {
