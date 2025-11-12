@@ -558,6 +558,24 @@ export default function Page(){
                   ✅ {success}
                 </div>
               )}
+
+              {/* Lien Mot de passe oublié */}
+              <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                <a
+                  href="/mot-de-passe-oublie"
+                  style={{
+                    color: '#C96745',
+                    textDecoration: 'none',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    transition: 'color 0.3s ease'
+                  }}
+                  onMouseEnter={e => e.target.style.color = '#D79077'}
+                  onMouseLeave={e => e.target.style.color = '#C96745'}
+                >
+                  Mot de passe oublié ?
+                </a>
+              </div>
             </form>
           )}
 
