@@ -993,27 +993,25 @@ export default function Page() {
             </div>
           </div>
 
-            {/* Dates (Arrivée + Départ combinées) */}
-            <div className="date-field desktop-only" style={{ display: 'flex', flexDirection: 'row', gap: 6, flex: '0 0 auto', minWidth: 'auto' }}>
-              {/* Arrivée */}
-              <div style={{ position: 'relative', width: '120px' }}>
+            {/* Dates (Arrivée + Départ) */}
+            <div className="date-field desktop-only" style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: '0 0 auto', minWidth: '180px' }}>
+              <div style={{ position: 'relative', width: '100%' }}>
                 <button
                   type="button"
                   ref={arriveeRef}
                   onClick={() => {
                     setShowArriveeCalendar(!showArriveeCalendar);
-                    setShowDepartCalendar(false);
                   }}
                   onFocus={() => setArriveeFocused(true)}
                   onBlur={() => setArriveeFocused(false)}
                   style={{
                     width: '100%',
-                    padding: '16px 8px',
+                    padding: '16px 12px',
                     borderRadius: '12px',
                     border: arriveeFocused ? '2px solid #60A29D' : '2px solid transparent',
                     fontSize: '13px',
                     background: '#F5F1ED',
-                    color: arrivee ? '#2D3748' : '#718096',
+                    color: (arrivee || depart) ? '#2D3748' : '#718096',
                     boxShadow: arriveeFocused ? '0 4px 20px rgba(96,162,157,0.15)' : '0 2px 8px rgba(0,0,0,0.04)',
                     display: 'flex',
                     flexDirection: 'column',
@@ -1028,56 +1026,13 @@ export default function Page() {
                     fontWeight: '500'
                   }}
                 >
-                  <span style={{ fontSize: '10px', color: '#718096', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Arrivée</span>
+                  <span style={{ fontSize: '10px', color: '#718096', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dates</span>
                   <span style={{ fontSize: '13px', fontWeight: '600' }}>
-                    {arrivee
-                      ? new Date(arrivee).toLocaleDateString('fr-FR', {
-                          day: 'numeric', month: 'short'
-                        }).replace(/\.$/, '')
-                      : "Date"}
-                  </span>
-                </button>
-              </div>
-              {/* Départ */}
-              <div style={{ position: 'relative', width: '120px' }}>
-                <button
-                  type="button"
-                  ref={departInputRef}
-                  onClick={() => {
-                    setShowDepartCalendar(!showDepartCalendar);
-                    setShowArriveeCalendar(false);
-                  }}
-                  onFocus={() => setDepartFocused(true)}
-                  onBlur={() => setDepartFocused(false)}
-                  style={{
-                    width: '100%',
-                    padding: '16px 8px',
-                    borderRadius: '12px',
-                    border: departFocused ? '2px solid #60A29D' : '2px solid transparent',
-                    fontSize: '13px',
-                    background: '#F5F1ED',
-                    color: depart ? '#2D3748' : '#718096',
-                    boxShadow: departFocused ? '0 4px 20px rgba(96,162,157,0.15)' : '0 2px 8px rgba(0,0,0,0.04)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '4px',
-                    cursor: 'pointer',
-                    height: '56px',
-                    boxSizing: 'border-box',
-                    outline: 'none',
-                    transition: 'all 0.3s ease',
-                    fontWeight: '500'
-                  }}
-                >
-                  <span style={{ fontSize: '10px', color: '#718096', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Départ</span>
-                  <span style={{ fontSize: '13px', fontWeight: '600' }}>
-                    {depart
-                      ? new Date(depart).toLocaleDateString('fr-FR', {
-                          day: 'numeric', month: 'short'
-                        }).replace(/\.$/, '')
-                      : "Date"}
+                    {arrivee && depart
+                      ? `${new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → ${new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}`
+                      : arrivee
+                      ? new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')
+                      : "Sélectionner"}
                   </span>
                 </button>
               </div>
@@ -1245,13 +1200,10 @@ export default function Page() {
       </section>
 
       {/* Calendrier unifié - Modal desktop */}
-      {!isMobile && (showArriveeCalendar || showDepartCalendar) && (
+      {!isMobile && showArriveeCalendar && (
         <>
           <div 
-            onClick={() => {
-              setShowArriveeCalendar(false);
-              setShowDepartCalendar(false);
-            }}
+            onClick={() => setShowArriveeCalendar(false)}
             style={{
               position: 'fixed',
               top: 0,
@@ -1275,31 +1227,36 @@ export default function Page() {
             maxWidth: '400px',
             width: '90vw'
           }}>
-            {/* Indicateur de sélection */}
-            <div style={{ 
-              marginBottom: '16px', 
-              padding: '12px', 
-              background: '#F5F1ED', 
-              borderRadius: '12px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: '12px'
-            }}>
-              <div style={{ flex: 1, textAlign: 'center' }}>
-                <div style={{ fontSize: '11px', color: '#718096', fontWeight: 600, marginBottom: '4px' }}>ARRIVÉE</div>
-                <div style={{ fontSize: '14px', fontWeight: 600, color: arrivee ? '#60A29D' : '#A0AEC0' }}>
-                  {arrivee ? new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '') : 'Non sélectionnée'}
-                </div>
+            {/* Affichage des dates sélectionnées */}
+            {arrivee && depart && (
+              <div style={{
+                background: '#F0F9FF',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                marginBottom: '16px',
+                border: '1px solid #BAE6FD',
+                textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '14px', color: '#0369A1', fontWeight: 500 }}>
+                  {new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')} → {new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '')}
+                </span>
               </div>
-              <div style={{ width: '2px', height: '30px', background: '#E2E8F0' }} />
-              <div style={{ flex: 1, textAlign: 'center' }}>
-                <div style={{ fontSize: '11px', color: '#718096', fontWeight: 600, marginBottom: '4px' }}>DÉPART</div>
-                <div style={{ fontSize: '14px', fontWeight: 600, color: depart ? '#60A29D' : '#A0AEC0' }}>
-                  {depart ? new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }).replace(/\.$/, '') : 'Non sélectionnée'}
-                </div>
+            )}
+
+            {arrivee && !depart && (
+              <div style={{
+                background: '#FEF3C7',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                marginBottom: '16px',
+                border: '1px solid #FDE68A',
+                textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '14px', color: '#92400E', fontWeight: 500 }}>
+                  Sélectionnez la date de départ
+                </span>
               </div>
-            </div>
+            )}
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <button
@@ -1375,17 +1332,9 @@ export default function Page() {
                   const dateStr = date.toDateString();
                   const isArrivee = arrivee && dateStr === new Date(arrivee).toDateString();
                   const isDepart = depart && dateStr === new Date(depart).toDateString();
-                  
-                  // Logique de désactivation
-                  let isPast = date < today;
-                  if (arrivee && !depart) {
-                    // Si arrivée sélectionnée, désactiver les dates avant ou égales à l'arrivée
-                    const arriveeDate = new Date(arrivee);
-                    arriveeDate.setHours(0, 0, 0, 0);
-                    isPast = date <= arriveeDate;
-                  }
+                  const isPast = date < today;
 
-                  // Jour dans la plage sélectionnée
+                  // Vérifier si la date est dans la plage sélectionnée
                   let isInRange = false;
                   if (arrivee && depart) {
                     const arriveeDate = new Date(arrivee);
@@ -1404,10 +1353,17 @@ export default function Page() {
                           setArrivee(date.toISOString().split('T')[0]);
                           setDepart("");
                         } else {
-                          // Définir le départ et fermer
-                          setDepart(date.toISOString().split('T')[0]);
-                          setShowArriveeCalendar(false);
-                          setShowDepartCalendar(false);
+                          // Vérifier si la date est après l'arrivée
+                          const arriveeDate = new Date(arrivee);
+                          if (date > arriveeDate) {
+                            // Définir le départ et fermer automatiquement
+                            setDepart(date.toISOString().split('T')[0]);
+                            setTimeout(() => setShowArriveeCalendar(false), 300);
+                          } else {
+                            // Redéfinir l'arrivée
+                            setArrivee(date.toISOString().split('T')[0]);
+                            setDepart("");
+                          }
                         }
                       }}
                       disabled={isPast}
@@ -1418,8 +1374,8 @@ export default function Page() {
                         cursor: isPast ? 'not-allowed' : 'pointer',
                         fontSize: '14px',
                         fontWeight: (isArrivee || isDepart) ? 600 : 400,
-                        background: (isArrivee || isDepart) ? '#60A29D' : isInRange ? '#E6F4F3' : 'transparent',
-                        color: (isArrivee || isDepart) ? 'white' : isPast ? '#D1D5DB' : '#2D3748',
+                        background: (isArrivee || isDepart) ? '#C96745' : isInRange ? '#FEE2E2' : 'transparent',
+                        color: (isArrivee || isDepart) ? 'white' : isPast ? '#D1D5DB' : isInRange ? '#DC2626' : '#2D3748',
                         transition: 'all 0.2s ease',
                         opacity: isPast ? 0.4 : 1
                       }}
@@ -1432,7 +1388,7 @@ export default function Page() {
                         if (!isPast && !isArrivee && !isDepart && !isInRange) {
                           e.target.style.background = 'transparent';
                         } else if (isInRange) {
-                          e.target.style.background = '#E6F4F3';
+                          e.target.style.background = '#FEE2E2';
                         }
                       }}
                     >
@@ -1442,33 +1398,6 @@ export default function Page() {
                 });
               })()}
             </div>
-
-            {/* Bouton de validation (optionnel, se ferme automatiquement après sélection du départ) */}
-            {arrivee && depart && (
-              <button
-                onClick={() => {
-                  setShowArriveeCalendar(false);
-                  setShowDepartCalendar(false);
-                }}
-                style={{
-                  marginTop: '16px',
-                  width: '100%',
-                  padding: '12px',
-                  background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '12px',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={e => e.target.style.transform = 'translateY(-2px)'}
-                onMouseLeave={e => e.target.style.transform = 'translateY(0)'}
-              >
-                Valider les dates
-              </button>
-            )}
           </div>
         </>
       )}
