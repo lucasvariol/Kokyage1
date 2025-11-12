@@ -910,11 +910,20 @@ function LogementsInner() {
   useEffect(() => {
     if (!mounted || typeof window === 'undefined') return;
     
+    const touchHandlers = {}; // Track handlers to clean up later
+    
     const initSwipe = (listingId, totalImages, prefix = 'listing') => {
       const carousel = document.getElementById(`${prefix}-carousel-${listingId}`);
-      if (!carousel || carousel.dataset.swipeInit) return;
+      if (!carousel) return;
       
-      carousel.dataset.swipeInit = 'true';
+      // Remove old listeners if they exist
+      if (touchHandlers[listingId]) {
+        const { handleTouchStart, handleTouchMove, handleTouchEnd } = touchHandlers[listingId];
+        carousel.removeEventListener('touchstart', handleTouchStart);
+        carousel.removeEventListener('touchmove', handleTouchMove);
+        carousel.removeEventListener('touchend', handleTouchEnd);
+      }
+      
       let startX = 0;
       let currentX = 0;
       let isDragging = false;
@@ -959,6 +968,8 @@ function LogementsInner() {
         }
       };
       
+      // Store handlers and attach listeners
+      touchHandlers[listingId] = { handleTouchStart, handleTouchMove, handleTouchEnd };
       carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
       carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
       carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
@@ -978,7 +989,7 @@ function LogementsInner() {
         if (!imagesArr.length && item.image_url) imagesArr = [item.image_url];
         
         if (imagesArr.length > 1) {
-          setTimeout(() => initSwipe(item.id, imagesArr.length, 'listing'), 100);
+          initSwipe(item.id, imagesArr.length, 'listing');
         }
       });
     }
@@ -997,10 +1008,23 @@ function LogementsInner() {
         if (!imagesArr.length && item.image_url) imagesArr = [item.image_url];
         
         if (imagesArr.length > 1) {
-          setTimeout(() => initSwipe(item.id, imagesArr.length, 'alt'), 100);
+          initSwipe(item.id, imagesArr.length, 'alt');
         }
       });
     }
+    
+    // Cleanup: remove old listeners on unmount
+    return () => {
+      Object.keys(touchHandlers).forEach(listingId => {
+        const { handleTouchStart, handleTouchMove, handleTouchEnd } = touchHandlers[listingId];
+        const carousel = document.getElementById(`listing-carousel-${listingId}`) || document.getElementById(`alt-carousel-${listingId}`);
+        if (carousel) {
+          carousel.removeEventListener('touchstart', handleTouchStart);
+          carousel.removeEventListener('touchmove', handleTouchMove);
+          carousel.removeEventListener('touchend', handleTouchEnd);
+        }
+      });
+    };
   }, [mounted, sortedItems, alternativeListings, imageIndexes]);
 
   const handleMobileSearchUpdate = (updates) => {
