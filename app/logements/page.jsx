@@ -371,13 +371,18 @@ function LogementsInner() {
   }, []);
 
   // Helper function to format date as YYYY-MM-DD in local timezone (avoid UTC conversion issues)
-  const formatDateLocal = (date) => {
+  const formatDateForState = (date) => {
     if (!date) return "";
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+
+  const parseDateFromState = (value) => value ? new Date(`${value}T00:00:00`) : null;
+
+  const arriveeDate = parseDateFromState(arrivee);
+  const departDate = parseDateFromState(depart);
 
   // Haversine distance in km between [lat1, lon1] and [lat2, lon2]
   const haversineKm = (a, b) => {
@@ -1150,8 +1155,8 @@ function LogementsInner() {
               >
                 <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Arrivée</span>
                 <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
-                  {arrivee
-                    ? new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+                  {arriveeDate
+                    ? arriveeDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
                     : "Date"}
                 </span>
               </button>
@@ -1177,8 +1182,8 @@ function LogementsInner() {
               >
                 <span style={{ fontSize: 11, color: '#888', fontWeight: 500, marginBottom: 4, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Départ</span>
                 <span style={{ fontSize: 15, fontWeight: 600, color: '#222' }}>
-                  {depart
-                    ? new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+                  {departDate
+                    ? departDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
                     : "Date"}
                 </span>
               </button>
@@ -1434,7 +1439,7 @@ function LogementsInner() {
                 return days.map((date, idx) => {
                   if (!date) return <div key={idx} />;
 
-                  const isSelected = arrivee && date.toDateString() === new Date(arrivee).toDateString();
+                  const isSelected = arriveeDate && date.toDateString() === arriveeDate.toDateString();
                   const today = new Date();
                   today.setHours(0, 0, 0, 0);
                   const isPast = date < today;
@@ -1444,7 +1449,7 @@ function LogementsInner() {
                       key={idx}
                       onClick={() => {
                         if (!isPast) {
-                          setArrivee(date.toISOString().split('T')[0]);
+                          setArrivee(formatDateForState(date));
                           setShowArriveeCalendar(false);
                         }
                       }}
@@ -1578,8 +1583,8 @@ function LogementsInner() {
                 return days.map((date, idx) => {
                   if (!date) return <div key={idx} />;
 
-                  const isSelected = depart && date.toDateString() === new Date(depart).toDateString();
-                  const minDate = arrivee ? new Date(arrivee) : new Date();
+                  const isSelected = departDate && date.toDateString() === departDate.toDateString();
+                  const minDate = arriveeDate ? new Date(arriveeDate) : new Date();
                   minDate.setHours(0, 0, 0, 0);
                   const isPast = date <= minDate;
 
@@ -1588,7 +1593,7 @@ function LogementsInner() {
                       key={idx}
                       onClick={() => {
                         if (!isPast) {
-                          setDepart(date.toISOString().split('T')[0]);
+                          setDepart(formatDateForState(date));
                           setShowDepartCalendar(false);
                         }
                       }}
@@ -1657,9 +1662,9 @@ function LogementsInner() {
               <span style={{ color: '#666' }}>
                 {filteredItems.length === 1 ? 'logement trouvé' : 'logements trouvés'}
               </span>
-              {arrivee && depart && (
+              {arriveeDate && departDate && (
                 <span style={{ color: '#888', fontSize: '14px' }}>
-                  • du {new Date(arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} au {new Date(depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                  • du {arriveeDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} au {departDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                 </span>
               )}
               {voyageurs > 1 && (

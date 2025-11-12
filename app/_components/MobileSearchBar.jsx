@@ -12,20 +12,29 @@ export default function MobileSearchBar({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1); // 1: lieu, 2: dates, 3: voyageurs
+
+  const formatDateForState = (date) => {
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const parseDateFromState = (value) => value ? new Date(`${value}T00:00:00`) : null;
+
   const [localDestination, setLocalDestination] = useState(destination);
-  const [localArrivee, setLocalArrivee] = useState(arrivee ? new Date(arrivee) : null);
-  const [localDepart, setLocalDepart] = useState(depart ? new Date(depart) : null);
+  const [localArrivee, setLocalArrivee] = useState(parseDateFromState(arrivee));
+  const [localDepart, setLocalDepart] = useState(parseDateFromState(depart));
   const [localVoyageurs, setLocalVoyageurs] = useState(voyageurs);
-  const [suggestions, setSuggestions] = useState([]);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const inputRef = useRef(null);
 
   // Sync with parent props when they change
   useEffect(() => {
     setLocalDestination(destination);
-    setLocalArrivee(arrivee ? new Date(arrivee) : null);
-    setLocalDepart(depart ? new Date(depart) : null);
+    setLocalArrivee(parseDateFromState(arrivee));
+    setLocalDepart(parseDateFromState(depart));
     setLocalVoyageurs(voyageurs);
   }, [destination, arrivee, depart, voyageurs]);
 
@@ -96,8 +105,8 @@ export default function MobileSearchBar({
   const handleApply = () => {
     onUpdate({
       destination: localDestination,
-      arrivee: localArrivee ? localArrivee.toISOString().split('T')[0] : '',
-      depart: localDepart ? localDepart.toISOString().split('T')[0] : '',
+      arrivee: localArrivee ? formatDateForState(localArrivee) : '',
+      depart: localDepart ? formatDateForState(localDepart) : '',
       voyageurs: localVoyageurs
     });
     setIsOpen(false);
@@ -155,8 +164,8 @@ export default function MobileSearchBar({
   const getSummary = () => {
     const parts = [];
     if (destination) parts.push(destination.split(',')[0]);
-    const arrDate = arrivee ? (typeof arrivee === 'string' ? new Date(arrivee) : arrivee) : null;
-    const depDate = depart ? (typeof depart === 'string' ? new Date(depart) : depart) : null;
+    const arrDate = parseDateFromState(arrivee);
+    const depDate = parseDateFromState(depart);
     if (arrDate && depDate) parts.push(`${formatDateShort(arrDate)} - ${formatDateShort(depDate)}`);
     else if (arrDate) parts.push(`Dès ${formatDateShort(arrDate)}`);
     if (voyageurs) parts.push(`${voyageurs} voyageur${voyageurs > 1 ? 's' : ''}`);

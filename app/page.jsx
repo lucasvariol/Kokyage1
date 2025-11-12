@@ -2927,17 +2927,21 @@ export default function Page() {
         }
         
         .hero-section {
-          padding: 42px 18px 42px !important;
+          padding: 32px 18px 38px !important;
         }
-        
+
+        .hero-section h1 {
+          margin-bottom: 32px !important;
+        }
+
         .hero-section > div > div:nth-of-type(2) {
-          height: 220px !important;
-          margin-bottom: 36px !important;
+          height: 210px !important;
+          margin-bottom: 28px !important;
         }
         
         .hero-section > div > div:nth-of-type(2) > div > div {
           min-width: 150px !important;
-          height: 180px !important;
+          height: 170px !important;
         }
 
         .estimator-section {
@@ -3033,7 +3037,7 @@ export default function Page() {
         /* Onglets responsive - ne débordent pas */
         .hero-section > div > div:first-of-type {
           max-width: calc(100vw - 40px) !important;
-          margin: 0 auto 48px !important;
+          margin: 0 auto 32px !important;
           padding: 8px !important;
         }
         
@@ -3138,17 +3142,17 @@ export default function Page() {
         
         /* Hero section mobile */
         section:first-of-type {
-          padding: 50px 16px 50px !important;
+          padding: 36px 16px 40px !important;
         }
         
         .hero-section > div > div:nth-of-type(2) {
-          height: 200px !important;
-          margin-bottom: 40px !important;
+          height: 190px !important;
+          margin-bottom: 28px !important;
         }
         
         .hero-section > div > div:nth-of-type(2) > div > div {
-          min-width: 240px !important;
-          height: 160px !important;
+          min-width: 220px !important;
+          height: 150px !important;
         }
         
         /* Stats grid mobile */
