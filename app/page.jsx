@@ -611,7 +611,7 @@ export default function Page() {
       {/* Hero Section with Modern Design */}
       <section className="hero-section" style={{ 
         background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', 
-        padding: '80px 24px 140px',
+  padding: '80px 24px 140px',
         textAlign: 'center', 
         color: 'white',
         position: 'relative',
@@ -2608,17 +2608,17 @@ export default function Page() {
         }
         
         .hero-section {
-          padding: 60px 24px 60px !important;
+          padding: 42px 18px 42px !important;
         }
         
         .hero-section > div > div:nth-of-type(2) {
-          height: 250px !important;
-          margin-bottom: 50px !important;
+          height: 220px !important;
+          margin-bottom: 36px !important;
         }
         
         .hero-section > div > div:nth-of-type(2) > div > div {
-          min-width: 280px !important;
-          height: 200px !important;
+          min-width: 260px !important;
+          height: 180px !important;
         }
 
         .estimator-section {
