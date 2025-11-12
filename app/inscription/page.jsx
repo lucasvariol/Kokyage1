@@ -65,7 +65,7 @@ export default function Page(){
     try {
       console.log('Tentative de création de compte pour:', email);
       
-      // Création du compte via Supabase Auth
+      // Création du compte via Supabase Auth SANS confirmation automatique
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -76,7 +76,9 @@ export default function Page(){
             dateNaissance,
             full_name: `${prenom} ${nom}`.trim()
           },
-          emailRedirectTo: `${window.location.origin}/connexion`
+          emailRedirectTo: `${window.location.origin}/connexion`,
+          // Désactiver l'email de confirmation automatique de Supabase
+          shouldCreateUser: true
         }
       });
       
@@ -103,15 +105,6 @@ export default function Page(){
       if (user) {
         console.log('Insertion dans la table profiles avec ID:', user.id);
         
-        // Pour contourner le problème RLS, nous pouvons soit :
-        // 1. Attendre que l'utilisateur confirme son email et se connecte
-        // 2. Utiliser un client Supabase avec des privilèges administrateur
-        // 3. Ne pas insérer dans profiles immédiatement (recommandé)
-        
-        // Option 3: Ne pas insérer dans profiles lors de l'inscription
-        // Le profil sera créé lors de la première connexion
-        console.log('Profil sera créé lors de la première connexion');
-        
         // Optionnel: Tentative d'insertion mais sans faire échouer l'inscription si ça ne marche pas
         try {
           const fullName = `${prenom} ${nom}`.trim();
@@ -130,6 +123,33 @@ export default function Page(){
         } catch (profileErr) {
           console.warn('Erreur profil (non bloquante):', profileErr);
         }
+
+        // Envoyer notre email de vérification personnalisé via Resend
+        try {
+          console.log('Envoi de l\'email de vérification personnalisé...');
+          const emailResponse = await fetch('/api/emails/verify-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: email,
+              userId: user.id,
+              nom: nom,
+              prenom: prenom
+            })
+          });
+
+          const emailResult = await emailResponse.json();
+          
+          if (!emailResponse.ok) {
+            console.error('Erreur lors de l\'envoi de l\'email:', emailResult);
+            // Ne pas bloquer l'inscription même si l'email échoue
+          } else {
+            console.log('Email de vérification envoyé avec succès');
+          }
+        } catch (emailError) {
+          console.error('Erreur lors de l\'envoi de l\'email:', emailError);
+          // Ne pas bloquer l'inscription
+        }
       } else {
         console.warn('Aucun utilisateur retourné par signUp');
         setError('Erreur: Aucun utilisateur créé');
@@ -137,16 +157,12 @@ export default function Page(){
         return;
       }
       
-      // Vérifier si un email de confirmation doit être envoyé
-      if (data?.user && !data.user.email_confirmed_at) {
-        setSuccess('Compte créé ! Veuillez vérifier votre email pour confirmer votre inscription, puis connectez-vous.');
-      } else {
-        setSuccess('Compte créé avec succès ! Redirection...');
-      }
+      // Message de succès
+      setSuccess('Compte créé ! Veuillez vérifier votre email pour confirmer votre inscription avant de vous connecter.');
       
       setTimeout(() => {
         router.push('/connexion');
-      }, 3000);
+      }, 4000);
     } catch (err) {
       console.error('Erreur inattendue:', err);
       setError('Une erreur inattendue s\'est produite: ' + err.message);
@@ -202,18 +218,8 @@ export default function Page(){
             letterSpacing: '-0.02em',
             textShadow: '0 4px 20px rgba(0, 0, 0, 0.23)'
           }}>
-            Rejoignez <span style={{ color: '#4ECDC4' }}>Kokyage</span>
+            Bienvenue
           </h1>
-          <p style={{ 
-            fontSize: '1.125rem', 
-            opacity: 0.9, 
-            marginBottom: '32px', 
-            lineHeight: 1.6,
-            maxWidth: '500px',
-            margin: '0 auto 32px'
-          }}>
-            Créez votre compte et commencez à sous-louer légalement votre logement dès aujourd'hui
-          </p>
         </div>
       </section>
 
