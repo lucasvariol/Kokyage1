@@ -211,7 +211,7 @@ export default function ReviewsSection({ listingId }) {
               {summary.average_rating}
             </div>
             <div>
-              <StarRating rating={Math.round(summary.average_rating)} readonly />
+              <StarAverage value={summary.average_rating} />
               <div style={{ fontSize: 14, color: '#78716c', marginTop: 4, fontWeight: 600 }}>
                 Basé sur {summary.review_count} avis
               </div>
@@ -461,6 +461,51 @@ export default function ReviewsSection({ listingId }) {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// Display-only stars with half-fill support based on value (0.5 increments)
+function StarAverage({ value = 0 }) {
+  const rounded = Math.round((Number(value) || 0) * 2) / 2; // nearest 0.5
+  const full = Math.floor(rounded);
+  const hasHalf = rounded - full === 0.5;
+
+  return (
+    <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+      {[1,2,3,4,5].map((i) => {
+        let fill = 0;
+        if (i <= full) fill = 100;
+        else if (i === full + 1 && hasHalf) fill = 50;
+        return <Star key={i} fillPercent={fill} />;
+      })}
+    </div>
+  );
+}
+
+function Star({ fillPercent = 0, size = 24 }) {
+  return (
+    <div style={{ position: 'relative', width: size, height: size }}>
+      {/* Outline */}
+      <svg width={size} height={size} viewBox="0 0 24 24" style={{ position: 'absolute', inset: 0 }}>
+        <polygon
+          points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+          fill="none"
+          stroke="#d1d5db"
+          strokeWidth="1.5"
+        />
+      </svg>
+      {/* Filled overlay clipped by width */}
+      <div style={{ position: 'absolute', inset: 0, width: `${fillPercent}%`, overflow: 'hidden' }}>
+        <svg width={size} height={size} viewBox="0 0 24 24">
+          <polygon
+            points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+            fill="#fbbf24"
+            stroke="#f59e0b"
+            strokeWidth="1.5"
+          />
+        </svg>
+      </div>
     </div>
   );
 }
