@@ -284,7 +284,7 @@ function ReservationsContent() {
                   color: '#065f46',
                   marginBottom: 4
                 }}>
-                  Réservation confirmée !
+                  Paiement confirmé !
                 </h2>
                 <p style={{
                   fontSize: 14,
@@ -292,7 +292,7 @@ function ReservationsContent() {
                   fontWeight: 600,
                   margin: 0
                 }}>
-                  Votre paiement a été traité avec succès. Vous recevrez un email de confirmation sous peu.
+                  Votre paiement a été traité avec succès. Votre hôte a été notifié de votre réservation et peut désormais la valider.
                 </p>
               </div>
             </div>
