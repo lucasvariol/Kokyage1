@@ -471,6 +471,32 @@ export default function Page() {
                 border-top: none !important;
                 width: 100% !important;
               }
+              
+              .desktop-arrow {
+                display: none !important;
+              }
+              
+              .mobile-arrow {
+                display: block !important;
+              }
+              
+              .reorder-buttons {
+                flex-direction: column !important;
+                top: 50% !important;
+                left: auto !important;
+                right: -12px !important;
+                transform: translateY(-50%) !important;
+              }
+            }
+            
+            @media (min-width: 769px) {
+              .desktop-arrow {
+                display: block !important;
+              }
+              
+              .mobile-arrow {
+                display: none !important;
+              }
             }
             
             @media (max-width: 480px) {
@@ -1726,7 +1752,7 @@ export default function Page() {
                           </div>
                           
                           {/* Boutons de réorganisation */}
-                          <div style={{
+                          <div className="reorder-buttons" style={{
                             position: 'absolute',
                             top: '-12px',
                             left: '50%',
@@ -1769,7 +1795,8 @@ export default function Page() {
                                 }
                               }}
                             >
-                              ◀
+                              <span className="desktop-arrow">◀</span>
+                              <span className="mobile-arrow">▲</span>
                             </button>
                             <button
                               type="button"
@@ -1805,7 +1832,8 @@ export default function Page() {
                                 }
                               }}
                             >
-                              ▶
+                              <span className="desktop-arrow">▶</span>
+                              <span className="mobile-arrow">▼</span>
                             </button>
                           </div>
                           
