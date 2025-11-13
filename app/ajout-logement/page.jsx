@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { getFeeMultiplier, getPlatformPercent } from '@/lib/commissions';
 import { OwnerConsentAgreement } from '@/owner-consent';
+import { generateOwnerConsentText } from '@/lib/generateOwnerConsentText';
 
 const MapPreview = dynamic(() => import('../_components/MapPreview'), { ssr: false });
 
@@ -374,6 +375,42 @@ export default function Page() {
         setLoading(false);
         return;
       }
+
+      // Enregistrer l'accord de consentement pour valeur juridique
+      try {
+        const agreementText = generateOwnerConsentText({
+          ownerName: ownerEmail,
+          tenantName: userFullName || user.email,
+          fullAddress: street
+        });
+
+        const consentRes = await fetch('/api/owner-consent/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            listingId,
+            tenantId: user.id,
+            ownerEmail,
+            tenantFullName: userFullName || user.email,
+            listingAddress: street,
+            infoAccuracyAccepted: infoAccuracyChecked,
+            ownerConsentAccepted: consentChecked,
+            agreementText
+          })
+        });
+
+        const consentData = await consentRes.json();
+        if (!consentData.success) {
+          console.error('⚠️ Erreur lors de l\'enregistrement de l\'accord:', consentData.error);
+          // On ne bloque pas la création de l'annonce si le log échoue
+        } else {
+          console.log('✅ Accord de consentement enregistré:', consentData.data.id);
+        }
+      } catch (consentError) {
+        console.error('💥 Erreur log accord consentement:', consentError);
+        // On ne bloque pas la création de l'annonce
+      }
+
   router.push("/profil-hote");
     }
     setLoading(false);
@@ -2108,7 +2145,7 @@ export default function Page() {
                     fontSize: '0.95rem',
                     lineHeight: 1.5
                   }}>
-                    ✓ J'atteste sur l'honneur que les informations fournies dans ce formulaire sont exactes et complètes
+                    ✓ J'atteste que les informations fournies dans ce formulaire sont exactes et complètes
                   </span>
                 </label>
               </div>
@@ -2263,7 +2300,7 @@ export default function Page() {
                     gap: '12px'
                   }}>
                     {!loading && <span style={{ fontSize: '1.3rem' }}>🚀</span>}
-                    {loading ? 'Envoi au propriétaire en cours...' : !infoAccuracyChecked ? 'Veuillez attester l\'exactitude des informations' : !consentChecked ? 'Veuillez accepter l\'accord propriétaire' : 'Soumettre mon annonce'}
+                    {loading ? 'Envoi au propriétaire en cours...' : !infoAccuracyChecked ? 'Veuillez attester l\'exactitude des informations' : !consentChecked ? 'Veuillez accepter l\'accord de sous location' : 'Soumettre mon annonce'}
                   </span>
                   
                   {/* Effet de brillance */}
