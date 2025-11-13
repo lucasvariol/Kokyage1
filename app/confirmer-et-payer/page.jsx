@@ -649,27 +649,7 @@ function ConfirmerEtPayerContent() {
                       </div>
                       <div style={{ flex: 1, color: '#374151' }}>
                         <strong>Remboursement partiel (50%)</strong><br />
-                        Du <strong>{getSixDaysBeforeArrival()}</strong> au <strong>{getDayBeforeArrival()}</strong>
-                      </div>
-                    </div>
-                    
-                    <div style={{ display: 'flex', gap: 10 }}>
-                      <div style={{
-                        background: '#e5e7eb',
-                        color: '#111827',
-                        borderRadius: 6,
-                        padding: '4px 8px',
-                        fontSize: 11,
-                        fontWeight: 600,
-                        height: 'fit-content',
-                        minWidth: 60,
-                        textAlign: 'center'
-                      }}>
-                        0%
-                      </div>
-                      <div style={{ flex: 1, color: '#374151' }}>
-                        <strong>Aucun remboursement</strong><br />
-                        Le <strong>{getDayBeforeArrival()}</strong> et le jour d'arrivée (<strong>{formatDate(startDate)}</strong>)
+                        Jusqu'au <strong>{getDayBeforeArrival()}</strong>
                       </div>
                     </div>
                   </div>
