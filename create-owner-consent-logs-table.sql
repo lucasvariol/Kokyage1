@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS owner_consent_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   listing_id UUID NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
-  tenant_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  tenant_id UUID NOT NULL,
   owner_email TEXT NOT NULL,
   tenant_full_name TEXT NOT NULL,
   listing_address TEXT NOT NULL,
