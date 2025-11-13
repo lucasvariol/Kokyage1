@@ -1101,6 +1101,32 @@ export default function Page() {
                 }}>
                   /nuit
                 </div>
+                {price && parseFloat(price) > 0 && (
+                  <div style={{
+                    marginTop: '12px',
+                    padding: '16px',
+                    background: 'linear-gradient(135deg, rgba(159,122,234,0.1), rgba(128,90,213,0.05))',
+                    borderRadius: '16px',
+                    border: '2px solid rgba(159,122,234,0.2)'
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '8px'
+                    }}>
+                      <span style={{ fontSize: '0.9rem', color: '#805AD5', fontWeight: 600 }}>
+                        💡 Prix vu par les voyageurs :
+                      </span>
+                      <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#2D3748' }}>
+                        {(parseFloat(price) * 1.17).toFixed(2)}€/nuit
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '0.8rem', color: '#718096', textAlign: 'center' }}>
+                      (Prix hôte {price}€ + 17% commission plateforme)
+                    </div>
+                  </div>
+                )}
                 {price && (
                   <div style={{
                     marginTop: '8px',
@@ -1112,7 +1138,7 @@ export default function Page() {
                     textAlign: 'center',
                     fontWeight: 600
                   }}>
-                    💡 Utiliez notre chatbot pour connaitre le prix dans votre zone
+                    💡 Utilisez notre chatbot pour connaître le prix dans votre zone
                   </div>
                 )}
               </div>
