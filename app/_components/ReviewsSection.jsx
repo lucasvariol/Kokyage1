@@ -165,34 +165,25 @@ export default function ReviewsSection({ listingId }) {
   return (
     <div className="card-reviews" style={{
       background: '#fff',
-      borderRadius: 20,
-      padding: 32,
-      boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-      border: '1px solid #f1f5f9'
+      borderRadius: 16,
+      padding: 24,
+      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+      border: '1px solid #f3f4f6'
     }}>
       {/* Header with average rating */}
-      <div style={{ marginBottom: 24 }}>
+      <div style={{ marginBottom: 20 }}>
         <h2 style={{ 
-          fontSize: 24, 
-          fontWeight: 800, 
-          color: '#0f172a', 
+          fontSize: 20, 
+          fontWeight: 700, 
+          color: '#111827', 
           marginBottom: 16,
           display: 'flex',
           alignItems: 'center',
-          gap: 10
+          gap: 8
         }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-            padding: 10,
-            borderRadius: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5">
-              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-            </svg>
-          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+          </svg>
           Avis voyageurs
         </h2>
 
@@ -201,18 +192,18 @@ export default function ReviewsSection({ listingId }) {
             display: 'flex', 
             alignItems: 'center', 
             gap: 12,
-            padding: '16px 20px',
-            background: 'linear-gradient(135deg, #fef9c3 0%, #fef3c7 100%)',
-            borderRadius: 12,
-            border: '1px solid #fde68a',
-            marginBottom: 20
+            padding: '14px 16px',
+            background: '#f9fafb',
+            borderRadius: 10,
+            border: '1px solid #e5e7eb',
+            marginBottom: 16
           }}>
-            <div style={{ fontSize: 36, fontWeight: 900, color: '#92400e' }}>
+            <div style={{ fontSize: 32, fontWeight: 700, color: '#111827' }}>
               {summary.average_rating}
             </div>
             <div>
               <StarAverage value={summary.average_rating} />
-              <div style={{ fontSize: 14, color: '#78716c', marginTop: 4, fontWeight: 600 }}>
+              <div style={{ fontSize: 13, color: '#6b7280', marginTop: 4, fontWeight: 500 }}>
                 Basé sur {summary.review_count} avis
               </div>
             </div>
@@ -224,35 +215,41 @@ export default function ReviewsSection({ listingId }) {
           <button
             onClick={() => setShowForm(true)}
             style={{
-              padding: '12px 24px',
-              background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+              padding: '11px 18px',
+              background: '#1f2937',
               color: 'white',
               border: 'none',
-              borderRadius: 12,
-              fontSize: 15,
-              fontWeight: 700,
+              borderRadius: 8,
+              fontSize: 14,
+              fontWeight: 600,
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(201,103,69,0.3)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               transition: 'all 0.2s ease',
               width: '100%'
             }}
-            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            }}
           >
-            ✍️ Laisser un avis
+            Laisser un avis
           </button>
         )}
 
         {!user && (
           <div style={{
-            padding: '16px 20px',
-            background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-            borderRadius: 12,
-            border: '1px solid #cbd5e1',
+            padding: '14px 16px',
+            background: '#f9fafb',
+            borderRadius: 10,
+            border: '1px solid #e5e7eb',
             textAlign: 'center',
-            fontSize: 14,
-            color: '#64748b',
-            fontWeight: 600
+            fontSize: 13,
+            color: '#6b7280',
+            fontWeight: 500
           }}>
             Connectez-vous pour laisser un avis
           </div>
@@ -262,25 +259,25 @@ export default function ReviewsSection({ listingId }) {
       {/* Review form */}
       {showForm && (
         <form onSubmit={handleSubmit} style={{
-          background: 'linear-gradient(135deg, #fefce8 0%, #fef9c3 100%)',
-          padding: 24,
-          borderRadius: 16,
-          border: '2px solid #fde68a',
-          marginBottom: 24
+          background: '#f9fafb',
+          padding: 20,
+          borderRadius: 12,
+          border: '1px solid #e5e7eb',
+          marginBottom: 20
         }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>
+          <h3 style={{ fontSize: 17, fontWeight: 600, color: '#111827', marginBottom: 16 }}>
             Votre avis
           </h3>
 
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#0f172a', marginBottom: 8 }}>
+          <div style={{ marginBottom: 14 }}>
+            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
               Note *
             </label>
             <StarRating rating={rating} onRatingChange={setRating} />
           </div>
 
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: '#0f172a', marginBottom: 8 }}>
+          <div style={{ marginBottom: 14 }}>
+            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 8 }}>
               Commentaire (optionnel)
             </label>
             <textarea
@@ -290,18 +287,18 @@ export default function ReviewsSection({ listingId }) {
               rows={4}
               style={{
                 width: '100%',
-                padding: '12px 16px',
-                borderRadius: 10,
-                border: '1px solid #e5e7eb',
-                fontSize: 15,
+                padding: '10px 14px',
+                borderRadius: 8,
+                border: '1px solid #d1d5db',
+                fontSize: 14,
                 fontFamily: 'inherit',
                 resize: 'vertical',
                 outline: 'none',
                 transition: 'border-color 0.2s ease',
                 boxSizing: 'border-box'
               }}
-              onFocus={e => e.target.style.borderColor = '#C96745'}
-              onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+              onFocus={e => e.target.style.borderColor = '#9ca3af'}
+              onBlur={e => e.target.style.borderColor = '#d1d5db'}
             />
           </div>
 
@@ -335,19 +332,19 @@ export default function ReviewsSection({ listingId }) {
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div style={{ display: 'flex', gap: 10 }}>
             <button
               type="submit"
               disabled={submitting || rating === 0}
               style={{
                 flex: 1,
-                padding: '12px 24px',
-                background: submitting || rating === 0 ? '#d1d5db' : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                padding: '10px 18px',
+                background: submitting || rating === 0 ? '#e5e7eb' : '#1f2937',
                 color: 'white',
                 border: 'none',
-                borderRadius: 10,
-                fontSize: 15,
-                fontWeight: 700,
+                borderRadius: 8,
+                fontSize: 14,
+                fontWeight: 600,
                 cursor: submitting || rating === 0 ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease'
               }}
@@ -364,13 +361,13 @@ export default function ReviewsSection({ listingId }) {
                 setSuccess('');
               }}
               style={{
-                padding: '12px 24px',
+                padding: '10px 18px',
                 background: 'white',
-                color: '#64748b',
-                border: '1px solid #e5e7eb',
-                borderRadius: 10,
-                fontSize: 15,
-                fontWeight: 700,
+                color: '#6b7280',
+                border: '1px solid #d1d5db',
+                borderRadius: 8,
+                fontSize: 14,
+                fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
               }}
@@ -384,34 +381,34 @@ export default function ReviewsSection({ listingId }) {
       {/* Reviews list */}
       {reviews.length === 0 ? (
         <div style={{
-          padding: '40px 20px',
+          padding: '32px 16px',
           textAlign: 'center',
-          color: '#94a3b8',
-          fontSize: 15,
-          fontWeight: 600,
-          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-          borderRadius: 12,
-          border: '1px dashed #cbd5e1'
+          color: '#9ca3af',
+          fontSize: 14,
+          fontWeight: 500,
+          background: '#f9fafb',
+          borderRadius: 10,
+          border: '1px dashed #d1d5db'
         }}>
           Aucun avis pour le moment. Soyez le premier à en laisser un !
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {reviews.map(review => (
             <div key={review.id} className="review-item" style={{
-              background: 'linear-gradient(135deg, #fefce8 0%, #fef9c3 100%)',
-              borderRadius: 14,
-              padding: 20,
-              border: '1px solid #fde68a'
+              background: '#f9fafb',
+              borderRadius: 10,
+              padding: 16,
+              border: '1px solid #e5e7eb'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 10 }}>
                 <div>
-                  <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16, marginBottom: 4 }}>
+                  <div style={{ fontWeight: 600, color: '#111827', fontSize: 15, marginBottom: 6 }}>
                     {review.author_first_name || 'Voyageur'}
                   </div>
                   <StarRating rating={review.rating} readonly />
                 </div>
-                <div style={{ fontSize: 13, color: '#78716c', fontWeight: 600 }}>
+                <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 500 }}>
                   {new Date(review.created_at).toLocaleDateString('fr-FR', { 
                     day: 'numeric', 
                     month: 'long', 
@@ -421,9 +418,9 @@ export default function ReviewsSection({ listingId }) {
               </div>
               {review.comment && (
                 <p style={{ 
-                  color: '#475569', 
+                  color: '#4b5563', 
                   lineHeight: 1.6, 
-                  fontSize: 15,
+                  fontSize: 14,
                   margin: 0,
                   whiteSpace: 'pre-wrap'
                 }}>
@@ -437,23 +434,23 @@ export default function ReviewsSection({ listingId }) {
             <button
               onClick={() => loadReviews(true)}
               style={{
-                padding: '12px 24px',
+                padding: '10px 18px',
                 background: 'white',
-                color: '#C96745',
-                border: '2px solid #C96745',
-                borderRadius: 12,
-                fontSize: 15,
-                fontWeight: 700,
+                color: '#374151',
+                border: '1px solid #d1d5db',
+                borderRadius: 8,
+                fontSize: 14,
+                fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = '#C96745';
-                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.background = '#f9fafb';
+                e.currentTarget.style.borderColor = '#9ca3af';
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.background = 'white';
-                e.currentTarget.style.color = '#C96745';
+                e.currentTarget.style.borderColor = '#d1d5db';
               }}
             >
               Voir plus d'avis
