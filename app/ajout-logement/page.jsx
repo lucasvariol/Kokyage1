@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { getFeeMultiplier, getPlatformPercent } from '@/lib/commissions';
+import { OwnerConsentAgreement } from '@/lib/ownerConsentAgreement';
 
 const MapPreview = dynamic(() => import('../_components/MapPreview'), { ssr: false });
 
@@ -35,6 +36,8 @@ export default function Page() {
   const [bathrooms, setBathrooms] = useState(1);
   const [description, setDescription] = useState('');
   const [ownerEmail, setOwnerEmail] = useState('');
+  const [consentChecked, setConsentChecked] = useState(false);
+  const [consentOpen, setConsentOpen] = useState(false);
 
   // Check if user is authenticated
   useEffect(() => {
@@ -2017,10 +2020,10 @@ export default function Page() {
                 <button
                   className="submit-button"
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !consentChecked}
                   style={{
                     position: 'relative',
-                    background: loading 
+                    background: (loading || !consentChecked)
                       ? 'linear-gradient(135deg, #A0AEC0, #718096)' 
                       : 'linear-gradient(135deg, #D79077 0%, #C96745 50%, #B8553C 100%)',
                     color: '#fff',
@@ -2029,9 +2032,9 @@ export default function Page() {
                     fontWeight: 800,
                     fontSize: '1.2rem',
                     border: 'none',
-                    cursor: loading ? 'not-allowed' : 'pointer',
+                    cursor: (loading || !consentChecked) ? 'not-allowed' : 'pointer',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: loading 
+                    boxShadow: (loading || !consentChecked)
                       ? '0 8px 25px rgba(160,174,192,0.3)' 
                       : '0 15px 35px rgba(201, 103, 69, 0.4)',
                     letterSpacing: '0.5px',
@@ -2073,7 +2076,7 @@ export default function Page() {
                     gap: '12px'
                   }}>
                     {!loading && <span style={{ fontSize: '1.3rem' }}>🚀</span>}
-                    {loading ? 'Envoi au propriétaire en cours...' : 'Soumettre mon annonce'}
+                    {loading ? 'Envoi au propriétaire en cours...' : !consentChecked ? 'Veuillez accepter l\'accord propriétaire' : 'Soumettre mon annonce'}
                   </span>
                   
                   {/* Effet de brillance */}
@@ -2139,6 +2142,95 @@ export default function Page() {
                   </p>
                 </div>
               )}
+
+              {/* Accord propriétaire */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(159,122,234,0.08), rgba(128,90,213,0.04))',
+                border: '2px solid rgba(159,122,234,0.2)',
+                borderRadius: '16px',
+                padding: '20px',
+                marginTop: '24px',
+                backdropFilter: 'blur(10px)'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  marginBottom: '16px'
+                }}>
+                  <span style={{ fontSize: '1.3rem' }}>📜</span>
+                  <span style={{ 
+                    fontWeight: 700, 
+                    color: '#805AD5',
+                    fontSize: '1.1rem'
+                  }}>
+                    Accord du propriétaire
+                  </span>
+                </div>
+                <label style={{ 
+                  display: 'flex', 
+                  alignItems: 'flex-start', 
+                  gap: '12px', 
+                  cursor: 'pointer',
+                  marginBottom: '12px'
+                }}>
+                  <input 
+                    type="checkbox" 
+                    checked={consentChecked} 
+                    onChange={(e) => setConsentChecked(e.target.checked)} 
+                    style={{ 
+                      marginTop: '4px',
+                      width: '18px',
+                      height: '18px',
+                      cursor: 'pointer'
+                    }} 
+                  />
+                  <span style={{ 
+                    color: '#2D3748', 
+                    fontWeight: 600, 
+                    fontSize: '0.95rem',
+                    lineHeight: 1.5
+                  }}>
+                    J'atteste avoir l'accord de mon propriétaire pour sous-louer ce logement et j'accepte les termes de l'accord de consentement
+                  </span>
+                </label>
+                <button 
+                  type="button" 
+                  onClick={() => setConsentOpen(v => !v)} 
+                  style={{ 
+                    background: 'transparent', 
+                    border: 'none', 
+                    color: '#805AD5', 
+                    fontWeight: 700, 
+                    padding: 0, 
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
+                  }}
+                >
+                  {consentOpen ? '▼ Masquer le détail de l\'accord' : '▶ Afficher le détail de l\'accord'}
+                </button>
+                {consentOpen && (
+                  <div style={{ 
+                    marginTop: '16px', 
+                    maxHeight: '400px', 
+                    overflowY: 'auto', 
+                    padding: '20px', 
+                    background: 'white', 
+                    border: '1px solid rgba(159,122,234,0.3)', 
+                    borderRadius: '12px', 
+                    lineHeight: 1.6, 
+                    fontSize: '0.875rem'
+                  }}>
+                    <OwnerConsentAgreement
+                      ownerName="Propriétaire du logement"
+                      tenantName="Locataire principal"
+                      fullAddress={street || 'Adresse du logement'}
+                    />
+                  </div>
+                )}
+              </div>
 
               {/* Informations de validation */}
               <div style={{
