@@ -91,10 +91,12 @@ export default function Page() {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages(files);
+    
+    // Ajouter les nouvelles images aux anciennes au lieu de les remplacer
+    setImages(prevImages => [...prevImages, ...files]);
 
     const previews = files.map(file => URL.createObjectURL(file));
-    setPreviewImages(previews);
+    setPreviewImages(prevPreviews => [...prevPreviews, ...previews]);
   };
 
   const removeImage = (index) => {
