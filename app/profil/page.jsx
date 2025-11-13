@@ -50,12 +50,20 @@ export default function ProfilPage() {
   }
 
   async function loadUserData(authUser) {
+    console.log('📥 Chargement profil pour user:', authUser.id);
+    
     // Charger depuis la table profiles
-    const { data: userData } = await supabase
+    const { data: userData, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', authUser.id)
       .single();
+
+    if (error) {
+      console.error('❌ Erreur chargement profil:', error);
+    } else {
+      console.log('✅ Profil chargé:', userData);
+    }
 
     setFormData({
       prenom: userData?.prenom || authUser.user_metadata?.prenom || authUser.user_metadata?.first_name || '',
@@ -82,17 +90,26 @@ export default function ProfilPage() {
     }
 
     setUploadingPhoto(true);
+    console.log('📸 Début upload photo:', file.name, file.size, 'bytes');
+    
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}-${Date.now()}.${fileExt}`;
       const filePath = `avatars/${fileName}`;
 
+      console.log('📤 Upload vers:', filePath);
+      
       // Upload vers Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('profile-photos')
         .upload(filePath, file, { upsert: true });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('❌ Erreur upload:', uploadError);
+        throw uploadError;
+      }
+      
+      console.log('✅ Upload réussi');
 
       // Récupérer l'URL publique
       const { data: { publicUrl } } = supabase.storage
@@ -102,11 +119,19 @@ export default function ProfilPage() {
       // Mettre à jour le formulaire
       setFormData(prev => ({ ...prev, photoUrl: publicUrl }));
 
+      console.log('💾 Sauvegarde URL photo dans DB:', publicUrl);
+      
       // Sauvegarder immédiatement dans la DB
-      await supabase
+      const { error: updateError } = await supabase
         .from('profiles')
         .update({ photo_url: publicUrl })
         .eq('id', user.id);
+        
+      if (updateError) {
+        console.error('❌ Erreur sauvegarde photo URL:', updateError);
+      } else {
+        console.log('✅ Photo URL sauvegardée');
+      }
 
     } catch (error) {
       console.error('Erreur upload photo:', error);
@@ -118,6 +143,9 @@ export default function ProfilPage() {
 
   async function handleSave() {
     setSaving(true);
+    console.log('💾 Sauvegarde profil pour user:', user.id);
+    console.log('📝 Données à sauvegarder:', formData);
+    
     try {
       // Mettre à jour la table profiles
       const { error } = await supabase
@@ -133,10 +161,17 @@ export default function ProfilPage() {
         })
         .eq('id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Erreur sauvegarde profil:', error);
+        throw error;
+      }
+      
+      console.log('✅ Profil sauvegardé avec succès');
 
+      console.log('🔄 Mise à jour métadonnées auth...');
+      
       // Mettre à jour les métadonnées auth si possible
-      await supabase.auth.updateUser({
+      const { error: authError } = await supabase.auth.updateUser({
         data: {
           prenom: formData.prenom,
           nom: formData.nom,
@@ -145,8 +180,15 @@ export default function ProfilPage() {
           avatar_url: formData.photoUrl
         }
       });
+      
+      if (authError) {
+        console.warn('⚠️ Erreur mise à jour auth metadata:', authError);
+      } else {
+        console.log('✅ Métadonnées auth mises à jour');
+      }
 
       setEditing(false);
+      console.log('🎉 Sauvegarde terminée avec succès');
       alert('Profil mis à jour avec succès !');
       await fetchProfile();
     } catch (error) {
