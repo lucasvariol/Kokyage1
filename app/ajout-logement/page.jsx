@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { getFeeMultiplier, getPlatformPercent } from '@/lib/commissions';
 
 const MapPreview = dynamic(() => import('../_components/MapPreview'), { ssr: false });
 
@@ -1119,11 +1120,11 @@ export default function Page() {
                         💡 Prix vu par les voyageurs :
                       </span>
                       <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#2D3748' }}>
-                        {(parseFloat(price) * 1.17).toFixed(2)}€/nuit
+                        {(parseFloat(price) * getFeeMultiplier()).toFixed(2)}€/nuit
                       </span>
                     </div>
                     <div style={{ fontSize: '0.8rem', color: '#718096', textAlign: 'center' }}>
-                      (Prix hôte {price}€ + 17% commission plateforme)
+                      (Prix hôte {price}€ + {Math.round(getPlatformPercent() * 100)}% commission plateforme)
                     </div>
                   </div>
                 )}
