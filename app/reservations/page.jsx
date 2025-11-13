@@ -750,14 +750,15 @@ function ReservationsContent() {
                             border: '1px solid #e2e8f0'
                           }}
                         >
-                          <div style={{
+                          <div className="reservation-card-grid" style={{
                             display: 'grid',
                             gridTemplateColumns: 'auto 1fr auto',
                             gap: 16,
                             alignItems: 'center'
                           }}>
                             <img
-                              src="/placeholder-image.jpg"
+                              className="reservation-image"
+                              src={reservation.listings?.images?.[0] || '/placeholder-image.jpg'}
                               alt={reservation.listings?.title}
                               style={{
                                 width: 80,
@@ -775,7 +776,7 @@ function ReservationsContent() {
                                 {formatDate(reservation.date_arrivee)} → {formatDate(reservation.date_depart)}
                               </p>
                             </div>
-                            <div style={{ textAlign: 'right' }}>
+                            <div className="reservation-actions" style={{ textAlign: 'right' }}>
                               <div style={{ fontSize: 16, fontWeight: 800, color: '#0f172a' }}>
                                 {formatEUR(reservation.total_price)}
                               </div>
@@ -846,14 +847,15 @@ function ReservationsContent() {
                             border: '1px solid #fecaca'
                           }}
                         >
-                          <div style={{
+                          <div className="reservation-card-grid" style={{
                             display: 'grid',
                             gridTemplateColumns: 'auto 1fr auto',
                             gap: 16,
                             alignItems: 'center'
                           }}>
                             <img
-                              src="/placeholder-image.jpg"
+                              className="reservation-image"
+                              src={reservation.listings?.images?.[0] || '/placeholder-image.jpg'}
                               alt={reservation.listings?.title}
                               style={{
                                 width: 80,
@@ -884,7 +886,7 @@ function ReservationsContent() {
                                 Annulée
                               </span>
                             </div>
-                            <div style={{ textAlign: 'right' }}>
+                            <div className="reservation-actions" style={{ textAlign: 'right' }}>
                               <div style={{ fontSize: 16, fontWeight: 800, color: '#991b1b', textDecoration: 'line-through' }}>
                                 {formatEUR(reservation.total_price)}
                               </div>
