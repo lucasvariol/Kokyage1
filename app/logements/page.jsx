@@ -51,16 +51,25 @@ if (typeof window !== 'undefined') {
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
+    let hasMoved = false;
     
     carousel.addEventListener('touchstart', (e) => {
       startX = e.touches[0].clientX;
+      currentX = startX;
       isDragging = true;
+      hasMoved = false;
+      carousel.style.transition = 'none';
     }, { passive: true });
     
     carousel.addEventListener('touchmove', (e) => {
       if (!isDragging) return;
       currentX = e.touches[0].clientX;
       const diff = currentX - startX;
+      
+      if (Math.abs(diff) > 5) {
+        hasMoved = true;
+      }
+      
       const currentIndex = window.carouselIndex[id] || 0;
       carousel.style.transform = `translateX(calc(-${currentIndex * 100}% + ${diff}px))`;
     }, { passive: true });
@@ -70,16 +79,22 @@ if (typeof window !== 'undefined') {
       isDragging = false;
       const diff = currentX - startX;
       
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) {
+      carousel.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+      
+      if (Math.abs(diff) > 50 && hasMoved) {
+        if (diff > 0 && (window.carouselIndex[id] || 0) > 0) {
           window.prevImage(id, totalImages);
-        } else {
+        } else if (diff < 0 && (window.carouselIndex[id] || 0) < totalImages - 1) {
           window.nextImage(id, totalImages);
+        } else {
+          updateCarousel(id, totalImages);
         }
       } else {
         // Snap back
         updateCarousel(id, totalImages);
       }
+      
+      hasMoved = false;
     }, { passive: true });
   };
 }
@@ -2464,8 +2479,10 @@ function LogementsInner() {
                             if (imagesArr.length <= 1) return;
                             const carousel = e.currentTarget;
                             carousel.dataset.startX = e.touches[0].clientX;
+                            carousel.dataset.startY = e.touches[0].clientY;
                             carousel.dataset.isDragging = 'true';
                             carousel.dataset.preventClick = 'false';
+                            carousel.dataset.isHorizontal = 'false';
                             carousel.style.transition = 'none';
                           }}
                           onTouchMove={(e) => {
@@ -2474,17 +2491,23 @@ function LogementsInner() {
                             if (carousel.dataset.isDragging !== 'true') return;
                             
                             const currentX = e.touches[0].clientX;
+                            const currentY = e.touches[0].clientY;
                             const startX = parseFloat(carousel.dataset.startX);
-                            const diff = currentX - startX;
+                            const startY = parseFloat(carousel.dataset.startY);
+                            const diffX = currentX - startX;
+                            const diffY = currentY - startY;
                             
-                            // Store currentX for touchEnd
-                            carousel.dataset.currentX = currentX;
-                            
-                            if (Math.abs(diff) > 5) {
-                              carousel.dataset.preventClick = 'true';
+                            // Détecter la direction du swipe
+                            if (carousel.dataset.isHorizontal === 'false' && (Math.abs(diffX) > 5 || Math.abs(diffY) > 5)) {
+                              carousel.dataset.isHorizontal = Math.abs(diffX) > Math.abs(diffY) ? 'true' : 'false';
                             }
                             
-                            carousel.style.transform = `translateX(calc(-${imgIdx * 100}% + ${diff}px))`;
+                            // Si c'est un swipe horizontal, bloquer le scroll vertical
+                            if (carousel.dataset.isHorizontal === 'true') {
+                              carousel.dataset.currentX = currentX;
+                              carousel.dataset.preventClick = 'true';
+                              carousel.style.transform = `translateX(calc(-${imgIdx * 100}% + ${diffX}px))`;
+                            }
                           }}
                           onTouchEnd={(e) => {
                             if (imagesArr.length <= 1) return;
@@ -2499,16 +2522,20 @@ function LogementsInner() {
                             
                             carousel.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
                             
-                            if (diff < -threshold && imgIdx < imagesArr.length - 1) {
-                              setImageIndexes(idx => ({ 
-                                ...idx, 
-                                [it.id]: imgIdx + 1
-                              }));
-                            } else if (diff > threshold && imgIdx > 0) {
-                              setImageIndexes(idx => ({ 
-                                ...idx, 
-                                [it.id]: imgIdx - 1
-                              }));
+                            if (carousel.dataset.isHorizontal === 'true') {
+                              if (diff < -threshold && imgIdx < imagesArr.length - 1) {
+                                setImageIndexes(idx => ({ 
+                                  ...idx, 
+                                  [it.id]: imgIdx + 1
+                                }));
+                              } else if (diff > threshold && imgIdx > 0) {
+                                setImageIndexes(idx => ({ 
+                                  ...idx, 
+                                  [it.id]: imgIdx - 1
+                                }));
+                              } else {
+                                carousel.style.transform = `translateX(-${imgIdx * 100}%)`;
+                              }
                             } else {
                               carousel.style.transform = `translateX(-${imgIdx * 100}%)`;
                             }
@@ -2516,6 +2543,7 @@ function LogementsInner() {
                             // Reset preventClick after a short delay
                             setTimeout(() => {
                               carousel.dataset.preventClick = 'false';
+                              carousel.dataset.isHorizontal = 'false';
                             }, 100);
                           }}
                           onClick={(e) => {
