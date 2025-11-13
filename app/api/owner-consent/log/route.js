@@ -99,7 +99,13 @@ export async function POST(request) {
       // Mettre à jour le texte de l'accord si fourni
       if (agreementText) {
         updateData.agreement_text = agreementText;
+        console.log('📝 Agreement text fourni, longueur:', agreementText.length);
+      } else {
+        console.log('⚠️ Pas d\'agreement text fourni');
       }
+      
+      console.log('🔄 Mise à jour owner pour listing:', listingId);
+      console.log('📦 Données à mettre à jour:', Object.keys(updateData));
       
       const { data, error } = await supabaseAdmin
         .from('owner_consent_logs')
