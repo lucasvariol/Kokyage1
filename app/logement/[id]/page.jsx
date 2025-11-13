@@ -114,18 +114,18 @@ function Gallery({ images }) {
         maxWidth: 900,
         aspectRatio: '16/9',
         margin: '0 auto 32px',
-        background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-        borderRadius: 24,
+        background: '#fafafa',
+        borderRadius: 8,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#64748b',
-        fontSize: 16,
-        fontWeight: 600,
-        border: '2px dashed #cbd5e1'
+        color: '#9ca3af',
+        fontSize: 15,
+        fontWeight: 500,
+        border: '1px solid #e5e7eb'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 48, marginBottom: 12, opacity: 0.5 }}>🏠</div>
+          <div style={{ fontSize: 48, marginBottom: 12, opacity: 0.3 }}>🏠</div>
           <div>Aucune photo disponible</div>
         </div>
       </div>
@@ -152,9 +152,9 @@ function Gallery({ images }) {
           aspectRatio: '16/9',
           margin: '0 auto',
           cursor: 'zoom-in',
-          background: 'linear-gradient(90deg,#f7f7fa 0%,#f0f0f7 100%)',
-          borderRadius: 24,
-          boxShadow: '0 6px 32px rgba(0,0,0,0.10)',
+          background: '#000',
+          borderRadius: 8,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
           overflow: 'hidden'
         }}
         onClick={() => {
@@ -190,7 +190,7 @@ function Gallery({ images }) {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                borderRadius: 24,
+                borderRadius: 8,
                 userSelect: 'none',
                 pointerEvents: 'none'
               }}
@@ -205,15 +205,15 @@ function Gallery({ images }) {
             top: '50%',
             left: 18,
             transform: 'translateY(-50%)',
-            background: 'rgba(255,255,255,0.95)',
+            background: 'rgba(0,0,0,0.6)',
             backdropFilter: 'blur(8px)',
             border: 'none',
             borderRadius: '50%',
-            width: 44,
-            height: 44,
+            width: 40,
+            height: 40,
             fontSize: 20,
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -229,7 +229,7 @@ function Gallery({ images }) {
           }}
           aria-label="Image précédente"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#334155" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
@@ -240,15 +240,15 @@ function Gallery({ images }) {
             top: '50%',
             right: 18,
             transform: 'translateY(-50%)',
-            background: 'rgba(255,255,255,0.95)',
+            background: 'rgba(0,0,0,0.6)',
             backdropFilter: 'blur(8px)',
             border: 'none',
             borderRadius: '50%',
-            width: 44,
-            height: 44,
+            width: 40,
+            height: 40,
             fontSize: 20,
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -264,7 +264,7 @@ function Gallery({ images }) {
           }}
           aria-label="Image suivante"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#334155" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
         </button>
@@ -272,23 +272,23 @@ function Gallery({ images }) {
           position: 'absolute',
           bottom: 18,
           right: 24,
-          background: 'rgba(15,23,42,0.75)',
+          background: 'rgba(0,0,0,0.6)',
           backdropFilter: 'blur(8px)',
-          borderRadius: 10,
-          padding: '6px 14px',
-          fontSize: 14,
+          borderRadius: 6,
+          padding: '6px 12px',
+          fontSize: 13,
           color: '#fff',
-          fontWeight: 700,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-          letterSpacing: '0.5px'
+          fontWeight: 600,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          letterSpacing: '0.3px'
         }}>
           {current + 1} / {images.length}
         </div>
       </div>
       <div className="gallery-thumbnails" style={{
-        marginTop: 10,
+        marginTop: 16,
         display: 'flex',
-        gap: 12,
+        gap: 10,
         flexWrap: 'wrap',
         justifyContent: 'center'
       }}>
@@ -298,15 +298,15 @@ function Gallery({ images }) {
             src={url}
             alt={`Miniature ${idx + 1}`}
             style={{
-              width: 70,
-              height: 70,
+              width: 64,
+              height: 64,
               objectFit: 'cover',
-              borderRadius: 12,
-              border: current === idx ? '3px solid #C96745' : '2px solid #eee',
+              borderRadius: 6,
+              border: current === idx ? '2px solid #000' : '1px solid #e5e7eb',
               cursor: 'pointer',
-              opacity: current === idx ? 1 : 0.7,
-              boxShadow: current === idx ? '0 2px 8px rgba(201,103,69,0.15)' : 'none',
-              transition: 'border 0.2s, opacity 0.2s'
+              opacity: current === idx ? 1 : 0.6,
+              boxShadow: current === idx ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
+              transition: 'all 0.2s ease'
             }}
             onClick={() => setCurrent(idx)}
           />
