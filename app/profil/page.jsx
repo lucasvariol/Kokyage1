@@ -50,9 +50,9 @@ export default function ProfilPage() {
   }
 
   async function loadUserData(authUser) {
-    // Charger depuis la table users si elle existe
+    // Charger depuis la table profiles
     const { data: userData } = await supabase
-      .from('users')
+      .from('profiles')
       .select('*')
       .eq('id', authUser.id)
       .single();
@@ -104,7 +104,7 @@ export default function ProfilPage() {
 
       // Sauvegarder immédiatement dans la DB
       await supabase
-        .from('users')
+        .from('profiles')
         .update({ photo_url: publicUrl })
         .eq('id', user.id);
 
@@ -119,16 +119,17 @@ export default function ProfilPage() {
   async function handleSave() {
     setSaving(true);
     try {
-      // Mettre à jour la table users
+      // Mettre à jour la table profiles
       const { error } = await supabase
-        .from('users')
+        .from('profiles')
         .update({
           prenom: formData.prenom,
           nom: formData.nom,
           phone: formData.phone,
           date_naissance: formData.dateNaissance,
           photo_url: formData.photoUrl,
-          full_name: `${formData.prenom} ${formData.nom}`.trim()
+          full_name: `${formData.prenom} ${formData.nom}`.trim(),
+          email: formData.email
         })
         .eq('id', user.id);
 
