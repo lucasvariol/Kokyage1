@@ -331,7 +331,7 @@ export default function Page() {
         paddingBottom: 0 
       }}>
         {/* Hero Section Ultra-Modern */}
-        <section style={{ 
+        <section className="hero-section" style={{ 
           background: 'linear-gradient(135deg, #77d4d7ff 0%, #4547c9ff 50%, #3323c7ff 100%)', 
           padding: '160px 24px 120px', 
           textAlign: 'center', 
@@ -383,12 +383,63 @@ export default function Page() {
               33% { transform: translateY(-20px) rotate(5deg); }
               66% { transform: translateY(-10px) rotate(-3deg); }
             }
+            
+            @media (max-width: 768px) {
+              .hero-section {
+                padding: 100px 20px 80px !important;
+              }
+              
+              .form-section {
+                padding: 0 16px 60px !important;
+                transform: translateY(-40px) !important;
+              }
+              
+              .form-container {
+                padding: 32px 20px !important;
+                border-radius: 24px !important;
+              }
+              
+              .form-header {
+                margin-bottom: 32px !important;
+              }
+              
+              .form-title {
+                font-size: 1.75rem !important;
+              }
+              
+              .config-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+              }
+              
+              .images-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+              }
+              
+              .submit-button {
+                width: 100% !important;
+                min-width: auto !important;
+                padding: 18px 32px !important;
+                font-size: 1rem !important;
+              }
+            }
+            
+            @media (max-width: 480px) {
+              .form-title {
+                font-size: 1.5rem !important;
+              }
+              
+              .images-grid {
+                grid-template-columns: 1fr !important;
+              }
+            }
           `}</style>
         </section>
 
         {/* Form Section Ultra-Modern */}
-        <section style={{ padding: '0 24px 100px', transform: 'translateY(-60px)' }}>
-          <div style={{ 
+        <section className="form-section" style={{ padding: '0 24px 100px', transform: 'translateY(-60px)' }}>
+          <div className="form-container" style={{ 
             background: 'rgba(255,255,255,0.98)', 
             backdropFilter: 'blur(30px)',
             borderRadius: '32px', 
@@ -411,7 +462,7 @@ export default function Page() {
               borderRadius: '32px 32px 0 0'
             }}></div>
 
-            <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+            <div className="form-header" style={{ textAlign: 'center', marginBottom: '50px' }}>
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -426,7 +477,7 @@ export default function Page() {
                 <span style={{ fontSize: '2rem' }}>🏡</span>
               </div>
               
-              <h2 style={{ 
+              <h2 className="form-title" style={{ 
                 fontSize: '2.25rem', 
                 fontWeight: 800, 
                 background: 'linear-gradient(135deg, #2D3748 0%, #4A5568 100%)',
@@ -1009,7 +1060,7 @@ export default function Page() {
                   Configuration du logement
                 </h3>
                 
-                <div style={{ 
+                <div className="config-grid" style={{ 
                   display: 'grid', 
                   gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
                   gap: '24px' 
@@ -1592,7 +1643,7 @@ export default function Page() {
                       <span style={{ fontSize: '1.2rem' }}>🔄</span>
                       Glissez-déposez vos photos pour changer l'ordre • La première sera la photo de garde
                     </div>
-                    <div style={{ 
+                    <div className="images-grid" style={{ 
                       display: 'grid', 
                       gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', 
                       gap: '16px'
@@ -1785,8 +1836,9 @@ export default function Page() {
               )}
 
               {/* Bouton de soumission ultra-moderne */}
-              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+              <div className="submit-container" style={{ textAlign: 'center', marginTop: '20px' }}>
                 <button
+                  className="submit-button"
                   type="submit"
                   disabled={loading}
                   style={{
