@@ -1579,8 +1579,34 @@ export default function Page() {
               animation: 'scroll3d 40s linear infinite',
               transformStyle: 'preserve-3d',
               position: 'absolute',
-              left: 0
-            }}>
+              left: 0,
+              touchAction: 'pan-y'
+            }}
+            onTouchStart={(e) => {
+              const carousel = e.currentTarget;
+              carousel.dataset.startX = e.touches[0].clientX;
+              carousel.dataset.isDragging = 'true';
+              carousel.style.animationPlayState = 'paused';
+            }}
+            onTouchMove={(e) => {
+              const carousel = e.currentTarget;
+              if (carousel.dataset.isDragging !== 'true') return;
+              
+              const currentX = e.touches[0].clientX;
+              const startX = parseFloat(carousel.dataset.startX);
+              const diff = currentX - startX;
+              
+              // Déplacer le carousel avec le doigt
+              const currentLeft = parseFloat(getComputedStyle(carousel).left) || 0;
+              carousel.style.left = `${currentLeft + diff}px`;
+              carousel.dataset.startX = currentX;
+            }}
+            onTouchEnd={(e) => {
+              const carousel = e.currentTarget;
+              carousel.dataset.isDragging = 'false';
+              carousel.style.animationPlayState = 'running';
+            }}
+            >
               {[
                 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop',
                 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop',
