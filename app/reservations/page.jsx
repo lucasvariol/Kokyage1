@@ -244,7 +244,7 @@ function ReservationsContent() {
       <Header />
       <main style={{
         minHeight: '80vh',
-        background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+        background: '#f9fafb',
         paddingTop: 40,
         paddingBottom: 60
       }}>
@@ -256,9 +256,9 @@ function ReservationsContent() {
           {/* Message de succès */}
           {success && reservationId && (
             <div style={{
-              background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+              background: '#ecfdf5',
               border: '2px solid #10b981',
-              borderRadius: 20,
+              borderRadius: 12,
               padding: 24,
               marginBottom: 32,
               display: 'flex',
@@ -345,15 +345,15 @@ function ReservationsContent() {
                 onClick={() => setViewMode('guest')}
                 style={{
                   padding: '8px 14px',
-                  borderRadius: 999,
-                  border: '1px solid #cbd5e1',
-                  fontWeight: 800,
+                  borderRadius: 8,
+                  border: '1px solid #e5e7eb',
+                  fontWeight: 600,
                   fontSize: 14,
                   cursor: 'pointer',
                   background: viewMode === 'guest'
-                    ? 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)'
+                    ? '#111827'
                     : '#fff',
-                  color: viewMode === 'guest' ? '#1e40af' : '#0f172a'
+                  color: viewMode === 'guest' ? '#ffffff' : '#111827'
                 }}
               >
                 En tant que voyageur
@@ -362,15 +362,15 @@ function ReservationsContent() {
                 onClick={() => setViewMode('host')}
                 style={{
                   padding: '8px 14px',
-                  borderRadius: 999,
-                  border: '1px solid #cbd5e1',
-                  fontWeight: 800,
+                  borderRadius: 8,
+                  border: '1px solid #e5e7eb',
+                  fontWeight: 600,
                   fontSize: 14,
                   cursor: 'pointer',
                   background: viewMode === 'host'
-                    ? 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)'
+                    ? '#111827'
                     : '#fff',
-                  color: viewMode === 'host' ? '#1e40af' : '#0f172a'
+                  color: viewMode === 'host' ? '#ffffff' : '#111827'
                 }}
               >
                 En tant qu'hôte
@@ -391,7 +391,7 @@ function ReservationsContent() {
               <div style={{
                 width: 80,
                 height: 80,
-                background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+                background: '#f1f5f9',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
@@ -426,12 +426,12 @@ function ReservationsContent() {
               <button
                 onClick={() => router.push('/logements')}
                 style={{
-                  background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
+                  background: '#111827',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: '16px 24px',
-                  fontWeight: 800,
+                  fontWeight: 600,
                   fontSize: 16,
                   cursor: 'pointer',
                   boxShadow: '0 8px 25px rgba(37,99,235,0.3)',
@@ -539,12 +539,12 @@ function ReservationsContent() {
                       }}>
                         <span style={{
                           background: reservation.host_validation_ok
-                            ? 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)'
-                            : 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
+                            ? '#bae6fd'
+                            : '#ffedd5',
                           color: reservation.host_validation_ok ? '#075985' : '#9a3412',
-                          borderRadius: 999,
+                          borderRadius: 8,
                           padding: '6px 12px',
-                          fontWeight: 800,
+                          fontWeight: 600,
                           fontSize: 12,
                           border: `1px solid ${reservation.host_validation_ok ? '#38bdf8' : '#fdba74'}`
                         }}>
@@ -568,22 +568,22 @@ function ReservationsContent() {
                         <button
                           onClick={() => router.push(`/reservations/${reservation.id}`)}
                           style={{
-                            background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
-                            color: '#1e40af',
-                            border: '1px solid #93c5fd',
-                            borderRadius: 10,
+                            background: '#111827',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: 8,
                             padding: '8px 16px',
-                            fontWeight: 700,
+                            fontWeight: 600,
                             fontSize: 13,
                             cursor: 'pointer',
                             transition: 'all 0.2s ease'
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%)';
+                            e.currentTarget.style.background = '#1f2937';
                             e.currentTarget.style.transform = 'translateY(-1px)';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)';
+                            e.currentTarget.style.background = '#111827';
                             e.currentTarget.style.transform = 'translateY(0)';
                           }}
                         >
@@ -593,10 +593,10 @@ function ReservationsContent() {
                         <button
                           onClick={() => router.push(`/logement/${reservation.listing_id}`)}
                           style={{
-                            background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                            color: '#475569',
-                            border: '1px solid #cbd5e1',
-                            borderRadius: 10,
+                            background: '#f9fafb',
+                            color: '#111827',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: 8,
                             padding: '8px 16px',
                             fontWeight: 700,
                             fontSize: 13,
@@ -604,11 +604,11 @@ function ReservationsContent() {
                             transition: 'all 0.2s ease'
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)';
+                            e.currentTarget.style.background = '#f3f4f6';
                             e.currentTarget.style.transform = 'translateY(-1px)';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)';
+                            e.currentTarget.style.background = '#f9fafb';
                             e.currentTarget.style.transform = 'translateY(0)';
                           }}
                         >
@@ -620,12 +620,12 @@ function ReservationsContent() {
                               onClick={() => handleHostValidation(reservation.id, true)}
                               disabled={hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id}
                               style={{
-                                background: 'linear-gradient(135deg, #86efac 0%, #4ade80 100%)',
-                                color: '#166534',
-                                border: '1px solid #4ade80',
-                                borderRadius: 10,
+                                background: '#10b981',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: 8,
                                 padding: '8px 16px',
-                                fontWeight: 800,
+                                fontWeight: 600,
                                 fontSize: 13,
                                 cursor: (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) ? 'not-allowed' : 'pointer',
                                 transition: 'all 0.2s ease',
@@ -633,11 +633,11 @@ function ReservationsContent() {
                               }}
                               onMouseEnter={(e) => {
                                 if (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) return;
-                                e.currentTarget.style.background = 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)';
+                                e.currentTarget.style.background = '#059669';
                                 e.currentTarget.style.transform = 'translateY(-1px)';
                               }}
                               onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'linear-gradient(135deg, #86efac 0%, #4ade80 100%)';
+                                e.currentTarget.style.background = '#10b981';
                                 e.currentTarget.style.transform = 'translateY(0)';
                               }}
                             >
@@ -647,12 +647,12 @@ function ReservationsContent() {
                               onClick={() => handleHostRejection(reservation.id)}
                               disabled={hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id}
                               style={{
-                                background: 'linear-gradient(135deg, #fecaca 0%, #ef4444 100%)',
-                                color: '#7f1d1d',
-                                border: '1px solid #ef4444',
-                                borderRadius: 10,
+                                background: '#ef4444',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: 8,
                                 padding: '8px 16px',
-                                fontWeight: 800,
+                                fontWeight: 600,
                                 fontSize: 13,
                                 cursor: (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) ? 'not-allowed' : 'pointer',
                                 transition: 'all 0.2s ease',
@@ -660,11 +660,11 @@ function ReservationsContent() {
                               }}
                               onMouseEnter={(e) => {
                                 if (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) return;
-                                e.currentTarget.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+                                e.currentTarget.style.background = '#dc2626';
                                 e.currentTarget.style.transform = 'translateY(-1px)';
                               }}
                               onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'linear-gradient(135deg, #fecaca 0%, #ef4444 100%)';
+                                e.currentTarget.style.background = '#ef4444';
                                 e.currentTarget.style.transform = 'translateY(0)';
                               }}
                             >
@@ -677,12 +677,12 @@ function ReservationsContent() {
                             onClick={() => handleHostCancellation(reservation.id)}
                             disabled={hostCancellationLoading === reservation.id}
                             style={{
-                              background: 'linear-gradient(135deg, #fdba74 0%, #f97316 100%)',
-                              color: '#7c2d12',
-                              border: '1px solid #f97316',
-                              borderRadius: 10,
+                              background: '#f97316',
+                              color: '#ffffff',
+                              border: 'none',
+                              borderRadius: 8,
                               padding: '8px 16px',
-                              fontWeight: 800,
+                              fontWeight: 600,
                               fontSize: 13,
                               cursor: hostCancellationLoading === reservation.id ? 'not-allowed' : 'pointer',
                               transition: 'all 0.2s ease',
@@ -690,11 +690,11 @@ function ReservationsContent() {
                             }}
                             onMouseEnter={(e) => {
                               if (hostCancellationLoading === reservation.id) return;
-                              e.currentTarget.style.background = 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)';
+                              e.currentTarget.style.background = '#ea580c';
                               e.currentTarget.style.transform = 'translateY(-1px)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'linear-gradient(135deg, #fdba74 0%, #f97316 100%)';
+                              e.currentTarget.style.background = '#f97316';
                               e.currentTarget.style.transform = 'translateY(0)';
                             }}
                           >
@@ -919,6 +919,25 @@ function ReservationsContent() {
       <style jsx>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+          /* Mobile responsive grid for reservation cards */
+          div[style*="gridTemplateColumns: auto 1fr auto"] {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          
+          /* Stack buttons vertically on mobile */
+          div[style*="flexDirection: column"] button {
+            width: 100%;
+          }
+          
+          /* Full width images on mobile */
+          img[style*="width: 100px"] {
+            width: 100% !important;
+            height: 180px !important;
+          }
         }
       `}</style>
       
