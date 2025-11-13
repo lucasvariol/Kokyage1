@@ -51,6 +51,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_owner_consent_logs_updated_at ON owner_consent_logs;
+
 CREATE TRIGGER update_owner_consent_logs_updated_at
   BEFORE UPDATE ON owner_consent_logs
   FOR EACH ROW
@@ -60,12 +62,14 @@ CREATE TRIGGER update_owner_consent_logs_updated_at
 ALTER TABLE owner_consent_logs ENABLE ROW LEVEL SECURITY;
 
 -- Les utilisateurs peuvent voir leurs propres logs
+DROP POLICY IF EXISTS "Users can view their own consent logs" ON owner_consent_logs;
 CREATE POLICY "Users can view their own consent logs"
   ON owner_consent_logs
   FOR SELECT
   USING (auth.uid() = tenant_id);
 
 -- Seuls les utilisateurs authentifiés peuvent créer des logs (via l'API)
+DROP POLICY IF EXISTS "Authenticated users can create consent logs" ON owner_consent_logs;
 CREATE POLICY "Authenticated users can create consent logs"
   ON owner_consent_logs
   FOR INSERT
@@ -73,8 +77,12 @@ CREATE POLICY "Authenticated users can create consent logs"
 
 -- Commentaires pour documentation
 COMMENT ON TABLE owner_consent_logs IS 'Logs des accords de consentement du propriétaire pour validation juridique';
-COMMENT ON COLUMN owner_consent_logs.consent_accepted_at IS 'Horodatage précis de l''acceptation de l''accord';
-COMMENT ON COLUMN owner_consent_logs.ip_address IS 'Adresse IP de l''utilisateur lors de l''acceptation';
-COMMENT ON COLUMN owner_consent_logs.user_agent IS 'User agent du navigateur pour traçabilité';
+COMMENT ON COLUMN owner_consent_logs.tenant_signed_at IS 'Horodatage précis de l''acceptation par le locataire';
+COMMENT ON COLUMN owner_consent_logs.owner_signed_at IS 'Horodatage précis de l''acceptation par le propriétaire';
+COMMENT ON COLUMN owner_consent_logs.tenant_ip_address IS 'Adresse IP du locataire lors de l''acceptation';
+COMMENT ON COLUMN owner_consent_logs.owner_ip_address IS 'Adresse IP du propriétaire lors de l''acceptation';
+COMMENT ON COLUMN owner_consent_logs.tenant_user_agent IS 'User agent du navigateur du locataire pour traçabilité';
+COMMENT ON COLUMN owner_consent_logs.owner_user_agent IS 'User agent du navigateur du propriétaire pour traçabilité';
 COMMENT ON COLUMN owner_consent_logs.consent_version IS 'Version de l''accord accepté pour suivi des modifications';
 COMMENT ON COLUMN owner_consent_logs.agreement_text IS 'Texte complet de l''accord au moment de l''acceptation';
+COMMENT ON COLUMN owner_consent_logs.fully_signed IS 'True si tenant ET owner ont tous deux signé';
