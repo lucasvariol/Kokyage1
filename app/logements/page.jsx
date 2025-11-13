@@ -212,7 +212,34 @@ function ListingsMap({ items, center, onCenterChange, searchView, ratings = {} }
           maxWidth: 220,
           minWidth: 200,
           className: 'custom-popup',
-          offset: [0, -10]
+          offset: [0, -10],
+          autoPan: true,
+          autoPanPaddingTopLeft: [10, 80],
+          autoPanPaddingBottomRight: [10, 10]
+        });
+        
+        // Recentrer la map pour afficher la popup entière
+        marker.on('click', () => {
+          setTimeout(() => {
+            const map = mapRef.current;
+            if (!map) return;
+            
+            // Obtenir la position du marqueur
+            const markerLatLng = marker.getLatLng();
+            
+            // Calculer le décalage en pixels (descendre la vue pour montrer la popup)
+            const popupHeight = 280; // Hauteur approximative de la popup
+            const mapHeight = map.getContainer().offsetHeight;
+            const offsetY = popupHeight / 2;
+            
+            // Convertir l'offset en coordonnées lat/lng
+            const point = map.latLngToContainerPoint(markerLatLng);
+            point.y += offsetY;
+            const newCenter = map.containerPointToLatLng(point);
+            
+            // Animer le recentrage
+            map.panTo(newCenter, { animate: true, duration: 0.3 });
+          }, 50);
         });
         
         // Initialize swipe on popup open
