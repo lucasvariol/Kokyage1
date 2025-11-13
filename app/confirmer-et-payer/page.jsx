@@ -187,7 +187,7 @@ function ConfirmerEtPayerContent() {
   const getDayBeforeArrival = () => {
     if (!startDate) return '';
     const arrival = new Date(startDate);
-    const dayBefore = new Date(arrival.getTime() - (1 * 24 * 60 * 60 * 1000));
+    const dayBefore = new Date(arrival.getTime() - (2 * 24 * 60 * 60 * 1000));
     return dayBefore.toLocaleDateString('fr-FR', {
       day: 'numeric',
       month: 'long',
