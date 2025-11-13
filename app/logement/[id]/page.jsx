@@ -17,26 +17,45 @@ import 'react-day-picker/dist/style.css';
 import { fr } from 'date-fns/locale';
 import { differenceInCalendarDays } from 'date-fns';
 
-// --- Galerie moderne ---
+// --- Galerie professionnelle ---
 function Gallery({ images }) {
   const [current, setCurrent] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const carouselRef = useRef(null);
+  const modalCarouselRef = useRef(null);
   const preventModalClickRef = useRef(false);
+  const [imageScale, setImageScale] = useState(1);
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
 
-  // Navigation clavier dans la modal
+  // Navigation clavier
   useEffect(() => {
     if (!modalOpen) return;
     const handleKey = (e) => {
       if (e.key === "ArrowLeft") prevImage();
       if (e.key === "ArrowRight") nextImage();
-      if (e.key === "Escape") setModalOpen(false);
+      if (e.key === "Escape") closeModal();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [modalOpen, current]);
 
-  // Support du swipe sur mobile
+  // Bloquer le scroll du body quand modal ouverte
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [modalOpen]);
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setImageScale(1);
+    setImagePosition({ x: 0, y: 0 });
+  };
+
+  // Support du swipe sur mobile (galerie principale)
   const currentRef = useRef(current);
   useEffect(() => { currentRef.current = current; }, [current]);
 
@@ -50,7 +69,7 @@ function Gallery({ images }) {
     let isDragging = false;
 
     const snapToIndex = (idx) => {
-      carousel.style.transition = 'transform 0.25s ease';
+      carousel.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
       carousel.style.transform = `translateX(-${idx * 100}%)`;
     };
 
@@ -107,15 +126,82 @@ function Gallery({ images }) {
     };
   }, [images]);
 
+  // Swipe sur modal
+  useEffect(() => {
+    if (!modalOpen || !images || images.length <= 1) return;
+    const carousel = modalCarouselRef.current;
+    if (!carousel) return;
+
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    const snapToIndex = (idx) => {
+      carousel.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+      carousel.style.transform = `translateX(-${idx * 100}%)`;
+    };
+
+    const onTouchStart = (e) => {
+      if (imageScale > 1) return; // Pas de swipe si zoom
+      if (!e.touches || e.touches.length === 0) return;
+      startX = e.touches[0].clientX;
+      currentX = startX;
+      isDragging = true;
+      carousel.style.transition = 'none';
+    };
+
+    const onTouchMove = (e) => {
+      if (!isDragging || imageScale > 1) return;
+      currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+      const idx = currentRef.current;
+      carousel.style.transform = `translateX(calc(-${idx * 100}% + ${diff}px))`;
+    };
+
+    const onTouchEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      const diff = currentX - startX;
+      const threshold = 70;
+      const idx = currentRef.current;
+
+      if (diff < -threshold && idx < images.length - 1) {
+        const nextIdx = idx + 1;
+        currentRef.current = nextIdx;
+        setCurrent(nextIdx);
+        snapToIndex(nextIdx);
+      } else if (diff > threshold && idx > 0) {
+        const prevIdx = idx - 1;
+        currentRef.current = prevIdx;
+        setCurrent(prevIdx);
+        snapToIndex(prevIdx);
+      } else {
+        snapToIndex(idx);
+      }
+    };
+
+    carousel.addEventListener('touchstart', onTouchStart, { passive: true });
+    carousel.addEventListener('touchmove', onTouchMove, { passive: true });
+    carousel.addEventListener('touchend', onTouchEnd, { passive: true });
+    carousel.addEventListener('touchcancel', onTouchEnd, { passive: true });
+
+    return () => {
+      carousel.removeEventListener('touchstart', onTouchStart);
+      carousel.removeEventListener('touchmove', onTouchMove);
+      carousel.removeEventListener('touchend', onTouchEnd);
+      carousel.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [modalOpen, images, imageScale]);
+
   if (!images || images.length === 0) {
     return (
       <div style={{
         width: '100%',
-        maxWidth: 900,
+        maxWidth: 1200,
         aspectRatio: '16/9',
-        margin: '0 auto 32px',
-        background: '#fafafa',
-        borderRadius: 8,
+        margin: '0 auto 24px',
+        background: '#f9fafb',
+        borderRadius: 12,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -125,230 +211,540 @@ function Gallery({ images }) {
         border: '1px solid #e5e7eb'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 48, marginBottom: 12, opacity: 0.3 }}>🏠</div>
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 12px', opacity: 0.3 }}>
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
           <div>Aucune photo disponible</div>
         </div>
       </div>
     );
   }
 
-  const prevImage = () => setCurrent((current - 1 + images.length) % images.length);
-  const nextImage = () => setCurrent((current + 1) % images.length);
+  const prevImage = () => {
+    setCurrent((current - 1 + images.length) % images.length);
+    setImageScale(1);
+    setImagePosition({ x: 0, y: 0 });
+  };
+  
+  const nextImage = () => {
+    setCurrent((current + 1) % images.length);
+    setImageScale(1);
+    setImagePosition({ x: 0, y: 0 });
+  };
 
   return (
-    <div className="gallery-container" style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      marginBottom: 32,
-      width: '100%',
-      gap: 18
-    }}>
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: 900,
-          aspectRatio: '16/9',
-          margin: '0 auto',
-          cursor: 'zoom-in',
-          background: '#000',
-          borderRadius: 8,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-          overflow: 'hidden'
-        }}
-        onClick={() => {
-          if (preventModalClickRef.current) {
-            // Click originated from a swipe; ignore and reset
-            preventModalClickRef.current = false;
-            return;
+    <>
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+          .gallery-grid {
+            display: none !important;
           }
-          setModalOpen(true);
-        }}
-      >
-        {/* Carousel container */}
-        <div
-          id="gallery-carousel"
-          ref={carouselRef}
-          style={{
-            display: 'flex',
-            height: '100%',
-            transition: 'transform 0.3s ease',
-            transform: `translateX(-${current * 100}%)`,
-            // Enable smooth horizontal panning on mobile without page scroll
-            touchAction: 'pan-y',
-            WebkitOverflowScrolling: 'touch'
-          }}
-        >
-          {images.map((url, idx) => (
+          .mobile-view-all {
+            display: flex !important;
+          }
+        }
+        @media (min-width: 769px) {
+          .gallery-carousel-wrapper {
+            display: none !important;
+          }
+          .mobile-view-all {
+            display: none !important;
+          }
+        }
+      `}</style>
+
+      <div className="gallery-container" style={{
+        marginBottom: 32,
+        width: '100%',
+        maxWidth: 1200,
+        margin: '0 auto 32px'
+      }}>
+        {/* Desktop: Grille d'images */}
+        <div className="gallery-grid" style={{
+          display: 'grid',
+          gridTemplateColumns: images.length === 1 ? '1fr' : '1fr 1fr',
+          gap: 12,
+          borderRadius: 16,
+          overflow: 'hidden',
+          height: images.length === 1 ? 500 : 480
+        }}>
+          {/* Image principale */}
+          <div
+            onClick={() => { setCurrent(0); setModalOpen(true); }}
+            style={{
+              position: 'relative',
+              gridRow: images.length > 1 ? 'span 2' : 'span 1',
+              cursor: 'pointer',
+              overflow: 'hidden',
+              background: '#000'
+            }}
+          >
             <img
-              key={idx}
-              src={url}
-              alt={`Photo ${idx + 1} du logement`}
+              src={images[0]}
+              alt="Photo principale du logement"
               style={{
-                minWidth: '100%',
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                borderRadius: 8,
-                userSelect: 'none',
-                pointerEvents: 'none'
+                transition: 'transform 0.3s ease'
               }}
-              draggable="false"
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3))',
+              opacity: 0,
+              transition: 'opacity 0.3s ease',
+              pointerEvents: 'none'
+            }} />
+          </div>
+
+          {/* Images secondaires (max 4) */}
+          {images.slice(1, 5).map((url, idx) => (
+            <div
+              key={idx}
+              onClick={() => { setCurrent(idx + 1); setModalOpen(true); }}
+              style={{
+                position: 'relative',
+                cursor: 'pointer',
+                overflow: 'hidden',
+                background: '#000'
+              }}
+            >
+              <img
+                src={url}
+                alt={`Photo ${idx + 2} du logement`}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  transition: 'transform 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              />
+              {/* Badge "Voir plus" sur la dernière image */}
+              {idx === 3 && images.length > 5 && (
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'rgba(0,0,0,0.6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontSize: 18,
+                  fontWeight: 600,
+                  transition: 'background 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.75)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.6)'}
+                >
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 32, marginBottom: 8 }}>+{images.length - 5}</div>
+                    <div style={{ fontSize: 14 }}>Voir toutes les photos</div>
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
-        <button
-          onClick={e => { e.stopPropagation(); prevImage(); }}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: 18,
-            transform: 'translateY(-50%)',
-            background: 'rgba(255,255,255,0.95)',
-            backdropFilter: 'blur(8px)',
-            border: 'none',
-            borderRadius: '50%',
-            width: 40,
-            height: 40,
-            fontSize: 20,
-            cursor: 'pointer',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(255,255,255,1)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)';
-            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-            e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.1)';
-          }}
-          aria-label="Image précédente"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-        <button
-          onClick={e => { e.stopPropagation(); nextImage(); }}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            right: 18,
-            transform: 'translateY(-50%)',
-            background: 'rgba(255,255,255,0.95)',
-            backdropFilter: 'blur(8px)',
-            border: 'none',
-            borderRadius: '50%',
-            width: 40,
-            height: 40,
-            fontSize: 20,
-            cursor: 'pointer',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(255,255,255,1)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)';
-            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-            e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.1)';
-          }}
-          aria-label="Image suivante"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-        <div style={{
-          position: 'absolute',
-          bottom: 18,
-          right: 24,
-          background: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(8px)',
-          borderRadius: 6,
-          padding: '6px 12px',
-          fontSize: 12,
-          color: '#374151',
-          fontWeight: 600,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
-          letterSpacing: '0.3px'
+
+        {/* Mobile: Carousel */}
+        <div className="gallery-carousel-wrapper" style={{
+          position: 'relative',
+          width: '100%',
+          background: '#000',
+          borderRadius: 12,
+          overflow: 'hidden'
         }}>
-          {current + 1} / {images.length}
-        </div>
-      </div>
-      <div className="gallery-thumbnails" style={{
-        marginTop: 16,
-        display: 'flex',
-        gap: 8,
-        flexWrap: 'wrap',
-        justifyContent: 'center'
-      }}>
-        {images.map((url, idx) => (
-          <img
-            key={idx}
-            src={url}
-            alt={`Miniature ${idx + 1}`}
+          <div
+            ref={carouselRef}
             style={{
-              width: 56,
-              height: 56,
-              objectFit: 'cover',
-              borderRadius: 4,
-              border: current === idx ? '2px solid #1f2937' : '1px solid #d1d5db',
-              cursor: 'pointer',
-              opacity: current === idx ? 1 : 0.5,
-              boxShadow: current === idx ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
-              transition: 'all 0.2s ease'
+              display: 'flex',
+              transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              transform: `translateX(-${current * 100}%)`,
+              touchAction: 'pan-y'
             }}
-            onClick={() => setCurrent(idx)}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = current === idx ? '1' : '0.5'}
-          />
-        ))}
+          >
+            {images.map((url, idx) => (
+              <div
+                key={idx}
+                onClick={() => {
+                  if (preventModalClickRef.current) {
+                    preventModalClickRef.current = false;
+                    return;
+                  }
+                  setModalOpen(true);
+                }}
+                style={{
+                  minWidth: '100%',
+                  aspectRatio: '4/3',
+                  cursor: 'pointer'
+                }}
+              >
+                <img
+                  src={url}
+                  alt={`Photo ${idx + 1} du logement`}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    userSelect: 'none',
+                    pointerEvents: 'none'
+                  }}
+                  draggable="false"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation mobile */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: 12,
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255,255,255,0.95)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 44,
+                  height: 44,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  cursor: 'pointer',
+                  zIndex: 10
+                }}
+                aria-label="Image précédente"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  right: 12,
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(255,255,255,0.95)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 44,
+                  height: 44,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  cursor: 'pointer',
+                  zIndex: 10
+                }}
+                aria-label="Image suivante"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* Compteur */}
+          <div style={{
+            position: 'absolute',
+            bottom: 12,
+            right: 12,
+            background: 'rgba(0,0,0,0.75)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: 20,
+            padding: '6px 14px',
+            fontSize: 13,
+            color: '#fff',
+            fontWeight: 600,
+            letterSpacing: '0.5px'
+          }}>
+            {current + 1} / {images.length}
+          </div>
+        </div>
+
+        {/* Bouton "Voir toutes les photos" sur mobile */}
+        <button
+          className="mobile-view-all"
+          onClick={() => setModalOpen(true)}
+          style={{
+            display: 'none',
+            marginTop: 12,
+            width: '100%',
+            padding: '12px',
+            background: '#fff',
+            border: '1px solid #e5e7eb',
+            borderRadius: 8,
+            fontSize: 14,
+            fontWeight: 600,
+            color: '#1f2937',
+            cursor: 'pointer',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            transition: 'all 0.2s ease'
+          }}
+          onMouseDown={(e) => {
+            e.currentTarget.style.background = '#f9fafb';
+            e.currentTarget.style.borderColor = '#d1d5db';
+          }}
+          onMouseUp={(e) => {
+            e.currentTarget.style.background = '#fff';
+            e.currentTarget.style.borderColor = '#e5e7eb';
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          Voir toutes les photos ({images.length})
+        </button>
       </div>
-      {/* Modal d'image agrandie */}
+
+      {/* Modal plein écran */}
       {modalOpen && (
         <div
-          onClick={() => setModalOpen(false)}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
+          }}
           style={{
             position: 'fixed',
-            top: 0, left: 0, right: 0, bottom: 0,
-            background: 'rgba(0,0,0,0.85)',
+            inset: 0,
+            background: 'rgba(0,0,0,0.96)',
+            zIndex: 9999,
+            animation: 'fadeIn 0.2s ease',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            cursor: 'zoom-out',
-            animation: 'fadeIn 0.2s'
+            flexDirection: 'column'
           }}
         >
-          <img
-            src={images[current]}
-            alt={`Photo agrandie ${current + 1}`}
-            style={{
-              maxWidth: '95vw',
-              maxHeight: '95vh',
-              borderRadius: 28,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
-              background: '#fff',
-              border: '6px solid #fff'
-            }}
-          />
+          {/* Header de la modal */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '16px 20px',
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(10px)',
+            borderBottom: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            <div style={{
+              fontSize: 15,
+              fontWeight: 600,
+              color: '#fff',
+              letterSpacing: '0.3px'
+            }}>
+              {current + 1} / {images.length}
+            </div>
+            <button
+              onClick={closeModal}
+              style={{
+                background: 'rgba(255,255,255,0.1)',
+                border: 'none',
+                borderRadius: '50%',
+                width: 36,
+                height: 36,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'background 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+              aria-label="Fermer"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          {/* Container des images */}
+          <div style={{
+            flex: 1,
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <div
+              ref={modalCarouselRef}
+              style={{
+                display: 'flex',
+                height: '100%',
+                width: '100%',
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                transform: `translateX(-${current * 100}%)`,
+                touchAction: imageScale > 1 ? 'none' : 'pan-y'
+              }}
+            >
+              {images.map((url, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    minWidth: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '20px'
+                  }}
+                >
+                  <img
+                    src={url}
+                    alt={`Photo ${idx + 1}`}
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      objectFit: 'contain',
+                      borderRadius: 8,
+                      userSelect: 'none',
+                      transform: idx === current ? `scale(${imageScale}) translate(${imagePosition.x}px, ${imagePosition.y}px)` : 'none',
+                      transition: idx === current ? 'none' : 'transform 0.3s ease',
+                      cursor: imageScale > 1 ? 'grab' : 'default'
+                    }}
+                    draggable="false"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation desktop */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  style={{
+                    position: 'absolute',
+                    left: 20,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'rgba(255,255,255,0.15)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '50%',
+                    width: 56,
+                    height: 56,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    zIndex: 10
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
+                    e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                    e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                  }}
+                  aria-label="Image précédente"
+                >
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <button
+                  onClick={nextImage}
+                  style={{
+                    position: 'absolute',
+                    right: 20,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'rgba(255,255,255,0.15)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '50%',
+                    width: 56,
+                    height: 56,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    zIndex: 10
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
+                    e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+                    e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                  }}
+                  aria-label="Image suivante"
+                >
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Thumbnails en bas */}
+          <div style={{
+            padding: '16px 20px',
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(10px)',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            display: 'flex',
+            gap: 8,
+            WebkitOverflowScrolling: 'touch'
+          }}>
+            {images.map((url, idx) => (
+              <img
+                key={idx}
+                src={url}
+                alt={`Miniature ${idx + 1}`}
+                onClick={() => setCurrent(idx)}
+                style={{
+                  width: 80,
+                  height: 60,
+                  minWidth: 80,
+                  objectFit: 'cover',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                  border: current === idx ? '2px solid #fff' : '2px solid transparent',
+                  opacity: current === idx ? 1 : 0.5,
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = current === idx ? '1' : '0.5'}
+              />
+            ))}
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
