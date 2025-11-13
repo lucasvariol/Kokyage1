@@ -197,7 +197,18 @@ function ConfirmerEtPayerContent() {
         // Rediriger vers la page de connexion si non connecté
         if (!user) {
           console.log('User not authenticated, redirecting to login');
-          const currentUrl = `/confirmer-et-payer${window.location.search}`;
+          // Construire l'URL complète avec tous les paramètres
+          const params = new URLSearchParams();
+          if (listingId) params.set('listingId', listingId);
+          if (startDate) params.set('startDate', startDate);
+          if (endDate) params.set('endDate', endDate);
+          if (guests) params.set('guests', guests);
+          if (totalPrice) params.set('totalPrice', totalPrice);
+          if (basePrice) params.set('basePrice', basePrice);
+          if (taxPrice) params.set('taxPrice', taxPrice);
+          if (nights) params.set('nights', nights);
+          
+          const currentUrl = `/confirmer-et-payer?${params.toString()}`;
           router.push(`/inscription?redirect=${encodeURIComponent(currentUrl)}`);
           return;
         }
