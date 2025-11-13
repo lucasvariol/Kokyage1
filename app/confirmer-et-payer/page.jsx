@@ -417,29 +417,15 @@ function ConfirmerEtPayerContent() {
             display: 'grid',
             gridTemplateColumns: '1fr',
             gap: 20
-          }}>
-            <style jsx>{`
-              @media (min-width: 1025px) {
-                div[style*="gridTemplateColumns: 1fr"] {
-                  grid-template-columns: 1.4fr 0.6fr !important;
-                  gap: 32px !important;
-                }
-              }
-            `}</style>
+          }} className="payment-grid">
+
             {/* Colonne gauche - Récapitulatif */}
             <div style={{
               background: '#ffffff',
               borderRadius: 16,
               padding: '20px',
               border: '1px solid #e5e7eb'
-            }}>
-              <style jsx>{`
-                @media (min-width: 768px) {
-                  div[style*="borderRadius: 16px"][style*="padding: 20px"] {
-                    padding: 28px !important;
-                  }
-                }
-              `}</style>
+            }} className="summary-card">
 
               {/* Photo et nom du logement */}
               <div style={{
@@ -449,15 +435,7 @@ function ConfirmerEtPayerContent() {
                 marginBottom: 20,
                 paddingBottom: 20,
                 borderBottom: '1px solid #e5e7eb'
-              }}>
-                <style jsx>{`
-                  @media (min-width: 640px) {
-                    div[style*="flexDirection: column"] {
-                      flex-direction: row !important;
-                      gap: 20px !important;
-                    }
-                  }
-                `}</style>
+              }} className="listing-header">
 
                 <img
                   src={listing.images?.[0] || '/placeholder-image.jpg'}
@@ -469,16 +447,8 @@ function ConfirmerEtPayerContent() {
                     objectFit: 'cover',
                     border: '1px solid #e5e7eb'
                   }}
+                  className="listing-image"
                 />
-                <style jsx>{`
-                  @media (min-width: 640px) {
-                    img[alt="${listing.title}"] {
-                      width: 120px !important;
-                      height: 120px !important;
-                      flex-shrink: 0 !important;
-                    }
-                  }
-                `}</style>
                 <div style={{ flex: 1 }}>
                   <h2 style={{
                     fontSize: 18,
@@ -695,20 +665,7 @@ function ConfirmerEtPayerContent() {
               borderRadius: 16,
               padding: '20px',
               border: '1px solid #e5e7eb'
-            }}>
-              <style jsx>{`
-                @media (min-width: 768px) {
-                  div[style*="background: #ffffff"][style*="borderRadius: 16px"][style*="padding: 20px"]:last-of-type {
-                    padding: 28px !important;
-                  }
-                }
-                @media (min-width: 1025px) {
-                  div[style*="background: #ffffff"][style*="borderRadius: 16px"][style*="padding: 20px"]:last-of-type {
-                    position: sticky !important;
-                    top: 100px !important;
-                  }
-                }
-              `}</style>
+            }} className="payment-card">
 
               <h3 style={{
                 fontSize: 18,
@@ -782,6 +739,35 @@ function ConfirmerEtPayerContent() {
       <style jsx>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+        
+        @media (min-width: 1025px) {
+          .payment-grid {
+            grid-template-columns: 1.4fr 0.6fr !important;
+            gap: 32px !important;
+          }
+          .payment-card {
+            position: sticky !important;
+            top: 100px !important;
+          }
+        }
+        
+        @media (min-width: 768px) {
+          .summary-card, .payment-card {
+            padding: 28px !important;
+          }
+        }
+        
+        @media (min-width: 640px) {
+          .listing-header {
+            flex-direction: row !important;
+            gap: 20px !important;
+          }
+          .listing-image {
+            width: 120px !important;
+            height: 120px !important;
+            flex-shrink: 0 !important;
+          }
         }
       `}</style>
       
