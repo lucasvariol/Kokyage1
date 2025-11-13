@@ -88,6 +88,15 @@ export async function POST(request) {
 
     // SIGNATURE DU OWNER (validation propriétaire)
     if (signatureType === 'owner') {
+      console.log('🔍 Signature owner - Données reçues:', {
+        listingId,
+        ownerEmail,
+        ownerFullName,
+        ip,
+        userAgent,
+        hasAgreementText: !!agreementText
+      });
+      
       // Mettre à jour l'enregistrement avec la signature du owner
       const updateData = {
         owner_full_name: ownerFullName,
@@ -101,6 +110,8 @@ export async function POST(request) {
         updateData.agreement_text = agreementText;
       }
       
+      console.log('📝 Données à mettre à jour:', updateData);
+      
       const { data, error } = await supabaseAdmin
         .from('owner_consent_logs')
         .update(updateData)
@@ -108,6 +119,8 @@ export async function POST(request) {
         .is('owner_signed_at', null) // Seulement si pas encore signé par owner
         .select()
         .single();
+      
+      console.log('✅ Résultat UPDATE:', { data, error });
 
       if (error) {
         console.error('Erreur signature owner:', error);
