@@ -106,6 +106,34 @@ export default function Page() {
     setPreviewImages(newPreviews);
   };
 
+  const moveImageUp = (index) => {
+    if (index === 0) return; // Déjà en première position
+    
+    const newImages = [...images];
+    const newPreviews = [...previewImages];
+    
+    // Échanger avec l'image précédente
+    [newImages[index - 1], newImages[index]] = [newImages[index], newImages[index - 1]];
+    [newPreviews[index - 1], newPreviews[index]] = [newPreviews[index], newPreviews[index - 1]];
+    
+    setImages(newImages);
+    setPreviewImages(newPreviews);
+  };
+
+  const moveImageDown = (index) => {
+    if (index === images.length - 1) return; // Déjà en dernière position
+    
+    const newImages = [...images];
+    const newPreviews = [...previewImages];
+    
+    // Échanger avec l'image suivante
+    [newImages[index], newImages[index + 1]] = [newImages[index + 1], newImages[index]];
+    [newPreviews[index], newPreviews[index + 1]] = [newPreviews[index + 1], newPreviews[index]];
+    
+    setImages(newImages);
+    setPreviewImages(newPreviews);
+  };
+
   const handleDragStart = (e, index) => {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', index.toString());
@@ -1661,7 +1689,7 @@ export default function Page() {
                       gap: '8px'
                     }}>
                       <span style={{ fontSize: '1.2rem' }}>🔄</span>
-                      Glissez-déposez vos photos pour changer l'ordre • La première sera la photo de garde
+                      Utilisez les flèches pour changer l'ordre • La première sera la photo de garde
                     </div>
                     <div className="images-grid" style={{ 
                       display: 'grid', 
@@ -1671,58 +1699,116 @@ export default function Page() {
                       {previewImages.map((preview, index) => (
                         <div 
                           key={index} 
-                          draggable="true"
-                          onDragStart={(e) => handleDragStart(e, index)}
-                          onDragOver={handleDragOver}
-                          onDrop={(e) => handleDrop(e, index)}
-                          onTouchStart={(e) => handleDragStart(e, index)}
-                          onTouchMove={(e) => {
-                            e.preventDefault();
-                            const touch = e.touches[0];
-                            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                            if (elementBelow && elementBelow.closest('[draggable="true"]')) {
-                              const targetIndex = Array.from(elementBelow.closest('[draggable="true"]').parentNode.children).indexOf(elementBelow.closest('[draggable="true"]'));
-                              if (targetIndex !== -1 && targetIndex !== index) {
-                                handleDrop({ preventDefault: () => {}, dataTransfer: { getData: () => index } }, targetIndex);
-                              }
-                            }
-                          }}
-                          onTouchEnd={(e) => {
-                            e.currentTarget.style.opacity = '1';
-                          }}
                           style={{ 
                             position: 'relative',
                             borderRadius: '16px',
-                            overflow: 'hidden',
+                            overflow: 'visible',
                             boxShadow: index === 0 
                               ? '0 8px 25px rgba(159,122,234,0.3), 0 0 0 3px rgba(159,122,234,0.4)' 
                               : '0 8px 25px rgba(0,0,0,0.1)',
-                            transition: 'all 0.3s ease',
-                            cursor: 'grab'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-4px)';
-                            e.currentTarget.style.boxShadow = index === 0
-                              ? '0 12px 35px rgba(159,122,234,0.4), 0 0 0 3px rgba(159,122,234,0.5)'
-                              : '0 12px 35px rgba(0,0,0,0.15)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = index === 0
-                              ? '0 8px 25px rgba(159,122,234,0.3), 0 0 0 3px rgba(159,122,234,0.4)'
-                              : '0 8px 25px rgba(0,0,0,0.1)';
+                            transition: 'all 0.3s ease'
                           }}
                         >
-                          <img
-                            src={preview}
-                            alt={`Photo ${index + 1}`}
-                            style={{
-                              width: '100%',
-                              height: '120px',
-                              objectFit: 'cover',
-                              pointerEvents: 'none'
-                            }}
-                          />
+                          <div style={{
+                            borderRadius: '16px',
+                            overflow: 'hidden'
+                          }}>
+                            <img
+                              src={preview}
+                              alt={`Photo ${index + 1}`}
+                              style={{
+                                width: '100%',
+                                height: '120px',
+                                objectFit: 'cover',
+                                display: 'block'
+                              }}
+                            />
+                          </div>
+                          
+                          {/* Boutons de réorganisation */}
+                          <div style={{
+                            position: 'absolute',
+                            top: '-12px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            display: 'flex',
+                            gap: '4px',
+                            zIndex: 10
+                          }}>
+                            <button
+                              type="button"
+                              onClick={() => moveImageUp(index)}
+                              disabled={index === 0}
+                              style={{
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '16px',
+                                background: index === 0 ? '#E2E8F0' : 'linear-gradient(135deg, #4ECDC4, #44B5A8)',
+                                color: 'white',
+                                border: 'none',
+                                cursor: index === 0 ? 'not-allowed' : 'pointer',
+                                fontSize: '16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 'bold',
+                                boxShadow: index === 0 ? 'none' : '0 4px 15px rgba(78,205,196,0.4)',
+                                transition: 'all 0.2s ease',
+                                opacity: index === 0 ? 0.5 : 1
+                              }}
+                              onMouseEnter={(e) => {
+                                if (index !== 0) {
+                                  e.target.style.transform = 'scale(1.1)';
+                                  e.target.style.boxShadow = '0 6px 20px rgba(78,205,196,0.6)';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                if (index !== 0) {
+                                  e.target.style.boxShadow = '0 4px 15px rgba(78,205,196,0.4)';
+                                }
+                              }}
+                            >
+                              ◀
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => moveImageDown(index)}
+                              disabled={index === images.length - 1}
+                              style={{
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '16px',
+                                background: index === images.length - 1 ? '#E2E8F0' : 'linear-gradient(135deg, #4ECDC4, #44B5A8)',
+                                color: 'white',
+                                border: 'none',
+                                cursor: index === images.length - 1 ? 'not-allowed' : 'pointer',
+                                fontSize: '16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 'bold',
+                                boxShadow: index === images.length - 1 ? 'none' : '0 4px 15px rgba(78,205,196,0.4)',
+                                transition: 'all 0.2s ease',
+                                opacity: index === images.length - 1 ? 0.5 : 1
+                              }}
+                              onMouseEnter={(e) => {
+                                if (index !== images.length - 1) {
+                                  e.target.style.transform = 'scale(1.1)';
+                                  e.target.style.boxShadow = '0 6px 20px rgba(78,205,196,0.6)';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                if (index !== images.length - 1) {
+                                  e.target.style.boxShadow = '0 4px 15px rgba(78,205,196,0.4)';
+                                }
+                              }}
+                            >
+                              ▶
+                            </button>
+                          </div>
+                          
                           <div style={{
                             position: 'absolute',
                             top: '8px',
