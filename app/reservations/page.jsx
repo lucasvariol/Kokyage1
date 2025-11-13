@@ -477,14 +477,14 @@ function ReservationsContent() {
                   }}>
                     {/* Image du logement */}
                     <img
-                      src="/placeholder-image.jpg"
+                      src={reservation.listings?.images?.[0] || '/placeholder-image.jpg'}
                       alt={reservation.listings?.title}
                       style={{
-                        width: 100,
-                        height: 100,
-                        borderRadius: 12,
+                        width: 120,
+                        height: 120,
+                        borderRadius: 8,
                         objectFit: 'cover',
-                        border: '2px solid #f1f5f9'
+                        border: '1px solid #e5e7eb'
                       }}
                     />
 
@@ -934,9 +934,10 @@ function ReservationsContent() {
           }
           
           /* Full width images on mobile */
-          img[style*="width: 100px"] {
+          img[style*="width: 120px"] {
             width: 100% !important;
-            height: 180px !important;
+            height: 200px !important;
+            object-fit: cover;
           }
         }
       `}</style>
