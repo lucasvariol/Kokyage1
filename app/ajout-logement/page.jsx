@@ -1124,7 +1124,7 @@ export default function Page() {
                       </span>
                     </div>
                     <div style={{ fontSize: '0.8rem', color: '#718096', textAlign: 'center' }}>
-                      (Prix hôte {price}€ + {Math.round(getPlatformPercent() * 100)}% commission plateforme)
+                      (Prix hôte +  commission plateforme)
                     </div>
                   </div>
                 )}
