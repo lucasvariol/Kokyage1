@@ -48,15 +48,26 @@ export default function Page() {
         router.push('/connexion');
       } else {
         // Récupérer les infos de l'utilisateur
-        const { data: userData } = await supabase
+        const { data: userData, error } = await supabase
           .from('users')
           .select('full_name')
           .eq('id', session.user.id)
           .single();
         
+        console.log('User data from DB:', userData, 'Error:', error);
+        
         if (userData?.full_name) {
           setUserFullName(userData.full_name);
+        } else if (session.user.user_metadata?.full_name) {
+          // Fallback sur les métadonnées si pas dans la DB
+          setUserFullName(session.user.user_metadata.full_name);
+        } else if (session.user.user_metadata?.name) {
+          setUserFullName(session.user.user_metadata.name);
+        } else if (session.user.user_metadata?.prenom && session.user.user_metadata?.nom) {
+          setUserFullName(`${session.user.user_metadata.prenom} ${session.user.user_metadata.nom}`);
         }
+        
+        console.log('Final userFullName:', userFullName);
       }
     };
     checkAuth();
