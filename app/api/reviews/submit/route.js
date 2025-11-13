@@ -43,6 +43,27 @@ export async function POST(req) {
       return Response.json({ error: 'Logement introuvable' }, { status: 404 });
     }
 
+    // Check if user has a past confirmed reservation for this listing
+    const now = new Date().toISOString();
+    const { data: pastReservations, error: reservationError } = await supabaseAdmin
+      .from('reservations')
+      .select('id, end_date, status')
+      .eq('listing_id', listing_id)
+      .eq('user_id', user.id)
+      .eq('status', 'confirmed')
+      .lt('end_date', now);
+
+    if (reservationError) {
+      console.error('Reservation check error:', reservationError);
+      return Response.json({ error: 'Erreur lors de la vérification des réservations' }, { status: 500 });
+    }
+
+    if (!pastReservations || pastReservations.length === 0) {
+      return Response.json({ 
+        error: 'Vous devez avoir séjourné dans ce logement pour laisser un avis' 
+      }, { status: 403 });
+    }
+
     // Insert or update review (upsert)
     const { data: review, error: reviewError } = await supabaseAdmin
       .from('reviews')

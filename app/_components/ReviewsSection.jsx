@@ -56,21 +56,54 @@ export default function ReviewsSection({ listingId }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [canReview, setCanReview] = useState(false);
+  const [checkingEligibility, setCheckingEligibility] = useState(false);
 
   // Check authentication
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+      
+      // Check if user can review (has past confirmed reservation)
+      if (user) {
+        setCheckingEligibility(true);
+        try {
+          const now = new Date().toISOString();
+          const { data: pastReservations, error } = await supabase
+            .from('reservations')
+            .select('id, end_date, status')
+            .eq('listing_id', listingId)
+            .eq('user_id', user.id)
+            .eq('status', 'confirmed')
+            .lt('end_date', now);
+
+          if (!error && pastReservations && pastReservations.length > 0) {
+            setCanReview(true);
+          } else {
+            setCanReview(false);
+          }
+        } catch (err) {
+          console.error('Error checking review eligibility:', err);
+          setCanReview(false);
+        } finally {
+          setCheckingEligibility(false);
+        }
+      } else {
+        setCanReview(false);
+      }
     };
     checkUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user || null);
+      if (!session?.user) {
+        setCanReview(false);
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [listingId]);
 
   // Load reviews
   const loadReviews = async (append = false) => {
@@ -211,7 +244,7 @@ export default function ReviewsSection({ listingId }) {
         )}
 
         {/* Add review button */}
-        {user && !showForm && (
+        {user && canReview && !showForm && (
           <button
             onClick={() => setShowForm(true)}
             style={{
@@ -238,6 +271,21 @@ export default function ReviewsSection({ listingId }) {
           >
             Laisser un avis
           </button>
+        )}
+
+        {user && !canReview && !checkingEligibility && (
+          <div style={{
+            padding: '14px 16px',
+            background: '#fef3c7',
+            borderRadius: 10,
+            border: '1px solid #fde68a',
+            textAlign: 'center',
+            fontSize: 13,
+            color: '#92400e',
+            fontWeight: 500
+          }}>
+            Vous devez avoir séjourné dans ce logement pour laisser un avis
+          </div>
         )}
 
         {!user && (
