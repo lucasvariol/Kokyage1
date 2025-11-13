@@ -469,7 +469,7 @@ function ReservationsContent() {
                     e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.08)';
                   }}
                 >
-                  <div style={{
+                  <div className="reservation-card-grid" style={{
                     display: 'grid',
                     gridTemplateColumns: 'auto 1fr auto',
                     gap: 20,
@@ -477,6 +477,7 @@ function ReservationsContent() {
                   }}>
                     {/* Image du logement */}
                     <img
+                      className="reservation-image"
                       src={reservation.listings?.images?.[0] || '/placeholder-image.jpg'}
                       alt={reservation.listings?.title}
                       style={{
@@ -554,7 +555,7 @@ function ReservationsContent() {
                     </div>
 
                     {/* Prix et actions */}
-                    <div style={{ textAlign: 'right' }}>
+                    <div className="reservation-actions" style={{ textAlign: 'right' }}>
                       <div style={{
                         fontSize: 20,
                         fontWeight: 900,
@@ -923,21 +924,31 @@ function ReservationsContent() {
         
         @media (max-width: 768px) {
           /* Mobile responsive grid for reservation cards */
-          div[style*="gridTemplateColumns: auto 1fr auto"] {
+          .reservation-card-grid {
             grid-template-columns: 1fr !important;
-            gap: 16px !important;
-          }
-          
-          /* Stack buttons vertically on mobile */
-          div[style*="flexDirection: column"] button {
-            width: 100%;
+            gap: 20px !important;
           }
           
           /* Full width images on mobile */
-          img[style*="width: 120px"] {
+          .reservation-image {
             width: 100% !important;
-            height: 200px !important;
+            height: 220px !important;
             object-fit: cover;
+          }
+          
+          /* Actions container on mobile */
+          .reservation-actions {
+            text-align: left !important;
+          }
+          
+          /* Stack buttons vertically on mobile */
+          .reservation-actions > div {
+            gap: 12px !important;
+          }
+          
+          .reservation-actions button {
+            width: 100% !important;
+            justify-content: center;
           }
         }
       `}</style>
