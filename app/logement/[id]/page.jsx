@@ -45,9 +45,6 @@ function Gallery({ images }) {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
-    if (carousel.dataset.swipeInit === 'true') return;
-    carousel.dataset.swipeInit = 'true';
-
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
@@ -107,7 +104,6 @@ function Gallery({ images }) {
       carousel.removeEventListener('touchmove', onTouchMove);
       carousel.removeEventListener('touchend', onTouchEnd);
       carousel.removeEventListener('touchcancel', onTouchEnd);
-      try { delete carousel.dataset.swipeInit; } catch {}
     };
   }, [images]);
 
