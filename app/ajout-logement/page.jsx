@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { getFeeMultiplier, getPlatformPercent } from '@/lib/commissions';
-import { OwnerConsentAgreement } from '@/lib/ownerConsentAgreement';
+import { OwnerConsentAgreement } from '@/owner-consent';
 
 const MapPreview = dynamic(() => import('../_components/MapPreview'), { ssr: false });
 
