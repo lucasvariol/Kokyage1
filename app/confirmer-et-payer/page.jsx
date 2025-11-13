@@ -183,6 +183,30 @@ function ConfirmerEtPayerContent() {
     });
   };
 
+  // Calculer la date de la veille de l'arrivée
+  const getDayBeforeArrival = () => {
+    if (!startDate) return '';
+    const arrival = new Date(startDate);
+    const dayBefore = new Date(arrival.getTime() - (1 * 24 * 60 * 60 * 1000));
+    return dayBefore.toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
+  // Calculer 6 jours avant l'arrivée
+  const getSixDaysBeforeArrival = () => {
+    if (!startDate) return '';
+    const arrival = new Date(startDate);
+    const sixDaysBefore = new Date(arrival.getTime() - (6 * 24 * 60 * 60 * 1000));
+    return sixDaysBefore.toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
   // Charger les données du logement et de l'utilisateur
   useEffect(() => {
     const loadData = async () => {
@@ -604,7 +628,8 @@ function ConfirmerEtPayerContent() {
                         100%
                       </div>
                       <div style={{ flex: 1, color: '#374151' }}>
-                        <strong>Remboursement intégral</strong> si vous annulez au moins 7 jours avant l'arrivée (jusqu'au {getCancellationDate()})
+                        <strong>Remboursement intégral</strong><br />
+                        Jusqu'au <strong>{getCancellationDate()}</strong>
                       </div>
                     </div>
                     
@@ -623,7 +648,8 @@ function ConfirmerEtPayerContent() {
                         50%
                       </div>
                       <div style={{ flex: 1, color: '#374151' }}>
-                        <strong>Remboursement partiel (50%)</strong> si vous annulez entre 6 jours et la veille de l'arrivée
+                        <strong>Remboursement partiel (50%)</strong><br />
+                        Du <strong>{getSixDaysBeforeArrival()}</strong> au <strong>{getDayBeforeArrival()}</strong>
                       </div>
                     </div>
                     
@@ -642,7 +668,8 @@ function ConfirmerEtPayerContent() {
                         0%
                       </div>
                       <div style={{ flex: 1, color: '#374151' }}>
-                        <strong>Aucun remboursement</strong> si vous annulez la veille ou le jour de l'arrivée
+                        <strong>Aucun remboursement</strong><br />
+                        Le <strong>{getDayBeforeArrival()}</strong> et le jour d'arrivée (<strong>{formatDate(startDate)}</strong>)
                       </div>
                     </div>
                   </div>
