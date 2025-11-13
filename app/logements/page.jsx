@@ -2421,11 +2421,79 @@ function LogementsInner() {
                         {/* Carousel container */}
                         <div 
                           id={`listing-carousel-${it.id}`}
+                          className="listing-carousel-swipe"
+                          data-listing-id={it.id}
+                          data-images-count={imagesArr.length}
                           style={{
                             display: 'flex',
                             height: '100%',
-                            transition: 'transform 0.3s ease',
-                            transform: `translateX(-${imgIdx * 100}%)`
+                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            transform: `translateX(-${imgIdx * 100}%)`,
+                            touchAction: 'pan-y'
+                          }}
+                          onTouchStart={(e) => {
+                            if (imagesArr.length <= 1) return;
+                            const carousel = e.currentTarget;
+                            carousel.dataset.startX = e.touches[0].clientX;
+                            carousel.dataset.isDragging = 'true';
+                            carousel.dataset.preventClick = 'false';
+                            carousel.style.transition = 'none';
+                          }}
+                          onTouchMove={(e) => {
+                            if (imagesArr.length <= 1) return;
+                            const carousel = e.currentTarget;
+                            if (carousel.dataset.isDragging !== 'true') return;
+                            
+                            const currentX = e.touches[0].clientX;
+                            const startX = parseFloat(carousel.dataset.startX);
+                            const diff = currentX - startX;
+                            
+                            // Store currentX for touchEnd
+                            carousel.dataset.currentX = currentX;
+                            
+                            if (Math.abs(diff) > 5) {
+                              carousel.dataset.preventClick = 'true';
+                            }
+                            
+                            carousel.style.transform = `translateX(calc(-${imgIdx * 100}% + ${diff}px))`;
+                          }}
+                          onTouchEnd={(e) => {
+                            if (imagesArr.length <= 1) return;
+                            const carousel = e.currentTarget;
+                            if (carousel.dataset.isDragging !== 'true') return;
+                            
+                            carousel.dataset.isDragging = 'false';
+                            const currentX = parseFloat(carousel.dataset.currentX || carousel.dataset.startX);
+                            const startX = parseFloat(carousel.dataset.startX);
+                            const diff = currentX - startX;
+                            const threshold = 50;
+                            
+                            carousel.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                            
+                            if (diff < -threshold && imgIdx < imagesArr.length - 1) {
+                              setImageIndexes(idx => ({ 
+                                ...idx, 
+                                [it.id]: imgIdx + 1
+                              }));
+                            } else if (diff > threshold && imgIdx > 0) {
+                              setImageIndexes(idx => ({ 
+                                ...idx, 
+                                [it.id]: imgIdx - 1
+                              }));
+                            } else {
+                              carousel.style.transform = `translateX(-${imgIdx * 100}%)`;
+                            }
+                            
+                            // Reset preventClick after a short delay
+                            setTimeout(() => {
+                              carousel.dataset.preventClick = 'false';
+                            }, 100);
+                          }}
+                          onClick={(e) => {
+                            const carousel = e.currentTarget;
+                            if (carousel.dataset.preventClick === 'true') {
+                              e.stopPropagation();
+                            }
                           }}
                         >
                           {imagesArr.map((image, idx) => (
@@ -2447,27 +2515,28 @@ function LogementsInner() {
                             />
                           ))}
                         </div>
-                        {/* Image navigation buttons */}
+                        {/* Image navigation buttons - Desktop only */}
                         {imagesArr.length > 1 && hoveredCard === it.id && (
                           <>
                             <button
                               type="button"
                               aria-label="Précédent"
+                              className="carousel-btn-desktop"
                               style={{ 
                                 position: 'absolute', 
                                 left: 8, 
                                 top: '50%', 
                                 transform: 'translateY(-50%)', 
-                                background: 'rgba(255,255,255,0.9)', 
+                                background: 'rgba(255,255,255,0.95)', 
                                 border: 'none', 
                                 borderRadius: '50%', 
-                                width: 30, 
-                                height: 30, 
+                                width: 32, 
+                                height: 32, 
                                 display: 'flex', 
                                 alignItems: 'center', 
                                 justifyContent: 'center', 
                                 cursor: 'pointer', 
-                                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
                                 transition: 'all 0.2s',
                                 zIndex: 10
                               }}
@@ -2479,36 +2548,37 @@ function LogementsInner() {
                                 }));
                               }}
                               onMouseEnter={e => {
-                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
                                 e.currentTarget.style.background = '#fff';
                               }}
                               onMouseLeave={e => {
                                 e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-                                e.currentTarget.style.background = 'rgba(255,255,255,0.9)';
+                                e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
                               }}
                             >
-                              <svg width="16" height="16" viewBox="0 0 20 20">
-                                <polyline points="13 5 7 10 13 15" fill="none" stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
                               </svg>
                             </button>
                             <button
                               type="button"
                               aria-label="Suivant"
+                              className="carousel-btn-desktop"
                               style={{ 
                                 position: 'absolute', 
                                 right: 8, 
                                 top: '50%', 
                                 transform: 'translateY(-50%)', 
-                                background: 'rgba(255,255,255,0.9)', 
+                                background: 'rgba(255,255,255,0.95)', 
                                 border: 'none', 
                                 borderRadius: '50%', 
-                                width: 30, 
-                                height: 30, 
+                                width: 32, 
+                                height: 32, 
                                 display: 'flex', 
                                 alignItems: 'center', 
                                 justifyContent: 'center', 
                                 cursor: 'pointer', 
-                                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
                                 transition: 'all 0.2s',
                                 zIndex: 10
                               }}
@@ -2520,16 +2590,16 @@ function LogementsInner() {
                                 }));
                               }}
                               onMouseEnter={e => {
-                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
                                 e.currentTarget.style.background = '#fff';
                               }}
                               onMouseLeave={e => {
                                 e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-                                e.currentTarget.style.background = 'rgba(255,255,255,0.9)';
+                                e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
                               }}
                             >
-                              <svg width="16" height="16" viewBox="0 0 20 20">
-                                <polyline points="7 5 13 10 7 15" fill="none" stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
                               </svg>
                             </button>
                           </>
@@ -2538,23 +2608,23 @@ function LogementsInner() {
                         {imagesArr.length > 1 && (
                           <div style={{
                             position: 'absolute',
-                            bottom: 8,
+                            bottom: 10,
                             left: '50%',
                             transform: 'translateX(-50%)',
                             display: 'flex',
-                            gap: 4,
+                            gap: 5,
                             zIndex: 5
                           }}>
                             {imagesArr.map((_, idx) => (
                               <div
                                 key={idx}
                                 style={{
-                                  width: idx === imgIdx ? 16 : 5,
-                                  height: 5,
+                                  width: idx === imgIdx ? 18 : 6,
+                                  height: 6,
                                   borderRadius: 3,
                                   background: idx === imgIdx ? '#fff' : 'rgba(255,255,255,0.5)',
-                                  transition: 'all 0.25s',
-                                  boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                  boxShadow: '0 1px 4px rgba(0,0,0,0.25)'
                                 }}
                               />
                             ))}
