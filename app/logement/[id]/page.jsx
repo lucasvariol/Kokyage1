@@ -21,6 +21,8 @@ import { differenceInCalendarDays } from 'date-fns';
 function Gallery({ images }) {
   const [current, setCurrent] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const carouselRef = useRef(null);
+  const preventModalClickRef = useRef(false);
 
   // Navigation clavier dans la modal
   useEffect(() => {
@@ -40,34 +42,40 @@ function Gallery({ images }) {
 
   useEffect(() => {
     if (!images || images.length <= 1) return;
-
-    const carousel = document.getElementById('gallery-carousel');
+    const carousel = carouselRef.current;
     if (!carousel) return;
 
     let startX = 0;
     let lastX = 0;
     let isDragging = false;
+    let activePointerId = null;
 
     const snapToIndex = (idx) => {
       carousel.style.transition = 'transform 0.25s ease';
       carousel.style.transform = `translateX(-${idx * 100}%)`;
     };
 
-    const handleTouchStart = (e) => {
-      if (!e.touches || e.touches.length === 0) return;
-      startX = e.touches[0].clientX;
+    const handlePointerDown = (e) => {
+      if (!e.isPrimary) return;
+      activePointerId = e.pointerId;
+      carousel.setPointerCapture?.(activePointerId);
+      startX = e.clientX;
       lastX = startX;
       isDragging = true;
-      // disable transition during drag for smoother feel
+      preventModalClickRef.current = false;
       carousel.style.transition = 'none';
     };
 
-    const handleTouchMove = (e) => {
-      if (!isDragging) return;
-      if (e.cancelable) e.preventDefault(); // avoid page scroll while dragging
-      const x = e.touches[0].clientX;
+    const handlePointerMove = (e) => {
+      if (!isDragging || e.pointerId !== activePointerId) return;
+      // With touch-action: pan-y, horizontal panning won't scroll the page
+      const x = e.clientX;
       lastX = x;
       const diff = x - startX;
+      if (Math.abs(diff) > 5) {
+        // avoid triggering click on container after a swipe
+        preventModalClickRef.current = true;
+      }
       const idx = currentRef.current;
       carousel.style.transform = `translateX(calc(-${idx * 100}% + ${diff}px))`;
     };
@@ -80,34 +88,30 @@ function Gallery({ images }) {
       const idx = currentRef.current;
 
       if (diff < -threshold && idx < images.length - 1) {
-        // swipe left -> next
         const nextIdx = idx + 1;
         currentRef.current = nextIdx;
         setCurrent(nextIdx);
         snapToIndex(nextIdx);
       } else if (diff > threshold && idx > 0) {
-        // swipe right -> prev
         const prevIdx = idx - 1;
         currentRef.current = prevIdx;
         setCurrent(prevIdx);
         snapToIndex(prevIdx);
       } else {
-        // snap back
         snapToIndex(idx);
       }
     };
 
-    carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
-    // touchmove MUST be non-passive to allow preventDefault
-    carousel.addEventListener('touchmove', handleTouchMove, { passive: false });
-    carousel.addEventListener('touchend', endDrag, { passive: true });
-    carousel.addEventListener('touchcancel', endDrag, { passive: true });
+    carousel.addEventListener('pointerdown', handlePointerDown);
+    carousel.addEventListener('pointermove', handlePointerMove);
+    carousel.addEventListener('pointerup', endDrag);
+    carousel.addEventListener('pointercancel', endDrag);
 
     return () => {
-      carousel.removeEventListener('touchstart', handleTouchStart);
-      carousel.removeEventListener('touchmove', handleTouchMove);
-      carousel.removeEventListener('touchend', endDrag);
-      carousel.removeEventListener('touchcancel', endDrag);
+      carousel.removeEventListener('pointerdown', handlePointerDown);
+      carousel.removeEventListener('pointermove', handlePointerMove);
+      carousel.removeEventListener('pointerup', endDrag);
+      carousel.removeEventListener('pointercancel', endDrag);
     };
   }, [images]);
 
@@ -161,16 +165,27 @@ function Gallery({ images }) {
           boxShadow: '0 6px 32px rgba(0,0,0,0.10)',
           overflow: 'hidden'
         }}
-        onClick={() => setModalOpen(true)}
+        onClick={() => {
+          if (preventModalClickRef.current) {
+            // Click originated from a swipe; ignore and reset
+            preventModalClickRef.current = false;
+            return;
+          }
+          setModalOpen(true);
+        }}
       >
         {/* Carousel container */}
         <div
           id="gallery-carousel"
+          ref={carouselRef}
           style={{
             display: 'flex',
             height: '100%',
             transition: 'transform 0.3s ease',
-            transform: `translateX(-${current * 100}%)`
+            transform: `translateX(-${current * 100}%)`,
+            // Enable smooth horizontal panning on mobile without page scroll
+            touchAction: 'pan-y',
+            WebkitOverflowScrolling: 'touch'
           }}
         >
           {images.map((url, idx) => (
