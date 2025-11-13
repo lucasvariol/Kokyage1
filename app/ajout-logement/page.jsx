@@ -423,6 +423,24 @@ export default function Page() {
                 padding: 18px 32px !important;
                 font-size: 1rem !important;
               }
+              
+              .price-input-container {
+                flex-wrap: wrap !important;
+              }
+              
+              .price-input-container > div:first-child {
+                border-radius: 16px 16px 0 0 !important;
+                border-right: 2px solid rgba(226, 232, 240, 0.8) !important;
+                width: 100% !important;
+                min-width: 100% !important;
+              }
+              
+              .price-input-container input {
+                border-radius: 0 0 16px 16px !important;
+                border-left: 2px solid rgba(226, 232, 240, 0.8) !important;
+                border-top: none !important;
+                width: 100% !important;
+              }
             }
             
             @media (max-width: 480px) {
@@ -961,7 +979,7 @@ export default function Page() {
                   }}>💰</span>
                   Prix par nuit
                 </label>
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'stretch' }}>
+                <div className="price-input-container" style={{ position: 'relative', display: 'flex', alignItems: 'stretch' }}>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -1655,6 +1673,21 @@ export default function Page() {
                           onDragStart={(e) => handleDragStart(e, index)}
                           onDragOver={handleDragOver}
                           onDrop={(e) => handleDrop(e, index)}
+                          onTouchStart={(e) => handleDragStart(e, index)}
+                          onTouchMove={(e) => {
+                            e.preventDefault();
+                            const touch = e.touches[0];
+                            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                            if (elementBelow && elementBelow.closest('[draggable="true"]')) {
+                              const targetIndex = Array.from(elementBelow.closest('[draggable="true"]').parentNode.children).indexOf(elementBelow.closest('[draggable="true"]'));
+                              if (targetIndex !== -1 && targetIndex !== index) {
+                                handleDrop({ preventDefault: () => {}, dataTransfer: { getData: () => index } }, targetIndex);
+                              }
+                            }
+                          }}
+                          onTouchEnd={(e) => {
+                            e.currentTarget.style.opacity = '1';
+                          }}
                           style={{ 
                             position: 'relative',
                             borderRadius: '16px',
