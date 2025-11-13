@@ -2015,97 +2015,6 @@ export default function Page() {
                 </div>
               )}
 
-              {/* Bouton de soumission ultra-moderne */}
-              <div className="submit-container" style={{ textAlign: 'center', marginTop: '20px' }}>
-                <button
-                  className="submit-button"
-                  type="submit"
-                  disabled={loading || !consentChecked}
-                  style={{
-                    position: 'relative',
-                    background: (loading || !consentChecked)
-                      ? 'linear-gradient(135deg, #A0AEC0, #718096)' 
-                      : 'linear-gradient(135deg, #D79077 0%, #C96745 50%, #B8553C 100%)',
-                    color: '#fff',
-                    padding: '20px 60px',
-                    borderRadius: '25px',
-                    fontWeight: 800,
-                    fontSize: '1.2rem',
-                    border: 'none',
-                    cursor: (loading || !consentChecked) ? 'not-allowed' : 'pointer',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: (loading || !consentChecked)
-                      ? '0 8px 25px rgba(160,174,192,0.3)' 
-                      : '0 15px 35px rgba(201, 103, 69, 0.4)',
-                    letterSpacing: '0.5px',
-                    textTransform: 'uppercase',
-                    overflow: 'hidden',
-                    minWidth: '280px'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!loading) {
-                      e.target.style.transform = 'translateY(-4px) scale(1.02)';
-                      e.target.style.boxShadow = '0 25px 50px rgba(201, 103, 69, 0.5)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!loading) {
-                      e.target.style.transform = 'translateY(0) scale(1)';
-                      e.target.style.boxShadow = '0 15px 35px rgba(201, 103, 69, 0.4)';
-                    }
-                  }}
-                >
-                  {loading && (
-                    <div style={{
-                      position: 'absolute',
-                      left: '20px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: '20px',
-                      height: '20px',
-                      border: '2px solid rgba(255,255,255,0.3)',
-                      borderTop: '2px solid white',
-                      borderRadius: '50%',
-                      animation: 'spin 1s linear infinite'
-                    }}></div>
-                  )}
-                  <span style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '12px'
-                  }}>
-                    {!loading && <span style={{ fontSize: '1.3rem' }}>🚀</span>}
-                    {loading ? 'Envoi au propriétaire en cours...' : !consentChecked ? 'Veuillez accepter l\'accord propriétaire' : 'Soumettre mon annonce'}
-                  </span>
-                  
-                  {/* Effet de brillance */}
-                  {!loading && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '0',
-                      left: '-100%',
-                      width: '100%',
-                      height: '100%',
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-                      animation: 'shine 3s infinite'
-                    }}></div>
-                  )}
-                </button>
-                
-                {/* CSS pour les animations */}
-                <style jsx>{`
-                  @keyframes shine {
-                    0% { left: -100%; }
-                    100% { left: 100%; }
-                  }
-                  @keyframes spin {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                  }
-                `}</style>
-              </div>
-
               {error && (
                 <div style={{
                   background: 'linear-gradient(135deg, rgba(229,62,62,0.1), rgba(197,48,48,0.05))',
@@ -2230,6 +2139,97 @@ export default function Page() {
                     />
                   </div>
                 )}
+              </div>
+
+              {/* Bouton de soumission ultra-moderne */}
+              <div className="submit-container" style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button
+                  className="submit-button"
+                  type="submit"
+                  disabled={loading || !consentChecked}
+                  style={{
+                    position: 'relative',
+                    background: (loading || !consentChecked)
+                      ? 'linear-gradient(135deg, #A0AEC0, #718096)' 
+                      : 'linear-gradient(135deg, #D79077 0%, #C96745 50%, #B8553C 100%)',
+                    color: '#fff',
+                    padding: '20px 60px',
+                    borderRadius: '25px',
+                    fontWeight: 800,
+                    fontSize: '1.2rem',
+                    border: 'none',
+                    cursor: (loading || !consentChecked) ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: (loading || !consentChecked)
+                      ? '0 8px 25px rgba(160,174,192,0.3)' 
+                      : '0 15px 35px rgba(201, 103, 69, 0.4)',
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
+                    overflow: 'hidden',
+                    minWidth: '280px'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!loading) {
+                      e.target.style.transform = 'translateY(-4px) scale(1.02)';
+                      e.target.style.boxShadow = '0 25px 50px rgba(201, 103, 69, 0.5)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!loading) {
+                      e.target.style.transform = 'translateY(0) scale(1)';
+                      e.target.style.boxShadow = '0 15px 35px rgba(201, 103, 69, 0.4)';
+                    }
+                  }}
+                >
+                  {loading && (
+                    <div style={{
+                      position: 'absolute',
+                      left: '20px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '20px',
+                      height: '20px',
+                      border: '2px solid rgba(255,255,255,0.3)',
+                      borderTop: '2px solid white',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                  )}
+                  <span style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '12px'
+                  }}>
+                    {!loading && <span style={{ fontSize: '1.3rem' }}>🚀</span>}
+                    {loading ? 'Envoi au propriétaire en cours...' : !consentChecked ? 'Veuillez accepter l\'accord propriétaire' : 'Soumettre mon annonce'}
+                  </span>
+                  
+                  {/* Effet de brillance */}
+                  {!loading && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '0',
+                      left: '-100%',
+                      width: '100%',
+                      height: '100%',
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                      animation: 'shine 3s infinite'
+                    }}></div>
+                  )}
+                </button>
+                
+                {/* CSS pour les animations */}
+                <style jsx>{`
+                  @keyframes shine {
+                    0% { left: -100%; }
+                    100% { left: 100%; }
+                  }
+                  @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                  }
+                `}</style>
               </div>
 
               {/* Informations de validation */}
