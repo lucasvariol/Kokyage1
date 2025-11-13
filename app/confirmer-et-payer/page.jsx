@@ -381,76 +381,109 @@ function ConfirmerEtPayerContent() {
       <Header />
       <main style={{
         minHeight: '80vh',
-        background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-        paddingTop: 40,
+        background: '#ffffff',
+        paddingTop: 20,
         paddingBottom: 60
       }}>
         <div style={{
           maxWidth: 1200,
           margin: '0 auto',
-          padding: '0 20px'
+          padding: '0 16px'
         }}>
           {/* Titre */}
           <div style={{
-            marginBottom: 40,
-            textAlign: 'center'
+            marginBottom: 32,
+            paddingTop: 20
           }}>
             <h1 style={{
-              fontSize: 'clamp(28px, 4vw, 42px)',
-              fontWeight: 900,
-              color: '#0f172a',
-              marginBottom: 12,
+              fontSize: 'clamp(24px, 5vw, 36px)',
+              fontWeight: 700,
+              color: '#111827',
+              marginBottom: 8,
               letterSpacing: '-0.02em'
             }}>
               Confirmer et payer
             </h1>
             <p style={{
-              fontSize: 16,
-              color: '#64748b',
-              fontWeight: 600
+              fontSize: 15,
+              color: '#6b7280',
+              fontWeight: 500
             }}>
-              Finalisez votre réservation en quelques clics
+              Finalisez votre réservation
             </p>
           </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 400px)',
-            gap: 40,
-            alignItems: 'flex-start'
+            gridTemplateColumns: '1fr',
+            gap: 20
           }}>
+            <style jsx>{`
+              @media (min-width: 1025px) {
+                div[style*="gridTemplateColumns: 1fr"] {
+                  grid-template-columns: 1.4fr 0.6fr !important;
+                  gap: 32px !important;
+                }
+              }
+            `}</style>
             {/* Colonne gauche - Récapitulatif */}
             <div style={{
-              background: '#fff',
-              borderRadius: 24,
-              padding: 32,
-              boxShadow: '0 10px 35px rgba(0,0,0,0.1)',
-              border: '1px solid #f1f5f9'
+              background: '#ffffff',
+              borderRadius: 16,
+              padding: '20px',
+              border: '1px solid #e5e7eb'
             }}>
+              <style jsx>{`
+                @media (min-width: 768px) {
+                  div[style*="borderRadius: 16px"][style*="padding: 20px"] {
+                    padding: 28px !important;
+                  }
+                }
+              `}</style>
+
               {/* Photo et nom du logement */}
               <div style={{
                 display: 'flex',
-                gap: 20,
-                marginBottom: 24,
-                paddingBottom: 24,
-                borderBottom: '2px solid #f1f5f9'
+                flexDirection: 'column',
+                gap: 16,
+                marginBottom: 20,
+                paddingBottom: 20,
+                borderBottom: '1px solid #e5e7eb'
               }}>
+                <style jsx>{`
+                  @media (min-width: 640px) {
+                    div[style*="flexDirection: column"] {
+                      flex-direction: row !important;
+                      gap: 20px !important;
+                    }
+                  }
+                `}</style>
+
                 <img
                   src={listing.images?.[0] || '/placeholder-image.jpg'}
                   alt={listing.title}
                   style={{
-                    width: 120,
-                    height: 120,
-                    borderRadius: 16,
+                    width: '100%',
+                    height: 200,
+                    borderRadius: 12,
                     objectFit: 'cover',
-                    border: '3px solid #f1f5f9'
+                    border: '1px solid #e5e7eb'
                   }}
                 />
+                <style jsx>{`
+                  @media (min-width: 640px) {
+                    img[alt="${listing.title}"] {
+                      width: 120px !important;
+                      height: 120px !important;
+                      flex-shrink: 0 !important;
+                    }
+                  }
+                `}</style>
                 <div style={{ flex: 1 }}>
                   <h2 style={{
-                    fontSize: 20,
-                    fontWeight: 800,
-                    color: '#0f172a',
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: '#111827',
                     marginBottom: 8,
                     lineHeight: 1.3
                   }}>
@@ -458,8 +491,8 @@ function ConfirmerEtPayerContent() {
                   </h2>
                   <div style={{
                     fontSize: 14,
-                    color: '#64748b',
-                    fontWeight: 600,
+                    color: '#6b7280',
+                    fontWeight: 500,
                     display: 'flex',
                     alignItems: 'center',
                     gap: 6,
@@ -473,9 +506,10 @@ function ConfirmerEtPayerContent() {
                   </div>
                   <div style={{
                     display: 'flex',
-                    gap: 16,
+                    gap: 12,
                     fontSize: 13,
-                    color: '#64748b'
+                    color: '#6b7280',
+                    flexWrap: 'wrap'
                   }}>
                     {listing.nb_voyageurs && (
                       <span>{listing.nb_voyageurs} voyageurs max</span>
@@ -489,40 +523,41 @@ function ConfirmerEtPayerContent() {
 
               {/* Encart annulation gratuite */}
               <div style={{
-                background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-                border: '2px solid #10b981',
-                borderRadius: 16,
-                padding: 16,
-                marginBottom: 24,
+                background: '#f9fafb',
+                border: '1px solid #e5e7eb',
+                borderRadius: 12,
+                padding: 14,
+                marginBottom: 20,
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 gap: 12
               }}>
                 <div style={{
-                  background: '#10b981',
+                  background: '#111827',
                   borderRadius: '50%',
-                  padding: 8,
+                  padding: 6,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  flexShrink: 0
                 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 </div>
-                <div>
+                <div style={{ flex: 1 }}>
                   <div style={{
-                    fontWeight: 800,
-                    color: '#065f46',
+                    fontWeight: 600,
+                    color: '#111827',
                     fontSize: 14,
                     marginBottom: 2
                   }}>
                     Annulation gratuite
                   </div>
                   <div style={{
-                    fontSize: 12,
-                    color: '#047857',
-                    fontWeight: 600
+                    fontSize: 13,
+                    color: '#6b7280',
+                    fontWeight: 500
                   }}>
                     Jusqu'au {getCancellationDate()}
                   </div>
@@ -530,40 +565,40 @@ function ConfirmerEtPayerContent() {
               </div>
 
               {/* Détails du séjour */}
-              <div style={{ marginBottom: 24 }}>
+              <div style={{ marginBottom: 20 }}>
                 <h3 style={{
-                  fontSize: 18,
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  marginBottom: 16
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: '#111827',
+                  marginBottom: 14
                 }}>
                   Détails du séjour
                 </h3>
                 
                 <div style={{
                   display: 'grid',
-                  gap: 12
+                  gap: 0
                 }}>
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '12px 0',
-                    borderBottom: '1px solid #f1f5f9'
+                    borderBottom: '1px solid #f3f4f6'
                   }}>
                     <div>
-                      <div style={{ fontWeight: 700, fontSize: 14, color: '#374151' }}>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>
                         Dates
                       </div>
-                      <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>
+                      <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>
                         {startDate && endDate && `${nights} nuit${parseInt(nights) > 1 ? 's' : ''}`}
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontWeight: 700, fontSize: 14, color: '#0f172a' }}>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>
                         {formatDate(startDate)}
                       </div>
-                      <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>
+                      <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>
                         au {formatDate(endDate)}
                       </div>
                     </div>
@@ -576,11 +611,11 @@ function ConfirmerEtPayerContent() {
                     padding: '12px 0'
                   }}>
                     <div>
-                      <div style={{ fontWeight: 700, fontSize: 14, color: '#374151' }}>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>
                         Voyageurs
                       </div>
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: 14, color: '#0f172a' }}>
+                    <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>
                       {guests} voyageur{parseInt(guests) > 1 ? 's' : ''}
                     </div>
                   </div>
@@ -590,10 +625,10 @@ function ConfirmerEtPayerContent() {
               {/* Détail des prix */}
               <div>
                 <h3 style={{
-                  fontSize: 18,
-                  fontWeight: 800,
-                  color: '#0f172a',
-                  marginBottom: 16
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: '#111827',
+                  marginBottom: 14
                 }}>
                   Détail du prix
                 </h3>
@@ -620,7 +655,7 @@ function ConfirmerEtPayerContent() {
                     fontSize: 14,
                     color: '#374151'
                   }}>
-                    <span>Frais de plateforme ({percentLabel()})</span>
+                    <span>Frais de plateforme</span>
                     <span style={{ fontWeight: 700 }}>{formatEUR(calculatedPrices.platformFees)}</span>
                   </div>
                   <div style={{
@@ -656,24 +691,35 @@ function ConfirmerEtPayerContent() {
 
             {/* Colonne droite - Paiement */}
             <div style={{
-              background: '#fff',
-              borderRadius: 24,
-              padding: 32,
-              boxShadow: '0 10px 35px rgba(0,0,0,0.1)',
-              border: '1px solid #f1f5f9',
-              position: 'sticky',
-              top: 100
+              background: '#ffffff',
+              borderRadius: 16,
+              padding: '20px',
+              border: '1px solid #e5e7eb'
             }}>
+              <style jsx>{`
+                @media (min-width: 768px) {
+                  div[style*="background: #ffffff"][style*="borderRadius: 16px"][style*="padding: 20px"]:last-of-type {
+                    padding: 28px !important;
+                  }
+                }
+                @media (min-width: 1025px) {
+                  div[style*="background: #ffffff"][style*="borderRadius: 16px"][style*="padding: 20px"]:last-of-type {
+                    position: sticky !important;
+                    top: 100px !important;
+                  }
+                }
+              `}</style>
+
               <h3 style={{
-                fontSize: 20,
-                fontWeight: 800,
-                color: '#0f172a',
-                marginBottom: 20,
+                fontSize: 18,
+                fontWeight: 600,
+                color: '#111827',
+                marginBottom: 18,
                 display: 'flex',
                 alignItems: 'center',
                 gap: 10
               }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2">
                   <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                   <line x1="1" y1="10" x2="23" y2="10"></line>
                 </svg>
@@ -686,20 +732,20 @@ function ConfirmerEtPayerContent() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 8,
-                padding: '12px',
-                background: '#f8fafc',
+                padding: '10px',
+                background: '#f9fafb',
                 borderRadius: 10,
-                marginBottom: 20,
-                border: '1px solid #e2e8f0'
+                marginBottom: 18,
+                border: '1px solid #e5e7eb'
               }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6772e5" strokeWidth="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
                 <span style={{
                   fontSize: 12,
-                  color: '#64748b',
-                  fontWeight: 700
+                  color: '#6b7280',
+                  fontWeight: 600
                 }}>
                   Paiement sécurisé par Stripe
                 </span>
@@ -717,14 +763,14 @@ function ConfirmerEtPayerContent() {
 
               <div style={{
                 fontSize: 11,
-                color: '#64748b',
+                color: '#6b7280',
                 textAlign: 'center',
-                fontWeight: 600,
-                lineHeight: 1.4,
-                marginTop: 18
+                fontWeight: 500,
+                lineHeight: 1.5,
+                marginTop: 16
               }}>
                 En confirmant, vous acceptez nos conditions générales de vente et notre politique d'annulation.<br />
-                <span style={{ color: '#0f172a', fontWeight: 700 }}>
+                <span style={{ color: '#111827', fontWeight: 600 }}>
                   Une empreinte bancaire de 300 € sera enregistrée sur votre carte, non débitée, et ne pourra être utilisée qu'en cas de dégradation constatée et validée par nos modérateurs. Le montant débité sera limité au montant réel des dommages.
                 </span>
               </div>
@@ -736,13 +782,6 @@ function ConfirmerEtPayerContent() {
       <style jsx>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
-        }
-        
-        @media (max-width: 768px) {
-          div:has(> div[style*="grid-template-columns: minmax(0, 1fr) minmax(0, 400px)"]) > div {
-            grid-template-columns: 1fr !important;
-            gap: 24px !important;
-          }
         }
       `}</style>
       
