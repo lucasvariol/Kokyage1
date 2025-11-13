@@ -32,6 +32,7 @@ function ConfirmerEtPayerContent() {
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [showCancellationPolicy, setShowCancellationPolicy] = useState(false);
 
   // Format prix
   const formatEUR = (amount) => {
@@ -527,12 +528,126 @@ function ConfirmerEtPayerContent() {
                   <div style={{
                     fontSize: 13,
                     color: '#6b7280',
-                    fontWeight: 500
+                    fontWeight: 500,
+                    marginBottom: 8
                   }}>
                     Jusqu'au {getCancellationDate()}
                   </div>
+                  <button
+                    onClick={() => setShowCancellationPolicy(!showCancellationPolicy)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#111827',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: 0,
+                      textDecoration: 'underline',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4
+                    }}
+                  >
+                    {showCancellationPolicy ? 'Masquer les détails' : 'Voir les détails'}
+                    <svg 
+                      width="12" 
+                      height="12" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2.5"
+                      style={{
+                        transform: showCancellationPolicy ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s'
+                      }}
+                    >
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
                 </div>
               </div>
+
+              {/* Politique d'annulation détaillée */}
+              {showCancellationPolicy && (
+                <div style={{
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: 12,
+                  padding: 16,
+                  marginBottom: 20,
+                  fontSize: 13,
+                  lineHeight: 1.6
+                }}>
+                  <div style={{
+                    fontWeight: 600,
+                    color: '#111827',
+                    marginBottom: 12,
+                    fontSize: 14
+                  }}>
+                    Politique d'annulation
+                  </div>
+                  
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <div style={{
+                        background: '#111827',
+                        color: '#fff',
+                        borderRadius: 6,
+                        padding: '4px 8px',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        height: 'fit-content',
+                        minWidth: 60,
+                        textAlign: 'center'
+                      }}>
+                        100%
+                      </div>
+                      <div style={{ flex: 1, color: '#374151' }}>
+                        <strong>Remboursement intégral</strong> si vous annulez au moins 7 jours avant l'arrivée (jusqu'au {getCancellationDate()})
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <div style={{
+                        background: '#6b7280',
+                        color: '#fff',
+                        borderRadius: 6,
+                        padding: '4px 8px',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        height: 'fit-content',
+                        minWidth: 60,
+                        textAlign: 'center'
+                      }}>
+                        50%
+                      </div>
+                      <div style={{ flex: 1, color: '#374151' }}>
+                        <strong>Remboursement partiel (50%)</strong> si vous annulez entre 6 jours et la veille de l'arrivée
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <div style={{
+                        background: '#e5e7eb',
+                        color: '#111827',
+                        borderRadius: 6,
+                        padding: '4px 8px',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        height: 'fit-content',
+                        minWidth: 60,
+                        textAlign: 'center'
+                      }}>
+                        0%
+                      </div>
+                      <div style={{ flex: 1, color: '#374151' }}>
+                        <strong>Aucun remboursement</strong> si vous annulez la veille ou le jour de l'arrivée
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Détails du séjour */}
               <div style={{ marginBottom: 20 }}>
