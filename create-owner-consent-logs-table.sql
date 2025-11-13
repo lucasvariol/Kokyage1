@@ -78,6 +78,14 @@ CREATE POLICY "Authenticated users can create consent logs"
   FOR INSERT
   WITH CHECK (auth.uid() = tenant_id);
 
+-- Permettre l'UPDATE pour ajouter la signature owner (sans vérifier auth car fait via API admin)
+DROP POLICY IF EXISTS "Allow update for owner signature" ON owner_consent_logs;
+CREATE POLICY "Allow update for owner signature"
+  ON owner_consent_logs
+  FOR UPDATE
+  USING (true)
+  WITH CHECK (true);
+
 -- Commentaires pour documentation
 COMMENT ON TABLE owner_consent_logs IS 'Logs des accords de consentement du propriétaire pour validation juridique';
 COMMENT ON COLUMN owner_consent_logs.tenant_signed_at IS 'Horodatage précis de l''acceptation par le locataire';
