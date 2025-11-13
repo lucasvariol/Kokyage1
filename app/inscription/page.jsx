@@ -2,11 +2,11 @@
 
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
-export default function Page(){
+function InscriptionContent(){
   // État de l'onglet actif
   const [activeTab, setActiveTab] = useState('inscription');
   const searchParams = useSearchParams();
@@ -968,4 +968,23 @@ export default function Page(){
     </main>
     <Footer />
   </>);
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif', 
+        background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)', 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center' 
+      }}>
+        <div style={{ fontSize: '18px', color: '#6b7280' }}>Chargement...</div>
+      </div>
+    }>
+      <InscriptionContent />
+    </Suspense>
+  );
 }
