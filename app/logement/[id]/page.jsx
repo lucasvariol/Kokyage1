@@ -45,45 +45,40 @@ function Gallery({ images }) {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
+    if (carousel.dataset.swipeInit === 'true') return;
+    carousel.dataset.swipeInit = 'true';
+
     let startX = 0;
-    let lastX = 0;
+    let currentX = 0;
     let isDragging = false;
-    let activePointerId = null;
 
     const snapToIndex = (idx) => {
       carousel.style.transition = 'transform 0.25s ease';
       carousel.style.transform = `translateX(-${idx * 100}%)`;
     };
 
-    const handlePointerDown = (e) => {
-      if (!e.isPrimary) return;
-      activePointerId = e.pointerId;
-      carousel.setPointerCapture?.(activePointerId);
-      startX = e.clientX;
-      lastX = startX;
+    const onTouchStart = (e) => {
+      if (!e.touches || e.touches.length === 0) return;
+      startX = e.touches[0].clientX;
+      currentX = startX;
       isDragging = true;
       preventModalClickRef.current = false;
       carousel.style.transition = 'none';
     };
 
-    const handlePointerMove = (e) => {
-      if (!isDragging || e.pointerId !== activePointerId) return;
-      // With touch-action: pan-y, horizontal panning won't scroll the page
-      const x = e.clientX;
-      lastX = x;
-      const diff = x - startX;
-      if (Math.abs(diff) > 5) {
-        // avoid triggering click on container after a swipe
-        preventModalClickRef.current = true;
-      }
+    const onTouchMove = (e) => {
+      if (!isDragging) return;
+      currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+      if (Math.abs(diff) > 5) preventModalClickRef.current = true;
       const idx = currentRef.current;
       carousel.style.transform = `translateX(calc(-${idx * 100}% + ${diff}px))`;
     };
 
-    const endDrag = () => {
+    const onTouchEnd = () => {
       if (!isDragging) return;
       isDragging = false;
-      const diff = lastX - startX;
+      const diff = currentX - startX;
       const threshold = 50;
       const idx = currentRef.current;
 
@@ -102,16 +97,17 @@ function Gallery({ images }) {
       }
     };
 
-    carousel.addEventListener('pointerdown', handlePointerDown);
-    carousel.addEventListener('pointermove', handlePointerMove);
-    carousel.addEventListener('pointerup', endDrag);
-    carousel.addEventListener('pointercancel', endDrag);
+    carousel.addEventListener('touchstart', onTouchStart, { passive: true });
+    carousel.addEventListener('touchmove', onTouchMove, { passive: true });
+    carousel.addEventListener('touchend', onTouchEnd, { passive: true });
+    carousel.addEventListener('touchcancel', onTouchEnd, { passive: true });
 
     return () => {
-      carousel.removeEventListener('pointerdown', handlePointerDown);
-      carousel.removeEventListener('pointermove', handlePointerMove);
-      carousel.removeEventListener('pointerup', endDrag);
-      carousel.removeEventListener('pointercancel', endDrag);
+      carousel.removeEventListener('touchstart', onTouchStart);
+      carousel.removeEventListener('touchmove', onTouchMove);
+      carousel.removeEventListener('touchend', onTouchEnd);
+      carousel.removeEventListener('touchcancel', onTouchEnd);
+      try { delete carousel.dataset.swipeInit; } catch {}
     };
   }, [images]);
 
