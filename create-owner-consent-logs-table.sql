@@ -2,7 +2,10 @@
 -- Cette table sert de preuve juridique que l'accord a été accepté
 -- Deux signatures : tenant (création annonce) + owner (validation propriétaire)
 
-CREATE TABLE IF NOT EXISTS owner_consent_logs (
+-- Supprimer la table existante si elle existe
+DROP TABLE IF EXISTS owner_consent_logs CASCADE;
+
+CREATE TABLE owner_consent_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   listing_id UUID NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
   
