@@ -38,6 +38,7 @@ export default function Page() {
   const [ownerEmail, setOwnerEmail] = useState('');
   const [consentChecked, setConsentChecked] = useState(false);
   const [consentOpen, setConsentOpen] = useState(false);
+  const [userFullName, setUserFullName] = useState('');
 
   // Check if user is authenticated
   useEffect(() => {
@@ -45,6 +46,17 @@ export default function Page() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push('/connexion');
+      } else {
+        // Récupérer les infos de l'utilisateur
+        const { data: userData } = await supabase
+          .from('users')
+          .select('full_name')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (userData?.full_name) {
+          setUserFullName(userData.full_name);
+        }
       }
     };
     checkAuth();
@@ -2133,8 +2145,8 @@ export default function Page() {
                     fontSize: '0.875rem'
                   }}>
                     <OwnerConsentAgreement
-                      ownerName="Propriétaire du logement"
-                      tenantName="Locataire principal"
+                      ownerName={ownerEmail || 'Propriétaire du logement'}
+                      tenantName={userFullName || 'Locataire principal'}
                       fullAddress={street || 'Adresse du logement'}
                     />
                   </div>
