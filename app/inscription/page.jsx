@@ -3,12 +3,14 @@
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 
 export default function Page(){
   // État de l'onglet actif
   const [activeTab, setActiveTab] = useState('inscription');
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect');
   
   // États pour l'inscription
   const [nom, setNom] = useState('');
@@ -262,7 +264,10 @@ export default function Page(){
 
       setSuccess('Connexion réussie ! Redirection en cours...');
       setLoading(false);
-      setTimeout(() => router.push('/logements'), 1200);
+      
+      // Rediriger vers l'URL de retour si elle existe, sinon vers /logements
+      const destination = redirectUrl || '/logements';
+      setTimeout(() => router.push(destination), 1200);
       
     } catch (err) {
       console.error('Erreur lors de la connexion:', err);
