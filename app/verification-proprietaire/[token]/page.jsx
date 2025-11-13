@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabaseClient";
 import Header from "../../_components/Header";
 import Footer from "../../_components/Footer";
 import { OwnerConsentAgreement } from "@/owner-consent";
+import { generateOwnerConsentText } from "@/lib/generateOwnerConsentText";
 
 export default function VerificationProprietaire() {
   const { token } = useParams();
@@ -217,6 +218,14 @@ export default function VerificationProprietaire() {
         const listingId = listingInfo?.id;
         const ownerFullName = `${user.user_metadata?.prenom || user.user_metadata?.first_name || ''} ${user.user_metadata?.nom || user.user_metadata?.last_name || ''}`.trim();
         
+        // Générer le texte de l'accord avec les vraies informations
+        const tenantFullName = tenant?.full_name || tenant?.prenom + ' ' + tenant?.nom || 'Locataire';
+        const agreementText = generateOwnerConsentText({
+          ownerName: user.email,
+          tenantName: tenantFullName,
+          fullAddress: listingInfo?.street || ''
+        });
+        
         const consentResp = await fetch("/api/owner-consent/log", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -225,6 +234,7 @@ export default function VerificationProprietaire() {
             ownerEmail: user.email,
             ownerFullName: ownerFullName || user.email,
             listingAddress: listingInfo?.street || '',
+            agreementText,
             signatureType: 'owner'
           }),
         });
