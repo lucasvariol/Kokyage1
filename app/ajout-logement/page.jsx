@@ -1131,11 +1131,12 @@ export default function Page() {
                 {price && (
                   <div style={{
                     marginTop: '8px',
-                    padding: '8px 12px',
-                    background: 'linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.05))',
+                    padding: '12px 16px',
+                    background: 'linear-gradient(135deg, rgba(159,122,234,0.1), rgba(128,90,213,0.05))',
                     borderRadius: '12px',
+                    border: '2px solid rgba(159,122,234,0.2)',
                     fontSize: '0.9rem',
-                    color: '#D69E2E',
+                    color: '#805AD5',
                     textAlign: 'center',
                     fontWeight: 600
                   }}>
