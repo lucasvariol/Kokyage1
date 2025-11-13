@@ -228,9 +228,8 @@ function ListingsMap({ items, center, onCenterChange, searchView, ratings = {} }
           minWidth: 200,
           className: 'custom-popup',
           offset: [0, -10],
-          autoPan: true,
-          autoPanPaddingTopLeft: [20, 60],
-          autoPanPaddingBottomRight: [20, 60]
+          autoPan: false,
+          closeOnClick: false
         });
         
         // Initialize swipe on popup open
