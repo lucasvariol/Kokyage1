@@ -1139,7 +1139,7 @@ export default function Page() {
                     textAlign: 'center',
                     fontWeight: 600
                   }}>
-                    💡 Utilisez notre chatbot pour connaître le prix dans votre zone
+                    💡 Comparez avec les autres plateformes et prévoyez 10-15% moins cher pour attirer plus de voyageurs
                   </div>
                 )}
               </div>
