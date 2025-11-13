@@ -148,9 +148,9 @@ function ListingsMap({ items, center, onCenterChange, searchView, ratings = {} }
         const reviewCount = ratings[logement.id]?.review_count || 0;
 
         const popupHtml = `
-          <div style="min-width:280px;max-width:300px;font-family:system-ui,-apple-system,sans-serif;">
+          <div style="min-width:200px;max-width:220px;font-family:system-ui,-apple-system,sans-serif;">
             ${imagesArr.length > 0 ? `
-              <div style="position:relative;width:100%;height:180px;border-radius:12px;overflow:hidden;margin-bottom:12px;background:#f0f0f0;">
+              <div style="position:relative;width:100%;height:120px;border-radius:8px;overflow:hidden;margin-bottom:8px;background:#f0f0f0;">
                 <div id="carousel-${logement.id}" style="display:flex;transition:transform 0.3s ease;height:100%;">
                   ${imagesArr.map((img, idx) => `
                     <img src="${img}" alt="${logement.title || ''}" 
@@ -160,57 +160,59 @@ function ListingsMap({ items, center, onCenterChange, searchView, ratings = {} }
                 </div>
                 ${imagesArr.length > 1 ? `
                   <button onclick="window.prevImage('${logement.id}', ${imagesArr.length})" 
-                    style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.95);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;z-index:10;padding:0;">
-                    <svg width="16" height="16" viewBox="0 0 20 20"><polyline points="13 5 7 10 13 15" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    style="position:absolute;left:6px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.95);border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;z-index:10;padding:0;">
+                    <svg width="12" height="12" viewBox="0 0 20 20"><polyline points="13 5 7 10 13 15" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   </button>
                   <button onclick="window.nextImage('${logement.id}', ${imagesArr.length})" 
-                    style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.95);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;z-index:10;padding:0;">
-                    <svg width="16" height="16" viewBox="0 0 20 20"><polyline points="7 5 13 10 7 15" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.95);border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;z-index:10;padding:0;">
+                    <svg width="12" height="12" viewBox="0 0 20 20"><polyline points="7 5 13 10 7 15" fill="none" stroke="#222" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   </button>
-                  <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10;">
+                  <div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:10;">
                     ${imagesArr.map((_, idx) => `
-                      <div id="dot-${logement.id}-${idx}" style="width:6px;height:6px;border-radius:50%;background:${idx === 0 ? '#fff' : 'rgba(255,255,255,0.5)'};transition:all 0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>
+                      <div id="dot-${logement.id}-${idx}" style="width:5px;height:5px;border-radius:50%;background:${idx === 0 ? '#fff' : 'rgba(255,255,255,0.5)'};transition:all 0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>
                     `).join('')}
                   </div>
                 ` : ''}
               </div>
             ` : ''}
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
               <div style="flex:1;min-width:0;">
-                <div style="font-size:11px;color:#666;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">${logement.city || 'Paris'}</div>
-                <div style="font-size:16px;font-weight:700;color:#222;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${logement.title || ''}</div>
+                <div style="font-size:10px;color:#666;font-weight:500;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">${logement.city || 'Paris'}</div>
+                <div style="font-size:13px;font-weight:700;color:#222;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${logement.title || ''}</div>
               </div>
               ${reviewCount > 0 ? `
-                <div style="display:flex;align-items:center;gap:4px;background:#fff7ed;padding:4px 8px;border-radius:8px;margin-left:8px;flex-shrink:0;">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <span style="font-size:13px;font-weight:600;color:#222;">${rating.toFixed(1)}</span>
+                <div style="display:flex;align-items:center;gap:3px;background:#fff7ed;padding:3px 6px;border-radius:6px;margin-left:6px;flex-shrink:0;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <span style="font-size:11px;font-weight:600;color:#222;">${rating.toFixed(1)}</span>
                 </div>
               ` : ''}
             </div>
             ${logement.nb_voyageurs || logement.bedrooms || logement.bathrooms ? `
-              <div style="display:flex;gap:12px;margin-bottom:10px;font-size:13px;color:#666;">
-                ${logement.nb_voyageurs ? `<span style="display:flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>${logement.nb_voyageurs}</span>` : ''}
-                ${logement.bedrooms ? `<span style="display:flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 10.07 10h3.86a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 18.07 7H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/></svg>${logement.bedrooms} ch</span>` : ''}
-                ${logement.bathrooms ? `<span style="display:flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 22v-4H7a2 2 0 0 1-2-2V7a4 4 0 0 1 8 0v9a2 2 0 0 1-2 2h-2Z"/></svg>${logement.bathrooms} sdb</span>` : ''}
+              <div style="display:flex;gap:8px;margin-bottom:8px;font-size:11px;color:#666;">
+                ${logement.nb_voyageurs ? `<span style="display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>${logement.nb_voyageurs}</span>` : ''}
+                ${logement.bedrooms ? `<span style="display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 10.07 10h3.86a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 18.07 7H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/></svg>${logement.bedrooms}</span>` : ''}
+                ${logement.bathrooms ? `<span style="display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 22v-4H7a2 2 0 0 1-2-2V7a4 4 0 0 1 8 0v9a2 2 0 0 1-2 2h-2Z"/></svg>${logement.bathrooms}</span>` : ''}
               </div>
             ` : ''}
-            <div style="padding-top:10px;border-top:1px solid #f0f0f0;margin-bottom:10px;">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
-                <span style="font-weight:700;color:#222;font-size:18px;">${(price*feeMultiplier).toFixed(0)} €</span>
-                <span style="font-size:14px;color:#666;">/ nuit</span>
+            <div style="padding-top:8px;border-top:1px solid #f0f0f0;margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                <span style="font-weight:700;color:#222;font-size:16px;">${(price*feeMultiplier).toFixed(0)} €</span>
+                <span style="font-size:12px;color:#666;">/ nuit</span>
               </div>
             </div>
             <a href="/logement/${logement.id}" 
-              style="display:block;text-align:center;padding:10px 20px;background:linear-gradient(135deg,#C96745 0%,#b85a3e 100%);color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;box-shadow:0 4px 12px rgba(201,103,69,0.25);transition:all 0.2s;"
-              onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 16px rgba(201,103,69,0.35)';"
-              onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 12px rgba(201,103,69,0.25)';">
+              style="display:block;text-align:center;padding:8px 16px;background:linear-gradient(135deg,#1f2937 0%,#111827 100%);color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:all 0.2s;"
+              onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
+              onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)';">
               Voir le logement
             </a>
           </div>`;
         
         marker.bindPopup(popupHtml, { 
-          maxWidth: 300,
-          className: 'custom-popup'
+          maxWidth: 220,
+          minWidth: 200,
+          className: 'custom-popup',
+          offset: [0, -10]
         });
         
         // Initialize swipe on popup open
