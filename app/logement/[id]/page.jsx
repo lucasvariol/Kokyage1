@@ -205,7 +205,7 @@ function Gallery({ images }) {
             top: '50%',
             left: 18,
             transform: 'translateY(-50%)',
-            background: 'rgba(0,0,0,0.6)',
+            background: 'rgba(255,255,255,0.95)',
             backdropFilter: 'blur(8px)',
             border: 'none',
             borderRadius: '50%',
@@ -213,7 +213,7 @@ function Gallery({ images }) {
             height: 40,
             fontSize: 20,
             cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -221,15 +221,17 @@ function Gallery({ images }) {
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = 'rgba(255,255,255,1)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+            e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
             e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+            e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.1)';
           }}
           aria-label="Image précédente"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
@@ -240,7 +242,7 @@ function Gallery({ images }) {
             top: '50%',
             right: 18,
             transform: 'translateY(-50%)',
-            background: 'rgba(0,0,0,0.6)',
+            background: 'rgba(255,255,255,0.95)',
             backdropFilter: 'blur(8px)',
             border: 'none',
             borderRadius: '50%',
@@ -248,7 +250,7 @@ function Gallery({ images }) {
             height: 40,
             fontSize: 20,
             cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -256,15 +258,17 @@ function Gallery({ images }) {
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = 'rgba(255,255,255,1)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+            e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
             e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+            e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.1)';
           }}
           aria-label="Image suivante"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
         </button>
@@ -272,14 +276,14 @@ function Gallery({ images }) {
           position: 'absolute',
           bottom: 18,
           right: 24,
-          background: 'rgba(0,0,0,0.6)',
+          background: 'rgba(255,255,255,0.95)',
           backdropFilter: 'blur(8px)',
           borderRadius: 6,
           padding: '6px 12px',
-          fontSize: 13,
-          color: '#fff',
+          fontSize: 12,
+          color: '#374151',
           fontWeight: 600,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
           letterSpacing: '0.3px'
         }}>
           {current + 1} / {images.length}
@@ -288,7 +292,7 @@ function Gallery({ images }) {
       <div className="gallery-thumbnails" style={{
         marginTop: 16,
         display: 'flex',
-        gap: 10,
+        gap: 8,
         flexWrap: 'wrap',
         justifyContent: 'center'
       }}>
@@ -298,17 +302,19 @@ function Gallery({ images }) {
             src={url}
             alt={`Miniature ${idx + 1}`}
             style={{
-              width: 64,
-              height: 64,
+              width: 56,
+              height: 56,
               objectFit: 'cover',
-              borderRadius: 6,
-              border: current === idx ? '2px solid #000' : '1px solid #e5e7eb',
+              borderRadius: 4,
+              border: current === idx ? '2px solid #1f2937' : '1px solid #d1d5db',
               cursor: 'pointer',
-              opacity: current === idx ? 1 : 0.6,
-              boxShadow: current === idx ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
+              opacity: current === idx ? 1 : 0.5,
+              boxShadow: current === idx ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
               transition: 'all 0.2s ease'
             }}
             onClick={() => setCurrent(idx)}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = current === idx ? '1' : '0.5'}
           />
         ))}
       </div>
@@ -1505,7 +1511,7 @@ export default function Page({ params }) {
 
                 {/* Container principal avec grid moderne */}
                 <div style={{ 
-                  padding: '0 24px 60px',
+                  padding: '0 16px 48px',
                   maxWidth: 1400,
                   margin: '0 auto',
                   width: '100%',
@@ -1513,20 +1519,20 @@ export default function Page({ params }) {
                 }}>
                   <div className="detail-grid" style={{ 
                     display: 'grid', 
-                    gridTemplateColumns: '1.4fr 0.6fr', 
-                    gap: 32,
-                    marginTop: -40,
+                    gridTemplateColumns: '1fr', 
+                    gap: 24,
+                    marginTop: -32,
                     position: 'relative'
                   }}>
                     {/* Colonne principale gauche */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                       {/* Card Header */}
                       <div className="card-header" style={{
                         background: '#fff',
-                        borderRadius: 20,
-                        padding: '32px',
-                        boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-                        border: '1px solid #f1f5f9'
+                        borderRadius: 16,
+                        padding: '24px',
+                        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                        border: '1px solid #f3f4f6'
                       }}>
                         <div className="header-top-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
                           <div style={{ flex: 1 }}>
@@ -1549,18 +1555,18 @@ export default function Page({ params }) {
                                   </span>
                                 ); })()}
                                 <span style={{ 
-                                  background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)', 
-                                  color: '#1e40af', 
+                                  background: '#f3f4f6', 
+                                  color: '#374151', 
                                   padding: '6px 12px', 
-                                  borderRadius: 8, 
-                                  fontWeight: 700, 
+                                  borderRadius: 6, 
+                                  fontWeight: 600, 
                                   fontSize: 12,
-                                  border: '1px solid #93c5fd',
+                                  border: '1px solid #d1d5db',
                                   display: 'inline-flex',
                                   alignItems: 'center',
-                                  gap: 4
+                                  gap: 6
                                 }}>
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                                   </svg>
@@ -1569,24 +1575,24 @@ export default function Page({ params }) {
                               </div>
                             )}
                             <h1 className="main-title" style={{ 
-                              fontSize: 'clamp(24px, 3vw, 36px)', 
-                              fontWeight: 800, 
-                              color: '#0f172a', 
-                              margin: '0 0 12px 0',
-                              lineHeight: 1.2,
-                              letterSpacing: '-0.02em'
+                              fontSize: 'clamp(20px, 4vw, 32px)', 
+                              fontWeight: 700, 
+                              color: '#111827', 
+                              margin: '0 0 10px 0',
+                              lineHeight: 1.3,
+                              letterSpacing: '-0.01em'
                             }}>
                               {item.title}
                             </h1>
 
                             <div style={{ 
-                              fontSize: 16, 
-                              color: '#64748b',
+                              fontSize: 14, 
+                              color: '#6b7280',
                               display: 'flex',
                               alignItems: 'center',
-                              gap: 6
+                              gap: 5
                             }}>
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                 <circle cx="12" cy="10" r="3"></circle>
                               </svg>
@@ -1597,33 +1603,33 @@ export default function Page({ params }) {
                             onClick={handleCopy}
                             className="share-button"
                             style={{
-                              background: copied ? 'linear-gradient(135deg, #D79077 0%, #C96745 100%)' : '#fff',
-                              color: copied ? '#fff' : '#64748b',
-                              border: copied ? 'none' : '2px solid #e2e8f0',
-                              borderRadius: 12,
-                              padding: '12px 16px',
-                              fontWeight: 700,
-                              fontSize: 14,
+                              background: copied ? '#1f2937' : '#fff',
+                              color: copied ? '#fff' : '#4b5563',
+                              border: copied ? 'none' : '1px solid #d1d5db',
+                              borderRadius: 8,
+                              padding: '10px 16px',
+                              fontWeight: 600,
+                              fontSize: 13,
                               cursor: 'pointer',
-                              boxShadow: copied ? '0 4px 15px rgba(215,144,119,0.3)' : '0 2px 8px rgba(0,0,0,0.04)',
-                              transition: 'all 0.3s ease',
+                              boxShadow: copied ? '0 2px 8px rgba(0,0,0,0.1)' : '0 1px 3px rgba(0,0,0,0.05)',
+                              transition: 'all 0.2s ease',
                               display: 'flex',
                               alignItems: 'center',
-                              gap: 8,
-                              minWidth: 120
+                              gap: 6,
+                              minWidth: 100
                             }}
                             aria-label="Copier le lien"
                           >
                             {copied ? (
                               <>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                   <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
-                                Copié !
+                                Copié
                               </>
                             ) : (
                               <>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                                 </svg>
@@ -1636,166 +1642,167 @@ export default function Page({ params }) {
                         {/* Chips d'infos */}
                         <div className="info-chips-grid" style={{ 
                           display: 'grid', 
-                          gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', 
-                          gap: 10,
-                          marginBottom: 20
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', 
+                          gap: 8,
+                          marginBottom: 16
                         }}>
                           {typeof item.nb_voyageurs === 'number' && (
                             <div className="info-chip" style={{ 
                               background: '#fff', 
-                              padding: '14px', 
-                              borderRadius: 12,
-                              border: '1px solid #e2e8f0',
+                              padding: '12px', 
+                              borderRadius: 8,
+                              border: '1px solid #e5e7eb',
                               textAlign: 'center',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = '#3b82f6';
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(59,130,246,0.15)';
+                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.transform = 'translateY(-1px)';
+                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = '#e2e8f0';
+                              e.currentTarget.style.borderColor = '#e5e7eb';
                               e.currentTarget.style.transform = 'translateY(0)';
                               e.currentTarget.style.boxShadow = 'none';
                             }}
                             >
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="9" cy="7" r="4"></circle>
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                               </svg>
-                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.nb_voyageurs}</div>
-                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>voyageurs</div>
+                              <div className="info-chip-value" style={{ fontWeight: 700, fontSize: 16, color: '#111827', marginBottom: 2 }}>{item.nb_voyageurs}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>voyageurs</div>
                             </div>
                           )}
                           {typeof item.bedrooms === 'number' && (
                             <div className="info-chip" style={{ 
                               background: '#fff', 
-                              padding: '14px', 
-                              borderRadius: 12,
-                              border: '1px solid #e2e8f0',
+                              padding: '12px', 
+                              borderRadius: 8,
+                              border: '1px solid #e5e7eb',
                               textAlign: 'center',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = '#8b5cf6';
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(139,92,246,0.15)';
+                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.transform = 'translateY(-1px)';
+                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = '#e2e8f0';
+                              e.currentTarget.style.borderColor = '#e5e7eb';
                               e.currentTarget.style.transform = 'translateY(0)';
                               e.currentTarget.style.boxShadow = 'none';
                             }}
                             >
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
                                 <path d="M2 4v16"></path>
                                 <path d="M2 8h18a2 2 0 0 1 2 2v10"></path>
                                 <path d="M2 17h20"></path>
                                 <path d="M6 8v9"></path>
                               </svg>
-                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.bedrooms}</div>
-                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>chambres</div>
+                              <div className="info-chip-value" style={{ fontWeight: 700, fontSize: 16, color: '#111827', marginBottom: 2 }}>{item.bedrooms}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>chambres</div>
                             </div>
                           )}
                           {typeof item.beds === 'number' && (
                             <div className="info-chip" style={{ 
                               background: '#fff', 
-                              padding: '14px', 
-                              borderRadius: 12,
-                              border: '1px solid #e2e8f0',
+                              padding: '12px', 
+                              borderRadius: 8,
+                              border: '1px solid #e5e7eb',
                               textAlign: 'center',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = '#ec4899';
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(236,72,153,0.15)';
+                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.transform = 'translateY(-1px)';
+                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = '#e2e8f0';
+                              e.currentTarget.style.borderColor = '#e5e7eb';
                               e.currentTarget.style.transform = 'translateY(0)';
                               e.currentTarget.style.boxShadow = 'none';
                             }}
                             >
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec4899" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
                                 <rect x="2" y="7" width="20" height="14" rx="2"></rect>
                                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                               </svg>
-                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.beds}</div>
-                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>lits</div>
+                              <div className="info-chip-value" style={{ fontWeight: 700, fontSize: 16, color: '#111827', marginBottom: 2 }}>{item.beds}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>lits</div>
                             </div>
                           )}
                           {typeof item.bathrooms === 'number' && (
                             <div className="info-chip" style={{ 
                               background: '#fff', 
-                              padding: '14px', 
-                              borderRadius: 12,
-                              border: '1px solid #e2e8f0',
+                              padding: '12px', 
+                              borderRadius: 8,
+                              border: '1px solid #e5e7eb',
                               textAlign: 'center',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = '#06b6d4';
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(6,182,212,0.15)';
+                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.transform = 'translateY(-1px)';
+                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = '#e2e8f0';
+                              e.currentTarget.style.borderColor = '#e5e7eb';
                               e.currentTarget.style.transform = 'translateY(0)';
                               e.currentTarget.style.boxShadow = 'none';
                             }}
                             >
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
                                 <path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path>
                                 <line x1="10" y1="5" x2="8" y2="7"></line>
                                 <line x1="2" y1="12" x2="22" y2="12"></line>
                                 <line x1="7" y1="19" x2="7" y2="21"></line>
                                 <line x1="17" y1="19" x2="17" y2="21"></line>
                               </svg>
-                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.bathrooms}</div>
-                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>sdb</div>
+                              <div className="info-chip-value" style={{ fontWeight: 700, fontSize: 16, color: '#111827', marginBottom: 2 }}>{item.bathrooms}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>sdb</div>
                             </div>
                           )}
                           {typeof item.surface === 'number' && item.surface > 0 && (
                             <div className="info-chip" style={{ 
                               background: '#fff', 
-                              padding: '14px', 
-                              borderRadius: 12,
-                              border: '1px solid #e2e8f0',
+                              padding: '12px', 
+                              borderRadius: 8,
+                              border: '1px solid #e5e7eb',
                               textAlign: 'center',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = '#10b981';
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(16,185,129,0.15)';
+                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.transform = 'translateY(-1px)';
+                              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = '#e2e8f0';
+                              e.currentTarget.style.borderColor = '#e5e7eb';
                               e.currentTarget.style.transform = 'translateY(0)';
                               e.currentTarget.style.boxShadow = 'none';
                             }}
                             >
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" style={{ margin: '0 auto 6px' }}>
                                 <rect x="3" y="3" width="18" height="18" rx="2"></rect>
                                 <path d="M3 9h18"></path>
                                 <path d="M9 21V9"></path>
                               </svg>
-                              <div className="info-chip-value" style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', marginBottom: 2 }}>{item.surface}</div>
-                              <div className="info-chip-label" style={{ fontSize: 11, color: '#64748b', fontWeight: 600 }}>m²</div>
+                              <div className="info-chip-value" style={{ fontWeight: 700, fontSize: 16, color: '#111827', marginBottom: 2 }}>{item.surface}</div>
+                              <div className="info-chip-label" style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>m²</div>
                             </div>
                           )}
                         </div>
                         {/* Stats Row */}
                         <div className="stats-row" style={{
                           display: 'flex', 
-                          gap: 24, 
-                          padding: '16px 0',
-                          borderTop: '1px solid #f1f5f9',
-                          borderBottom: '1px solid #f1f5f9'
+                          gap: 16, 
+                          padding: '14px 0',
+                          borderTop: '1px solid #f3f4f6',
+                          borderBottom: '1px solid #f3f4f6',
+                          flexWrap: 'wrap'
                         }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1811,21 +1818,26 @@ export default function Page({ params }) {
                           <div className="stats-divider" style={{ width: 1, background: '#e2e8f0' }} />
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <div style={{ 
-                              background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                              background: '#f9fafb',
                               padding: 8,
-                              borderRadius: 10,
+                              borderRadius: 8,
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              fontSize: 20
+                              border: '1px solid #e5e7eb'
                             }}>
-                              📅
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                              </svg>
                             </div>
                             <div>
-                              <div style={{ fontWeight: 800, fontSize: 18, color: '#0f172a' }}>
+                              <div style={{ fontWeight: 700, fontSize: 17, color: '#111827' }}>
                                 {reservations.length}
                               </div>
-                              <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>
+                              <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>
                                 réservations
                               </div>
                             </div>
@@ -1838,31 +1850,33 @@ export default function Page({ params }) {
                             <a
                               href={`/calendrier?listingId=${item.id}`}
                               style={{ 
-                                background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)', 
+                                background: '#1f2937', 
                                 color: '#fff', 
                                 textDecoration: 'none', 
                                 border: 'none', 
-                                borderRadius: 10, 
-                                padding: '12px 20px', 
-                                fontWeight: 700, 
-                                fontSize: 14, 
+                                borderRadius: 8, 
+                                padding: '11px 18px', 
+                                fontWeight: 600, 
+                                fontSize: 13, 
                                 cursor: 'pointer', 
-                                boxShadow: '0 4px 12px rgba(37,99,235,0.2)',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: 8,
+                                gap: 6,
                                 transition: 'all 0.2s ease'
                               }}
                               onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = '0 6px 20px rgba(37,99,235,0.3)';
+                                e.currentTarget.style.transform = 'translateY(-1px)';
+                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                                e.currentTarget.style.background = '#111827';
                               }}
                               onMouseLeave={(e) => {
                                 e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(37,99,235,0.2)';
+                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                                e.currentTarget.style.background = '#1f2937';
                               }}
                             >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -1874,30 +1888,30 @@ export default function Page({ params }) {
                               onClick={handleEdit}
                               style={{ 
                                 background: '#fff', 
-                                color: '#475569', 
-                                border: '2px solid #e2e8f0', 
-                                borderRadius: 10, 
-                                padding: '12px 20px', 
-                                fontWeight: 700, 
-                                fontSize: 14, 
+                                color: '#374151', 
+                                border: '1px solid #d1d5db', 
+                                borderRadius: 8, 
+                                padding: '11px 18px', 
+                                fontWeight: 600, 
+                                fontSize: 13, 
                                 cursor: 'pointer',
                                 transition: 'all 0.2s ease',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: 8
+                                gap: 6
                               }}
                               onMouseEnter={(e) => {
-                                e.currentTarget.style.borderColor = '#cbd5e1';
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
+                                e.currentTarget.style.borderColor = '#9ca3af';
+                                e.currentTarget.style.transform = 'translateY(-1px)';
+                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
                               }}
                               onMouseLeave={(e) => {
-                                e.currentTarget.style.borderColor = '#e2e8f0';
+                                e.currentTarget.style.borderColor = '#d1d5db';
                                 e.currentTarget.style.transform = 'translateY(0)';
                                 e.currentTarget.style.boxShadow = 'none';
                               }}
                             >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                               </svg>
@@ -1908,31 +1922,31 @@ export default function Page({ params }) {
                               style={{ 
                                 background: '#fff', 
                                 color: '#dc2626', 
-                                border: '2px solid #fecaca', 
-                                borderRadius: 10, 
-                                padding: '12px 20px', 
-                                fontWeight: 700, 
-                                fontSize: 14, 
+                                border: '1px solid #fca5a5', 
+                                borderRadius: 8, 
+                                padding: '11px 18px', 
+                                fontWeight: 600, 
+                                fontSize: 13, 
                                 cursor: 'pointer',
                                 transition: 'all 0.2s ease',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: 8
+                                gap: 6
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background = '#fef2f2';
-                                e.currentTarget.style.borderColor = '#fca5a5';
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(220,38,38,0.15)';
+                                e.currentTarget.style.borderColor = '#f87171';
+                                e.currentTarget.style.transform = 'translateY(-1px)';
+                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(220,38,38,0.1)';
                               }}
                               onMouseLeave={(e) => {
                                 e.currentTarget.style.background = '#fff';
-                                e.currentTarget.style.borderColor = '#fecaca';
+                                e.currentTarget.style.borderColor = '#fca5a5';
                                 e.currentTarget.style.transform = 'translateY(0)';
                                 e.currentTarget.style.boxShadow = 'none';
                               }}
                             >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="3 6 5 6 21 6"></polyline>
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                               </svg>
@@ -1946,43 +1960,34 @@ export default function Page({ params }) {
                       {/* Card Description */}
                       <div className="card-description" style={{
                         background: '#fff',
-                        borderRadius: 20,
-                        padding: '32px',
-                        boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-                        border: '1px solid #f1f5f9'
+                        borderRadius: 16,
+                        padding: '24px',
+                        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                        border: '1px solid #f3f4f6'
                       }}>
                         <h2 style={{ 
-                          fontSize: 24, 
-                          fontWeight: 800, 
-                          color: '#0f172a', 
+                          fontSize: 20, 
+                          fontWeight: 700, 
+                          color: '#111827', 
                           marginBottom: 16,
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 10
+                          gap: 8
                         }}>
-                          <div style={{
-                            background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                            padding: 10,
-                            borderRadius: 10,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C96745" strokeWidth="2">
-                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                              <polyline points="14 2 14 8 20 8"></polyline>
-                              <line x1="16" y1="13" x2="8" y2="13"></line>
-                              <line x1="16" y1="17" x2="8" y2="17"></line>
-                              <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
-                          </div>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                          </svg>
                           Description
                         </h2>
                         <p style={{ 
                           whiteSpace: 'pre-wrap', 
-                          lineHeight: 1.8, 
-                          color: '#475569',
-                          fontSize: 15
+                          lineHeight: 1.7, 
+                          color: '#4b5563',
+                          fontSize: 14
                         }}>
                           {item.description || 'Aucune description fournie pour le moment.'}
                         </p>
@@ -1992,33 +1997,24 @@ export default function Page({ params }) {
                       {(item.latitude && item.longitude) ? (
                         <div className="card-map" style={{
                           background: '#fff',
-                          borderRadius: 20,
-                          padding: '32px',
-                          boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-                          border: '1px solid #f1f5f9'
+                          borderRadius: 16,
+                          padding: '24px',
+                          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                          border: '1px solid #f3f4f6'
                         }}>
                           <h2 style={{ 
-                            fontSize: 24, 
-                            fontWeight: 800, 
-                            color: '#0f172a', 
+                            fontSize: 20, 
+                            fontWeight: 700, 
+                            color: '#111827', 
                             marginBottom: 16,
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 10
+                            gap: 8
                           }}>
-                            <div style={{
-                              background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                              padding: 10,
-                              borderRadius: 10,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}>
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                              </svg>
-                            </div>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                              <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
                             Localisation
                           </h2>
                           <div style={{ 
@@ -2034,68 +2030,59 @@ export default function Page({ params }) {
                       {reservations.length > 0 && (
                         <div className="card-reservations" style={{
                           background: '#fff',
-                          borderRadius: 20,
-                          padding: '32px',
-                          boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-                          border: '1px solid #f1f5f9'
+                          borderRadius: 16,
+                          padding: '24px',
+                          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                          border: '1px solid #f3f4f6'
                         }}>
                           <h2 style={{ 
-                            fontSize: 24, 
-                            fontWeight: 800, 
-                            color: '#0f172a', 
-                            marginBottom: 20,
+                            fontSize: 20, 
+                            fontWeight: 700, 
+                            color: '#111827', 
+                            marginBottom: 16,
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 10
+                            gap: 8
                           }}>
-                            <div style={{
-                              background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                              padding: 10,
-                              borderRadius: 10,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}>
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                              </svg>
-                            </div>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                              <line x1="16" y1="2" x2="16" y2="6"></line>
+                              <line x1="8" y1="2" x2="8" y2="6"></line>
+                              <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
                             Réservations ({reservations.length})
                           </h2>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                             {reservations.map(r => (
                               <div key={r.id} className="reservation-item" style={{
-                                background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-                                borderRadius: 14,
-                                padding: '16px 20px',
+                                background: '#f9fafb',
+                                borderRadius: 10,
+                                padding: '14px 16px',
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
-                                border: '1px solid #e2e8f0',
+                                border: '1px solid #e5e7eb',
                                 transition: 'transform 0.2s ease'
                               }}
-                              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(4px)'}
+                              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(2px)'}
                               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}
                               >
                                 <div>
-                                  <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 16, marginBottom: 4 }}>
+                                  <div style={{ fontWeight: 600, color: '#111827', fontSize: 15, marginBottom: 4 }}>
                                     {r.user?.full_name || "Voyageur"}
                                   </div>
-                                  <div style={{ color: '#64748b', fontSize: 14, fontWeight: 600 }}>
+                                  <div style={{ color: '#6b7280', fontSize: 13, fontWeight: 500 }}>
                                     {new Date(r.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} → {new Date(r.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                                   </div>
                                 </div>
                                 <span style={{
-                                  background: r.status === "confirmed" ? 'linear-gradient(135deg, #86efac 0%, #4ade80 100%)' : 'linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)',
-                                  color: r.status === "confirmed" ? "#065f46" : "#92400e",
-                                  borderRadius: 999,
-                                  padding: "8px 16px",
-                                  fontWeight: 800,
-                                  fontSize: 12,
-                                  border: `1px solid ${r.status === "confirmed" ? "#4ade80" : "#fdba74"}`
+                                  background: r.status === "confirmed" ? '#f0fdf4' : '#fef3c7',
+                                  color: r.status === "confirmed" ? "#166534" : "#92400e",
+                                  borderRadius: 6,
+                                  padding: "6px 12px",
+                                  fontWeight: 600,
+                                  fontSize: 11,
+                                  border: `1px solid ${r.status === "confirmed" ? "#bbf7d0" : "#fde68a"}`
                                 }}>
                                   {r.status === "confirmed" ? "✓ Confirmée" : "⏳ En attente"}
                                 </span>
@@ -2116,10 +2103,10 @@ export default function Page({ params }) {
                           position: 'sticky',
                           top: 100,
                           background: '#fff',
-                          borderRadius: 20,
-                          padding: '32px',
-                          boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
-                          border: '1px solid #f1f5f9'
+                          borderRadius: 16,
+                          padding: '24px',
+                          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                          border: '1px solid #f3f4f6'
                         }}>
 
                         {/* Sélecteur de dates / disponibilités */}
@@ -3462,6 +3449,14 @@ export default function Page({ params }) {
             to { transform: rotate(360deg); }
           }
           
+          /* Responsive design pour desktop */
+          @media (min-width: 1025px) {
+            .detail-grid {
+              grid-template-columns: 1.4fr 0.6fr !important;
+              gap: 28px !important;
+            }
+          }
+          
           /* Responsive design pour tablette et mobile */
           @media (max-width: 1024px) {
             .detail-grid {
@@ -3563,11 +3558,11 @@ export default function Page({ params }) {
             :global(.card-reservations) {
               border-radius: 12px !important;
               padding: 16px !important;
-              margin-bottom: 16px !important;
-              margin-left: 8px !important;
-              margin-right: 8px !important;
-              width: calc(100vw - 16px) !important;
-              max-width: calc(100vw - 16px) !important;
+              margin-bottom: 14px !important;
+              margin-left: 12px !important;
+              margin-right: 12px !important;
+              width: calc(100vw - 24px) !important;
+              max-width: calc(100vw - 24px) !important;
               box-sizing: border-box !important;
               overflow-x: hidden !important;
             }
@@ -3584,7 +3579,8 @@ export default function Page({ params }) {
             
             /* Titre principal */
             :global(.main-title) {
-              font-size: 22px !important;
+              font-size: 20px !important;
+              line-height: 1.3 !important;
             }
             
             /* Grid des infos (voyageurs, chambres, etc.) */
@@ -3651,11 +3647,11 @@ export default function Page({ params }) {
               left: auto !important;
               right: auto !important;
               top: auto !important;
-              margin: 16px 8px !important;
-              width: calc(100vw - 16px) !important;
-              max-width: calc(100vw - 16px) !important;
-              border-radius: 16px !important;
-              box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+              margin: 14px 12px !important;
+              width: calc(100vw - 24px) !important;
+              max-width: calc(100vw - 24px) !important;
+              border-radius: 12px !important;
+              box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
               z-index: auto !important;
               padding: 16px !important;
               max-height: none !important;
@@ -3672,7 +3668,7 @@ export default function Page({ params }) {
             
             /* Calendrier */
             :global(.rdp) {
-              font-size: 14px !important;
+              font-size: 13px !important;
               max-width: 100% !important;
               overflow-x: hidden !important;
             }
@@ -3744,10 +3740,13 @@ export default function Page({ params }) {
             /* Review et reservation items */
             :global(.review-item),
             :global(.reservation-item) {
-              padding: 16px !important;
+              padding: 12px !important;
               max-width: 100% !important;
               box-sizing: border-box !important;
               overflow-x: hidden !important;
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 10px !important;
             }
             
             :global(.review-item *),
@@ -3776,7 +3775,7 @@ export default function Page({ params }) {
           @media (max-width: 480px) {
             /* Très petits écrans */
             :global(.info-chips-grid) {
-              grid-template-columns: repeat(2, 1fr) !important;
+              grid-template-columns: repeat(3, 1fr) !important;
               gap: 6px !important;
             }
             
@@ -3792,53 +3791,53 @@ export default function Page({ params }) {
             :global(.card-map),
             :global(.card-reviews),
             :global(.card-reservations) {
-              padding: 12px !important;
-              margin-left: 4px !important;
-              margin-right: 4px !important;
-              width: calc(100vw - 8px) !important;
-              max-width: calc(100vw - 8px) !important;
+              padding: 14px !important;
+              margin-left: 8px !important;
+              margin-right: 8px !important;
+              width: calc(100vw - 16px) !important;
+              max-width: calc(100vw - 16px) !important;
             }
             
             :global(.gallery-thumbnails) {
-              padding-left: 4px !important;
-              padding-right: 4px !important;
+              padding-left: 8px !important;
+              padding-right: 8px !important;
             }
             
             :global(.booking-sidebar) {
-              margin: 16px 4px !important;
-              width: calc(100vw - 8px) !important;
-              max-width: calc(100vw - 8px) !important;
-              padding: 12px !important;
+              margin: 14px 8px !important;
+              width: calc(100vw - 16px) !important;
+              max-width: calc(100vw - 16px) !important;
+              padding: 14px !important;
             }
           }
           
           :global(.selected-night) {
-            background: #222 !important;
+            background: #1f2937 !important;
             color: #fff !important;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
           }
           :global(.rdp) {
-            --rdp-accent-color: #0066ff;
-            --rdp-background-color: #eef5ff;
-            --rdp-outline: 2px solid #bfdbfe;
+            --rdp-accent-color: #374151;
+            --rdp-background-color: #f3f4f6;
+            --rdp-outline: 2px solid #d1d5db;
           }
           :global(.rdp .rdp-day) {
             transition: transform .05s ease, background-color .2s ease, color .2s ease;
-            border-radius: 8px;
+            border-radius: 6px;
           }
           :global(.rdp .rdp-day:hover) {
-            background: #f1f5ff;
+            background: #f9fafb;
           }
           :global(.rdp .rdp-day_today) {
             outline: 1px dashed #9ca3af;
             outline-offset: -2px;
           }
           :global(.rdp .rdp-day_disabled) {
-            color: #c0c6cf !important;
+            color: #d1d5db !important;
           }
           :global(.rdp .rdp-nav button) {
-            border-radius: 8px;
+            border-radius: 6px;
           }
         `}</style>
       </main>
