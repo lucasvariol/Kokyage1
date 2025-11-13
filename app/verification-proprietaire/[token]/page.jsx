@@ -212,6 +212,37 @@ export default function VerificationProprietaire() {
       // Attendre un peu pour laisser la DB se synchroniser
       await new Promise(resolve => setTimeout(resolve, 500));
       
+      // Enregistrer la signature du propriétaire dans owner_consent_logs
+      try {
+        const listingId = listingInfo?.id;
+        const ownerFullName = `${user.user_metadata?.prenom || user.user_metadata?.first_name || ''} ${user.user_metadata?.nom || user.user_metadata?.last_name || ''}`.trim();
+        
+        const consentResp = await fetch("/api/owner-consent/log", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            listingId,
+            ownerEmail: user.email,
+            ownerFullName: ownerFullName || user.email,
+            listingAddress: listingInfo?.street || '',
+            signatureType: 'owner'
+          }),
+        });
+        
+        const consentJson = await consentResp.json();
+        if (consentJson.success) {
+          console.log("✅ Signature propriétaire enregistrée:", consentJson.data);
+          if (consentJson.data.fullySigned) {
+            console.log("🎉 Accord complètement signé (tenant + owner)");
+          }
+        } else {
+          console.error("⚠️ Erreur signature owner:", consentJson.error);
+        }
+      } catch (consentError) {
+        console.error("❌ Erreur log signature owner:", consentError);
+        // On ne bloque pas le processus
+      }
+      
       // Envoyer l'email de confirmation au propriétaire du logement (owner_id)
       const listingId = listingInfo?.id;
       if (listingId) {

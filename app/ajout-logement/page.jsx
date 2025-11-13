@@ -390,12 +390,14 @@ export default function Page() {
           body: JSON.stringify({
             listingId,
             tenantId: user.id,
+            tenantEmail: user.email,
             ownerEmail,
             tenantFullName: userFullName || user.email,
             listingAddress: street,
             infoAccuracyAccepted: infoAccuracyChecked,
             ownerConsentAccepted: consentChecked,
-            agreementText
+            agreementText,
+            signatureType: 'tenant' // Signature du locataire
           })
         });
 
@@ -404,7 +406,7 @@ export default function Page() {
           console.error('⚠️ Erreur lors de l\'enregistrement de l\'accord:', consentData.error);
           // On ne bloque pas la création de l'annonce si le log échoue
         } else {
-          console.log('✅ Accord de consentement enregistré:', consentData.data.id);
+          console.log('✅ Accord de consentement signé par le tenant:', consentData.data.id);
         }
       } catch (consentError) {
         console.error('💥 Erreur log accord consentement:', consentError);

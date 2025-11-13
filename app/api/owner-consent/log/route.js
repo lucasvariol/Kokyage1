@@ -6,75 +6,136 @@ export async function POST(request) {
     const {
       listingId,
       tenantId,
-      ownerEmail,
       tenantFullName,
+      tenantEmail,
+      ownerEmail,
+      ownerFullName,
       listingAddress,
       infoAccuracyAccepted,
       ownerConsentAccepted,
-      agreementText
+      agreementText,
+      signatureType = 'tenant' // 'tenant' ou 'owner'
     } = body;
 
-    // Validation des données obligatoires
-    if (!listingId || !tenantId || !ownerEmail || !tenantFullName || !listingAddress) {
+    // Validation commune
+    if (!listingId || !ownerEmail || !listingAddress) {
       return Response.json(
-        { success: false, error: 'Données manquantes' },
+        { success: false, error: 'Données manquantes: listingId, ownerEmail, listingAddress' },
         { status: 400 }
       );
     }
 
-    if (!infoAccuracyAccepted || !ownerConsentAccepted) {
-      return Response.json(
-        { success: false, error: 'Les accords doivent être acceptés' },
-        { status: 400 }
-      );
-    }
-
-    // Récupérer l'IP et le User-Agent pour la traçabilité
+    // Capturer l'IP et le User-Agent pour traçabilité juridique
     const ip = request.headers.get('x-forwarded-for') || 
                request.headers.get('x-real-ip') || 
                'unknown';
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
-    // Enregistrer l'accord dans la base de données
-    const { data, error } = await supabaseAdmin
-      .from('owner_consent_logs')
-      .insert({
-        listing_id: listingId,
-        tenant_id: tenantId,
-        owner_email: ownerEmail,
-        tenant_full_name: tenantFullName,
-        listing_address: listingAddress,
-        info_accuracy_accepted: infoAccuracyAccepted,
-        owner_consent_accepted: ownerConsentAccepted,
-        ip_address: ip,
-        user_agent: userAgent,
-        consent_version: 'v1.0',
-        agreement_text: agreementText,
-        consent_accepted_at: new Date().toISOString()
-      })
-      .select()
-      .single();
+    // SIGNATURE DU TENANT (création de l'annonce)
+    if (signatureType === 'tenant') {
+      if (!tenantId || !tenantFullName || !tenantEmail) {
+        return Response.json(
+          { success: false, error: 'Données tenant manquantes' },
+          { status: 400 }
+        );
+      }
 
-    if (error) {
-      console.error('Erreur lors de l\'enregistrement de l\'accord:', error);
-      return Response.json(
-        { success: false, error: error.message },
-        { status: 500 }
-      );
+      if (!infoAccuracyAccepted || !ownerConsentAccepted) {
+        return Response.json(
+          { success: false, error: 'Les accords doivent être acceptés' },
+          { status: 400 }
+        );
+      }
+
+      // Créer l'enregistrement avec la signature du tenant
+      const { data, error } = await supabaseAdmin
+        .from('owner_consent_logs')
+        .insert({
+          listing_id: listingId,
+          tenant_id: tenantId,
+          tenant_full_name: tenantFullName,
+          tenant_email: tenantEmail,
+          tenant_signed_at: new Date().toISOString(),
+          tenant_ip_address: ip,
+          tenant_user_agent: userAgent,
+          owner_email: ownerEmail,
+          listing_address: listingAddress,
+          info_accuracy_accepted: infoAccuracyAccepted,
+          owner_consent_accepted: ownerConsentAccepted,
+          agreement_text: agreementText,
+          consent_version: 'v1.0'
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Erreur signature tenant:', error);
+        return Response.json(
+          { success: false, error: error.message },
+          { status: 500 }
+        );
+      }
+
+      return Response.json({
+        success: true,
+        data: {
+          id: data.id,
+          tenantSignedAt: data.tenant_signed_at,
+          fullySigned: data.fully_signed
+        }
+      });
     }
 
-    return Response.json({
-      success: true,
-      data: {
-        id: data.id,
-        consentAcceptedAt: data.consent_accepted_at
+    // SIGNATURE DU OWNER (validation propriétaire)
+    if (signatureType === 'owner') {
+      // Mettre à jour l'enregistrement avec la signature du owner
+      const { data, error } = await supabaseAdmin
+        .from('owner_consent_logs')
+        .update({
+          owner_full_name: ownerFullName,
+          owner_signed_at: new Date().toISOString(),
+          owner_ip_address: ip,
+          owner_user_agent: userAgent
+        })
+        .eq('listing_id', listingId)
+        .is('owner_signed_at', null) // Seulement si pas encore signé par owner
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Erreur signature owner:', error);
+        return Response.json(
+          { success: false, error: error.message },
+          { status: 500 }
+        );
       }
-    });
+
+      if (!data) {
+        return Response.json(
+          { success: false, error: 'Aucun accord à signer ou déjà signé' },
+          { status: 404 }
+        );
+      }
+
+      return Response.json({
+        success: true,
+        data: {
+          id: data.id,
+          ownerSignedAt: data.owner_signed_at,
+          fullySigned: data.fully_signed
+        }
+      });
+    }
+
+    return Response.json(
+      { success: false, error: 'Type de signature invalide' },
+      { status: 400 }
+    );
 
   } catch (error) {
-    console.error('Erreur API log-owner-consent:', error);
+    console.error('Erreur API owner-consent:', error);
     return Response.json(
-      { success: false, error: error.message },
+      { success: false, error: 'Erreur serveur' },
       { status: 500 }
     );
   }

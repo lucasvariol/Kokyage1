@@ -1,28 +1,38 @@
 -- Table pour enregistrer les accords de consentement du propriétaire
 -- Cette table sert de preuve juridique que l'accord a été accepté
+-- Deux signatures : tenant (création annonce) + owner (validation propriétaire)
 
 CREATE TABLE IF NOT EXISTS owner_consent_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   listing_id UUID NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
-  tenant_id UUID NOT NULL,
-  owner_email TEXT NOT NULL,
-  tenant_full_name TEXT NOT NULL,
-  listing_address TEXT NOT NULL,
   
-  -- Données de consentement
-  consent_accepted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  -- Signature du TENANT (locataire qui crée l'annonce)
+  tenant_id UUID NOT NULL,
+  tenant_full_name TEXT NOT NULL,
+  tenant_email TEXT NOT NULL,
+  tenant_signed_at TIMESTAMPTZ,
+  tenant_ip_address TEXT,
+  tenant_user_agent TEXT,
+  
+  -- Signature du OWNER (propriétaire qui valide)
+  owner_email TEXT NOT NULL,
+  owner_full_name TEXT,
+  owner_signed_at TIMESTAMPTZ,
+  owner_ip_address TEXT,
+  owner_user_agent TEXT,
+  
+  -- Données communes
+  listing_address TEXT NOT NULL,
   info_accuracy_accepted BOOLEAN NOT NULL DEFAULT true,
   owner_consent_accepted BOOLEAN NOT NULL DEFAULT true,
   
-  -- Données techniques pour preuves
-  ip_address TEXT,
-  user_agent TEXT,
+  -- Métadonnées
   consent_version TEXT NOT NULL DEFAULT 'v1.0',
-  
-  -- Texte complet de l'accord accepté (pour archivage)
   agreement_text TEXT,
   
-  -- Métadonnées
+  -- Statut global
+  fully_signed BOOLEAN GENERATED ALWAYS AS (tenant_signed_at IS NOT NULL AND owner_signed_at IS NOT NULL) STORED,
+  
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
