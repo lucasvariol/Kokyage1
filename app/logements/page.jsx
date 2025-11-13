@@ -3020,8 +3020,8 @@ function LogementsInner() {
                       {/* Image container */}
                       <div style={{ 
                         width: '100%', 
-                        height: 240, 
-                        background: 'linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%)', 
+                        aspectRatio: '4 / 3',
+                        background: 'linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%)', 
                         position: 'relative',
                         overflow: 'hidden'
                       }}>
@@ -3030,11 +3030,89 @@ function LogementsInner() {
                             {/* Carousel container */}
                             <div 
                               id={`alt-carousel-${it.id}`}
+                              className="alt-carousel-swipe"
+                              data-listing-id={it.id}
+                              data-images-count={imagesArr.length}
                               style={{
                                 display: 'flex',
                                 height: '100%',
-                                transition: 'transform 0.3s ease',
-                                transform: `translateX(-${imgIdx * 100}%)`
+                                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                transform: `translateX(-${imgIdx * 100}%)`,
+                                touchAction: 'pan-y'
+                              }}
+                              onTouchStart={(e) => {
+                                if (imagesArr.length <= 1) return;
+                                const carousel = e.currentTarget;
+                                carousel.dataset.startX = e.touches[0].clientX;
+                                carousel.dataset.startY = e.touches[0].clientY;
+                                carousel.dataset.isDragging = 'true';
+                                carousel.dataset.preventClick = 'false';
+                                carousel.dataset.isHorizontal = 'false';
+                                carousel.style.transition = 'none';
+                              }}
+                              onTouchMove={(e) => {
+                                if (imagesArr.length <= 1) return;
+                                const carousel = e.currentTarget;
+                                if (carousel.dataset.isDragging !== 'true') return;
+                                
+                                const currentX = e.touches[0].clientX;
+                                const currentY = e.touches[0].clientY;
+                                const startX = parseFloat(carousel.dataset.startX);
+                                const startY = parseFloat(carousel.dataset.startY);
+                                const diffX = currentX - startX;
+                                const diffY = currentY - startY;
+                                
+                                if (carousel.dataset.isHorizontal === 'false' && (Math.abs(diffX) > 5 || Math.abs(diffY) > 5)) {
+                                  carousel.dataset.isHorizontal = Math.abs(diffX) > Math.abs(diffY) ? 'true' : 'false';
+                                }
+                                
+                                if (carousel.dataset.isHorizontal === 'true') {
+                                  carousel.dataset.currentX = currentX;
+                                  carousel.dataset.preventClick = 'true';
+                                  carousel.style.transform = `translateX(calc(-${imgIdx * 100}% + ${diffX}px))`;
+                                }
+                              }}
+                              onTouchEnd={(e) => {
+                                if (imagesArr.length <= 1) return;
+                                const carousel = e.currentTarget;
+                                if (carousel.dataset.isDragging !== 'true') return;
+                                
+                                carousel.dataset.isDragging = 'false';
+                                const currentX = parseFloat(carousel.dataset.currentX || carousel.dataset.startX);
+                                const startX = parseFloat(carousel.dataset.startX);
+                                const diff = currentX - startX;
+                                const threshold = 50;
+                                
+                                carousel.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                                
+                                if (carousel.dataset.isHorizontal === 'true') {
+                                  if (diff < -threshold && imgIdx < imagesArr.length - 1) {
+                                    setImageIndexes(idx => ({ 
+                                      ...idx, 
+                                      [it.id]: imgIdx + 1
+                                    }));
+                                  } else if (diff > threshold && imgIdx > 0) {
+                                    setImageIndexes(idx => ({ 
+                                      ...idx, 
+                                      [it.id]: imgIdx - 1
+                                    }));
+                                  } else {
+                                    carousel.style.transform = `translateX(-${imgIdx * 100}%)`;
+                                  }
+                                } else {
+                                  carousel.style.transform = `translateX(-${imgIdx * 100}%)`;
+                                }
+                                
+                                setTimeout(() => {
+                                  carousel.dataset.preventClick = 'false';
+                                  carousel.dataset.isHorizontal = 'false';
+                                }, 100);
+                              }}
+                              onClick={(e) => {
+                                const carousel = e.currentTarget;
+                                if (carousel.dataset.preventClick === 'true') {
+                                  e.stopPropagation();
+                                }
                               }}
                             >
                               {imagesArr.map((image, idx) => (
@@ -3056,27 +3134,28 @@ function LogementsInner() {
                                 />
                               ))}
                             </div>
-                            {/* Image navigation buttons */}
+                            {/* Image navigation buttons - Desktop only */}
                             {imagesArr.length > 1 && hoveredCard === it.id && (
                               <>
                                 <button
                                   type="button"
                                   aria-label="Précédent"
+                                  className="carousel-btn-desktop"
                                   style={{ 
                                     position: 'absolute', 
-                                    left: 12, 
+                                    left: 8, 
                                     top: '50%', 
                                     transform: 'translateY(-50%)', 
                                     background: 'rgba(255,255,255,0.95)', 
                                     border: 'none', 
                                     borderRadius: '50%', 
-                                    width: 36, 
-                                    height: 36, 
+                                    width: 32, 
+                                    height: 32, 
                                     display: 'flex', 
                                     alignItems: 'center', 
                                     justifyContent: 'center', 
                                     cursor: 'pointer', 
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
                                     transition: 'all 0.2s',
                                     zIndex: 10
                                   }}
@@ -3096,28 +3175,29 @@ function LogementsInner() {
                                     e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
                                   }}
                                 >
-                                  <svg width="20" height="20" viewBox="0 0 20 20">
-                                    <polyline points="13 5 7 10 13 15" fill="none" stroke="#222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="15 18 9 12 15 6"></polyline>
                                   </svg>
                                 </button>
                                 <button
                                   type="button"
                                   aria-label="Suivant"
+                                  className="carousel-btn-desktop"
                                   style={{ 
                                     position: 'absolute', 
-                                    right: 12, 
+                                    right: 8, 
                                     top: '50%', 
                                     transform: 'translateY(-50%)', 
                                     background: 'rgba(255,255,255,0.95)', 
                                     border: 'none', 
                                     borderRadius: '50%', 
-                                    width: 36, 
-                                    height: 36, 
+                                    width: 32, 
+                                    height: 32, 
                                     display: 'flex', 
                                     alignItems: 'center', 
                                     justifyContent: 'center', 
                                     cursor: 'pointer', 
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
                                     transition: 'all 0.2s',
                                     zIndex: 10
                                   }}
@@ -3137,8 +3217,8 @@ function LogementsInner() {
                                     e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
                                   }}
                                 >
-                                  <svg width="20" height="20" viewBox="0 0 20 20">
-                                    <polyline points="7 5 13 10 7 15" fill="none" stroke="#222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f2937" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
                                   </svg>
                                 </button>
                               </>
@@ -3147,23 +3227,23 @@ function LogementsInner() {
                             {imagesArr.length > 1 && (
                               <div style={{
                                 position: 'absolute',
-                                bottom: 12,
+                                bottom: 10,
                                 left: '50%',
                                 transform: 'translateX(-50%)',
                                 display: 'flex',
-                                gap: 6,
+                                gap: 5,
                                 zIndex: 5
                               }}>
                                 {imagesArr.map((_, idx) => (
                                   <div
                                     key={idx}
                                     style={{
-                                      width: 6,
+                                      width: idx === imgIdx ? 18 : 6,
                                       height: 6,
-                                      borderRadius: '50%',
+                                      borderRadius: 3,
                                       background: idx === imgIdx ? '#fff' : 'rgba(255,255,255,0.5)',
-                                      transition: 'all 0.3s',
-                                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                      boxShadow: '0 1px 4px rgba(0,0,0,0.25)'
                                     }}
                                   />
                                 ))}
