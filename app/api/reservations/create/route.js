@@ -54,18 +54,29 @@ export async function POST(request) {
 
     console.log('✅ Listing trouvé:', listing);
 
-    // Calculs des parts selon le business model fourni
-    const ppn = Number(listing.price_per_night || 0);
-    const proprietorSharePerNight = ppn * 0.4 * 0.97;
-    const mainTenantSharePerNight = ppn * 0.6 * 0.97;
-    const platformSharePerNight = ppn * 0.2; // la partie plateforme liée au prix_nuit
-
     // Calculer le nombre de nuits
     const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
 
-    const proprietor_share = proprietorSharePerNight * nights;
-    const main_tenant_share = mainTenantSharePerNight * nights;
-    const platform_share = (Number(taxPrice || 0)) + (platformSharePerNight * nights);
+    // Calculs des parts selon le business model :
+    // basePrice contient déjà hébergement + frais plateforme
+    // On extrait l'hébergement pur en retirant les frais (qui sont calculés depuis confirmer-et-payer)
+    const totalBasePrice = Number(basePrice || 0); // hébergement + frais plateforme
+    const totalTaxPrice = Number(taxPrice || 0);
+    
+    // Le prix d'hébergement par nuit depuis le listing
+    const ppn = Number(listing.price_per_night || 0);
+    const hebergementTotal = ppn * nights;
+    
+    // Les frais de plateforme sont : basePrice - hébergement
+    const fraisPlateforme = totalBasePrice - hebergementTotal;
+    
+    // Calcul des parts :
+    // Platform share = frais plateforme + 3% de l'hébergement
+    const platform_share = fraisPlateforme + (hebergementTotal * 0.03);
+    
+    // Les 97% restants se répartissent entre propriétaire (40%) et locataire (60%)
+    const main_tenant_share = hebergementTotal * 0.97 * 0.6;
+    const proprietor_share = hebergementTotal * 0.97 * 0.4;
 
     // Créer la réservation directement dans la table
     const { data: reservation, error: reservationError } = await supabaseAdmin
