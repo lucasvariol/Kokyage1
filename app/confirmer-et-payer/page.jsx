@@ -160,10 +160,19 @@ function ConfirmerEtPayerContent() {
     loadTaxe();
   }, [listing?.city, listing?.price_per_night, nights, guests]);
 
+  // Parser date YYYY-MM-DD en date locale (pour éviter problèmes de timezone)
+  const parseLocalDate = (dateStr) => {
+    if (!dateStr) return null;
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
   // Format date
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('fr-FR', {
+    const date = parseLocalDate(dateStr);
+    if (!date) return '';
+    return date.toLocaleDateString('fr-FR', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
@@ -174,7 +183,8 @@ function ConfirmerEtPayerContent() {
   // Calculer la date d'annulation gratuite (7 jours avant l'arrivée)
   const getCancellationDate = () => {
     if (!startDate) return '';
-    const arrival = new Date(startDate);
+    const arrival = parseLocalDate(startDate);
+    if (!arrival) return '';
     const cancellation = new Date(arrival.getTime() - (7 * 24 * 60 * 60 * 1000));
     return cancellation.toLocaleDateString('fr-FR', {
       day: 'numeric',
@@ -186,7 +196,8 @@ function ConfirmerEtPayerContent() {
   // Calculer la date de la veille de l'arrivée
   const getDayBeforeArrival = () => {
     if (!startDate) return '';
-    const arrival = new Date(startDate);
+    const arrival = parseLocalDate(startDate);
+    if (!arrival) return '';
     const dayBefore = new Date(arrival.getTime() - (2 * 24 * 60 * 60 * 1000));
     return dayBefore.toLocaleDateString('fr-FR', {
       day: 'numeric',
@@ -198,7 +209,8 @@ function ConfirmerEtPayerContent() {
   // Calculer 6 jours avant l'arrivée
   const getSixDaysBeforeArrival = () => {
     if (!startDate) return '';
-    const arrival = new Date(startDate);
+    const arrival = parseLocalDate(startDate);
+    if (!arrival) return '';
     const sixDaysBefore = new Date(arrival.getTime() - (6 * 24 * 60 * 60 * 1000));
     return sixDaysBefore.toLocaleDateString('fr-FR', {
       day: 'numeric',
