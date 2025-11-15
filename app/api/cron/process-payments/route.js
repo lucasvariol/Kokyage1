@@ -60,23 +60,41 @@ export async function GET(request) {
       try {
         console.log(`💳 Traitement réservation #${reservation.id}`);
 
-        // 2. Capturer la caution si nécessaire
+        // 2. Gérer la caution : libérer après 14 jours si pas de litige
         if (reservation.caution_status === 'authorized' && reservation.caution_payment_intent_id) {
-          console.log(`🔐 Capture caution pour #${reservation.id}`);
-          
-          const paymentIntent = await stripe.paymentIntents.capture(
-            reservation.caution_payment_intent_id
-          );
+          const endDate = new Date(reservation.end_date);
+          const now = new Date();
+          const daysSinceEnd = Math.floor((now - endDate) / (1000 * 60 * 60 * 24));
 
-          await supabaseAdmin
-            .from('reservations')
-            .update({
-              caution_status: 'captured',
-              caution_captured_at: new Date().toISOString()
-            })
-            .eq('id', reservation.id);
+          // Vérifier s'il y a un litige
+          const hasDispute = reservation.litige === true || reservation.litige === 'pending';
 
-          console.log(`✅ Caution capturée: ${paymentIntent.amount_captured / 100}€`);
+          if (daysSinceEnd >= 14 && !hasDispute) {
+            console.log(`🔓 Libération caution pour #${reservation.id} (${daysSinceEnd} jours écoulés, pas de litige)`);
+            
+            try {
+              // Annuler (libérer) la caution au lieu de la capturer
+              const paymentIntent = await stripe.paymentIntents.cancel(
+                reservation.caution_payment_intent_id
+              );
+
+              await supabaseAdmin
+                .from('reservations')
+                .update({
+                  caution_status: 'released',
+                  caution_released_at: new Date().toISOString()
+                })
+                .eq('id', reservation.id);
+
+              console.log(`✅ Caution libérée: ${paymentIntent.amount / 100}€ rendus au voyageur`);
+            } catch (err) {
+              console.error(`❌ Erreur libération caution #${reservation.id}:`, err.message);
+            }
+          } else if (hasDispute) {
+            console.log(`⚠️ Caution maintenue pour #${reservation.id} - Litige en cours`);
+          } else {
+            console.log(`⏳ Caution #${reservation.id} - Attente ${14 - daysSinceEnd} jours restants`);
+          }
         }
 
         // 3. Récupérer les IDs du propriétaire et locataire principal
