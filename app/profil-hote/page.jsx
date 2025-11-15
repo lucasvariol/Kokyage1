@@ -340,7 +340,7 @@ export default function Page() {
             <div style={{ padding: 24, background: '#fff', borderRadius: 16, border: '1px solid #eef2f7' }}>
               <p style={{ margin: 0 }}>
                 Vous devez être connecté pour accéder à votre profil.
-                {' '}<a href="/connexion" style={{ color: '#0066ff', fontWeight: 600 }}>Se connecter</a>
+                {' '}<a href="/inscription" style={{ color: '#0066ff', fontWeight: 600 }}>Se connecter</a>
               </p>
             </div>
           ) : loading ? (
