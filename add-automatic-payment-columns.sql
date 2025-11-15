@@ -10,7 +10,8 @@ ADD COLUMN IF NOT EXISTS litige BOOLEAN DEFAULT false;
 -- Ajouter les colonnes pour les gains dans profiles (si pas déjà présentes)
 ALTER TABLE profiles
 ADD COLUMN IF NOT EXISTS total_earnings DECIMAL(10, 2) DEFAULT 0,
-ADD COLUMN IF NOT EXISTS to_be_paid_to_user DECIMAL(10, 2) DEFAULT 0;
+ADD COLUMN IF NOT EXISTS to_be_paid_to_user DECIMAL(10, 2) DEFAULT 0,
+ADD COLUMN IF NOT EXISTS stripe_account_id TEXT;
 
 -- Index pour optimiser les requêtes du cron job
 CREATE INDEX IF NOT EXISTS idx_reservations_auto_payment 
@@ -27,3 +28,4 @@ COMMENT ON COLUMN reservations.litige IS 'Indique si un litige est en cours (emp
 
 COMMENT ON COLUMN profiles.total_earnings IS 'Total des gains accumulés (historique complet)';
 COMMENT ON COLUMN profiles.to_be_paid_to_user IS 'Montant en attente de paiement vers l''utilisateur';
+COMMENT ON COLUMN profiles.stripe_account_id IS 'ID du compte Stripe Connect pour recevoir les virements automatiques';

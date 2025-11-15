@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2023-10-16' });
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -170,7 +170,7 @@ export async function GET(request) {
           }
         }
 
-        // Exécuter toutes les mises à jour
+        // Exécuter toutes les mises à jour des soldes
         const updateResults = await Promise.all(updates);
         for (const r of updateResults) {
           if (r.error) {
@@ -179,7 +179,109 @@ export async function GET(request) {
           }
         }
 
-        // 6. Marquer la réservation comme allouée
+        // 6. Effectuer les virements Stripe automatiques si les comptes sont configurés
+        const transferResults = [];
+
+        if (proprietorUserId && proprietorAmount > 0) {
+          const { data: propProfile } = await supabaseAdmin
+            .from('profiles')
+            .select('stripe_account_id')
+            .eq('id', proprietorUserId)
+            .single();
+
+          if (propProfile?.stripe_account_id) {
+            try {
+              console.log(`💸 Virement Stripe vers propriétaire: ${proprietorAmount}€`);
+              
+              // Vérifier que le compte peut recevoir des paiements
+              const account = await stripe.accounts.retrieve(propProfile.stripe_account_id);
+              
+              if (account.payouts_enabled) {
+                const transfer = await stripe.transfers.create({
+                  amount: Math.round(proprietorAmount * 100),
+                  currency: 'eur',
+                  destination: propProfile.stripe_account_id,
+                  description: `Revenus réservation #${reservation.id}`,
+                  metadata: {
+                    reservation_id: reservation.id,
+                    user_id: proprietorUserId,
+                    type: 'proprietor_share',
+                    auto_payout: 'true'
+                  }
+                });
+
+                console.log(`✅ Transfert propriétaire créé: ${transfer.id}`);
+                transferResults.push({ user_id: proprietorUserId, transfer_id: transfer.id, amount: proprietorAmount });
+
+                // Déduire du solde puisque déjà payé
+                await supabaseAdmin
+                  .from('profiles')
+                  .update({
+                    to_be_paid_to_user: 0
+                  })
+                  .eq('id', proprietorUserId);
+              } else {
+                console.warn(`⚠️ Compte Stripe propriétaire ${proprietorUserId} non actif, montant ajouté au solde`);
+              }
+            } catch (transferErr) {
+              console.error(`❌ Erreur transfert propriétaire:`, transferErr.message);
+              // Montant reste dans to_be_paid_to_user pour virement manuel
+            }
+          } else {
+            console.log(`ℹ️ Propriétaire ${proprietorUserId} sans compte Stripe, montant ajouté au solde`);
+          }
+        }
+
+        if (mainTenantUserId && mainTenantAmount > 0) {
+          const { data: tenantProfile } = await supabaseAdmin
+            .from('profiles')
+            .select('stripe_account_id')
+            .eq('id', mainTenantUserId)
+            .single();
+
+          if (tenantProfile?.stripe_account_id) {
+            try {
+              console.log(`💸 Virement Stripe vers locataire principal: ${mainTenantAmount}€`);
+              
+              const account = await stripe.accounts.retrieve(tenantProfile.stripe_account_id);
+              
+              if (account.payouts_enabled) {
+                const transfer = await stripe.transfers.create({
+                  amount: Math.round(mainTenantAmount * 100),
+                  currency: 'eur',
+                  destination: tenantProfile.stripe_account_id,
+                  description: `Revenus réservation #${reservation.id}`,
+                  metadata: {
+                    reservation_id: reservation.id,
+                    user_id: mainTenantUserId,
+                    type: 'main_tenant_share',
+                    auto_payout: 'true'
+                  }
+                });
+
+                console.log(`✅ Transfert locataire créé: ${transfer.id}`);
+                transferResults.push({ user_id: mainTenantUserId, transfer_id: transfer.id, amount: mainTenantAmount });
+
+                // Déduire du solde puisque déjà payé
+                await supabaseAdmin
+                  .from('profiles')
+                  .update({
+                    to_be_paid_to_user: 0
+                  })
+                  .eq('id', mainTenantUserId);
+              } else {
+                console.warn(`⚠️ Compte Stripe locataire ${mainTenantUserId} non actif, montant ajouté au solde`);
+              }
+            } catch (transferErr) {
+              console.error(`❌ Erreur transfert locataire:`, transferErr.message);
+              // Montant reste dans to_be_paid_to_user pour virement manuel
+            }
+          } else {
+            console.log(`ℹ️ Locataire ${mainTenantUserId} sans compte Stripe, montant ajouté au solde`);
+          }
+        }
+
+        // 7. Marquer la réservation comme allouée
         await supabaseAdmin
           .from('reservations')
           .update({
@@ -195,7 +297,8 @@ export async function GET(request) {
           success: true,
           proprietor_amount: proprietorAmount,
           main_tenant_amount: mainTenantAmount,
-          platform_amount: platformAmount
+          platform_amount: platformAmount,
+          transfers: transferResults
         });
 
         console.log(`🎉 Paiement automatique réussi pour #${reservation.id}`);
