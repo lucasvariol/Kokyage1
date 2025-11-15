@@ -35,6 +35,8 @@ export async function GET(request) {
         status,
         payment_status,
         end_date,
+        host_validation,
+        litige,
         listings (
           id,
           title,
@@ -44,6 +46,7 @@ export async function GET(request) {
       `)
       .eq('status', 'confirmed')
       .eq('payment_status', 'paid')
+      .eq('host_validation', true)
       .lt('end_date', new Date().toISOString().split('T')[0])
       .eq('balances_allocated', false);
 
@@ -59,6 +62,17 @@ export async function GET(request) {
     for (const reservation of reservations || []) {
       try {
         console.log(`💳 Traitement réservation #${reservation.id}`);
+
+        // Vérification de sécurité : host_validation doit être TRUE
+        if (reservation.host_validation !== true) {
+          console.log(`⚠️ Réservation #${reservation.id} ignorée - validation hôte manquante`);
+          results.push({
+            reservation_id: reservation.id,
+            success: false,
+            error: 'Host validation required'
+          });
+          continue;
+        }
 
         // 2. Gérer la caution : libérer après 14 jours si pas de litige
         if (reservation.caution_status === 'authorized' && reservation.caution_payment_intent_id) {
