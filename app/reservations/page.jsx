@@ -447,7 +447,7 @@ function ReservationsContent() {
             <div style={{
               display: 'grid',
               gap: 24
-            }});
+            }}>
               {/* Réservations en cours */}
               {reservations.filter(r => {
                 if (r.status === 'cancelled') return false;
