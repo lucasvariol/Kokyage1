@@ -62,9 +62,9 @@ Tous les lundis à 9h :
 2. L'API vérifie le secret pour sécuriser l'appel
 3. Recherche toutes les réservations terminées (`end_date < aujourd'hui`)
 4. Pour chaque réservation :
-   - Capture la caution si nécessaire
-   - Calcule la commission Kokyage (15%)
-   - Transfère le montant à l'hôte via Stripe Connect
+   - Libère la caution après 14 jours si pas de litige
+   - Utilise les shares pré-calculées (basées sur les variables d'environnement)
+   - Transfère automatiquement les montants via Stripe Connect
    - Met à jour `balances_allocated = true`
 
 ## Colonnes à ajouter dans Supabase
