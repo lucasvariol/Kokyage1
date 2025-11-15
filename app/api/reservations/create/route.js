@@ -55,8 +55,14 @@ export async function POST(request) {
 
     console.log('✅ Listing trouvé:', listing);
 
-    // Calculer le nombre de nuits
-    const nights = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
+    // Calculer le nombre de nuits - Parser les dates YYYY-MM-DD comme dates locales
+    const parseLocalDate = (dateStr) => {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    };
+    const startDateObj = parseLocalDate(startDate);
+    const endDateObj = parseLocalDate(endDate);
+    const nights = Math.ceil((endDateObj - startDateObj) / (1000 * 60 * 60 * 24));
 
     // Calculs des parts selon le business model :
     // basePrice contient déjà hébergement + frais plateforme
@@ -113,10 +119,9 @@ export async function POST(request) {
 
     // Bloquer les dates dans la table disponibilities
     const reservationId = reservation.id;
-    const startDateObj = new Date(startDate);
-    const endDateObj = new Date(endDate);
     
     // Générer toutes les dates entre start et end (exclusive)
+    // Utiliser les dates déjà parsées en local
     const datesToBlock = [];
     let currentDate = new Date(startDateObj);
     
