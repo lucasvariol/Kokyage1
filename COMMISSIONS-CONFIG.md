@@ -8,10 +8,13 @@ Allez dans **Vercel Dashboard** → **Project Settings** → **Environment Varia
 
 | Variable | Valeur par défaut | Description |
 |----------|-------------------|-------------|
-| `COMMISSION_GUEST` | `0.17` | Commission sur voyageur (17% - frais de plateforme) |
+| `COMMISSION_GUEST` | `0.17` | Commission sur voyageur (17% - frais de plateforme) - **Serveur** |
+| `NEXT_PUBLIC_COMMISSION_GUEST` | `0.17` | **Même valeur** - Pour le frontend (calculs côté client) |
 | `COMMISSION_HOST` | `0.03` | Commission sur hôtes (3% - prélevée sur le prix de base) |
 | `SHARE_PROPRIETOR` | `0.40` | Part du propriétaire (40% sur les 97% restants) |
 | `SHARE_MAIN_TENANT` | `0.60` | Part du locataire principal (60% sur les 97% restants) |
+
+**Important** : Les deux variables `COMMISSION_GUEST` et `NEXT_PUBLIC_COMMISSION_GUEST` doivent avoir la **même valeur** pour éviter les incohérences entre frontend et backend.
 
 ### Exemples de calcul
 
