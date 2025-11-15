@@ -21,13 +21,26 @@ export async function GET(request) {
     const { data: reservations, error } = await supabaseAdmin
       .from('reservations')
       .select(`
-        *,
+        id,
+        listing_id,
+        host_id,
+        user_id,
+        proprietor_share,
+        main_tenant_share,
+        platform_share,
+        total_amount,
+        caution_status,
+        caution_payment_intent_id,
+        balances_allocated,
+        status,
+        payment_status,
+        end_date,
         listings (
+          id,
           title,
-          price_per_night,
-          users:user_id (id, email, prenom, nom)
-        ),
-        users:user_id (id, email, prenom, nom)
+          owner_id,
+          id_proprietaire
+        )
       `)
       .eq('status', 'confirmed')
       .eq('payment_status', 'paid')
@@ -66,58 +79,108 @@ export async function GET(request) {
           console.log(`✅ Caution capturée: ${paymentIntent.amount_captured / 100}€`);
         }
 
-        // 3. Calculer et transférer les montants
-        const totalAmount = reservation.total_amount;
-        const commissionKokyage = totalAmount * 0.15; // 15% commission
-        const amountToOwner = totalAmount - commissionKokyage;
-
-        console.log(`💰 Montant total: ${totalAmount}€, Commission: ${commissionKokyage}€, Hôte: ${amountToOwner}€`);
-
-        // 4. Créer un paiement vers le compte Stripe Connect de l'hôte
+        // 3. Récupérer les IDs du propriétaire et locataire principal
         const listing = reservation.listings;
-        if (listing?.users?.stripe_account_id) {
-          const transfer = await stripe.transfers.create({
-            amount: Math.round(amountToOwner * 100), // en centimes
-            currency: 'eur',
-            destination: listing.users.stripe_account_id,
-            transfer_group: `reservation_${reservation.id}`,
-            description: `Paiement réservation #${reservation.id} - ${listing.title}`,
-            metadata: {
-              reservation_id: reservation.id,
-              listing_id: reservation.listing_id
-            }
-          });
-
-          console.log(`✅ Transfert créé: ${transfer.id}`);
-
-          // 5. Mettre à jour la réservation
-          await supabaseAdmin
-            .from('reservations')
-            .update({
-              balances_allocated: true,
-              host_payout_amount: amountToOwner,
-              kokyage_commission: commissionKokyage,
-              host_payout_date: new Date().toISOString(),
-              stripe_transfer_id: transfer.id
-            })
-            .eq('id', reservation.id);
-
-          results.push({
-            reservation_id: reservation.id,
-            success: true,
-            transfer_id: transfer.id,
-            amount: amountToOwner
-          });
-
-          console.log(`🎉 Paiement automatique réussi pour #${reservation.id}`);
-        } else {
-          console.warn(`⚠️ Pas de compte Stripe pour l'hôte de la réservation #${reservation.id}`);
+        if (!listing) {
+          console.error(`❌ Listing introuvable pour réservation #${reservation.id}`);
           results.push({
             reservation_id: reservation.id,
             success: false,
-            error: 'No Stripe account for host'
+            error: 'Listing not found'
           });
+          continue;
         }
+
+        const proprietorUserId = listing.id_proprietaire;  // Propriétaire (40%)
+        const mainTenantUserId = listing.owner_id;         // Locataire principal (60%)
+
+        // 4. Calculer les montants
+        const proprietorAmount = Number(reservation.proprietor_share || 0);
+        const mainTenantAmount = Number(reservation.main_tenant_share || 0);
+        const platformAmount = Number(reservation.platform_share || 0);
+
+        console.log(`💰 Répartition: Propriétaire ${proprietorAmount}€, Locataire principal ${mainTenantAmount}€, Plateforme ${platformAmount}€`);
+
+        // 5. Mettre à jour les soldes des profils
+        const updates = [];
+
+        if (proprietorUserId && proprietorAmount > 0) {
+          console.log(`👤 Ajout ${proprietorAmount}€ au solde du propriétaire ${proprietorUserId}`);
+          
+          const { data: propProfile } = await supabaseAdmin
+            .from('profiles')
+            .select('id, total_earnings, to_be_paid_to_user')
+            .eq('id', proprietorUserId)
+            .single();
+
+          if (propProfile) {
+            updates.push(
+              supabaseAdmin
+                .from('profiles')
+                .update({
+                  total_earnings: Number(propProfile.total_earnings || 0) + proprietorAmount,
+                  to_be_paid_to_user: Number(propProfile.to_be_paid_to_user || 0) + proprietorAmount,
+                })
+                .eq('id', proprietorUserId)
+            );
+          } else {
+            console.warn(`⚠️ Profil propriétaire ${proprietorUserId} introuvable`);
+          }
+        }
+
+        if (mainTenantUserId && mainTenantAmount > 0) {
+          console.log(`👤 Ajout ${mainTenantAmount}€ au solde du locataire principal ${mainTenantUserId}`);
+          
+          const { data: tenantProfile } = await supabaseAdmin
+            .from('profiles')
+            .select('id, total_earnings, to_be_paid_to_user')
+            .eq('id', mainTenantUserId)
+            .single();
+
+          if (tenantProfile) {
+            updates.push(
+              supabaseAdmin
+                .from('profiles')
+                .update({
+                  total_earnings: Number(tenantProfile.total_earnings || 0) + mainTenantAmount,
+                  to_be_paid_to_user: Number(tenantProfile.to_be_paid_to_user || 0) + mainTenantAmount,
+                })
+                .eq('id', mainTenantUserId)
+            );
+          } else {
+            console.warn(`⚠️ Profil locataire principal ${mainTenantUserId} introuvable`);
+          }
+        }
+
+        // Exécuter toutes les mises à jour
+        const updateResults = await Promise.all(updates);
+        for (const r of updateResults) {
+          if (r.error) {
+            console.error(`❌ Erreur mise à jour profil:`, r.error);
+            throw new Error(r.error.message);
+          }
+        }
+
+        // 6. Marquer la réservation comme allouée
+        await supabaseAdmin
+          .from('reservations')
+          .update({
+            balances_allocated: true,
+            balances_allocated_at: new Date().toISOString(),
+            host_payout_date: new Date().toISOString(),
+            kokyage_commission: platformAmount
+          })
+          .eq('id', reservation.id);
+
+        results.push({
+          reservation_id: reservation.id,
+          success: true,
+          proprietor_amount: proprietorAmount,
+          main_tenant_amount: mainTenantAmount,
+          platform_amount: platformAmount
+        });
+
+        console.log(`🎉 Paiement automatique réussi pour #${reservation.id}`);
 
       } catch (err) {
         console.error(`❌ Erreur traitement réservation #${reservation.id}:`, err);
