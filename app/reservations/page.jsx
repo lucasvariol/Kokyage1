@@ -447,9 +447,16 @@ function ReservationsContent() {
             <div style={{
               display: 'grid',
               gap: 24
-            }}>
+            }});
               {/* Réservations en cours */}
-              {reservations.filter(r => r.status !== 'cancelled' && new Date(r.date_depart) >= new Date()).map((reservation) => (
+              {reservations.filter(r => {
+                if (r.status === 'cancelled') return false;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const checkoutDate = new Date(r.date_depart);
+                checkoutDate.setHours(0, 0, 0, 0);
+                return checkoutDate >= today;
+              }).map((reservation) => (
                 <div
                   key={reservation.id}
                   style={{
@@ -709,7 +716,14 @@ function ReservationsContent() {
               ))}
 
               {/* Réservations passées - Menu déroulant */}
-              {reservations.filter(r => r.status !== 'cancelled' && new Date(r.date_depart) < new Date()).length > 0 && (
+              {reservations.filter(r => {
+                if (r.status === 'cancelled') return false;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const checkoutDate = new Date(r.date_depart);
+                checkoutDate.setHours(0, 0, 0, 0);
+                return checkoutDate < today;
+              }).length > 0 && (
                 <div style={{
                   background: '#fff',
                   borderRadius: 20,
@@ -734,13 +748,27 @@ function ReservationsContent() {
                       color: '#0f172a'
                     }}
                   >
-                    <span>📅 Réservations passées ({reservations.filter(r => r.status !== 'cancelled' && new Date(r.date_depart) < new Date()).length})</span>
+                    <span>📅 Réservations passées ({reservations.filter(r => {
+                      if (r.status === 'cancelled') return false;
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      const checkoutDate = new Date(r.date_depart);
+                      checkoutDate.setHours(0, 0, 0, 0);
+                      return checkoutDate < today;
+                    }).length})</span>
                     <span style={{ fontSize: 20, transition: 'transform 0.2s', transform: showPastReservations ? 'rotate(180deg)' : 'rotate(0)' }}>▼</span>
                   </button>
                   
                   {showPastReservations && (
                     <div style={{ marginTop: 20, display: 'grid', gap: 16 }}>
-                      {reservations.filter(r => r.status !== 'cancelled' && new Date(r.date_depart) < new Date()).map((reservation) => (
+                      {reservations.filter(r => {
+                        if (r.status === 'cancelled') return false;
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const checkoutDate = new Date(r.date_depart);
+                        checkoutDate.setHours(0, 0, 0, 0);
+                        return checkoutDate < today;
+                      }).map((reservation) => (
                         <div
                           key={reservation.id}
                           style={{
