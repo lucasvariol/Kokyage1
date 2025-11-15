@@ -296,30 +296,58 @@ export async function GET(request) {
         }
 
         // 7. Transférer la commission plateforme vers le compte Connect Kokyage
-        if (platformAmount > 0 && process.env.PLATFORM_STRIPE_ACCOUNT_ID) {
+        if (platformAmount > 0 && process.env.PLATFORM_USER_ID) {
           try {
-            console.log(`💰 Virement commission plateforme: ${platformAmount}€ vers compte Kokyage`);
+            console.log(`💰 Récupération du compte Stripe Connect Kokyage...`);
             
-            const transfer = await stripe.transfers.create({
-              amount: Math.round(platformAmount * 100),
-              currency: 'eur',
-              destination: process.env.PLATFORM_STRIPE_ACCOUNT_ID,
-              description: `Commission Kokyage réservation #${reservation.id}`,
-              metadata: {
-                reservation_id: reservation.id,
-                type: 'platform_commission',
-                auto_payout: 'true'
-              }
-            });
+            // Récupérer le stripe_account_id du profil plateforme
+            const { data: platformProfile } = await supabaseAdmin
+              .from('profiles')
+              .select('stripe_account_id')
+              .eq('id', process.env.PLATFORM_USER_ID)
+              .single();
 
-            console.log(`✅ Transfert plateforme créé: ${transfer.id}`);
-            transferResults.push({ type: 'platform', transfer_id: transfer.id, amount: platformAmount });
+            if (platformProfile?.stripe_account_id) {
+              console.log(`💸 Virement commission plateforme: ${platformAmount}€ vers compte Kokyage`);
+              
+              // Vérifier que le compte peut recevoir des paiements
+              const account = await stripe.accounts.retrieve(platformProfile.stripe_account_id);
+              
+              if (account.payouts_enabled) {
+                const transfer = await stripe.transfers.create({
+                  amount: Math.round(platformAmount * 100),
+                  currency: 'eur',
+                  destination: platformProfile.stripe_account_id,
+                  description: `Commission Kokyage réservation #${reservation.id}`,
+                  metadata: {
+                    reservation_id: reservation.id,
+                    type: 'platform_commission',
+                    auto_payout: 'true'
+                  }
+                });
+
+                console.log(`✅ Transfert plateforme créé: ${transfer.id}`);
+                transferResults.push({ type: 'platform', transfer_id: transfer.id, amount: platformAmount });
+
+                // Ajouter au solde du profil plateforme (pour suivi comptable)
+                await supabaseAdmin
+                  .from('profiles')
+                  .update({
+                    total_earnings: Number(platformProfile.total_earnings || 0) + platformAmount,
+                  })
+                  .eq('id', process.env.PLATFORM_USER_ID);
+              } else {
+                console.warn(`⚠️ Compte Stripe plateforme non actif, commission reste sur compte principal`);
+              }
+            } else {
+              console.warn(`⚠️ Compte utilisateur plateforme sans Stripe Connect configuré`);
+            }
           } catch (transferErr) {
             console.error(`❌ Erreur transfert plateforme:`, transferErr.message);
             // La commission reste sur le compte principal si erreur
           }
         } else if (platformAmount > 0) {
-          console.log(`ℹ️ Commission plateforme ${platformAmount}€ reste sur compte principal (pas de compte Connect configuré)`);
+          console.log(`ℹ️ Commission plateforme ${platformAmount}€ reste sur compte principal (PLATFORM_USER_ID non configuré)`);
         }
 
         // 8. Marquer la réservation comme allouée
