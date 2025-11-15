@@ -60,12 +60,15 @@ Tous les lundis à 9h :
 
 1. **Vercel Cron** appelle automatiquement `/api/cron/process-payments` selon le planning
 2. L'API vérifie le secret pour sécuriser l'appel
-3. Recherche toutes les réservations terminées (`end_date < aujourd'hui`)
+3. Recherche toutes les réservations terminées (`end_date < aujourd'hui`, `balances_allocated = false`)
 4. Pour chaque réservation :
+   - **Lit les shares pré-calculées** lors de la création de la réservation (`proprietor_share`, `main_tenant_share`, `platform_share`)
    - Libère la caution après 14 jours si pas de litige
-   - Utilise les shares pré-calculées (basées sur les variables d'environnement)
-   - Transfère automatiquement les montants via Stripe Connect
+   - Met à jour les soldes (`total_earnings`, `to_be_paid_to_user`) des profils
+   - Transfère automatiquement via Stripe Connect si compte configuré
    - Met à jour `balances_allocated = true`
+
+> **Note importante** : Le CRON ne calcule rien, il utilise uniquement les montants déjà calculés et stockés au moment de la réservation par `/api/reservations/create`.
 
 ## Colonnes à ajouter dans Supabase
 
