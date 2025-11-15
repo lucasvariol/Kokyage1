@@ -35,7 +35,7 @@ export async function GET(request) {
         status,
         payment_status,
         date_depart,
-        host_validation,
+        host_validation_ok,
         litige,
         listings (
           id,
@@ -46,7 +46,7 @@ export async function GET(request) {
       `)
       .eq('status', 'confirmed')
       .eq('payment_status', 'paid')
-      .eq('host_validation', true)
+      .eq('host_validation_ok', true)
       .lt('date_depart', new Date().toISOString().split('T')[0])
       .eq('balances_allocated', false);
 
@@ -63,8 +63,8 @@ export async function GET(request) {
       try {
         console.log(`💳 Traitement réservation #${reservation.id}`);
 
-        // Vérification de sécurité : host_validation doit être TRUE
-        if (reservation.host_validation !== true) {
+        // Vérification de sécurité : host_validation_ok doit être TRUE
+        if (reservation.host_validation_ok !== true) {
           console.log(`⚠️ Réservation #${reservation.id} ignorée - validation hôte manquante`);
           results.push({
             reservation_id: reservation.id,
