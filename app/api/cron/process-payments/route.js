@@ -28,13 +28,13 @@ export async function GET(request) {
         proprietor_share,
         main_tenant_share,
         platform_share,
-        total_amount,
+        total_price,
         caution_status,
         caution_payment_intent_id,
         balances_allocated,
         status,
         payment_status,
-        end_date,
+        date_depart,
         host_validation,
         litige,
         listings (
@@ -47,7 +47,7 @@ export async function GET(request) {
       .eq('status', 'confirmed')
       .eq('payment_status', 'paid')
       .eq('host_validation', true)
-      .lt('end_date', new Date().toISOString().split('T')[0])
+      .lt('date_depart', new Date().toISOString().split('T')[0])
       .eq('balances_allocated', false);
 
     if (error) {
@@ -76,7 +76,7 @@ export async function GET(request) {
 
         // 2. Gérer la caution : libérer après 14 jours si pas de litige
         if (reservation.caution_status === 'authorized' && reservation.caution_payment_intent_id) {
-          const endDate = new Date(reservation.end_date);
+          const endDate = new Date(reservation.date_depart);
           const now = new Date();
           const daysSinceEnd = Math.floor((now - endDate) / (1000 * 60 * 60 * 24));
 
