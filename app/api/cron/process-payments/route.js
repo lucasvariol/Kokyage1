@@ -30,7 +30,7 @@ export async function GET(request) {
         platform_share,
         total_price,
         caution_status,
-        caution_payment_intent_id,
+        caution_intent_id,
         balances_allocated,
         status,
         payment_status,
@@ -75,7 +75,7 @@ export async function GET(request) {
         }
 
         // 2. Gérer la caution : libérer après 14 jours si pas de litige
-        if (reservation.caution_status === 'authorized' && reservation.caution_payment_intent_id) {
+        if (reservation.caution_status === 'authorized' && reservation.caution_intent_id) {
           const endDate = new Date(reservation.date_depart);
           const now = new Date();
           const daysSinceEnd = Math.floor((now - endDate) / (1000 * 60 * 60 * 24));
@@ -89,7 +89,7 @@ export async function GET(request) {
             try {
               // Annuler (libérer) la caution au lieu de la capturer
               const paymentIntent = await stripe.paymentIntents.cancel(
-                reservation.caution_payment_intent_id
+                reservation.caution_intent_id
               );
 
               await supabaseAdmin
