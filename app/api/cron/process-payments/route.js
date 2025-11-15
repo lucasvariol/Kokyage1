@@ -329,14 +329,137 @@ export async function GET(request) {
 
     console.log('✅ Traitement automatique terminé');
 
+    // 8. NOUVEAU: Vérifier et payer les soldes en attente pour les comptes Stripe désormais actifs
+    console.log('\n🔍 Vérification des soldes en attente...');
+    const pendingResults = await processPendingBalances();
+    
     return Response.json({
       success: true,
       processed: results.length,
-      results
+      results,
+      pending_balances_processed: pendingResults
     });
 
   } catch (error) {
     console.error('❌ Erreur globale:', error);
     return Response.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// Fonction pour traiter les soldes en attente des utilisateurs qui ont maintenant configuré Stripe
+async function processPendingBalances() {
+  try {
+    // Récupérer tous les profils avec un solde positif à payer
+    const { data: profiles, error } = await supabaseAdmin
+      .from('profiles')
+      .select('id, email, to_be_paid_to_user, stripe_account_id')
+      .gt('to_be_paid_to_user', 0);
+
+    if (error) {
+      console.error('❌ Erreur récupération profils avec solde:', error);
+      return { success: false, error: error.message };
+    }
+
+    if (!profiles || profiles.length === 0) {
+      console.log('ℹ️ Aucun solde en attente');
+      return { success: true, processed: 0, results: [] };
+    }
+
+    console.log(`📊 ${profiles.length} utilisateur(s) avec solde en attente`);
+
+    const results = [];
+
+    for (const profile of profiles) {
+      try {
+        const amount = Number(profile.to_be_paid_to_user);
+        
+        // Si pas de compte Stripe, on passe au suivant
+        if (!profile.stripe_account_id) {
+          console.log(`⏭️ ${profile.email}: ${amount}€ en attente - Pas de compte Stripe`);
+          results.push({
+            user_id: profile.id,
+            email: profile.email,
+            amount,
+            status: 'waiting_stripe_setup',
+            message: 'Compte Stripe non configuré'
+          });
+          continue;
+        }
+
+        // Vérifier si le compte Stripe peut maintenant recevoir des paiements
+        const account = await stripe.accounts.retrieve(profile.stripe_account_id);
+        
+        if (!account.payouts_enabled) {
+          console.log(`⏭️ ${profile.email}: ${amount}€ en attente - Compte Stripe non actif`);
+          results.push({
+            user_id: profile.id,
+            email: profile.email,
+            amount,
+            status: 'stripe_not_ready',
+            message: 'Compte Stripe pas encore activé pour recevoir des paiements'
+          });
+          continue;
+        }
+
+        // Le compte est maintenant actif, effectuer le virement
+        console.log(`💸 Virement automatique vers ${profile.email}: ${amount}€`);
+        
+        const transfer = await stripe.transfers.create({
+          amount: Math.round(amount * 100),
+          currency: 'eur',
+          destination: profile.stripe_account_id,
+          description: `Paiement solde en attente`,
+          metadata: {
+            user_id: profile.id,
+            type: 'pending_balance_payout',
+            auto_payout: 'true'
+          }
+        });
+
+        console.log(`✅ Transfert créé: ${transfer.id} pour ${profile.email}`);
+
+        // Mettre à jour le profil: remettre le solde à 0
+        await supabaseAdmin
+          .from('profiles')
+          .update({
+            to_be_paid_to_user: 0
+          })
+          .eq('id', profile.id);
+
+        results.push({
+          user_id: profile.id,
+          email: profile.email,
+          amount,
+          status: 'paid',
+          transfer_id: transfer.id,
+          message: 'Virement effectué avec succès'
+        });
+
+      } catch (err) {
+        console.error(`❌ Erreur traitement solde ${profile.email}:`, err.message);
+        results.push({
+          user_id: profile.id,
+          email: profile.email,
+          amount: Number(profile.to_be_paid_to_user),
+          status: 'error',
+          message: err.message
+        });
+      }
+    }
+
+    console.log(`✅ ${results.filter(r => r.status === 'paid').length} virement(s) effectué(s)`);
+
+    return {
+      success: true,
+      processed: profiles.length,
+      results
+    };
+
+  } catch (error) {
+    console.error('❌ Erreur traitement soldes en attente:', error);
+    return {
+      success: false,
+      error: error.message
+    };
   }
 }
