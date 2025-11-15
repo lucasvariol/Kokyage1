@@ -295,32 +295,8 @@ export async function GET(request) {
           }
         }
 
-        // 7. Virer la commission plateforme vers le compte bancaire de Kokyage
-        if (platformAmount > 0 && process.env.PLATFORM_BANK_ACCOUNT_TOKEN) {
-          try {
-            console.log(`💰 Virement commission plateforme: ${platformAmount}€ vers compte bancaire Kokyage`);
-            
-            const payout = await stripe.payouts.create({
-              amount: Math.round(platformAmount * 100),
-              currency: 'eur',
-              destination: process.env.PLATFORM_BANK_ACCOUNT_TOKEN,
-              description: `Commission réservation #${reservation.id}`,
-              metadata: {
-                reservation_id: reservation.id,
-                type: 'platform_commission',
-                auto_payout: 'true'
-              }
-            });
-
-            console.log(`✅ Payout plateforme créé: ${payout.id}`);
-            transferResults.push({ type: 'platform', payout_id: payout.id, amount: platformAmount });
-          } catch (payoutErr) {
-            console.error(`❌ Erreur payout plateforme:`, payoutErr.message);
-            // La commission reste sur le compte Stripe principal
-          }
-        } else if (platformAmount > 0) {
-          console.log(`ℹ️ Commission plateforme ${platformAmount}€ reste sur compte Stripe (pas de compte bancaire configuré)`);
-        }
+        // 7. La commission plateforme reste sur le compte Stripe principal
+        console.log(`💰 Commission plateforme ${platformAmount}€ reste sur le compte Stripe`);
 
         // 8. Marquer la réservation comme allouée
         await supabaseAdmin
