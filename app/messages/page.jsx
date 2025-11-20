@@ -44,7 +44,7 @@ export default function Page() {
   async function checkUser() {
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error || !user) {
-      router.push('/connexion');
+      router.push('/inscription');
       return;
     }
     setUser(user);

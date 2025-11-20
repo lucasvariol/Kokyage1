@@ -39,7 +39,7 @@ export default function VerifyEmailPage({ params }) {
         
         // Redirection après 3 secondes
         setTimeout(() => {
-          router.push('/connexion');
+          router.push('/inscription');
         }, 3000);
       } else if (data.expired) {
         setStatus('expired');
@@ -203,7 +203,7 @@ export default function VerifyEmailPage({ params }) {
                 {message}
               </p>
               <button
-                onClick={() => router.push('/connexion')}
+                onClick={() => router.push('/inscription')}
                 style={{
                   background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                   color: 'white',

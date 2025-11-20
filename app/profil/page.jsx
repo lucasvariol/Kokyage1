@@ -44,7 +44,7 @@ export default function ProfilPage() {
       setUser(session.user);
       await loadUserData(session.user);
     } else {
-      router.push('/connexion');
+      router.push('/inscription');
     }
     setLoading(false);
   }

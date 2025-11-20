@@ -46,7 +46,7 @@ Dans **Authentication** → **URL Configuration** :
 - **Site URL** : `https://kokyage.com`
 - **Redirect URLs** : 
   - `https://kokyage.com/verification-email/*`
-  - `https://kokyage.com/connexion`
+  - `https://kokyage.com/inscription`
   - `http://localhost:3000/*` (pour développement)
 
 ## Alternative : Utiliser RLS (Row Level Security)

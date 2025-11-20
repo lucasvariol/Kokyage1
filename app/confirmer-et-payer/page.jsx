@@ -284,7 +284,7 @@ function ConfirmerEtPayerContent() {
   const handlePaymentSuccess = async (paymentMethodId) => {
     if (!user) {
       alert('Vous devez être connecté pour effectuer une réservation.');
-      router.push('/connexion');
+      router.push('/inscription');
       return;
     }
 

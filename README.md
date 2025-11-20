@@ -15,7 +15,7 @@ Puis ouvrez http://localhost:3000
 - `/logement/[id]`
 - `/faq`
 - `/apropos`
-- `/connexion`
+- `/inscription`
 - `/inscription`
 - `/profil`
 - `/messages`

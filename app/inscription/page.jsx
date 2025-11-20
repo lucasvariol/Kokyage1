@@ -84,7 +84,7 @@ function InscriptionContent(){
             dateNaissance,
             full_name: `${prenom} ${nom}`.trim()
           },
-          emailRedirectTo: `${window.location.origin}/connexion`,
+          emailRedirectTo: `${window.location.origin}/inscription`,
           // Désactiver l'email de confirmation automatique de Supabase
           shouldCreateUser: true
         }

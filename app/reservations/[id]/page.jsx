@@ -43,7 +43,7 @@ export default function ReservationDetailPage() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-          router.push('/connexion');
+          router.push('/inscription');
           return;
         }
         setUser(user);

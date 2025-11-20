@@ -47,7 +47,7 @@ export default function Page() {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        router.push('/connexion');
+        router.push('/inscription');
       } else {
         // Récupérer les infos de l'utilisateur
         const { data: userData, error } = await supabase
