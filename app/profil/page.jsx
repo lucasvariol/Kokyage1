@@ -70,7 +70,7 @@ export default function ProfilPage() {
       nom: userData?.nom || authUser.user_metadata?.nom || authUser.user_metadata?.last_name || '',
       email: authUser.email || '',
       phone: userData?.phone || authUser.user_metadata?.phone || '',
-      dateNaissance: userData?.date_naissance || authUser.user_metadata?.date_naissance || '',
+      dateNaissance: userData?.date_naissance ? new Date(userData.date_naissance).toISOString().split('T')[0] : '',
       photoUrl: userData?.photo_url || authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture || ''
     });
   }
@@ -151,12 +151,12 @@ export default function ProfilPage() {
       const { error } = await supabase
         .from('profiles')
         .update({
-          prenom: formData.prenom,
-          nom: formData.nom,
-          phone: formData.phone,
-          date_naissance: formData.dateNaissance,
-          photo_url: formData.photoUrl,
-          full_name: `${formData.prenom} ${formData.nom}`.trim(),
+          prenom: formData.prenom || null,
+          nom: formData.nom || null,
+          phone: formData.phone || null,
+          date_naissance: formData.dateNaissance || null,
+          photo_url: formData.photoUrl || null,
+          full_name: `${formData.prenom} ${formData.nom}`.trim() || null,
           email: formData.email
         })
         .eq('id', user.id);
