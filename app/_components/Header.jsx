@@ -12,6 +12,17 @@ export default function Header({ activeTab, setActiveTab }) {
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Detect mobile screen
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 820);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -202,9 +213,9 @@ export default function Header({ activeTab, setActiveTab }) {
               </nav>
             )}
 
-            {/* CTA pour utilisateurs connectés */}
-            {connected && (
-              <Link href="/ajout-logement" className="desktop-button" style={{
+            {/* CTA pour utilisateurs connectés (caché sur mobile) */}
+            {connected && !isMobile && (
+              <Link href="/ajout-logement" style={{
                 background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                 color: 'white',
                 padding: '11px 18px',
