@@ -24,8 +24,6 @@ function ReservationsContent() {
   const [actionError, setActionError] = useState('');
   const [showPastReservations, setShowPastReservations] = useState(false);
   const [showCancelledReservations, setShowCancelledReservations] = useState(false);
-  // Vue actuelle: voyageur (user_id) ou hôte (host_id)
-  const [viewMode, setViewMode] = useState('guest'); // 'guest' | 'host'
 
   // Format prix - Les prix sont stockés en euros dans la DB
   const formatEUR = (amount) => {
@@ -60,9 +58,7 @@ function ReservationsContent() {
         const { data: { session } } = await supabase.auth.getSession();
         setAccessToken(session?.access_token || null);
 
-        // Charger les réservations de l'utilisateur
-        const filterField = viewMode === 'host' ? 'host_id' : 'user_id';
-
+        // Charger les réservations de l'utilisateur (en tant que voyageur uniquement)
         const { data, error } = await supabase
           .from('reservations')
           .select(`
@@ -76,7 +72,7 @@ function ReservationsContent() {
               price_per_night
             )
           `)
-          .eq(filterField, user.id)
+          .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -91,7 +87,7 @@ function ReservationsContent() {
     };
 
     loadReservations();
-  }, [router, viewMode]);
+  }, [router]);
 
   const handleHostValidation = async (reservationId, desiredState = true) => {
     if (!reservationId) return;
@@ -334,48 +330,6 @@ function ReservationsContent() {
             }}>
               Retrouvez toutes vos réservations en cours et passées
             </p>
-            {/* Onglets Voyageur / Hôte */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: 8,
-              marginTop: 16
-            }}>
-              <button
-                onClick={() => setViewMode('guest')}
-                style={{
-                  padding: '8px 14px',
-                  borderRadius: 8,
-                  border: '1px solid #e5e7eb',
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  background: viewMode === 'guest'
-                    ? '#111827'
-                    : '#fff',
-                  color: viewMode === 'guest' ? '#ffffff' : '#111827'
-                }}
-              >
-                En tant que voyageur
-              </button>
-              <button
-                onClick={() => setViewMode('host')}
-                style={{
-                  padding: '8px 14px',
-                  borderRadius: 8,
-                  border: '1px solid #e5e7eb',
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  background: viewMode === 'host'
-                    ? '#111827'
-                    : '#fff',
-                  color: viewMode === 'host' ? '#ffffff' : '#111827'
-                }}
-              >
-                En tant qu'hôte
-              </button>
-            </div>
           </div>
 
           {/* Liste des réservations */}
@@ -419,9 +373,7 @@ function ReservationsContent() {
                 fontWeight: 600,
                 marginBottom: 24
               }}>
-                {viewMode === 'host'
-                  ? "Vous n'avez pas encore reçu de réservations en tant qu'hôte."
-                  : "Vous n'avez pas encore effectué de réservation."}
+                Vous n'avez pas encore effectué de réservation.
               </p>
               <button
                 onClick={() => router.push('/logements')}
@@ -622,78 +574,6 @@ function ReservationsContent() {
                         >
                           Voir logement
                         </button>
-                        {viewMode === 'host' && !reservation.host_validation_ok && reservation.status !== 'cancelled' && (
-                          <>
-                            <button
-                              onClick={() => handleHostValidation(reservation.id, true)}
-                              disabled={hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id}
-                              style={{
-                                background: '#10b981',
-                                color: '#ffffff',
-                                border: 'none',
-                                borderRadius: 8,
-                                padding: '8px 16px',
-                                fontWeight: 600,
-                                fontSize: 13,
-                                cursor: (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) ? 'not-allowed' : 'pointer',
-                                transition: 'all 0.2s ease',
-                                opacity: (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) ? 0.7 : 1
-                              }}
-                              onMouseEnter={(e) => {
-                                if (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) return;
-                                e.currentTarget.style.background = '#059669';
-                                e.currentTarget.style.transform = 'translateY(-1px)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = '#10b981';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                              }}
-                            >
-                              {hostValidationLoading === reservation.id ? 'Validation…' : 'Valider'}
-                            </button>
-                            <button
-                              onClick={() => handleHostRejection(reservation.id)}
-                              disabled={hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id}
-                              style={{
-                                background: '#ef4444',
-                                color: '#ffffff',
-                                border: 'none',
-                                borderRadius: 8,
-                                padding: '8px 16px',
-                                fontWeight: 600,
-                                fontSize: 13,
-                                cursor: (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) ? 'not-allowed' : 'pointer',
-                                transition: 'all 0.2s ease',
-                                opacity: (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) ? 0.7 : 1
-                              }}
-                              onMouseEnter={(e) => {
-                                if (hostValidationLoading === reservation.id || hostRejectionLoading === reservation.id || hostCancellationLoading === reservation.id) return;
-                                e.currentTarget.style.background = '#dc2626';
-                                e.currentTarget.style.transform = 'translateY(-1px)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.background = '#ef4444';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                              }}
-                            >
-                              {hostRejectionLoading === reservation.id ? 'Refus…' : 'Refuser'}
-                            </button>
-                          </>
-                        )}
-                        {viewMode === 'host' && reservation.host_validation_ok && reservation.status !== 'cancelled' && (
-                          <button
-                            onClick={() => handleHostCancellation(reservation.id)}
-                            disabled={hostCancellationLoading === reservation.id}
-                            style={{
-                              background: '#f97316',
-                              color: '#ffffff',
-                              border: 'none',
-                              borderRadius: 8,
-                              padding: '8px 16px',
-                              fontWeight: 600,
-                              fontSize: 13,
-                              cursor: hostCancellationLoading === reservation.id ? 'not-allowed' : 'pointer',
-                              transition: 'all 0.2s ease',
                               opacity: hostCancellationLoading === reservation.id ? 0.7 : 1
                             }}
                             onMouseEnter={(e) => {
