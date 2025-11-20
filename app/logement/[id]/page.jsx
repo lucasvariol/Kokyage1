@@ -1200,10 +1200,19 @@ export default function Page({ params }) {
         console.log('Profile error:', profileError);
         
         if (profileData) {
-          // Use prenom, or fallback to full_name, name, or extract from email
+          // Extract only first name from various fields
+          let firstName = 'Hôte';
+          if (profileData.prenom) {
+            firstName = profileData.prenom.split(' ')[0]; // Prendre seulement le premier mot
+          } else if (profileData.full_name) {
+            firstName = profileData.full_name.split(' ')[0];
+          } else if (profileData.name) {
+            firstName = profileData.name.split(' ')[0];
+          }
+          
           hostProfile = {
             id: profileData.id,
-            prenom: profileData.prenom || profileData.full_name || profileData.name || 'Hôte',
+            prenom: firstName,
             photo_url: profileData.photo_url
           };
         }
