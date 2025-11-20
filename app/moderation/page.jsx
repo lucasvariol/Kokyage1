@@ -52,12 +52,12 @@ export default function ModerationDashboard() {
     }
   }
 
-  // Check session and allow only the specific moderator email
+  // Check session and allow only PLATFORM_USER_ID
   useEffect(() => {
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      const moderatorEmail = 'lucas.variol@gmail.com';
-      if (session?.user?.email === moderatorEmail) {
+      const platformUserId = process.env.NEXT_PUBLIC_PLATFORM_USER_ID;
+      if (session?.user?.id === platformUserId) {
         setAllowed(true);
         await fetchData();
         // Preload reservations if tab is paiements

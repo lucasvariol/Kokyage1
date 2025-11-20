@@ -1,13 +1,33 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
 import Header from '../../_components/Header';
 import Footer from '../../_components/Footer';
 
 export default function AdminCronPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [allowed, setAllowed] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  // Check session and allow only PLATFORM_USER_ID
+  useEffect(() => {
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const platformUserId = process.env.NEXT_PUBLIC_PLATFORM_USER_ID;
+      if (session?.user?.id === platformUserId) {
+        setAllowed(true);
+      } else {
+        setAllowed(false);
+        router.push('/inscription');
+      }
+      setChecking(false);
+    })();
+  }, [router]);
 
   const triggerCron = async () => {
     setLoading(true);
@@ -36,6 +56,27 @@ export default function AdminCronPage() {
       setLoading(false);
     }
   };
+
+  if (checking) {
+    return (
+      <>
+        <Header />
+        <main style={{
+          minHeight: '80vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <p>Vérification...</p>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (!allowed) {
+    return null;
+  }
 
   return (
     <>
