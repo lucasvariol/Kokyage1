@@ -14,18 +14,33 @@ export default function AdminCronPage() {
   const [allowed, setAllowed] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  // Check session and allow only PLATFORM_USER_ID
+  // Check session and allow only PLATFORM_USER_ID via API
   useEffect(() => {
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      const platformUserId = process.env.NEXT_PUBLIC_PLATFORM_USER_ID;
-      console.log('🔍 Vérification accès admin/cron:');
-      console.log('User ID:', session?.user?.id);
-      console.log('Platform User ID:', platformUserId);
-      console.log('Match:', session?.user?.id === platformUserId);
-      if (session?.user?.id === platformUserId) {
-        setAllowed(true);
-      } else {
+      if (!session) {
+        setAllowed(false);
+        setChecking(false);
+        router.push('/inscription');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/auth/check-admin', {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        });
+        const data = await response.json();
+        
+        if (data.isAdmin) {
+          setAllowed(true);
+        } else {
+          setAllowed(false);
+          router.push('/inscription');
+        }
+      } catch (error) {
+        console.error('Erreur vérification admin:', error);
         setAllowed(false);
         router.push('/inscription');
       }

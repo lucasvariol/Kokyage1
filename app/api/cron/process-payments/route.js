@@ -296,7 +296,7 @@ export async function GET(request) {
         }
 
         // 7. Transférer la commission plateforme vers le compte Connect Kokyage
-        if (platformAmount > 0 && process.env.NEXT_PUBLIC_PLATFORM_USER_ID) {
+        if (platformAmount > 0 && process.env.PLATFORM_USER_ID) {
           try {
             console.log(`💰 Récupération du compte Stripe Connect Kokyage...`);
             
@@ -304,7 +304,7 @@ export async function GET(request) {
             const { data: platformProfile } = await supabaseAdmin
               .from('profiles')
               .select('stripe_account_id')
-              .eq('id', process.env.NEXT_PUBLIC_PLATFORM_USER_ID)
+              .eq('id', process.env.PLATFORM_USER_ID)
               .single();
 
             if (platformProfile?.stripe_account_id) {
@@ -335,7 +335,7 @@ export async function GET(request) {
                   .update({
                     total_earnings: Number(platformProfile.total_earnings || 0) + platformAmount,
                   })
-                  .eq('id', process.env.NEXT_PUBLIC_PLATFORM_USER_ID);
+                  .eq('id', process.env.PLATFORM_USER_ID);
               } else {
                 console.warn(`⚠️ Compte Stripe plateforme non actif, commission reste sur compte principal`);
               }
