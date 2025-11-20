@@ -41,15 +41,15 @@ export default function Page() {
       const currentUser = session.user;
       setUser(currentUser);
 
-      // Fetch owner listings and tenant bookings in parallel
+      // Fetch owner listings and tenant reservations in parallel
       const [listingsRes, bookingsRes] = await Promise.all([
         supabase
           .from('listings')
           .select('id, title, city, status, created_at, owner_id, id_proprietaire')
           .or(`owner_id.eq.${currentUser.id},id_proprietaire.eq.${currentUser.id}`),
         supabase
-          .from('bookings')
-          .select('id, listing_id, start_date, end_date, total, listing:listing_id(id, title, city, owner_id)')
+          .from('reservations')
+          .select('id, listing_id, date_arrivee, date_depart, total_price, listings!inner(id, title, city, owner_id)')
           .eq('user_id', currentUser.id)
       ]);
 
@@ -440,7 +440,7 @@ export default function Page() {
 
   const upcomingTenantBookings = useMemo(() => {
     const today = new Date();
-    return tenantBookings.filter(b => new Date(b.end_date) >= new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+    return tenantBookings.filter(b => new Date(b.date_depart) >= new Date(today.getFullYear(), today.getMonth(), today.getDate()));
   }, [tenantBookings]);
 
   const statusChip = (status) => {
@@ -986,13 +986,13 @@ export default function Page() {
                   ) : (
                   <ul className="bookings-list">
                     {upcomingTenantBookings.map(b => {
-                      const start = new Date(b.start_date);
-                      const end = new Date(b.end_date);
+                      const start = new Date(b.date_arrivee);
+                      const end = new Date(b.date_depart);
                       const fmt = (d) => d.toLocaleDateString('fr-FR');
                       return (
                         <li key={b.id} className="booking-item">
                           <div>
-                            <div className="booking-title">{b.listing?.title || 'Logement'}</div>
+                            <div className="booking-title">{b.listings?.title || 'Logement'}</div>
                             <div className="booking-sub">{fmt(start)} → {fmt(end)}</div>
                           </div>
                           <span className="role tenant">Locataire</span>
