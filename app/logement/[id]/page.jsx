@@ -806,7 +806,14 @@ function StarInline({ fillPercent = 0, size = 18 }) {
 async function getListing(id) {
   const { data, error } = await supabase
     .from('listings')
-    .select('*')
+    .select(`
+      *,
+      host:profiles!listings_owner_id_fkey(
+        id,
+        prenom,
+        photo_url
+      )
+    `)
     .eq('id', id)
     .single();
   if (error) return null;
@@ -1986,7 +1993,8 @@ export default function Page({ params }) {
                               color: '#6b7280',
                               display: 'flex',
                               alignItems: 'center',
-                              gap: 5
+                              gap: 5,
+                              marginBottom: 12
                             }}>
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -1994,6 +2002,62 @@ export default function Page({ params }) {
                               </svg>
                               <span style={{ fontWeight: 600 }}>{item.city}</span>
                             </div>
+
+                            {/* Informations hôte */}
+                            {item.host && (
+                              <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                                padding: '10px 0'
+                              }}>
+                                <div style={{
+                                  width: 44,
+                                  height: 44,
+                                  borderRadius: '50%',
+                                  overflow: 'hidden',
+                                  background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  flexShrink: 0
+                                }}>
+                                  {item.host.photo_url ? (
+                                    <img 
+                                      src={item.host.photo_url} 
+                                      alt={item.host.prenom || 'Hôte'}
+                                      style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover'
+                                      }}
+                                    />
+                                  ) : (
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+                                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                      <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                  )}
+                                </div>
+                                <div>
+                                  <div style={{
+                                    fontSize: 13,
+                                    color: '#6b7280',
+                                    fontWeight: 500,
+                                    marginBottom: 2
+                                  }}>
+                                    Hôte
+                                  </div>
+                                  <div style={{
+                                    fontSize: 15,
+                                    fontWeight: 700,
+                                    color: '#111827'
+                                  }}>
+                                    {item.host.prenom || 'Hôte'}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
                           <button
                             onClick={handleCopy}
@@ -2836,20 +2900,11 @@ export default function Page({ params }) {
                         <button
                           onClick={() => {
                             if (nights > 0) {
-                              // Formater les dates en YYYY-MM-DD pour éviter les problèmes de timezone
-                              const formatDate = (date) => {
-                                if (!date) return '';
-                                const year = date.getFullYear();
-                                const month = String(date.getMonth() + 1).padStart(2, '0');
-                                const day = String(date.getDate()).padStart(2, '0');
-                                return `${year}-${month}-${day}`;
-                              };
-                              
                               // Construire les paramètres pour la page de confirmation
                               const params = new URLSearchParams({
                                 listingId: item.id,
-                                startDate: formatDate(range.from),
-                                endDate: formatDate(range.to),
+                                startDate: range.from?.toISOString(),
+                                endDate: range.to?.toISOString(),
                                 guests: selectedGuests,
                                 nights: nights,
                                 basePrice: Math.round(basePlusFeesTotal * 100), // Centimes
