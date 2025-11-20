@@ -574,21 +574,6 @@ function ReservationsContent() {
                         >
                           Voir logement
                         </button>
-                              opacity: hostCancellationLoading === reservation.id ? 0.7 : 1
-                            }}
-                            onMouseEnter={(e) => {
-                              if (hostCancellationLoading === reservation.id) return;
-                              e.currentTarget.style.background = '#ea580c';
-                              e.currentTarget.style.transform = 'translateY(-1px)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = '#f97316';
-                              e.currentTarget.style.transform = 'translateY(0)';
-                            }}
-                          >
-                            {hostCancellationLoading === reservation.id ? 'Annulation…' : 'Annuler la réservation'}
-                          </button>
-                        )}
                       </div>
                     </div>
                   </div>
