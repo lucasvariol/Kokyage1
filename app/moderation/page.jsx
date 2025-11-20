@@ -57,6 +57,10 @@ export default function ModerationDashboard() {
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const platformUserId = process.env.NEXT_PUBLIC_PLATFORM_USER_ID;
+      console.log('🔍 Vérification accès modération:');
+      console.log('User ID:', session?.user?.id);
+      console.log('Platform User ID:', platformUserId);
+      console.log('Match:', session?.user?.id === platformUserId);
       if (session?.user?.id === platformUserId) {
         setAllowed(true);
         await fetchData();
