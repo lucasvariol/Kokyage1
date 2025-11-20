@@ -802,24 +802,6 @@ function StarInline({ fillPercent = 0, size = 18 }) {
   );
 }
 
-// Fonction pour récupérer les données du logement
-async function getListing(id) {
-  const { data, error } = await supabase
-    .from('listings')
-    .select(`
-      *,
-      host:profiles!listings_owner_id_fkey(
-        id,
-        prenom,
-        photo_url
-      )
-    `)
-    .eq('id', id)
-    .single();
-  if (error) return null;
-  return data;
-}
-
 export default function Page({ params }) {
   const [item, setItem] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -1191,11 +1173,29 @@ export default function Page({ params }) {
   useEffect(() => {
     async function fetchData() {
       // Récupère utilisateur courant pour le rôle
-  const { data: sessionData } = await supabase.auth.getSession();
-  const currentUser = sessionData?.session?.user || null;
-  setUser(currentUser);
-  setAccessToken(sessionData?.session?.access_token || '');
-      const data = await getListing(params.id);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const currentUser = sessionData?.session?.user || null;
+      setUser(currentUser);
+      setAccessToken(sessionData?.session?.access_token || '');
+      
+      // Fetch listing data inline to avoid getListing dependency issues
+      const { data, error } = await supabase
+        .from('listings')
+        .select(`
+          *,
+          host:profiles!listings_owner_id_fkey(
+            id,
+            prenom,
+            photo_url
+          )
+        `)
+        .eq('id', params.id)
+        .single();
+      
+      if (error || !data) {
+        console.error('Error loading listing:', error);
+        return;
+      }
       
       // Vérification d'accès pour les annonces non publiées
       if (data) {
@@ -1287,7 +1287,7 @@ export default function Page({ params }) {
       }
     }
     fetchData();
-  }, [params.id]);
+  }, [params.id, router]);
 
   const role = useMemo(() => {
     if (!item || !user) return null;
