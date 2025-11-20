@@ -15,11 +15,16 @@ export default function Page() {
   const [connectLoading, setConnectLoading] = useState(false);
   const [connectStatus, setConnectStatus] = useState(null);
   const [connectError, setConnectError] = useState('');
-  const [activeTab, setActiveTab] = useState('logements'); // 'logements' | 'paiements'
+  const [activeTab, setActiveTab] = useState('logements'); // 'logements' | 'paiements' | 'reservations'
   const [earnings, setEarnings] = useState({ total_earnings: 0, to_be_paid_to_user: 0 });
   const [payoutLoading, setPayoutLoading] = useState(false);
   const [payoutError, setPayoutError] = useState('');
   const [payoutSuccess, setPayoutSuccess] = useState('');
+  const [hostReservations, setHostReservations] = useState([]);
+  const [reservationsLoading, setReservationsLoading] = useState(false);
+  const [hostValidationLoading, setHostValidationLoading] = useState(null);
+  const [hostRejectionLoading, setHostRejectionLoading] = useState(null);
+  const [hostCancellationLoading, setHostCancellationLoading] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -190,6 +195,177 @@ export default function Page() {
   // Alias pour compatibilité avec le code existant
   const startOnboarding = openStripeConnect;
 
+  // Charger les réservations où l'utilisateur est hôte
+  useEffect(() => {
+    async function loadHostReservations() {
+      if (!user) return;
+      if (activeTab !== 'reservations') return; // Charger uniquement si on est sur l'onglet
+      
+      setReservationsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('reservations')
+          .select(`
+            *,
+            listings!inner(
+              id,
+              title,
+              city,
+              address,
+              images,
+              price_per_night
+            ),
+            guest:profiles!reservations_user_id_fkey(
+              id,
+              name,
+              email
+            )
+          `)
+          .eq('host_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setHostReservations(data || []);
+      } catch (error) {
+        console.error('Erreur chargement réservations hôte:', error);
+      } finally {
+        setReservationsLoading(false);
+      }
+    }
+    loadHostReservations();
+  }, [user, activeTab]);
+
+  // Valider une réservation (hôte)
+  const handleHostValidation = async (reservationId) => {
+    if (!window.confirm('Confirmer cette réservation ?')) return;
+    
+    setHostValidationLoading(reservationId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      const response = await fetch('/api/reservations/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {})
+        },
+        body: JSON.stringify({ reservationId })
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+
+      alert('Réservation validée avec succès !');
+      
+      // Recharger les réservations
+      const { data, error } = await supabase
+        .from('reservations')
+        .select(`
+          *,
+          listings!inner(id, title, city, address, images, price_per_night),
+          guest:profiles!reservations_user_id_fkey(id, name, email)
+        `)
+        .eq('host_id', user.id)
+        .order('created_at', { ascending: false });
+      
+      if (!error) setHostReservations(data || []);
+    } catch (error) {
+      alert('Erreur: ' + error.message);
+    } finally {
+      setHostValidationLoading(null);
+    }
+  };
+
+  // Rejeter une réservation (hôte)
+  const handleHostRejection = async (reservationId) => {
+    const reason = window.prompt('Raison du refus (optionnel):');
+    if (reason === null) return; // Annulé
+    
+    setHostRejectionLoading(reservationId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      const response = await fetch('/api/reservations/reject', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {})
+        },
+        body: JSON.stringify({ reservationId, reason: reason || 'Refusé par l\'hôte' })
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+
+      alert('Réservation refusée. Le voyageur sera remboursé.');
+      
+      // Recharger les réservations
+      const { data, error } = await supabase
+        .from('reservations')
+        .select(`
+          *,
+          listings!inner(id, title, city, address, images, price_per_night),
+          guest:profiles!reservations_user_id_fkey(id, name, email)
+        `)
+        .eq('host_id', user.id)
+        .order('created_at', { ascending: false });
+      
+      if (!error) setHostReservations(data || []);
+    } catch (error) {
+      alert('Erreur: ' + error.message);
+    } finally {
+      setHostRejectionLoading(null);
+    }
+  };
+
+  // Annuler une réservation (hôte)
+  const handleHostCancellation = async (reservationId) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir annuler cette réservation ? Le voyageur sera remboursé intégralement.')) return;
+    
+    setHostCancellationLoading(reservationId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      const response = await fetch('/api/reservations/cancel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {})
+        },
+        body: JSON.stringify({
+          reservationId,
+          reason: 'Annulée par l\'hôte',
+          canceledBy: 'host'
+        })
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+
+      alert('Réservation annulée. Le voyageur sera remboursé.');
+      
+      // Recharger les réservations
+      const { data, error } = await supabase
+        .from('reservations')
+        .select(`
+          *,
+          listings!inner(id, title, city, address, images, price_per_night),
+          guest:profiles!reservations_user_id_fkey(id, name, email)
+        `)
+        .eq('host_id', user.id)
+        .order('created_at', { ascending: false });
+      
+      if (!error) setHostReservations(data || []);
+    } catch (error) {
+      alert('Erreur: ' + error.message);
+    } finally {
+      setHostCancellationLoading(null);
+    }
+  };
+
   // Fonction pour déclencher le virement vers l'utilisateur
   const handlePayout = async () => {
     if (!user) return;
@@ -330,6 +506,23 @@ export default function Page() {
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#f59e0b' }}></span>
                   )}
                 </span>
+              </button>
+              <button
+                onClick={() => setActiveTab('reservations')}
+                style={{
+                  padding: '12px 24px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: activeTab === 'reservations' ? '#0066ff' : '#64748b',
+                  fontWeight: activeTab === 'reservations' ? 700 : 600,
+                  fontSize: 15,
+                  cursor: 'pointer',
+                  borderBottom: activeTab === 'reservations' ? '2px solid #0066ff' : '2px solid transparent',
+                  marginBottom: -2,
+                  transition: 'all 0.2s'
+                }}
+              >
+                Réservations
               </button>
             </div>
           </div>
@@ -810,6 +1003,267 @@ export default function Page() {
                   )}
                   </div>
                 </>
+              )}
+
+              {/* Onglet Réservations */}
+              {activeTab === 'reservations' && (
+                <div style={{ background: '#fff', borderRadius: 20, padding: 40, border: '1px solid #eef2f7', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+                  <div style={{ marginBottom: 32 }}>
+                    <h2 style={{ fontSize: 24, fontWeight: 800, color: '#0f172a', margin: '0 0 8px' }}>
+                      Mes réservations en tant qu'hôte
+                    </h2>
+                    <p style={{ margin: 0, color: '#64748b', fontSize: 15 }}>
+                      Gérez les réservations de vos logements
+                    </p>
+                  </div>
+
+                  {reservationsLoading ? (
+                    <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>
+                      <div style={{
+                        width: 32,
+                        height: 32,
+                        border: '3px solid #e2e8f0',
+                        borderTop: '3px solid #3b82f6',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite',
+                        margin: '0 auto 16px'
+                      }} />
+                      Chargement des réservations...
+                    </div>
+                  ) : hostReservations.length === 0 ? (
+                    <div style={{
+                      textAlign: 'center',
+                      padding: '60px 20px',
+                      color: '#64748b',
+                      background: '#f8fafc',
+                      borderRadius: 16,
+                      border: '1px solid #e2e8f0'
+                    }}>
+                      <div style={{ fontSize: 48, marginBottom: 16 }}>📅</div>
+                      <p style={{ fontSize: 18, fontWeight: 600, margin: '0 0 8px', color: '#475569' }}>
+                        Aucune réservation
+                      </p>
+                      <p style={{ margin: 0, fontSize: 14 }}>
+                        Les réservations pour vos logements apparaîtront ici
+                      </p>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'grid', gap: 20 }}>
+                      {hostReservations.map(reservation => {
+                        const listing = reservation.listings;
+                        const guest = reservation.guest;
+                        const statusColors = {
+                          pending: { bg: '#fef3c7', color: '#92400e', border: '#fcd34d' },
+                          confirmed: { bg: '#d1fae5', color: '#065f46', border: '#6ee7b7' },
+                          canceled: { bg: '#fee2e2', color: '#7f1d1d', border: '#fca5a5' },
+                          rejected: { bg: '#fecaca', color: '#991b1b', border: '#f87171' }
+                        };
+                        const statusLabels = {
+                          pending: '⏳ En attente',
+                          confirmed: '✓ Confirmée',
+                          canceled: '✗ Annulée',
+                          rejected: '✗ Refusée'
+                        };
+                        const status = statusColors[reservation.status] || statusColors.pending;
+
+                        return (
+                          <div
+                            key={reservation.id}
+                            style={{
+                              padding: 24,
+                              background: '#fff',
+                              borderRadius: 16,
+                              border: '1px solid #e2e8f0',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            {/* En-tête */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                              <div style={{ flex: 1 }}>
+                                <h3 style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', margin: '0 0 4px' }}>
+                                  {listing?.title || 'Logement'}
+                                </h3>
+                                <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
+                                  {listing?.city} • Réservation #{reservation.id.slice(0, 8).toUpperCase()}
+                                </p>
+                              </div>
+                              <span style={{
+                                padding: '6px 12px',
+                                borderRadius: 999,
+                                fontSize: 13,
+                                fontWeight: 700,
+                                background: status.bg,
+                                color: status.color,
+                                border: `1px solid ${status.border}`
+                              }}>
+                                {statusLabels[reservation.status]}
+                              </span>
+                            </div>
+
+                            {/* Informations voyageur */}
+                            <div style={{ marginBottom: 16, padding: 12, background: '#f8fafc', borderRadius: 12 }}>
+                              <p style={{ fontSize: 13, fontWeight: 700, color: '#64748b', margin: '0 0 6px' }}>
+                                VOYAGEUR
+                              </p>
+                              <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                {guest?.name || guest?.email || 'Voyageur'}
+                              </p>
+                              {guest?.email && (
+                                <p style={{ fontSize: 13, color: '#64748b', margin: '4px 0 0' }}>
+                                  {guest.email}
+                                </p>
+                              )}
+                            </div>
+
+                            {/* Détails du séjour */}
+                            <div style={{
+                              display: 'grid',
+                              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                              gap: 16,
+                              marginBottom: 16
+                            }}>
+                              <div>
+                                <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                  ARRIVÉE
+                                </p>
+                                <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                  {new Date(reservation.date_arrivee || reservation.start_date).toLocaleDateString('fr-FR')}
+                                </p>
+                              </div>
+                              <div>
+                                <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                  DÉPART
+                                </p>
+                                <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                  {new Date(reservation.date_depart || reservation.end_date).toLocaleDateString('fr-FR')}
+                                </p>
+                              </div>
+                              <div>
+                                <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                  VOYAGEURS
+                                </p>
+                                <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                  {reservation.guests} {reservation.guests > 1 ? 'personnes' : 'personne'}
+                                </p>
+                              </div>
+                              <div>
+                                <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                  MONTANT TOTAL
+                                </p>
+                                <p style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.total_price || 0)}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Actions pour les réservations en attente */}
+                            {reservation.status === 'pending' && !reservation.host_validation_ok && (
+                              <div style={{
+                                display: 'flex',
+                                gap: 12,
+                                marginTop: 16,
+                                paddingTop: 16,
+                                borderTop: '1px solid #e2e8f0'
+                              }}>
+                                <button
+                                  onClick={() => handleHostValidation(reservation.id)}
+                                  disabled={hostValidationLoading === reservation.id}
+                                  style={{
+                                    flex: 1,
+                                    padding: '12px 20px',
+                                    borderRadius: 12,
+                                    border: 'none',
+                                    background: hostValidationLoading === reservation.id 
+                                      ? '#94a3b8' 
+                                      : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                    color: '#fff',
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    cursor: hostValidationLoading === reservation.id ? 'not-allowed' : 'pointer',
+                                    opacity: hostValidationLoading === reservation.id ? 0.7 : 1,
+                                    boxShadow: hostValidationLoading === reservation.id ? 'none' : '0 4px 12px rgba(16,185,129,0.3)',
+                                    transition: 'all 0.2s'
+                                  }}
+                                >
+                                  {hostValidationLoading === reservation.id ? '⏳ Validation...' : '✓ Accepter'}
+                                </button>
+                                <button
+                                  onClick={() => handleHostRejection(reservation.id)}
+                                  disabled={hostRejectionLoading === reservation.id}
+                                  style={{
+                                    flex: 1,
+                                    padding: '12px 20px',
+                                    borderRadius: 12,
+                                    border: 'none',
+                                    background: hostRejectionLoading === reservation.id 
+                                      ? '#94a3b8' 
+                                      : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                    color: '#fff',
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    cursor: hostRejectionLoading === reservation.id ? 'not-allowed' : 'pointer',
+                                    opacity: hostRejectionLoading === reservation.id ? 0.7 : 1,
+                                    boxShadow: hostRejectionLoading === reservation.id ? 'none' : '0 4px 12px rgba(239,68,68,0.3)',
+                                    transition: 'all 0.2s'
+                                  }}
+                                >
+                                  {hostRejectionLoading === reservation.id ? '⏳ Refus...' : '✗ Refuser'}
+                                </button>
+                              </div>
+                            )}
+
+                            {/* Bouton d'annulation pour les réservations confirmées */}
+                            {reservation.status === 'confirmed' && (
+                              <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e2e8f0' }}>
+                                <button
+                                  onClick={() => handleHostCancellation(reservation.id)}
+                                  disabled={hostCancellationLoading === reservation.id}
+                                  style={{
+                                    width: '100%',
+                                    padding: '12px 20px',
+                                    borderRadius: 12,
+                                    border: 'none',
+                                    background: hostCancellationLoading === reservation.id 
+                                      ? '#94a3b8' 
+                                      : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                                    color: '#fff',
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    cursor: hostCancellationLoading === reservation.id ? 'not-allowed' : 'pointer',
+                                    opacity: hostCancellationLoading === reservation.id ? 0.7 : 1,
+                                    boxShadow: hostCancellationLoading === reservation.id ? 'none' : '0 4px 12px rgba(245,158,11,0.3)',
+                                    transition: 'all 0.2s'
+                                  }}
+                                >
+                                  {hostCancellationLoading === reservation.id ? '⏳ Annulation...' : '🚫 Annuler cette réservation'}
+                                </button>
+                              </div>
+                            )}
+
+                            {/* Message pour les réservations annulées/refusées */}
+                            {(reservation.status === 'canceled' || reservation.status === 'rejected') && reservation.cancellation_reason && (
+                              <div style={{
+                                marginTop: 16,
+                                padding: 12,
+                                background: '#fef2f2',
+                                borderRadius: 12,
+                                border: '1px solid #fecaca'
+                              }}>
+                                <p style={{ fontSize: 12, fontWeight: 700, color: '#991b1b', margin: '0 0 4px' }}>
+                                  RAISON
+                                </p>
+                                <p style={{ fontSize: 14, color: '#7f1d1d', margin: 0 }}>
+                                  {reservation.cancellation_reason}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               )}
             </>
           )}
