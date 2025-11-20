@@ -302,19 +302,50 @@ export default function Header({ activeTab, setActiveTab }) {
           >
             {connected ? (
               <div>
-                <div style={{ marginBottom: '24px' }}>
+                <div style={{ marginBottom: '20px' }}>
+                  <h4 style={{ 
+                    color: '#6b7280', 
+                    fontSize: '12px', 
+                    fontWeight: '600', 
+                    textTransform: 'uppercase', 
+                    margin: '0 0 12px 0'
+                  }}>ACTIONS</h4>
+                  
                   <Link href="/ajout-logement" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                     color: 'white',
-                    padding: '16px 24px',
+                    padding: '14px 20px',
                     borderRadius: '12px',
                     textDecoration: 'none',
                     fontWeight: '700',
                     fontSize: '14px',
-                    display: 'block',
-                    textAlign: 'center'
+                    marginBottom: '12px',
+                    gap: '8px',
+                    boxShadow: '0 4px 12px rgba(215,144,119,0.25)'
                   }}>
-                  Proposer un logement
+                    🏡 Proposer un logement
+                  </Link>
+                  
+                  <Link href="/fonctionnement" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#1F2937',
+                    background: 'rgba(96,162,157,0.12)',
+                    border: '1px solid rgba(96,162,157,0.25)',
+                    padding: '14px 20px',
+                    borderRadius: '12px',
+                    marginBottom: '12px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    textDecoration: 'none',
+                    gap: '8px',
+                    transition: 'all 0.2s ease'
+                  }}>
+                    ℹ️ Comment ça marche
                   </Link>
                 </div>
 
@@ -325,24 +356,7 @@ export default function Header({ activeTab, setActiveTab }) {
                     fontWeight: '600', 
                     textTransform: 'uppercase', 
                     margin: '0 0 12px 0'
-                  }}>MENU</h4>
-                  
-                  <Link href="/fonctionnement" style={{
-                    display: 'block',
-                    textAlign: 'center',
-                    color: '#1F2937',
-                    background: 'rgba(96,162,157,0.12)',
-                    border: '1px solid rgba(96,162,157,0.25)',
-                    padding: '14px 20px',
-                    borderRadius: '12px',
-                    marginBottom: '12px',
-                    fontWeight: '600',
-                    fontSize: '14px',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s ease'
-                  }}>
-                  Comment ça marche
-                  </Link>
+                  }}>MES ESPACES</h4>
                   
                   <Link href="/messages" style={{
                     display: 'flex',
