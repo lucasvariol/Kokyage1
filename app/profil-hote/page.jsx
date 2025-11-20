@@ -313,13 +313,13 @@ export default function Page() {
       const { data: { session } } = await supabase.auth.getSession();
       const accessToken = session?.access_token;
 
-      const response = await fetch('/api/reservations/validate', {
+      const response = await fetch('/api/reservations/host-validate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {})
         },
-        body: JSON.stringify({ reservationId })
+        body: JSON.stringify({ reservationId, hostValidation: true })
       });
 
       const result = await response.json();
@@ -346,7 +346,7 @@ export default function Page() {
       const { data: { session } } = await supabase.auth.getSession();
       const accessToken = session?.access_token;
 
-      const response = await fetch('/api/reservations/reject', {
+      const response = await fetch('/api/reservations/host-reject', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -378,7 +378,7 @@ export default function Page() {
       const { data: { session } } = await supabase.auth.getSession();
       const accessToken = session?.access_token;
 
-      const response = await fetch('/api/reservations/cancel', {
+      const response = await fetch('/api/reservations/host-cancel', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -386,8 +386,7 @@ export default function Page() {
         },
         body: JSON.stringify({
           reservationId,
-          reason: 'Annulée par l\'hôte',
-          canceledBy: 'host'
+          reason: 'Annulée par l\'hôte'
         })
       });
 
