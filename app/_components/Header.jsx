@@ -245,7 +245,7 @@ export default function Header({ activeTab, setActiveTab }) {
 
       {/* CSS pour responsive */}
       <style jsx>{`
-        @media (max-width: 768px) {
+        @media (max-width: 820px) {
           .desktop-nav {
             display: none !important;
           }
