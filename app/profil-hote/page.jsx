@@ -1196,8 +1196,8 @@ export default function Page() {
                               </div>
                             </div>
 
-                            {/* Actions pour les réservations en attente */}
-                            {reservation.status === 'pending' && !reservation.host_validation_ok && (
+                            {/* Actions pour les réservations en attente de validation hôte */}
+                            {!reservation.host_validation_ok && (reservation.status === 'pending' || reservation.status === 'confirmed') && (
                               <div style={{
                                 display: 'flex',
                                 gap: 12,
@@ -1252,8 +1252,8 @@ export default function Page() {
                               </div>
                             )}
 
-                            {/* Bouton d'annulation pour les réservations confirmées */}
-                            {reservation.status === 'confirmed' && (
+                            {/* Bouton d'annulation pour les réservations validées par l'hôte */}
+                            {reservation.status === 'confirmed' && reservation.host_validation_ok && (
                               <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e2e8f0' }}>
                                 <button
                                   onClick={() => handleHostCancellation(reservation.id)}
