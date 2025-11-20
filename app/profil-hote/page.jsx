@@ -203,7 +203,8 @@ export default function Page() {
       
       setReservationsLoading(true);
       try {
-        const { data, error } = await supabase
+        // Récupérer les réservations avec les listings
+        const { data: reservationsData, error: reservationsError } = await supabase
           .from('reservations')
           .select(`
             *,
@@ -214,26 +215,94 @@ export default function Page() {
               address,
               images,
               price_per_night
-            ),
-            guest:profiles!reservations_user_id_fkey(
-              id,
-              name,
-              email
             )
           `)
           .eq('host_id', user.id)
           .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        setHostReservations(data || []);
+        if (reservationsError) throw reservationsError;
+
+        // Récupérer les profils des voyageurs séparément
+        if (reservationsData && reservationsData.length > 0) {
+          const guestIds = [...new Set(reservationsData.map(r => r.user_id).filter(Boolean))];
+          
+          if (guestIds.length > 0) {
+            const { data: guestsData } = await supabase
+              .from('profiles')
+              .select('id, name, email')
+              .in('id', guestIds);
+
+            // Enrichir les réservations avec les infos des guests
+            const enrichedData = reservationsData.map(reservation => ({
+              ...reservation,
+              guest: guestsData?.find(g => g.id === reservation.user_id) || null
+            }));
+
+            setHostReservations(enrichedData);
+          } else {
+            setHostReservations(reservationsData);
+          }
+        } else {
+          setHostReservations([]);
+        }
       } catch (error) {
         console.error('Erreur chargement réservations hôte:', error);
+        setHostReservations([]);
       } finally {
         setReservationsLoading(false);
       }
     }
     loadHostReservations();
   }, [user, activeTab]);
+
+  // Fonction pour recharger les réservations après une action
+  const reloadHostReservations = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: reservationsData, error: reservationsError } = await supabase
+        .from('reservations')
+        .select(`
+          *,
+          listings!inner(
+            id,
+            title,
+            city,
+            address,
+            images,
+            price_per_night
+          )
+        `)
+        .eq('host_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (reservationsError) throw reservationsError;
+
+      if (reservationsData && reservationsData.length > 0) {
+        const guestIds = [...new Set(reservationsData.map(r => r.user_id).filter(Boolean))];
+        
+        if (guestIds.length > 0) {
+          const { data: guestsData } = await supabase
+            .from('profiles')
+            .select('id, name, email')
+            .in('id', guestIds);
+
+          const enrichedData = reservationsData.map(reservation => ({
+            ...reservation,
+            guest: guestsData?.find(g => g.id === reservation.user_id) || null
+          }));
+
+          setHostReservations(enrichedData);
+        } else {
+          setHostReservations(reservationsData);
+        }
+      } else {
+        setHostReservations([]);
+      }
+    } catch (error) {
+      console.error('Erreur rechargement réservations:', error);
+    }
+  };
 
   // Valider une réservation (hôte)
   const handleHostValidation = async (reservationId) => {
@@ -259,17 +328,7 @@ export default function Page() {
       alert('Réservation validée avec succès !');
       
       // Recharger les réservations
-      const { data, error } = await supabase
-        .from('reservations')
-        .select(`
-          *,
-          listings!inner(id, title, city, address, images, price_per_night),
-          guest:profiles!reservations_user_id_fkey(id, name, email)
-        `)
-        .eq('host_id', user.id)
-        .order('created_at', { ascending: false });
-      
-      if (!error) setHostReservations(data || []);
+      await reloadHostReservations();
     } catch (error) {
       alert('Erreur: ' + error.message);
     } finally {
@@ -302,17 +361,7 @@ export default function Page() {
       alert('Réservation refusée. Le voyageur sera remboursé.');
       
       // Recharger les réservations
-      const { data, error } = await supabase
-        .from('reservations')
-        .select(`
-          *,
-          listings!inner(id, title, city, address, images, price_per_night),
-          guest:profiles!reservations_user_id_fkey(id, name, email)
-        `)
-        .eq('host_id', user.id)
-        .order('created_at', { ascending: false });
-      
-      if (!error) setHostReservations(data || []);
+      await reloadHostReservations();
     } catch (error) {
       alert('Erreur: ' + error.message);
     } finally {
@@ -348,17 +397,7 @@ export default function Page() {
       alert('Réservation annulée. Le voyageur sera remboursé.');
       
       // Recharger les réservations
-      const { data, error } = await supabase
-        .from('reservations')
-        .select(`
-          *,
-          listings!inner(id, title, city, address, images, price_per_night),
-          guest:profiles!reservations_user_id_fkey(id, name, email)
-        `)
-        .eq('host_id', user.id)
-        .order('created_at', { ascending: false });
-      
-      if (!error) setHostReservations(data || []);
+      await reloadHostReservations();
     } catch (error) {
       alert('Erreur: ' + error.message);
     } finally {
