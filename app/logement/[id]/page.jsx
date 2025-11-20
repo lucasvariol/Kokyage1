@@ -1181,16 +1181,25 @@ export default function Page({ params }) {
       // Fetch listing data inline to avoid getListing dependency issues
       const { data, error } = await supabase
         .from('listings')
-        .select(`
-          *,
-          host:profiles!listings_owner_id_fkey(
-            id,
-            prenom,
-            photo_url
-          )
-        `)
+        .select('*')
         .eq('id', params.id)
         .single();
+      
+      // Fetch host profile separately since there's no direct FK
+      let hostProfile = null;
+      if (data?.owner_id) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('id, prenom, photo_url')
+          .eq('id', data.owner_id)
+          .single();
+        hostProfile = profileData;
+      }
+      
+      // Attach host data to listing
+      if (data && hostProfile) {
+        data.host = hostProfile;
+      }
       
       if (error || !data) {
         console.error('Error loading listing:', error);
