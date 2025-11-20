@@ -1188,17 +1188,30 @@ export default function Page({ params }) {
       // Fetch host profile separately since there's no direct FK
       let hostProfile = null;
       if (data?.owner_id) {
-        const { data: profileData } = await supabase
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('id, prenom, photo_url')
+          .select('id, prenom, photo_url, full_name, name')
           .eq('id', data.owner_id)
           .single();
-        hostProfile = profileData;
+        
+        console.log('🔍 Debug host profile:');
+        console.log('Owner ID:', data.owner_id);
+        console.log('Profile data:', profileData);
+        console.log('Profile error:', profileError);
+        
+        if (profileData) {
+          // Use prenom, or fallback to full_name, name, or extract from email
+          hostProfile = {
+            id: profileData.id,
+            prenom: profileData.prenom || profileData.full_name || profileData.name || 'Hôte',
+            photo_url: profileData.photo_url
+          };
+        }
       }
       
       // Attach host data to listing
-      if (data && hostProfile) {
-        data.host = hostProfile;
+      if (data) {
+        data.host = hostProfile || { prenom: 'Hôte', photo_url: null };
       }
       
       if (error || !data) {
