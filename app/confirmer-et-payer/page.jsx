@@ -47,6 +47,14 @@ function ConfirmerEtPayerContent() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState('');
   const [authSuccess, setAuthSuccess] = useState('');
+  
+  // État local pour le nombre de voyageurs (modifiable)
+  const [selectedGuests, setSelectedGuests] = useState(parseInt(guests) || 2);
+  
+  // Synchroniser selectedGuests avec le paramètre guests
+  useEffect(() => {
+    setSelectedGuests(parseInt(guests) || 2);
+  }, [guests]);
 
   // Format prix
   const formatEUR = (amount) => {
@@ -257,8 +265,8 @@ function ConfirmerEtPayerContent() {
           communeName: listing.city,
           category: 'non-classe',
           pricePerNightEUR: baseNight,
-          guests: guestsNum,
-          adults: guestsNum,
+          guests: selectedGuests,
+          adults: selectedGuests,
           nights: nightsNum
         };
         const res = await fetch('/api/taxe-sejour/calc', {
@@ -327,7 +335,7 @@ function ConfirmerEtPayerContent() {
       }
     };
     loadTaxe();
-  }, [listing?.city, listing?.price_per_night, nights, guests]);
+  }, [listing?.city, listing?.price_per_night, nights, selectedGuests]);
 
   // Parser date YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss en date locale (pour éviter problèmes de timezone)
   const parseLocalDate = (dateStr) => {
@@ -452,7 +460,7 @@ function ConfirmerEtPayerContent() {
           reservationData: {
             startDate,
             endDate,
-            guests: parseInt(guests),
+            guests: parseInt(selectedGuests),
             nights: parseInt(nights)
           }
         })
@@ -473,7 +481,7 @@ function ConfirmerEtPayerContent() {
           guestId: user.id,
           startDate: searchParams.get('startDate') || startDate,
           endDate: searchParams.get('endDate') || endDate,
-          guests: searchParams.get('guests') || guests,
+          guests: selectedGuests,
           basePrice: calculatedPrices.basePrice,
           taxPrice: calculatedPrices.taxPrice,
           totalPrice: calculatedPrices.totalPrice,
@@ -834,7 +842,7 @@ function ConfirmerEtPayerContent() {
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>
-                        {formatDate(startDate)}
+                        du {formatDate(startDate)}
                       </div>
                       <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 500 }}>
                         au {formatDate(endDate)}
@@ -853,8 +861,76 @@ function ConfirmerEtPayerContent() {
                         Voyageurs
                       </div>
                     </div>
-                    <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>
-                      {guests} voyageur{parseInt(guests) > 1 ? 's' : ''}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <button
+                        onClick={() => setSelectedGuests(Math.max(1, selectedGuests - 1))}
+                        disabled={selectedGuests <= 1}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: '50%',
+                          border: '2px solid #e5e7eb',
+                          background: selectedGuests <= 1 ? '#f3f4f6' : 'white',
+                          color: selectedGuests <= 1 ? '#9ca3af' : '#111827',
+                          cursor: selectedGuests <= 1 ? 'not-allowed' : 'pointer',
+                          fontSize: 18,
+                          fontWeight: 600,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseOver={(e) => {
+                          if (selectedGuests > 1) {
+                            e.target.style.borderColor = '#60A29D';
+                            e.target.style.color = '#60A29D';
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (selectedGuests > 1) {
+                            e.target.style.borderColor = '#e5e7eb';
+                            e.target.style.color = '#111827';
+                          }
+                        }}
+                      >
+                        −
+                      </button>
+                      <span style={{ fontWeight: 600, fontSize: 14, color: '#111827', minWidth: 80, textAlign: 'center' }}>
+                        {selectedGuests} voyageur{selectedGuests > 1 ? 's' : ''}
+                      </span>
+                      <button
+                        onClick={() => setSelectedGuests(Math.min(listing?.nb_voyageurs || 10, selectedGuests + 1))}
+                        disabled={selectedGuests >= (listing?.nb_voyageurs || 10)}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: '50%',
+                          border: '2px solid #e5e7eb',
+                          background: selectedGuests >= (listing?.nb_voyageurs || 10) ? '#f3f4f6' : 'white',
+                          color: selectedGuests >= (listing?.nb_voyageurs || 10) ? '#9ca3af' : '#111827',
+                          cursor: selectedGuests >= (listing?.nb_voyageurs || 10) ? 'not-allowed' : 'pointer',
+                          fontSize: 18,
+                          fontWeight: 600,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseOver={(e) => {
+                          if (selectedGuests < (listing?.nb_voyageurs || 10)) {
+                            e.target.style.borderColor = '#60A29D';
+                            e.target.style.color = '#60A29D';
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (selectedGuests < (listing?.nb_voyageurs || 10)) {
+                            e.target.style.borderColor = '#e5e7eb';
+                            e.target.style.color = '#111827';
+                          }
+                        }}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 </div>
