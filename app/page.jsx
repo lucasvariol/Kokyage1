@@ -94,8 +94,7 @@ export default function HomePage() {
             borderRadius: '50%',
             background: 'rgba(255, 255, 255, 0.06)',
             top: '35%',
-            left: '50%',
-            transform: 'translateX(-50%)',
+            left: 'calc(50% - 160px)',
             animation: 'float 25s ease-in-out infinite',
             animationDelay: '1.5s'
           }}
