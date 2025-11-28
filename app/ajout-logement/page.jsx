@@ -367,10 +367,8 @@ export default function Page() {
             tenantId: user.id,
             tenantEmail: user.email,
             ownerEmail,
-            tenantFullName: userFullName || user.email,
             listingAddress: street,
             infoAccuracyAccepted: infoAccuracyChecked,
-            ownerConsentAccepted: consentChecked,
             agreementText,
             signatureType: 'tenant' // Signature du locataire
           })
@@ -2135,7 +2133,7 @@ export default function Page() {
                   disabled={loading || !infoAccuracyChecked}
                   style={{
                     position: 'relative',
-                    background: (loading || !consentChecked || !infoAccuracyChecked)
+                    background: (loading || !infoAccuracyChecked)
                       ? 'linear-gradient(135deg, #A0AEC0, #718096)' 
                       : 'linear-gradient(135deg, #D79077 0%, #C96745 50%, #B8553C 100%)',
                     color: '#fff',
@@ -2144,9 +2142,9 @@ export default function Page() {
                     fontWeight: 800,
                     fontSize: '1.2rem',
                     border: 'none',
-                    cursor: (loading || !consentChecked || !infoAccuracyChecked) ? 'not-allowed' : 'pointer',
+                    cursor: (loading || !infoAccuracyChecked) ? 'not-allowed' : 'pointer',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: (loading || !consentChecked || !infoAccuracyChecked)
+                    boxShadow: (loading || !infoAccuracyChecked)
                       ? '0 8px 25px rgba(160,174,192,0.3)' 
                       : '0 15px 35px rgba(201, 103, 69, 0.4)',
                     letterSpacing: '0.5px',
@@ -2188,7 +2186,7 @@ export default function Page() {
                     gap: '12px'
                   }}>
                     {!loading && <span style={{ fontSize: '1.3rem' }}>🚀</span>}
-                    {loading ? 'Envoi au propriétaire en cours...' : !infoAccuracyChecked ? 'Veuillez attester l\'exactitude des informations' : !consentChecked ? 'Veuillez accepter l\'accord de sous location' : 'Soumettre mon annonce'}
+                    {loading ? 'Envoi au propriétaire en cours...' : !infoAccuracyChecked ? 'Veuillez attester l\'exactitude des informations' : 'Soumettre mon annonce'}
                   </span>
                   
                   {/* Effet de brillance */}
