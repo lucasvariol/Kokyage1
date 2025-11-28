@@ -56,7 +56,7 @@ export default function HomePage() {
                 width: `${size}px`,
                 height: `${size}px`,
                 borderRadius: '50%',
-                background: `radial-gradient(circle, rgba(245,230,211,0.6) 0%, transparent 50%)`,
+                background: `rgba(255, 255, 255, ${Math.random() * 0.15 + 0.05})`,
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
                 animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
