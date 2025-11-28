@@ -195,12 +195,14 @@ function ListingsMap({ items, center, onCenterChange, searchView, ratings = {} }
                 <div style="font-size:10px;color:#666;font-weight:500;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;">${logement.city || 'Paris'}</div>
                 <div style="font-size:13px;font-weight:700;color:#222;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${logement.title || ''}</div>
               </div>
-              ${reviewCount > 0 ? `
-                <div style="display:flex;align-items:center;gap:3px;background:#fff7ed;padding:3px 6px;border-radius:6px;margin-left:6px;flex-shrink:0;">
+              <div style="display:flex;align-items:center;gap:3px;background:#fff7ed;padding:3px 6px;border-radius:6px;margin-left:6px;flex-shrink:0;">
+                ${reviewCount > 0 ? `
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                   <span style="font-size:11px;font-weight:600;color:#222;">${rating.toFixed(1)}</span>
-                </div>
-              ` : ''}
+                ` : `
+                  <span style="font-size:11px;font-weight:600;color:#666;">- -</span>
+                `}
+              </div>
             </div>
             ${logement.nb_voyageurs || logement.bedrooms || logement.bathrooms ? `
               <div style="display:flex;gap:8px;margin-bottom:8px;font-size:11px;color:#666;">
@@ -3343,26 +3345,32 @@ function LogementsInner() {
                               📍 {it.city || 'Non spécifié'}
                             </div>
                           </div>
-                          {reviewCount > 0 && (
-                            <div style={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              gap: 4,
-                              background: '#fff7ed',
-                              padding: '4px 10px',
-                              borderRadius: 12
-                            }}>
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                              </svg>
-                              <span style={{ fontSize: 14, fontWeight: 600, color: '#222' }}>
-                                {rating.toFixed(1)}
+                          <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: 4,
+                            background: '#fff7ed',
+                            padding: '4px 10px',
+                            borderRadius: 12
+                          }}>
+                            {reviewCount > 0 ? (
+                              <>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                                <span style={{ fontSize: 14, fontWeight: 600, color: '#222' }}>
+                                  {rating.toFixed(1)}
+                                </span>
+                                <span style={{ fontSize: 13, color: '#888' }}>
+                                  ({reviewCount})
+                                </span>
+                              </>
+                            ) : (
+                              <span style={{ fontSize: 14, fontWeight: 600, color: '#666' }}>
+                                - -
                               </span>
-                              <span style={{ fontSize: 13, color: '#888' }}>
-                                ({reviewCount})
-                              </span>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
 
                         {/* Title */}
