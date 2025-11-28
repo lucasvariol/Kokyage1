@@ -40,6 +40,18 @@ export default function Page() {
   const [ownerEmail, setOwnerEmail] = useState('');
   const [infoAccuracyChecked, setInfoAccuracyChecked] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  
+  // États pour le formulaire d'authentification
+  const [authTab, setAuthTab] = useState('inscription'); // 'inscription' ou 'connexion'
+  const [authNom, setAuthNom] = useState('');
+  const [authPrenom, setAuthPrenom] = useState('');
+  const [authDateNaissance, setAuthDateNaissance] = useState('');
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authAcceptCGU, setAuthAcceptCGU] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
+  const [authSuccess, setAuthSuccess] = useState('');
 
   // Functions stay the same
   const handleAddressChange = (e) => {
@@ -183,6 +195,192 @@ export default function Page() {
 
     const uploadedUrls = await Promise.all(uploadPromises);
     return uploadedUrls.filter((url) => url);
+  };
+
+  // Fonction pour calculer l'âge
+  const calculateAge = (birthDate) => {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
+
+  // Fonction d'inscription dans la modal
+  const handleAuthSignup = async (e) => {
+    e.preventDefault();
+    setAuthLoading(true);
+    setAuthError('');
+    setAuthSuccess('');
+    
+    if (!authAcceptCGU) {
+      setAuthError('Vous devez accepter les conditions générales d\'utilisation');
+      setAuthLoading(false);
+      return;
+    }
+
+    const isAdult = authDateNaissance ? calculateAge(authDateNaissance) >= 18 : false;
+    if (!isAdult) {
+      setAuthError('Vous devez avoir au moins 18 ans pour vous inscrire');
+      setAuthLoading(false);
+      return;
+    }
+    
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: authEmail,
+        password: authPassword,
+        options: { 
+          data: { 
+            nom: authNom, 
+            prenom: authPrenom, 
+            dateNaissance: authDateNaissance,
+            full_name: `${authPrenom} ${authNom}`.trim()
+          },
+          emailRedirectTo: `${window.location.origin}/ajout-logement`
+        }
+      });
+
+      if (signUpError) {
+        setAuthError(signUpError.message || 'Erreur lors de la création du compte');
+        setAuthLoading(false);
+        return;
+      }
+
+      if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        setAuthError('Cette adresse email est déjà utilisée. Veuillez vous connecter.');
+        setAuthLoading(false);
+        return;
+      }
+      
+      const user = data?.user;
+      
+      if (user) {
+        try {
+          const fullName = `${authPrenom} ${authNom}`.trim();
+          await supabase.from('profiles').insert({ 
+            id: user.id, 
+            name: fullName
+          });
+        } catch (profileErr) {
+          console.warn('Erreur profil (non bloquante):', profileErr);
+        }
+
+        // Envoyer l'email de vérification
+        try {
+          await fetch('/api/emails/verify-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: authEmail,
+              userId: user.id,
+              nom: authNom,
+              prenom: authPrenom
+            })
+          });
+        } catch (emailErr) {
+          console.warn('Erreur envoi email:', emailErr);
+        }
+
+        setAuthSuccess('✅ Compte créé ! Vérifiez votre email pour activer votre compte, puis reconnectez-vous.');
+        setAuthLoading(false);
+        
+        // Basculer vers connexion après 3 secondes
+        setTimeout(() => {
+          setAuthTab('connexion');
+          setAuthSuccess('');
+        }, 3000);
+      }
+    } catch (err) {
+      console.error('Erreur inscription:', err);
+      setAuthError('Une erreur est survenue lors de l\'inscription');
+      setAuthLoading(false);
+    }
+  };
+
+  // Fonction de connexion dans la modal
+  const handleAuthLogin = async (e) => {
+    e.preventDefault();
+    setAuthLoading(true);
+    setAuthError('');
+    setAuthSuccess('');
+    
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ 
+        email: authEmail, 
+        password: authPassword 
+      });
+      
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          setAuthError('Email ou mot de passe incorrect');
+        } else if (error.message.includes('Email not confirmed')) {
+          setAuthError('Veuillez confirmer votre adresse email avant de vous connecter');
+        } else {
+          setAuthError(error.message || 'Erreur de connexion');
+        }
+        setAuthLoading(false);
+        return;
+      }
+
+      const user = data.user;
+      
+      // Vérifier l'email
+      const { data: verificationData } = await supabase
+        .from('email_verifications')
+        .select('verified_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (!verificationData || !verificationData.verified_at) {
+        setAuthError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email.');
+        setAuthLoading(false);
+        await supabase.auth.signOut();
+        return;
+      }
+
+      // Créer le profil si nécessaire
+      if (user) {
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (!existingProfile) {
+          const fullName = user.user_metadata?.full_name ||
+            `${user.user_metadata?.prenom || ''} ${user.user_metadata?.nom || ''}`.trim() ||
+            user.email.split('@')[0];
+
+          await supabase.from('profiles').insert({
+            id: user.id,
+            name: fullName
+          });
+        }
+      }
+
+      setAuthSuccess('✅ Connexion réussie !');
+      setAuthLoading(false);
+      
+      // Fermer la modal et actualiser la page pour continuer la soumission
+      setTimeout(() => {
+        setShowAuthModal(false);
+        setAuthSuccess('');
+        // L'utilisateur peut maintenant soumettre son annonce
+      }, 1000);
+      
+    } catch (err) {
+      console.error('Erreur connexion:', err);
+      setAuthError('Une erreur est survenue lors de la connexion');
+      setAuthLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -2280,7 +2478,7 @@ export default function Page() {
         onDescriptionGenerated={(generatedDescription) => setDescription(generatedDescription)}
       />
 
-      {/* Modal d'authentification */}
+      {/* Modal d'authentification avec formulaire complet */}
       {showAuthModal && (
         <div style={{
           position: 'fixed',
@@ -2294,112 +2492,33 @@ export default function Page() {
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 9999,
-          padding: '20px'
+          padding: '20px',
+          overflowY: 'auto'
         }}
-        onClick={() => setShowAuthModal(false)}>
+        onClick={() => {
+          setShowAuthModal(false);
+          setAuthError('');
+          setAuthSuccess('');
+        }}>
           <div style={{
             background: 'white',
             borderRadius: '24px',
-            padding: '48px 40px',
-            maxWidth: '480px',
+            padding: '40px',
+            maxWidth: '500px',
             width: '100%',
             boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-            textAlign: 'center',
-            position: 'relative'
+            position: 'relative',
+            margin: '20px 0'
           }}
           onClick={(e) => e.stopPropagation()}>
-            {/* Icon */}
-            <div style={{
-              width: '80px',
-              height: '80px',
-              background: 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 24px',
-              fontSize: '40px'
-            }}>
-              🔐
-            </div>
-
-            {/* Title */}
-            <h2 style={{
-              fontSize: '28px',
-              fontWeight: '700',
-              color: '#2D3748',
-              marginBottom: '16px',
-              lineHeight: '1.2'
-            }}>
-              Authentification requise
-            </h2>
-
-            {/* Description */}
-            <p style={{
-              fontSize: '16px',
-              color: '#718096',
-              marginBottom: '32px',
-              lineHeight: '1.6'
-            }}>
-              Inscrivez-vous ou connectez-vous pour ajouter votre logement sur Kokyage
-            </p>
-
-            {/* Buttons */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px'
-            }}>
-              <Link href="/inscription" style={{
-                background: 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
-                color: 'white',
-                padding: '16px 32px',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontWeight: '600',
-                fontSize: '16px',
-                boxShadow: '0 4px 15px rgba(96,162,157,0.3)',
-                transition: 'all 0.3s ease',
-                display: 'block'
-              }}
-              onMouseOver={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 6px 20px rgba(96,162,157,0.4)';
-              }}
-              onMouseOut={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 15px rgba(96,162,157,0.3)';
-              }}>
-                S'inscrire
-              </Link>
-
-              <Link href="/inscription" style={{
-                background: 'rgba(96,162,157,0.1)',
-                color: '#60A29D',
-                padding: '16px 32px',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontWeight: '600',
-                fontSize: '16px',
-                border: '2px solid rgba(96,162,157,0.3)',
-                transition: 'all 0.3s ease',
-                display: 'block'
-              }}
-              onMouseOver={(e) => {
-                e.target.style.background = 'rgba(96,162,157,0.15)';
-                e.target.style.borderColor = 'rgba(96,162,157,0.5)';
-              }}
-              onMouseOut={(e) => {
-                e.target.style.background = 'rgba(96,162,157,0.1)';
-                e.target.style.borderColor = 'rgba(96,162,157,0.3)';
-              }}>
-                Se connecter
-              </Link>
-            </div>
-
+            
             {/* Close button */}
             <button
-              onClick={() => setShowAuthModal(false)}
+              onClick={() => {
+                setShowAuthModal(false);
+                setAuthError('');
+                setAuthSuccess('');
+              }}
               style={{
                 position: 'absolute',
                 top: '20px',
@@ -2412,7 +2531,8 @@ export default function Page() {
                 cursor: 'pointer',
                 fontSize: '20px',
                 color: '#718096',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                zIndex: 10
               }}
               onMouseOver={(e) => {
                 e.target.style.background = 'rgba(0,0,0,0.1)';
@@ -2422,6 +2542,345 @@ export default function Page() {
               }}>
               ✕
             </button>
+
+            {/* Tabs */}
+            <div style={{
+              display: 'flex',
+              gap: '12px',
+              marginBottom: '32px',
+              borderBottom: '2px solid #F7FAFC'
+            }}>
+              <button
+                onClick={() => {
+                  setAuthTab('inscription');
+                  setAuthError('');
+                  setAuthSuccess('');
+                }}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  background: authTab === 'inscription' ? 'white' : 'transparent',
+                  color: authTab === 'inscription' ? '#C96745' : '#A0AEC0',
+                  border: 'none',
+                  borderBottom: authTab === 'inscription' ? '3px solid #C96745' : '3px solid transparent',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '15px',
+                  transition: 'all 0.3s ease',
+                  borderRadius: '8px 8px 0 0'
+                }}>
+                Inscription
+              </button>
+              <button
+                onClick={() => {
+                  setAuthTab('connexion');
+                  setAuthError('');
+                  setAuthSuccess('');
+                }}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  background: authTab === 'connexion' ? 'white' : 'transparent',
+                  color: authTab === 'connexion' ? '#C96745' : '#A0AEC0',
+                  border: 'none',
+                  borderBottom: authTab === 'connexion' ? '3px solid #C96745' : '3px solid transparent',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '15px',
+                  transition: 'all 0.3s ease',
+                  borderRadius: '8px 8px 0 0'
+                }}>
+                Connexion
+              </button>
+            </div>
+
+            {/* Title */}
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '700',
+              color: '#2D3748',
+              marginBottom: '8px',
+              textAlign: 'center'
+            }}>
+              {authTab === 'connexion' ? 'Bon retour' : 'Bienvenue'}
+            </h2>
+
+            <p style={{
+              fontSize: '14px',
+              color: '#718096',
+              marginBottom: '24px',
+              textAlign: 'center'
+            }}>
+              {authTab === 'connexion' ? 'Connectez-vous pour continuer' : 'Créez votre compte pour continuer'}
+            </p>
+
+            {/* Messages */}
+            {authError && (
+              <div style={{
+                padding: '12px 16px',
+                background: '#FEE',
+                border: '1px solid #FCC',
+                borderRadius: '8px',
+                color: '#C53030',
+                fontSize: '14px',
+                marginBottom: '16px'
+              }}>
+                {authError}
+              </div>
+            )}
+
+            {authSuccess && (
+              <div style={{
+                padding: '12px 16px',
+                background: '#E6FFFA',
+                border: '1px solid #81E6D9',
+                borderRadius: '8px',
+                color: '#234E52',
+                fontSize: '14px',
+                marginBottom: '16px'
+              }}>
+                {authSuccess}
+              </div>
+            )}
+
+            {/* Formulaire d'inscription */}
+            {authTab === 'inscription' && (
+              <form onSubmit={handleAuthSignup} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '600', color: '#2D3748' }}>
+                    Nom *
+                  </label>
+                  <input
+                    type="text"
+                    value={authNom}
+                    onChange={(e) => setAuthNom(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '2px solid #E2E8F0',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      outline: 'none',
+                      transition: 'border 0.3s ease'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#60A29D'}
+                    onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '600', color: '#2D3748' }}>
+                    Prénom *
+                  </label>
+                  <input
+                    type="text"
+                    value={authPrenom}
+                    onChange={(e) => setAuthPrenom(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '2px solid #E2E8F0',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      outline: 'none',
+                      transition: 'border 0.3s ease'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#60A29D'}
+                    onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '600', color: '#2D3748' }}>
+                    Date de naissance *
+                  </label>
+                  <input
+                    type="date"
+                    value={authDateNaissance}
+                    onChange={(e) => setAuthDateNaissance(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '2px solid #E2E8F0',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      outline: 'none',
+                      transition: 'border 0.3s ease'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#60A29D'}
+                    onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
+                  />
+                  {authDateNaissance && calculateAge(authDateNaissance) < 18 && (
+                    <p style={{ fontSize: '13px', color: '#E53E3E', marginTop: '6px' }}>
+                      Vous devez avoir au moins 18 ans
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '600', color: '#2D3748' }}>
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '2px solid #E2E8F0',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      outline: 'none',
+                      transition: 'border 0.3s ease'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#60A29D'}
+                    onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '600', color: '#2D3748' }}>
+                    Mot de passe *
+                  </label>
+                  <input
+                    type="password"
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '2px solid #E2E8F0',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      outline: 'none',
+                      transition: 'border 0.3s ease'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#60A29D'}
+                    onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
+                  />
+                  <p style={{ fontSize: '12px', color: '#718096', marginTop: '4px' }}>
+                    Minimum 6 caractères
+                  </p>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <input
+                    type="checkbox"
+                    checked={authAcceptCGU}
+                    onChange={(e) => setAuthAcceptCGU(e.target.checked)}
+                    style={{ marginTop: '4px' }}
+                  />
+                  <label style={{ fontSize: '13px', color: '#4A5568', lineHeight: '1.5' }}>
+                    J'accepte les{' '}
+                    <a href="/cgu" target="_blank" style={{ color: '#60A29D', textDecoration: 'underline' }}>
+                      Conditions Générales d'Utilisation
+                    </a>
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  style={{
+                    width: '100%',
+                    padding: '14px',
+                    background: authLoading ? '#CBD5E0' : 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '12px',
+                    fontWeight: '600',
+                    fontSize: '16px',
+                    cursor: authLoading ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    marginTop: '8px'
+                  }}>
+                  {authLoading ? 'Création en cours...' : 'Créer mon compte'}
+                </button>
+              </form>
+            )}
+
+            {/* Formulaire de connexion */}
+            {authTab === 'connexion' && (
+              <form onSubmit={handleAuthLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '600', color: '#2D3748' }}>
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '2px solid #E2E8F0',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      outline: 'none',
+                      transition: 'border 0.3s ease'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#60A29D'}
+                    onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '600', color: '#2D3748' }}>
+                    Mot de passe *
+                  </label>
+                  <input
+                    type="password"
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '2px solid #E2E8F0',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      outline: 'none',
+                      transition: 'border 0.3s ease'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#60A29D'}
+                    onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
+                  />
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <a href="/mot-de-passe-oublie" style={{ fontSize: '13px', color: '#60A29D', textDecoration: 'none' }}>
+                    Mot de passe oublié ?
+                  </a>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  style={{
+                    width: '100%',
+                    padding: '14px',
+                    background: authLoading ? '#CBD5E0' : 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '12px',
+                    fontWeight: '600',
+                    fontSize: '16px',
+                    cursor: authLoading ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    marginTop: '8px'
+                  }}>
+                  {authLoading ? 'Connexion en cours...' : 'Se connecter'}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       )}
