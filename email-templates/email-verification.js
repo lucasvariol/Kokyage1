@@ -37,7 +37,7 @@ export const emailVerificationTemplate = {
               </p>
               
               <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #2D3748;">
-                Merci de vous être inscrit sur <strong style="color: #C96745;">Kokyage</strong>, la plateforme qui révolutionne la location entre particuliers !
+                Merci de vous être inscrit sur <strong style="color: #C96745;">Kokyage</strong> ! Nous sommes ravis de vous compter parmi nous.
               </p>
 
               <p style="margin: 0 0 30px; font-size: 16px; line-height: 1.6; color: #2D3748;">
@@ -61,18 +61,6 @@ export const emailVerificationTemplate = {
               <p style="margin: 10px 0 0; font-size: 13px; word-break: break-all; color: #60A29D;">
                 ${verificationUrl}
               </p>
-
-              <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #E8E3DC;">
-                <p style="margin: 0 0 15px; font-size: 15px; line-height: 1.6; color: #2D3748; font-weight: 600;">
-                  Pourquoi Kokyage ?
-                </p>
-                <ul style="margin: 0; padding-left: 20px; color: #4A5568; font-size: 14px; line-height: 1.8;">
-                  <li>🏡 <strong>Logements authentiques</strong> chez l'habitant</li>
-                  <li>💰 <strong>Revenus partagés</strong> équitablement (60% locataire / 40% propriétaire)</li>
-                  <li>✅ <strong>100% légal</strong> avec accord électronique du propriétaire</li>
-                  <li>🛡️ <strong>Sécurisé</strong> : vérifications, modération et assurance</li>
-                </ul>
-              </div>
             </td>
           </tr>
 
