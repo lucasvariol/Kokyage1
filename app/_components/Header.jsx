@@ -482,7 +482,25 @@ export default function Header({ activeTab, setActiveTab }) {
                   margin: '0 0 16px 0'
                 }}>Navigation</h4>
                 
-                  <Link href="/fonctionnement" style={{
+                <Link href="/ajout-logement" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                  color: 'white',
+                  padding: '14px 20px',
+                  borderRadius: '12px',
+                  textDecoration: 'none',
+                  fontWeight: '700',
+                  fontSize: '14px',
+                  marginBottom: '12px',
+                  gap: '8px',
+                  boxShadow: '0 4px 12px rgba(215,144,119,0.25)'
+                }}>
+                  🏡 Ajouter mon logement
+                </Link>
+                
+                <Link href="/fonctionnement" style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
