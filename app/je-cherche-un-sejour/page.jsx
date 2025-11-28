@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef, useState, createRef, useEffect } from "react";
-import Header from './_components/Header';
-import Footer from './_components/Footer';
-import Chatbot from './_components/Chatbot';
-import MobileSearchWorkflow from './_components/MobileSearchWorkflow';
+import Header from '../_components/Header';
+import Footer from '../_components/Footer';
+import Chatbot from '../_components/Chatbot';
+import MobileSearchWorkflow from '../_components/MobileSearchWorkflow';
 
 export default function Page() {
   const [lieu, setLieu] = useState("");
