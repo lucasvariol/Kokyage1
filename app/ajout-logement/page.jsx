@@ -37,9 +37,6 @@ export default function Page() {
   const [bathrooms, setBathrooms] = useState(1);
   const [description, setDescription] = useState('');
   const [ownerEmail, setOwnerEmail] = useState('');
-  const [consentChecked, setConsentChecked] = useState(false);
-  const [consentOpen, setConsentOpen] = useState(false);
-  const [userFullName, setUserFullName] = useState('');
   const [infoAccuracyChecked, setInfoAccuracyChecked] = useState(false);
 
   // Check if user is authenticated
@@ -48,28 +45,6 @@ export default function Page() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push('/inscription');
-      } else {
-        // Récupérer les infos de l'utilisateur
-        const { data: userData, error } = await supabase
-          .from('users')
-          .select('full_name')
-          .eq('id', session.user.id)
-          .single();
-        
-        console.log('User data from DB:', userData, 'Error:', error);
-        
-        if (userData?.full_name) {
-          setUserFullName(userData.full_name);
-        } else if (session.user.user_metadata?.full_name) {
-          // Fallback sur les métadonnées si pas dans la DB
-          setUserFullName(session.user.user_metadata.full_name);
-        } else if (session.user.user_metadata?.name) {
-          setUserFullName(session.user.user_metadata.name);
-        } else if (session.user.user_metadata?.prenom && session.user.user_metadata?.nom) {
-          setUserFullName(`${session.user.user_metadata.prenom} ${session.user.user_metadata.nom}`);
-        }
-        
-        console.log('Final userFullName:', userFullName);
       }
     };
     checkAuth();
@@ -2152,101 +2127,12 @@ export default function Page() {
                 </label>
               </div>
 
-              {/* Accord propriétaire */}
-              <div style={{
-                background: 'linear-gradient(135deg, rgba(159,122,234,0.08), rgba(128,90,213,0.04))',
-                border: '2px solid rgba(159,122,234,0.2)',
-                borderRadius: '16px',
-                padding: '20px',
-                marginTop: '24px',
-                backdropFilter: 'blur(10px)'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  marginBottom: '16px'
-                }}>
-                  <span style={{ fontSize: '1.3rem' }}>📜</span>
-                  <span style={{ 
-                    fontWeight: 700, 
-                    color: '#805AD5',
-                    fontSize: '1.1rem'
-                  }}>
-                    Accord sur les conditions de sous-location
-                  </span>
-                </div>
-                <label style={{ 
-                  display: 'flex', 
-                  alignItems: 'flex-start', 
-                  gap: '12px', 
-                  cursor: 'pointer',
-                  marginBottom: '12px'
-                }}>
-                  <input 
-                    type="checkbox" 
-                    checked={consentChecked} 
-                    onChange={(e) => setConsentChecked(e.target.checked)} 
-                    style={{ 
-                      marginTop: '4px',
-                      width: '18px',
-                      height: '18px',
-                      cursor: 'pointer'
-                    }} 
-                  />
-                  <span style={{ 
-                    color: '#2D3748', 
-                    fontWeight: 600, 
-                    fontSize: '0.95rem',
-                    lineHeight: 1.5
-                  }}>
-                    J'atteste avoir lu et compris l'accord ci-dessous.
-                  </span>
-                </label>
-                <button 
-                  type="button" 
-                  onClick={() => setConsentOpen(v => !v)} 
-                  style={{ 
-                    background: 'transparent', 
-                    border: 'none', 
-                    color: '#805AD5', 
-                    fontWeight: 700, 
-                    padding: 0, 
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    textDecoration: 'underline'
-                  }}
-                >
-                  {consentOpen ? '▼ Masquer le détail de l\'accord' : '▶ Afficher le détail de l\'accord'}
-                </button>
-                {consentOpen && (
-                  <div style={{ 
-                    marginTop: '16px', 
-                    maxHeight: '400px', 
-                    overflowY: 'auto', 
-                    padding: '20px', 
-                    background: 'white', 
-                    border: '1px solid rgba(159,122,234,0.3)', 
-                    borderRadius: '12px', 
-                    lineHeight: 1.6, 
-                    fontSize: '0.875rem'
-                  }}>
-                    <OwnerConsentAgreement
-                      ownerName={ownerEmail || 'Propriétaire du logement'}
-                      tenantName={userFullName || 'Locataire principal'}
-                      fullAddress={street || 'Adresse du logement'}
-                    />
-                  </div>
-                )}
-              </div>
-
               {/* Bouton de soumission ultra-moderne */}
               <div className="submit-container" style={{ textAlign: 'center', marginTop: '20px' }}>
                 <button
                   className="submit-button"
                   type="submit"
-                  disabled={loading || !consentChecked || !infoAccuracyChecked}
+                  disabled={loading || !infoAccuracyChecked}
                   style={{
                     position: 'relative',
                     background: (loading || !consentChecked || !infoAccuracyChecked)
