@@ -1924,7 +1924,7 @@ export default function Page() {
               margin: '0 0 12px 0',
               letterSpacing: '-0.01em'
             }}>
-              Calculez vos revenus potentiels
+              Calculez vos futurs revenus
             </h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
