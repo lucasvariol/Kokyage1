@@ -147,8 +147,8 @@ export default function Header({ activeTab, setActiveTab }) {
 
           {/* NAVIGATION */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {/* Tab Switcher - Show on search and sublet pages */}
-            {(pathname === '/je-cherche-un-sejour' || pathname === '/sous-louer') && (
+            {/* Tab Switcher - Show on search and sublet pages, hide on mobile */}
+            {(pathname === '/je-cherche-un-sejour' || pathname === '/sous-louer') && !isMobile && (
               <Link
                 href={pathname === '/je-cherche-un-sejour' ? '/sous-louer' : '/je-cherche-un-sejour'}
                 className="mode-switcher-btn"
@@ -321,6 +321,28 @@ export default function Header({ activeTab, setActiveTab }) {
                     textTransform: 'uppercase', 
                     margin: '0 0 12px 0'
                   }}>ACTIONS</h4>
+                  
+                  {/* Mode switcher on mobile */}
+                  {(pathname === '/je-cherche-un-sejour' || pathname === '/sous-louer') && (
+                    <Link href={pathname === '/je-cherche-un-sejour' ? '/sous-louer' : '/je-cherche-un-sejour'} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#1F2937',
+                      background: 'rgba(96,162,157,0.15)',
+                      border: '1px solid rgba(96,162,157,0.3)',
+                      padding: '14px 20px',
+                      borderRadius: '12px',
+                      marginBottom: '12px',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      textDecoration: 'none',
+                      gap: '8px',
+                      transition: 'all 0.2s ease'
+                    }}>
+                      {pathname === '/je-cherche-un-sejour' ? '🏠 Je sous-loue un logement' : '🏖️ Je cherche un séjour'}
+                    </Link>
+                  )}
                   
                   <Link href="/ajout-logement" style={{
                     display: 'flex',
