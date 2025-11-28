@@ -188,7 +188,7 @@ export default function Header({ activeTab, setActiveTab }) {
                   Comment ça marche
                 </Link>
                 
-                <Link href="/inscription" className="desktop-button" style={{
+                <Link href="/ajout-logement" className="desktop-button" style={{
                   background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                   color: 'white',
                   padding: '11px 18px',
@@ -200,7 +200,7 @@ export default function Header({ activeTab, setActiveTab }) {
                   transition: 'all 0.3s ease',
                   whiteSpace: 'nowrap'
                 }}>
-                Créer un compte
+                Ajouter mon logement
                 </Link>
               </nav>
             )}
