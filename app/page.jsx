@@ -288,15 +288,111 @@ export default function HomePage() {
             padding: 28px 16px !important;
           }
 
+          .mode-selection-container > div:first-child {
+            margin-bottom: 28px !important;
+          }
+
+          .mode-selection-container > div:first-child img {
+            height: clamp(90px, 20vw, 120px) !important;
+            margin-bottom: 16px !important;
+          }
+
+          .mode-selection-container h1 {
+            font-size: clamp(1.9rem, 5.5vw, 2.5rem) !important;
+            margin-bottom: 4px !important;
+          }
+
           .mode-selection-cards {
-            flex-direction: column;
-            gap: 20px !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            gap: 12px !important;
+            padding: 0 12px !important;
+            max-width: 100% !important;
+          }
+          
+          .mode-selection-cards > div {
+            flex: 1 1 calc(50% - 12px) !important;
+            min-width: calc(50% - 12px) !important;
+            max-width: calc(50% - 12px) !important;
+            padding: clamp(22px, 5.5vw, 28px) clamp(16px, 4.5vw, 22px) !important;
+            gap: clamp(12px, 3.6vw, 16px) !important;
+            min-height: auto !important;
+            height: auto !important;
+          }
+          
+          .mode-selection-cards > div > div:first-child {
+            font-size: 2.8rem !important;
+          }
+          
+          .mode-selection-cards h2 {
+            font-size: clamp(1.25rem, 3.8vw, 1.6rem) !important;
+            line-height: 1.28 !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .mode-selection-container {
+            padding: 24px 12px !important;
+          }
+
+          .mode-selection-container > div:first-child img {
+            height: clamp(80px, 24vw, 110px) !important;
+          }
+
+          .mode-selection-container h1 {
+            font-size: clamp(1.75rem, 6.3vw, 2.2rem) !important;
+          }
+
+          .mode-selection-cards {
+            gap: 10px !important;
           }
 
           .mode-selection-cards > div {
-            flex: 1 1 auto !important;
-            min-width: 100% !important;
-            max-width: 100% !important;
+            flex: 1 1 calc(50% - 10px) !important;
+            min-width: calc(50% - 10px) !important;
+            max-width: calc(50% - 10px) !important;
+            padding: clamp(20px, 6vw, 24px) clamp(14px, 5vw, 18px) !important;
+            gap: clamp(10px, 4vw, 14px) !important;
+            min-height: auto !important;
+            height: auto !important;
+          }
+          
+          .mode-selection-cards > div > div:first-child {
+            font-size: 2.4rem !important;
+          }
+          
+          .mode-selection-cards h2 {
+            font-size: clamp(1.1rem, 4.2vw, 1.35rem) !important;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .mode-selection-container {
+            padding: 20px 10px !important;
+          }
+
+          .mode-selection-container h1 {
+            font-size: clamp(1.6rem, 6.8vw, 2rem) !important;
+          }
+
+          .mode-selection-cards {
+            gap: 8px !important;
+          }
+
+          .mode-selection-cards > div {
+            flex: 1 1 calc(50% - 8px) !important;
+            min-width: calc(50% - 8px) !important;
+            max-width: calc(50% - 8px) !important;
+            padding: clamp(18px, 6.5vw, 22px) clamp(12px, 5.2vw, 16px) !important;
+            gap: clamp(8px, 4.5vw, 12px) !important;
+          }
+
+          .mode-selection-cards > div > div:first-child {
+            font-size: 2.2rem !important;
+          }
+
+          .mode-selection-cards h2 {
+            font-size: clamp(1.05rem, 5.2vw, 1.3rem) !important;
           }
         }
       `}</style>
