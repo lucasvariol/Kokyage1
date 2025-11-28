@@ -15,7 +15,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'userId et email requis' }, { status: 400 });
     }
 
-    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com';
 
     // 1) Récupérer ou créer un compte connect
     // On checke s'il existe déjà dans le profil
@@ -40,7 +40,7 @@ export async function POST(request) {
         business_profile: {
           product_description: 'Réception de revenus de sous-location via Kokyage',
           support_email: process.env.SUPPORT_EMAIL || undefined,
-          support_url: process.env.NEXT_PUBLIC_APP_URL || undefined
+          support_url: process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'
         },
         metadata: { appUserId: userId }
       });

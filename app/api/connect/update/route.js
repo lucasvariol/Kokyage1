@@ -10,7 +10,7 @@ export async function POST(request) {
     const { userId } = await request.json();
     if (!userId) return NextResponse.json({ error: 'userId requis' }, { status: 400 });
 
-    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com';
 
     const { data: profile } = await supabaseAdmin
       .from('profiles')

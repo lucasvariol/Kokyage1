@@ -122,7 +122,7 @@ export async function POST(request) {
   confirmation_method: 'manual',
   confirm: true,
   setup_future_usage: 'off_session',
-  return_url: `${process.env.NEXT_PUBLIC_APP_URL}/reservations`,
+  return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
     });
 
     // 2. Empreinte bancaire (caution 300€) — on ne la crée qu'après succès du paiement principal
@@ -165,7 +165,7 @@ export async function POST(request) {
         capture_method: 'manual', // autorisation, pas de débit
         confirm: true,
   description: 'Empreinte bancaire caution Kokyage',
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/reservations`,
+        return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
         metadata: {
           type: 'caution',
           userId: userId || 'test-user',

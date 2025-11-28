@@ -83,7 +83,7 @@ export async function POST(req) {
     console.log('✅ Token stored successfully');
     console.log('   Inserted data:', insertedData);
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
+    const appUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com';
     const verifyUrl = `${appUrl}/verification-proprietaire/${token}`;
 
     const subject = 'Validation de votre logement — Kokyage';

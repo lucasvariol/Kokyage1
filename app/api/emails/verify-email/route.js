@@ -34,10 +34,8 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Erreur lors de la création du token' }, { status: 500 });
     }
 
-    // URL de vérification - détection automatique de l'environnement
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 
-                    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 
-                    'https://kokyage.com';
+    // URL de vérification - utilise la variable d'environnement ou le domaine par défaut
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com';
     const verificationUrl = `${siteUrl}/verification-email/${verificationToken}`;
 
     console.log('URL de vérification générée:', verificationUrl);

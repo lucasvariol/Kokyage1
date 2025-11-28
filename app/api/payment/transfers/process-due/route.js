@@ -29,7 +29,7 @@ export async function POST(request) {
     const processed = [];
     for (const r of (reservations || [])) {
       // Appeler l'endpoint de création de transfert pour chaque réservation
-      const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/payment/transfers/create`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/api/payment/transfers/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reservationId: r.id })
