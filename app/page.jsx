@@ -1,11 +1,18 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function HomePage() {
   const router = useRouter();
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    // Petit délai pour s'assurer que tout est rendu avant d'afficher
+    const timer = setTimeout(() => setIsReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleModeSelection = (mode) => {
     setIsTransitioning(true);
@@ -32,7 +39,7 @@ export default function HomePage() {
       zIndex: 9999,
       overflow: 'hidden',
       fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-      opacity: isTransitioning ? 0 : 1,
+      opacity: isTransitioning ? 0 : (isReady ? 1 : 0),
       transition: 'opacity 0.8s ease-out'
     }}>
       {/* Animated background particles */}
@@ -75,9 +82,9 @@ export default function HomePage() {
         padding: '20px 20px 40px',
         maxWidth: '1100px',
         width: '100%',
-        opacity: isTransitioning ? 0 : 1,
+        opacity: isTransitioning ? 0 : (isReady ? 1 : 0),
         filter: isTransitioning ? 'blur(20px)' : 'blur(0px)',
-        transform: isTransitioning ? 'scale(0.9)' : 'scale(1)',
+        transform: isTransitioning ? 'scale(0.9)' : (isReady ? 'scale(1)' : 'scale(0.95)'),
         transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         {/* Logo */}
