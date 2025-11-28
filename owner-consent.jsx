@@ -1,42 +1,34 @@
-export function OwnerConsentAgreement({ ownerName = 'Le Propriétaire', tenantName = 'Nom du locataire principal', fullAddress = '' }) {
+export function OwnerConsentAgreement({ ownerName = 'Le Propri�taire', tenantName = 'Nom du locataire principal', fullAddress = '' }) {
   return (
-    <div style={{ color: '#334155' }}>
-      <div style={{ fontWeight: 800, fontSize: 18, textAlign: 'center', marginBottom: 12 }}>
-        ACCORD DE CONSENTEMENT DU PROPRIÉTAIRE
+    <div style={{ color: '#334155', lineHeight: '1.6' }}>
+      <div style={{ fontWeight: 800, fontSize: 18, textAlign: 'center', marginBottom: 16 }}>
+        ACCORD DE SOUS-LOCATION SUR KOKYAGE.COM
       </div>
-      <div style={{ height: 1, background: '#E2E8F0', margin: '8px 0 16px' }} />
+      <div style={{ height: 1, background: '#E2E8F0', margin: '8px 0 20px' }} />
 
-      <div style={{ fontWeight: 700, marginTop: 8 }}>Entre</div>
-      <p style={{ marginTop: 4 }}>{ownerName}, ci-après dénommé « le Propriétaire ».</p>
+      <p style={{ marginTop: 0, marginBottom: 16 }}>
+        <strong>{ownerName}</strong>, propri�taire du logement sis <strong>{fullAddress}</strong>, autorise <strong>{tenantName}</strong>, titulaire du bail, � sous-louer temporairement ledit bien sur la plateforme Kokyage.com. Le Propri�taire accorde au Locataire principal la libert� de fixer les dates de sous-location ainsi que le montant des nuit�es.
+      </p>
 
-      <div style={{ fontWeight: 700, marginTop: 12 }}>Et</div>
-      <p style={{ marginTop: 4 }}>{tenantName}, titulaire du bail pour le logement situé {fullAddress}, ci-après dénommé « le Locataire Principal ».</p>
+      <p style={{ marginBottom: 16 }}>
+        Les modalit�s de location et de partage des revenus sont pr�cis�es dans les Conditions G�n�rales d'Utilisation, accessibles <a href="/cgu" target="_blank" style={{ color: '#D79077', fontWeight: 600, textDecoration: 'underline' }}>ici</a>.
+      </p>
 
-      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 1 – Objet</div>
-      <p style={{ marginTop: 4 }}>Le Propriétaire autorise expressément le Locataire Principal à sous-louer temporairement à des tiers pour l’utilisation du bien susmentionné, exclusivement sur Kokyage.com et dans les conditions prévues aux articles suivants.</p>
+      <p style={{ marginBottom: 16 }}>
+        Le pr�sent accord ne s'applique qu'aux sous-locations publi�es via Kokyage.com.
+      </p>
 
-      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 2 – Conditions de mise à disposition</div>
-      <p style={{ marginTop: 4 }}>Le Locataire Principal s’engage à :</p>
-      <div style={{ paddingLeft: 14 }}>
-        <p>1. Recourir exclusivement à la plateforme Kokyage.com pour toute mise à disposition du logement, sauf accord écrit préalable du Propriétaire ;</p>
-        <p>2. S'il s'agit de sa résidence principale, ne pas sous-louer le logement plus de cent vingt (120) nuitées par année civile, conformément à la réglementation applicable ;</p>
-        <p>3. Assurer la conformité des mises à disposition avec les réglementations locales en vigueur ;</p>
-        <p>4. Maintenir le logement en bon état d’usage pendant toute la durée de l’occupation par un tiers, et assumer l’entière responsabilité des éventuelles dégradations causées par les occupants.</p>
-      </div>
+      <p style={{ marginBottom: 16 }}>
+        Le Propri�taire peut y mettre fin � tout moment depuis la plateforme, sous r�serve d'un pr�avis de quatorze (14) jours.
+      </p>
 
-      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 3 – Durée et résiliation</div>
-      <p style={{ marginTop: 4 }}>Le présent accord est conclu pour une durée indéterminée à compter de la signature.</p>
-      <p>Il peut être résilié à tout moment par le Propriétaire, via la plateforme Kokyage.com, moyennant un préavis de quatorze (14) jours.</p>
-      <p>L’accord reste valable tant que le Locataire Principal demeure titulaire du bail du logement susmentionné.</p>
-      <p>En cas de résiliation, Kokyage.com se réserve le droit d’annuler toutes les réservations en cours dont la date de fin excède le délai de préavis, à compter de la réception de ladite résiliation.</p>
-      <p>En cas de non-respect des CGU, Kokyage.com se réserve le droit d’annuler toutes les réservations sans préavis ainsi que de clôturer l’annonce.</p>
-      <p>Cette disposition vise à garantir une exécution loyale des engagements envers les voyageurs, tout en respectant la volonté du Propriétaire.</p>
+      <p style={{ marginBottom: 16 }}>
+        En cas de r�siliation, toute r�servation dont la date de fin exc�de le d�lai de pr�avis, � compter de la r�ception de ladite r�siliation, sera annul�e.
+      </p>
 
-      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 4 – Clause de non-transfert</div>
-      <p style={{ marginTop: 4 }}>Le présent accord est strictement personnel au Locataire Principal et ne peut être cédé à un tiers, même en cas de transfert du bail.</p>
-
-      <div style={{ fontWeight: 700, marginTop: 16 }}>Article 5 – Information du propriétaire</div>
-      <p style={{ marginTop: 4 }}>Reconnaît avoir été pleinement informé du fonctionnement de la plateforme Kokyage.com et des conditions de sous-location. Il déclare donner son accord en toute connaissance de cause.</p>
+      <p style={{ marginBottom: 0 }}>
+        � d�faut de r�siliation, le pr�sent accord demeure en vigueur tant que le Locataire principal reste titulaire du bail du logement.
+      </p>
     </div>
   );
 }
