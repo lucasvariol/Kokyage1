@@ -1750,7 +1750,7 @@ export default function Page() {
                 touchAction: 'pan-x'
               }}
             >
-              {/* Argument 1 - Contre la spéculation */}
+              {/* Argument 1 - Hébergements authentiques */}
               <div
                 style={{
                   background: 'white',
@@ -1766,8 +1766,8 @@ export default function Page() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(96,162,157,0.15)';
-                  e.currentTarget.style.borderColor = '#60A29D';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(215,144,119,0.15)';
+                  e.currentTarget.style.borderColor = '#D79077';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
@@ -1775,21 +1775,21 @@ export default function Page() {
                   e.currentTarget.style.borderColor = '#E2E8F0';
                 }}
               >
-                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
+                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🏡</div>
                 <h3 style={{
                   fontSize: '1.4rem',
                   fontWeight: 700,
                   color: '#2D3748',
                   marginBottom: '16px'
                 }}>
-                  Contre la spéculation
+                  Hébergements authentiques
                 </h3>
                 <p style={{
                   color: '#4A5568',
                   lineHeight: 1.7,
                   fontSize: '1rem'
                 }}>
-                  Pour préserver nos villes, Kokyage met fin à la concurrence entre habitants et touristes qui agrave la crise du logement. Voyagez enfin sans le sentiment de nuire aux locaux.
+                  Des logements habités, entretenus avec soin par leurs locataires. Vivez l'expérience d'un vrai chez-soi, loin des logements standardisés.
                 </p>
               </div>
 
@@ -1836,7 +1836,7 @@ export default function Page() {
                 </p>
               </div>
 
-              {/* Argument 3 - Authentique */}
+              {/* Argument 3 - Contre la spéculation */}
               <div
                 style={{
                   background: 'white',
@@ -1852,8 +1852,8 @@ export default function Page() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(215,144,119,0.15)';
-                  e.currentTarget.style.borderColor = '#D79077';
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(96,162,157,0.15)';
+                  e.currentTarget.style.borderColor = '#60A29D';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
@@ -1861,21 +1861,21 @@ export default function Page() {
                   e.currentTarget.style.borderColor = '#E2E8F0';
                 }}
               >
-                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🏡</div>
+                <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌍</div>
                 <h3 style={{
                   fontSize: '1.4rem',
                   fontWeight: 700,
                   color: '#2D3748',
                   marginBottom: '16px'
                 }}>
-                  Hébergements authentiques
+                  Contre la spéculation
                 </h3>
                 <p style={{
                   color: '#4A5568',
                   lineHeight: 1.7,
                   fontSize: '1rem'
                 }}>
-                  Des logements habités, entretenus avec soin par leurs locataires. Vivez l'expérience d'un vrai chez-soi, loin des logements standardisés.
+                  Pour préserver nos villes, Kokyage met fin à la concurrence entre habitants et touristes qui agrave la crise du logement. Voyagez enfin sans le sentiment de nuire aux locaux.
                 </p>
               </div>
             </div>
