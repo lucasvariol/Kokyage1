@@ -138,7 +138,8 @@ export default function Header({ activeTab, setActiveTab }) {
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
-          padding: '0 20px'
+          padding: '0 20px',
+          position: 'relative'
         }}>
           {/* LOGO */}
           <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
@@ -146,7 +147,7 @@ export default function Header({ activeTab, setActiveTab }) {
           </Link>
 
           {/* NAVIGATION */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto' }}>
             {/* Tab Switcher - Show on search and sublet pages */}
             {(pathname === '/je-cherche-un-sejour' || pathname === '/sous-louer') && (
               <Link
