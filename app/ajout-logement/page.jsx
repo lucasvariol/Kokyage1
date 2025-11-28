@@ -271,7 +271,6 @@ export default function Page() {
         {
           id: listingId,
           owner_id: user.id,
-          id_proprietaire: user.id,
           title,
           city,
           address: street,
