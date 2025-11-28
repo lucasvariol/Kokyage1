@@ -2561,11 +2561,11 @@ export default function Page() {
             textShadow: 'none',
             whiteSpace: 'nowrap'
           }}>
-            Découvrez comment ça marche
+            Sous-louez dès maintenant !
           </h2>
           
           <a 
-            href="/fonctionnement"
+            href="/ajout-logement"
             style={{
               display: 'inline-block',
               background: 'linear-gradient(135deg, #60A29D 0%, #4A9B94 100%)',
@@ -2589,7 +2589,7 @@ export default function Page() {
               e.target.style.boxShadow = '0 10px 30px rgba(96,162,157,0.3)';
             }}
           >
-            Tous les détails ici →
+            J'ajoute mon logement →
           </a>
           
           <div style={{ 
@@ -2684,7 +2684,7 @@ export default function Page() {
             flexWrap: 'wrap',
             marginTop: '40px'
           }}>
-            <a href="/inscription" style={{
+            <a href="/ajout-logement" style={{
               background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
               color: 'white',
               padding: '16px 32px',
@@ -2706,7 +2706,7 @@ export default function Page() {
               e.target.style.transform = 'translateY(0)';
               e.target.style.boxShadow = '0 8px 25px rgba(102,126,234,0.4)';
             }}>
-              🚀 Créer mon compte
+              🚀 je deviens hôte
             </a>
             
             <a href="/logements" style={{
@@ -2733,7 +2733,7 @@ export default function Page() {
               e.target.style.borderColor = 'rgba(255,255,255,0.3)';
               e.target.style.transform = 'translateY(0)';
             }}>
-              🔍 Explorer les logements
+              🔍 j'explore les logements
             </a>
           </div>
           
