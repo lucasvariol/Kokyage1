@@ -345,6 +345,24 @@ export default function Header({ activeTab, setActiveTab }) {
                     </Link>
                   )}
                   
+                  <Link href="/logements" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                    color: 'white',
+                    padding: '14px 20px',
+                    borderRadius: '12px',
+                    textDecoration: 'none',
+                    fontWeight: '700',
+                    fontSize: '14px',
+                    marginBottom: '12px',
+                    gap: '8px',
+                    boxShadow: '0 4px 12px rgba(59,130,246,0.25)'
+                  }}>
+                    Rechercher un logement
+                  </Link>
+                  
                   <Link href="/ajout-logement" style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -360,7 +378,7 @@ export default function Header({ activeTab, setActiveTab }) {
                     gap: '8px',
                     boxShadow: '0 4px 12px rgba(215,144,119,0.25)'
                   }}>
-                    🏡 Proposer un logement
+                    Proposer un logement
                   </Link>
                   
                   <Link href="/fonctionnement" style={{
@@ -379,7 +397,7 @@ export default function Header({ activeTab, setActiveTab }) {
                     gap: '8px',
                     transition: 'all 0.2s ease'
                   }}>
-                    ℹ️ Comment ça marche
+                    Comment ça marche
                   </Link>
                 </div>
 
@@ -482,6 +500,24 @@ export default function Header({ activeTab, setActiveTab }) {
                   textTransform: 'uppercase', 
                   margin: '0 0 16px 0'
                 }}>ACTIONS</h4>
+                
+                <Link href="/logements" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                  color: 'white',
+                  padding: '14px 20px',
+                  borderRadius: '12px',
+                  textDecoration: 'none',
+                  fontWeight: '700',
+                  fontSize: '14px',
+                  marginBottom: '12px',
+                  gap: '8px',
+                  boxShadow: '0 4px 12px rgba(59,130,246,0.25)'
+                }}>
+                  🔍 Rechercher un logement
+                </Link>
                 
                 <Link href="/ajout-logement" style={{
                   display: 'flex',
