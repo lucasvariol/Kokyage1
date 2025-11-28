@@ -453,6 +453,7 @@ export default function Header({ activeTab, setActiveTab }) {
                   onClick={async () => { 
                     await supabase.auth.signOut(); 
                     setOpen(false);
+                    window.location.reload();
                   }}
                   style={{
                     display: 'flex',

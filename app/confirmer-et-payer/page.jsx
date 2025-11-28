@@ -146,11 +146,21 @@ function ConfirmerEtPayerContent() {
           email: authEmail
         });
 
-        await fetch('/api/emails/send-verification', {
+        // Envoyer l'email de vérification
+        const emailResponse = await fetch('/api/emails/verify-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, email: authEmail })
+          body: JSON.stringify({ 
+            userId: user.id, 
+            email: authEmail,
+            nom: authNom,
+            prenom: authPrenom
+          })
         });
+
+        if (!emailResponse.ok) {
+          console.error('Erreur lors de l\'envoi de l\'email de vérification');
+        }
       }
 
       setAuthSuccess('✅ Compte créé ! Vérifiez votre email pour confirmer votre compte.');
@@ -1072,7 +1082,8 @@ function ConfirmerEtPayerContent() {
                 lineHeight: 1.5,
                 marginTop: 16
               }}>
-                En confirmant, vous acceptez nos conditions générales de vente et notre politique d'annulation.<br />
+                En confirmant, vous acceptez nos conditions générales de vente et notre politique d'annulation.
+                <br /><br />
                 <span style={{ color: '#111827', fontWeight: 600 }}>
                   Une empreinte bancaire de 300 € sera enregistrée sur votre carte, non débitée, et ne pourra être utilisée qu'en cas de dégradation constatée et validée par nos modérateurs. Le montant débité sera limité au montant réel des dommages.
                 </span>
