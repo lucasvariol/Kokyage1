@@ -52,26 +52,86 @@ export default function HomePage() {
         overflow: 'hidden',
         zIndex: 0
       }}>
-        {[...Array(5)].map((_, i) => {
-          const size = Math.random() * 300 + 50;
-          return (
-            <div
-              key={i}
-              className="floating-bubble"
-              style={{
-                position: 'absolute',
-                width: `${size}px`,
-                height: `${size}px`,
-                borderRadius: '50%',
-                background: `rgba(255, 255, 255, ${Math.random() * 0.15 + 0.05})`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 5}s`
-              }}
-            />
-          );
-        })}
+        {/* Cercle 1 - Haut gauche */}
+        <div
+          className="floating-bubble"
+          style={{
+            position: 'absolute',
+            width: '250px',
+            height: '250px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.08)',
+            top: '-5%',
+            left: '-5%',
+            animation: 'float 18s ease-in-out infinite',
+            animationDelay: '0s'
+          }}
+        />
+        
+        {/* Cercle 2 - Haut droite */}
+        <div
+          className="floating-bubble"
+          style={{
+            position: 'absolute',
+            width: '180px',
+            height: '180px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.12)',
+            top: '8%',
+            right: '5%',
+            animation: 'float 22s ease-in-out infinite',
+            animationDelay: '3s'
+          }}
+        />
+        
+        {/* Cercle 3 - Centre */}
+        <div
+          className="floating-bubble"
+          style={{
+            position: 'absolute',
+            width: '320px',
+            height: '320px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.06)',
+            top: '35%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            animation: 'float 25s ease-in-out infinite',
+            animationDelay: '1.5s'
+          }}
+        />
+        
+        {/* Cercle 4 - Bas gauche */}
+        <div
+          className="floating-bubble"
+          style={{
+            position: 'absolute',
+            width: '200px',
+            height: '200px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.10)',
+            bottom: '10%',
+            left: '8%',
+            animation: 'float 20s ease-in-out infinite',
+            animationDelay: '4s'
+          }}
+        />
+        
+        {/* Cercle 5 - Bas droite */}
+        <div
+          className="floating-bubble"
+          style={{
+            position: 'absolute',
+            width: '280px',
+            height: '280px',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.07)',
+            bottom: '-8%',
+            right: '-3%',
+            animation: 'float 24s ease-in-out infinite',
+            animationDelay: '2s'
+          }}
+        />
       </div>
 
       {/* Main content */}
