@@ -1178,7 +1178,7 @@ export default function Page() {
                     textAlign: 'center',
                     fontWeight: 600
                   }}>
-                    💡 Adaptez le prix en comparant des logements similaires sur les plateformes de location saisonnière
+                    💡 Définissez le prix en comparant des logements similaires pour des dates et lieux proches
                   </div>
                 )}
               </div>
