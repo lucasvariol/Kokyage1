@@ -386,7 +386,7 @@ export default function Page() {
         // On ne bloque pas la création de l'annonce
       }
 
-  router.push("/profil-hote");
+  router.push("/calendrier");
     }
     setLoading(false);
   };
@@ -1156,7 +1156,7 @@ export default function Page() {
                       marginBottom: '8px'
                     }}>
                       <span style={{ fontSize: '0.9rem', color: '#805AD5', fontWeight: 600 }}>
-                        💡 Prix vu par les voyageurs :
+                      Prix vu par les voyageurs :
                       </span>
                       <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#2D3748' }}>
                         {(parseFloat(price) * getFeeMultiplier()).toFixed(2)}€/nuit
@@ -1179,7 +1179,7 @@ export default function Page() {
                     textAlign: 'center',
                     fontWeight: 600
                   }}>
-                    💡 Comparez avec les autres plateformes et prévoyez 10-15% moins cher pour attirer plus de voyageurs
+                    💡 Adaptez le prix en comparant des logements similaires sur les plateformes de location saisonnière
                   </div>
                 )}
               </div>
@@ -2248,7 +2248,7 @@ export default function Page() {
                   margin: 0,
                   lineHeight: 1.6
                 }}>
-                  Une fois la validation de votre propriétaire effectuée, votre annonce sera vérifiée par notre équipe sous <strong>24h</strong> pour garantir la qualité et la sécurité de notre plateforme. 
+                  Une fois la validation de votre propriétaire effectuée, votre annonce sera vérifiée par notre équipe sous <strong>48h</strong> pour garantir la qualité et la sécurité de notre plateforme. 
                   Vous recevrez une notification par email une fois l'annonce approuvée.
                 </p>
                 <div style={{
