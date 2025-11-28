@@ -705,7 +705,7 @@ export default function Page() {
               {activeTab === 'voyageur' ? (
                 <> Chez l'habitant, <br /><span style={{ color: '#ffffffff' }}> vraiment. </span></>
               ) : (
-                <>Sous-louez enfin<br /><span style={{ color: '#ffffffff' }}>en partageant les revenus</span></>
+                <>Sous-louez enfin<br /><span style={{ color: '#ffffffff' }}>grace au partage des revenus</span></>
               )}
             </h1>
             
@@ -783,7 +783,7 @@ export default function Page() {
                     zIndex: 1,
                     margin: 0
                   }}>
-                  En complément de revenus
+                  Sans prise de tête
                   </p>
                 </div>
 
@@ -850,7 +850,7 @@ export default function Page() {
                     zIndex: 1,
                     margin: 0
                   }}>
-                    Revenus passifs sans effort de gestion
+                    Sans effort de gestion
                   </p>
                 </div>
               </div>
