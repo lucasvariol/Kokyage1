@@ -329,10 +329,13 @@ function ConfirmerEtPayerContent() {
     loadTaxe();
   }, [listing?.city, listing?.price_per_night, nights, guests]);
 
-  // Parser date YYYY-MM-DD en date locale (pour éviter problèmes de timezone)
+  // Parser date YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss en date locale (pour éviter problèmes de timezone)
   const parseLocalDate = (dateStr) => {
     if (!dateStr) return null;
-    const [year, month, day] = dateStr.split('-').map(Number);
+    // Extraire seulement la partie date si contient l'heure
+    const datePart = dateStr.split('T')[0];
+    const [year, month, day] = datePart.split('-').map(Number);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
     return new Date(year, month - 1, day);
   };
 
@@ -592,13 +595,7 @@ function ConfirmerEtPayerContent() {
             }}>
               Confirmer et payer
             </h1>
-            <p style={{
-              fontSize: 15,
-              color: '#6b7280',
-              fontWeight: 500
-            }}>
-              Finalisez votre réservation
-            </p>
+
           </div>
 
           <div style={{
@@ -710,7 +707,7 @@ function ConfirmerEtPayerContent() {
                     fontSize: 14,
                     marginBottom: 2
                   }}>
-                    Annulation gratuite
+                    Annulation gratuite jusqu'au {getCancellationDate()}
                   </div>
                   <div style={{
                     fontSize: 13,
