@@ -32,6 +32,7 @@ function ConfirmerEtPayerContent() {
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [connected, setConnected] = useState(false);
   const [showCancellationPolicy, setShowCancellationPolicy] = useState(false);
 
   // Format prix
@@ -229,26 +230,8 @@ function ConfirmerEtPayerContent() {
         // Récupérer l'utilisateur connecté
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
+        setConnected(!!user);
         console.log('User:', user);
-
-        // Rediriger vers la page de connexion si non connecté
-        if (!user) {
-          console.log('User not authenticated, redirecting to login');
-          // Construire l'URL complète avec tous les paramètres
-          const params = new URLSearchParams();
-          if (listingId) params.set('listingId', listingId);
-          if (startDate) params.set('startDate', startDate);
-          if (endDate) params.set('endDate', endDate);
-          if (guests) params.set('guests', guests);
-          if (totalPrice) params.set('totalPrice', totalPrice);
-          if (basePrice) params.set('basePrice', basePrice);
-          if (taxPrice) params.set('taxPrice', taxPrice);
-          if (nights) params.set('nights', nights);
-          
-          const currentUrl = `/confirmer-et-payer?${params.toString()}`;
-          router.push(`/inscription?redirect=${encodeURIComponent(currentUrl)}`);
-          return;
-        }
 
         if (!listingId) {
           console.log('No listingId, redirecting to home');
@@ -801,7 +784,9 @@ function ConfirmerEtPayerContent() {
               border: '1px solid #e5e7eb'
             }} className="payment-card">
 
-              <h3 style={{
+              {connected ? (
+                <>
+                  <h3 style={{
                 fontSize: 18,
                 fontWeight: 600,
                 color: '#111827',
@@ -865,6 +850,121 @@ function ConfirmerEtPayerContent() {
                   Une empreinte bancaire de 300 € sera enregistrée sur votre carte, non débitée, et ne pourra être utilisée qu'en cas de dégradation constatée et validée par nos modérateurs. Le montant débité sera limité au montant réel des dommages.
                 </span>
               </div>
+                </>
+              ) : (
+                <>
+                  <h3 style={{
+                    fontSize: 18,
+                    fontWeight: 600,
+                    color: '#111827',
+                    marginBottom: 18,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2">
+                      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+                      <path d="M12 6v6l4 2"></path>
+                    </svg>
+                    Connexion requise
+                  </h3>
+
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '30px 20px'
+                  }}>
+                    <div style={{
+                      width: '80px',
+                      height: '80px',
+                      background: 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 24px',
+                      fontSize: '40px'
+                    }}>
+                      🔐
+                    </div>
+
+                    <h4 style={{
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: '#2D3748',
+                      marginBottom: 12
+                    }}>
+                      Authentification requise
+                    </h4>
+
+                    <p style={{
+                      fontSize: 14,
+                      color: '#718096',
+                      marginBottom: 24,
+                      lineHeight: 1.6
+                    }}>
+                      Connectez-vous ou créez un compte pour finaliser votre réservation
+                    </p>
+
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 12
+                    }}>
+                      <a 
+                        href={`/inscription?redirect=${encodeURIComponent(typeof window !== 'undefined' ? window.location.pathname + window.location.search : '')}`}
+                        style={{
+                          background: 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
+                          color: 'white',
+                          padding: '14px 24px',
+                          borderRadius: 12,
+                          textDecoration: 'none',
+                          fontWeight: 600,
+                          fontSize: 15,
+                          boxShadow: '0 4px 15px rgba(96,162,157,0.3)',
+                          transition: 'all 0.3s ease',
+                          display: 'block',
+                          cursor: 'pointer'
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 6px 20px rgba(96,162,157,0.4)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 4px 15px rgba(96,162,157,0.3)';
+                        }}>
+                        S'inscrire
+                      </a>
+
+                      <a 
+                        href={`/inscription?redirect=${encodeURIComponent(typeof window !== 'undefined' ? window.location.pathname + window.location.search : '')}`}
+                        style={{
+                          background: 'rgba(96,162,157,0.1)',
+                          color: '#60A29D',
+                          padding: '14px 24px',
+                          borderRadius: 12,
+                          textDecoration: 'none',
+                          fontWeight: 600,
+                          fontSize: 15,
+                          border: '2px solid rgba(96,162,157,0.3)',
+                          transition: 'all 0.3s ease',
+                          display: 'block',
+                          cursor: 'pointer'
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.background = 'rgba(96,162,157,0.15)';
+                          e.target.style.borderColor = 'rgba(96,162,157,0.5)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.background = 'rgba(96,162,157,0.1)';
+                          e.target.style.borderColor = 'rgba(96,162,157,0.3)';
+                        }}>
+                        Se connecter
+                      </a>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
