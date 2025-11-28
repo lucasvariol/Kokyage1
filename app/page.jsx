@@ -52,7 +52,7 @@ export default function HomePage() {
         overflow: 'hidden',
         zIndex: 0
       }}>
-        {[...Array(20)].map((_, i) => {
+        {[...Array(5)].map((_, i) => {
           const size = Math.random() * 300 + 50;
           return (
             <div
