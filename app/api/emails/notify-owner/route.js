@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import crypto from 'crypto';
+import { ownerVerificationTemplate } from '@/email-templates/owner-verification';
 
 export async function POST(req) {
   try {
@@ -86,43 +87,15 @@ export async function POST(req) {
     const appUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com';
     const verifyUrl = `${appUrl}/verification-proprietaire/${token}`;
 
-    const subject = 'Validation de votre logement — Kokyage';
-    const html = `
-      <div style="font-family: Inter, system-ui, -apple-system, sans-serif; line-height: 1.6; color: #222">
-        ${isDevelopment ? `
-        <div style="background: #fef3c7; padding: 16px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #f59e0b;">
-          <h3 style="margin: 0; color: #92400e;">🧪 MODE TEST</h3>
-          <p style="margin: 8px 0 0 0; color: #92400e;">
-            Cet email était destiné à : <strong>${ownerEmail}</strong><br>
-            En mode développement, il est envoyé à votre adresse de test.
-          </p>
-        </div>
-        ` : ''}
-        
-        <h2 style="color:#C96745;margin:0 0 8px">🏠 Nouveau logement déclaré sur Kokyage</h2>
-        <p>Bonjour,</p>
-        <p>Un locataire a ajouté un logement sur Kokyage et vous a désigné comme propriétaire.</p>
-        <ul>
-          ${title ? `<li><strong>Logement:</strong> ${title}</li>` : ''}
-          ${address ? `<li><strong>Adresse:</strong> ${address}${city ? `, ${city}` : ''}</li>` : ''}
-        </ul>
-        
-        <p><strong>Pour valider votre propriété et gérer ce logement:</strong></p>
-        <p>Cliquez sur le bouton ci-dessous pour créer votre compte ou vous connecter.</p>
-        <p>
-          <a href="${verifyUrl}"
-             style="display:inline-block;padding:14px 24px;background:#C96745;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:16px">
-            ✓ Confirmer ma propriété
-          </a>
-        </p>
-        <p style="font-size:13px;color:#666;margin-top:16px">⏱ Ce lien expire dans 24 heures.</p>
-        
-        <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
-        <p style="font-size:13px;color:#888">
-          <strong>Pas propriétaire?</strong> Si vous n'êtes pas concerné par ce logement, vous pouvez ignorer cet email en toute sécurité.
-        </p>
-      </div>
-    `;
+    const subject = ownerVerificationTemplate.subject;
+    const html = ownerVerificationTemplate.getHtml({
+      ownerEmail,
+      title,
+      address,
+      city,
+      verifyUrl,
+      isDevelopment
+    });
 
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     const from = process.env.MAIL_FROM || 'Kokyage <contact@kokyage.com>';
