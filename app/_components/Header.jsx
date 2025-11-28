@@ -147,11 +147,11 @@ export default function Header({ activeTab, setActiveTab }) {
 
           {/* NAVIGATION */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {/* Tab Switcher - Only show on homepage */}
-            {pathname === '/' && setActiveTab && (
-              <button
+            {/* Tab Switcher - Show on search and sublet pages */}
+            {(pathname === '/je-cherche-un-sejour' || pathname === '/sous-louer') && (
+              <Link
+                href={pathname === '/je-cherche-un-sejour' ? '/sous-louer' : '/je-cherche-un-sejour'}
                 className="mode-switcher-btn"
-                onClick={() => setActiveTab(activeTab === 'voyageur' ? 'hote' : 'voyageur')}
                 style={{
                   background: 'rgba(96,162,157,0.12)',
                   color: '#2D3748',
@@ -176,8 +176,8 @@ export default function Header({ activeTab, setActiveTab }) {
                   e.target.style.boxShadow = '0 3px 10px rgba(96,162,157,0.18)';
                 }}
               >
-                {activeTab === 'voyageur' ? 'Je sous-loue un logement' : 'Je cherche un séjour'}
-              </button>
+                {pathname === '/je-cherche-un-sejour' ? 'Je sous-loue un logement' : 'Je cherche un séjour'}
+              </Link>
             )}
 
             {/* Navigation desktop pour utilisateurs non connectés */}
