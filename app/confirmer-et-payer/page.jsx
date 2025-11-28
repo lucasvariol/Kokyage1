@@ -344,12 +344,11 @@ function ConfirmerEtPayerContent() {
     if (!dateStr) return '';
     const date = parseLocalDate(dateStr);
     if (!date) return '';
-    return date.toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+    
+    const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    
+    return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
   };
 
   // Calculer la date d'annulation gratuite (7 jours avant l'arrivée)
@@ -358,11 +357,9 @@ function ConfirmerEtPayerContent() {
     const arrival = parseLocalDate(startDate);
     if (!arrival) return '';
     const cancellation = new Date(arrival.getTime() - (7 * 24 * 60 * 60 * 1000));
-    return cancellation.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+    
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    return `${cancellation.getDate()} ${months[cancellation.getMonth()]} ${cancellation.getFullYear()}`;
   };
 
   // Calculer la date de la veille de l'arrivée
@@ -371,11 +368,9 @@ function ConfirmerEtPayerContent() {
     const arrival = parseLocalDate(startDate);
     if (!arrival) return '';
     const dayBefore = new Date(arrival.getTime() - (2 * 24 * 60 * 60 * 1000));
-    return dayBefore.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+    
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    return `${dayBefore.getDate()} ${months[dayBefore.getMonth()]} ${dayBefore.getFullYear()}`;
   };
 
   // Calculer 6 jours avant l'arrivée
@@ -384,11 +379,9 @@ function ConfirmerEtPayerContent() {
     const arrival = parseLocalDate(startDate);
     if (!arrival) return '';
     const sixDaysBefore = new Date(arrival.getTime() - (6 * 24 * 60 * 60 * 1000));
-    return sixDaysBefore.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+    
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    return `${sixDaysBefore.getDate()} ${months[sixDaysBefore.getMonth()]} ${sixDaysBefore.getFullYear()}`;
   };
 
   // Charger les données du logement et de l'utilisateur
@@ -709,14 +702,7 @@ function ConfirmerEtPayerContent() {
                   }}>
                     Annulation gratuite jusqu'au {getCancellationDate()}
                   </div>
-                  <div style={{
-                    fontSize: 13,
-                    color: '#6b7280',
-                    fontWeight: 500,
-                    marginBottom: 8
-                  }}>
-                    Jusqu'au {getCancellationDate()}
-                  </div>
+
                   <button
                     onClick={() => setShowCancellationPolicy(!showCancellationPolicy)}
                     style={{
