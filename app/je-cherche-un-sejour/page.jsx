@@ -70,7 +70,14 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState('voyageur');
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showModeSelection, setShowModeSelection] = useState(false);
-  const [isPageReady, setIsPageReady] = useState(true);
+  const [isPageReady, setIsPageReady] = useState(false);
+
+  // Animation d'entrée de page
+  useEffect(() => {
+    // Petit délai pour déclencher l'animation d'entrée
+    const timer = setTimeout(() => setIsPageReady(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Fonction pour choisir le mode initial
   const handleModeSelection = (mode) => {
