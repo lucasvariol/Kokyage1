@@ -480,7 +480,7 @@ export default function Header({ activeTab, setActiveTab }) {
                   fontWeight: '600', 
                   textTransform: 'uppercase', 
                   margin: '0 0 16px 0'
-                }}>Navigation</h4>
+                }}>ACTIONS</h4>
                 
                 <Link href="/ajout-logement" style={{
                   display: 'flex',
@@ -497,7 +497,7 @@ export default function Header({ activeTab, setActiveTab }) {
                   gap: '8px',
                   boxShadow: '0 4px 12px rgba(215,144,119,0.25)'
                 }}>
-                  🏡 Ajouter mon logement
+                  Ajouter mon logement
                 </Link>
                 
                 <Link href="/fonctionnement" style={{
@@ -507,32 +507,33 @@ export default function Header({ activeTab, setActiveTab }) {
                   color: '#1F2937',
                   background: 'rgba(96,162,157,0.12)',
                   border: '1px solid rgba(96,162,157,0.25)',
-                  padding: '20px 24px',
-                  borderRadius: '16px',
-                  marginBottom: '16px',
-                  gap: '12px',
+                  padding: '14px 20px',
+                  borderRadius: '12px',
+                  marginBottom: '12px',
                   fontWeight: '600',
-                  fontSize: '16px',
+                  fontSize: '14px',
                   textDecoration: 'none',
+                  gap: '8px',
                   transition: 'all 0.2s ease'
                 }}>
                 Comment ça marche
                 </Link>
 
+                <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
+
                 <Link href="/inscription" style={{
                   background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                   color: 'white',
-                  padding: '20px 28px',
-                  borderRadius: '16px',
+                  padding: '14px 20px',
+                  borderRadius: '12px',
                   textDecoration: 'none',
                   fontWeight: '700',
-                  fontSize: '17px',
+                  fontSize: '14px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '10px',
-                  marginTop: '8px',
-                  boxShadow: '0 6px 20px rgba(215,144,119,0.25)',
+                  gap: '8px',
+                  boxShadow: '0 4px 12px rgba(215,144,119,0.25)',
                   transition: 'all 0.2s ease'
                 }}>
                 Créer un compte
