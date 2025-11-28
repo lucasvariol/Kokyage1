@@ -1,6 +1,6 @@
 ﻿import ReactMarkdown from 'react-markdown';
 
-const OWNER_CONSENT_MD = 
+const OWNER_CONSENT_MD = `
 # ACCORD DE SOUS-LOCATION SUR KOKYAGE.COM
 
 **{ownerName}**, propriétaire du logement sis **{fullAddress}**, autorise **{tenantName}**, titulaire du bail, à sous-louer temporairement ledit bien sur la plateforme Kokyage.com. Le Propriétaire accorde au Locataire principal la liberté de fixer les dates de sous-location ainsi que le montant des nuitées.
@@ -14,7 +14,7 @@ Le Propriétaire peut y mettre fin à tout moment depuis la plateforme, sous ré
 En cas de résiliation, toute réservation dont la date de fin excède le délai de préavis, à compter de la réception de ladite résiliation, sera annulée.
 
 À défaut de résiliation, le présent accord demeure en vigueur tant que le Locataire principal reste titulaire du bail du logement.
-;
+`;
 
 const customComponents = {
   h1: ({node, ...props}) => (
