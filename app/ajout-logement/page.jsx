@@ -6,6 +6,7 @@ import ListingAssistantChatbot from '../_components/ListingAssistantChatbot';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { getFeeMultiplier, getPlatformPercent } from '@/lib/commissions';
 import { OwnerConsentAgreement } from '@/owner-consent';
@@ -38,17 +39,7 @@ export default function Page() {
   const [description, setDescription] = useState('');
   const [ownerEmail, setOwnerEmail] = useState('');
   const [infoAccuracyChecked, setInfoAccuracyChecked] = useState(false);
-
-  // Check if user is authenticated
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/inscription');
-      }
-    };
-    checkAuth();
-  }, [router]);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Functions stay the same
   const handleAddressChange = (e) => {
@@ -196,8 +187,16 @@ export default function Page() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+
+    // Vérifie d'abord si l'utilisateur est connecté
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    setLoading(true);
 
     if (!title || !street || !city || !price || !description || !ownerEmail) {
       setError('Veuillez remplir tous les champs obligatoires');
@@ -219,11 +218,11 @@ export default function Page() {
       return;
     }
 
-    // Vérifie que l'utilisateur est connecté (requis pour owner_id)
+    // Récupère les infos utilisateur
     const { data: userData, error: userError } = await supabase.auth.getUser();
     const user = userData?.user || null;
     if (userError || !user) {
-      setError("Vous devez être connecté pour publier une annonce");
+      setShowAuthModal(true);
       setLoading(false);
       return;
     }
@@ -2280,6 +2279,152 @@ export default function Page() {
         onPriceGenerated={(suggestedPrice) => setPrice(suggestedPrice)}
         onDescriptionGenerated={(generatedDescription) => setDescription(generatedDescription)}
       />
+
+      {/* Modal d'authentification */}
+      {showAuthModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px'
+        }}
+        onClick={() => setShowAuthModal(false)}>
+          <div style={{
+            background: 'white',
+            borderRadius: '24px',
+            padding: '48px 40px',
+            maxWidth: '480px',
+            width: '100%',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+            textAlign: 'center',
+            position: 'relative'
+          }}
+          onClick={(e) => e.stopPropagation()}>
+            {/* Icon */}
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+              fontSize: '40px'
+            }}>
+              🔐
+            </div>
+
+            {/* Title */}
+            <h2 style={{
+              fontSize: '28px',
+              fontWeight: '700',
+              color: '#2D3748',
+              marginBottom: '16px',
+              lineHeight: '1.2'
+            }}>
+              Authentification requise
+            </h2>
+
+            {/* Description */}
+            <p style={{
+              fontSize: '16px',
+              color: '#718096',
+              marginBottom: '32px',
+              lineHeight: '1.6'
+            }}>
+              Inscrivez-vous ou connectez-vous pour ajouter votre logement sur Kokyage
+            </p>
+
+            {/* Buttons */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px'
+            }}>
+              <Link href="/inscription" style={{
+                background: 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
+                color: 'white',
+                padding: '16px 32px',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '16px',
+                boxShadow: '0 4px 15px rgba(96,162,157,0.3)',
+                transition: 'all 0.3s ease',
+                display: 'block'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 6px 20px rgba(96,162,157,0.4)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 15px rgba(96,162,157,0.3)';
+              }}>
+                S'inscrire
+              </Link>
+
+              <Link href="/inscription" style={{
+                background: 'rgba(96,162,157,0.1)',
+                color: '#60A29D',
+                padding: '16px 32px',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '16px',
+                border: '2px solid rgba(96,162,157,0.3)',
+                transition: 'all 0.3s ease',
+                display: 'block'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.background = 'rgba(96,162,157,0.15)';
+                e.target.style.borderColor = 'rgba(96,162,157,0.5)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.background = 'rgba(96,162,157,0.1)';
+                e.target.style.borderColor = 'rgba(96,162,157,0.3)';
+              }}>
+                Se connecter
+              </Link>
+            </div>
+
+            {/* Close button */}
+            <button
+              onClick={() => setShowAuthModal(false)}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: 'rgba(0,0,0,0.05)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                cursor: 'pointer',
+                fontSize: '20px',
+                color: '#718096',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.background = 'rgba(0,0,0,0.1)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.background = 'rgba(0,0,0,0.05)';
+              }}>
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
