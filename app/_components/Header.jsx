@@ -147,18 +147,18 @@ export default function Header({ activeTab, setActiveTab }) {
 
           {/* NAVIGATION */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {/* Tab Switcher - Show on search and sublet pages, hide on mobile */}
-            {(pathname === '/je-cherche-un-sejour' || pathname === '/sous-louer') && !isMobile && (
+            {/* Tab Switcher - Show on search and sublet pages */}
+            {(pathname === '/je-cherche-un-sejour' || pathname === '/sous-louer') && (
               <Link
                 href={pathname === '/je-cherche-un-sejour' ? '/sous-louer' : '/je-cherche-un-sejour'}
                 className="mode-switcher-btn"
                 style={{
                   background: 'rgba(96,162,157,0.12)',
                   color: '#2D3748',
-                  padding: '10px 16px',
+                  padding: isMobile ? '8px 12px' : '10px 16px',
                   borderRadius: '24px',
                   fontWeight: '600',
-                  fontSize: '13px',
+                  fontSize: isMobile ? '11px' : '13px',
                   border: '1px solid rgba(96,162,157,0.25)',
                   boxShadow: '0 3px 10px rgba(96,162,157,0.18)',
                   transition: 'all 0.3s ease',
