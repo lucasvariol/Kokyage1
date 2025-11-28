@@ -1,224 +1,305 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import Header from './_components/Header';
-import Footer from './_components/Footer';
-import Chatbot from './_components/Chatbot';
+import { useState } from 'react';
 
 export default function HomePage() {
   const router = useRouter();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const handleModeSelection = (mode) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      if (mode === 'voyageur') {
+        router.push('/je-cherche-un-sejour');
+      } else {
+        router.push('/sous-louer');
+      }
+    }, 800);
+  };
 
   return (
-    <>
-      <Header />
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'linear-gradient(135deg, #995741ff 0%, #D68E74 50%, #C96745  100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999,
+      overflow: 'hidden',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      opacity: isTransitioning ? 0 : 1,
+      transition: 'opacity 0.8s ease-out'
+    }}>
+      {/* Animated background particles */}
       <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #F5F1ED 0%, #E8DED2 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '40px 20px'
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: 'hidden',
+        zIndex: 0
       }}>
-        <div style={{
-          maxWidth: '900px',
-          width: '100%',
-          textAlign: 'center'
-        }}>
-          {/* Titre principal */}
+        {[...Array(20)].map((_, i) => {
+          const size = Math.random() * 300 + 50;
+          return (
+            <div
+              key={i}
+              className="floating-bubble"
+              style={{
+                position: 'absolute',
+                width: `${size}px`,
+                height: `${size}px`,
+                borderRadius: '50%',
+                background: `radial-gradient(circle, rgba(245,230,211,0.6) 0%, transparent 50%)`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animation: `float ${Math.random() * 20 + 10}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 5}s`
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* Main content */}
+      <div className="mode-selection-container" style={{
+        position: 'relative',
+        zIndex: 1,
+        textAlign: 'center',
+        padding: '20px 20px 40px',
+        maxWidth: '1100px',
+        width: '100%',
+        opacity: isTransitioning ? 0 : 1,
+        filter: isTransitioning ? 'blur(20px)' : 'blur(0px)',
+        transform: isTransitioning ? 'scale(0.9)' : 'scale(1)',
+        transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+      }}>
+        {/* Logo */}
+        <div style={{ marginBottom: '50px', animation: 'fadeInDown 1s ease-out', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <img 
+            src="/logo.png" 
+            alt="Kokyage" 
+            style={{ 
+              height: 'clamp(120px, 15vw, 150px)', 
+              filter: 'brightness(0) invert(1)',
+              marginBottom: '20px',
+              display: 'block'
+            }} 
+          />
           <h1 style={{
-            fontSize: 'clamp(32px, 5vw, 56px)',
-            fontWeight: '800',
-            color: '#2D3748',
-            marginBottom: '20px',
-            lineHeight: '1.2'
+            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+            fontWeight: 800,
+            color: 'white',
+            marginBottom: '0',
+            letterSpacing: '-0.02em',
+            textShadow: '0 4px 30px rgba(0,0,0,0.3)'
           }}>
-            Bienvenue sur <span style={{ color: '#C96745' }}>Kokyage</span>
+            Bienvenue sur Kokyage
           </h1>
-          
-          <p style={{
-            fontSize: 'clamp(16px, 2.5vw, 20px)',
-            color: '#4A5568',
-            marginBottom: '60px',
-            lineHeight: '1.6',
-            maxWidth: '600px',
-            margin: '0 auto 60px'
-          }}>
-            La plateforme de sous-location sécurisée et légale
-          </p>
+        </div>
 
-          {/* Cards de choix */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-            gap: '30px',
-            marginBottom: '40px'
-          }}>
-            {/* Card Voyageur */}
-            <div
-              onClick={() => router.push('/je-cherche-un-sejour')}
-              style={{
-                background: 'white',
-                borderRadius: '20px',
-                padding: '40px 30px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                border: '2px solid transparent'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = '0 12px 32px rgba(201, 103, 69, 0.2)';
-                e.currentTarget.style.borderColor = '#C96745';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
-                e.currentTarget.style.borderColor = 'transparent';
-              }}
-            >
-              <div style={{
-                fontSize: '64px',
-                marginBottom: '20px'
-              }}>
-                🏖️
-              </div>
-              <h2 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#2D3748',
-                marginBottom: '15px'
-              }}>
-                Je cherche un séjour
-              </h2>
-              <p style={{
-                fontSize: '16px',
-                color: '#718096',
-                lineHeight: '1.6',
-                marginBottom: '25px'
-              }}>
-                Trouvez le logement idéal pour vos prochaines vacances ou votre prochain déplacement
-              </p>
-              <div style={{
-                display: 'inline-block',
-                padding: '12px 30px',
-                background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
-                color: 'white',
-                borderRadius: '12px',
-                fontWeight: '600',
-                fontSize: '16px'
-              }}>
-                Explorer les logements →
-              </div>
+        {/* Cards de sélection modernes */}
+        <div className="mode-selection-cards" style={{
+          display: 'flex',
+          gap: '24px',
+          maxWidth: '800px',
+          margin: '0 auto',
+          animation: 'fadeInUp 1s ease-out 0.3s both',
+          justifyContent: 'center',
+          alignItems: 'stretch',
+          flexWrap: 'wrap'
+        }}>
+          {/* Card Voyageur */}
+          <div
+            onClick={() => handleModeSelection('voyageur')}
+            style={{
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '24px',
+              padding: '40px 32px',
+              cursor: 'pointer',
+              overflow: 'hidden',
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: '18px',
+              minHeight: '220px',
+              flex: '1 1 360px',
+              minWidth: '280px',
+              maxWidth: '400px',
+              position: 'relative'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
+              e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.15)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+            }}
+          >
+            <div style={{
+              fontSize: '4rem',
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))'
+            }}>
+              🏖️
             </div>
-
-            {/* Card Hôte */}
-            <div
-              onClick={() => router.push('/sous-louer')}
-              style={{
-                background: 'white',
-                borderRadius: '20px',
-                padding: '40px 30px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                border: '2px solid transparent'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = '0 12px 32px rgba(96, 162, 157, 0.2)';
-                e.currentTarget.style.borderColor = '#60A29D';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
-                e.currentTarget.style.borderColor = 'transparent';
-              }}
-            >
-              <div style={{
-                fontSize: '64px',
-                marginBottom: '20px'
-              }}>
-                🏠
-              </div>
-              <h2 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#2D3748',
-                marginBottom: '15px'
-              }}>
-                Je sous-loue mon logement
-              </h2>
-              <p style={{
-                fontSize: '16px',
-                color: '#718096',
-                lineHeight: '1.6',
-                marginBottom: '25px'
-              }}>
-                Générez des revenus en sous-louant votre logement de manière légale et sécurisée
-              </p>
-              <div style={{
-                display: 'inline-block',
-                padding: '12px 30px',
-                background: 'linear-gradient(135deg, #60A29D 0%, #4A8D89 100%)',
-                color: 'white',
-                borderRadius: '12px',
-                fontWeight: '600',
-                fontSize: '16px'
-              }}>
-                Calculer mes revenus →
-              </div>
-            </div>
+            <h2 style={{
+              fontSize: 'clamp(1.5rem, 3vw, 1.8rem)',
+              fontWeight: 600,
+              color: 'white',
+              letterSpacing: '-0.02em',
+              textAlign: 'center',
+              margin: 0,
+              textShadow: '0 2px 8px rgba(0,0,0,0.15)'
+            }}>
+              Je cherche un séjour
+            </h2>
           </div>
 
-          {/* Section avantages */}
-          <div style={{
-            marginTop: '80px',
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-            gap: '30px',
-            textAlign: 'center'
-          }}>
-            <div>
-              <div style={{ fontSize: '40px', marginBottom: '15px' }}>✓</div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2D3748', marginBottom: '8px' }}>
-                100% Légal
-              </h3>
-              <p style={{ fontSize: '14px', color: '#718096' }}>
-                Avec l'accord du propriétaire
-              </p>
+          {/* Card Hôte */}
+          <div
+            onClick={() => handleModeSelection('hote')}
+            style={{
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '24px',
+              padding: '40px 32px',
+              cursor: 'pointer',
+              overflow: 'hidden',
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: '18px',
+              minHeight: '220px',
+              flex: '1 1 360px',
+              minWidth: '280px',
+              maxWidth: '400px',
+              position: 'relative'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-8px)';
+              e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
+              e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.15)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+            }}
+          >
+            <div style={{
+              fontSize: '4rem',
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))'
+            }}>
+              🏠
             </div>
-            <div>
-              <div style={{ fontSize: '40px', marginBottom: '15px' }}>🔒</div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2D3748', marginBottom: '8px' }}>
-                Sécurisé
-              </h3>
-              <p style={{ fontSize: '14px', color: '#718096' }}>
-                Paiements protégés
-              </p>
-            </div>
-            <div>
-              <div style={{ fontSize: '40px', marginBottom: '15px' }}>💰</div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2D3748', marginBottom: '8px' }}>
-                Rentable
-              </h3>
-              <p style={{ fontSize: '14px', color: '#718096' }}>
-                Optimisez vos revenus
-              </p>
-            </div>
+            <h2 style={{
+              fontSize: 'clamp(1.5rem, 3vw, 1.8rem)',
+              fontWeight: 600,
+              color: 'white',
+              letterSpacing: '-0.02em',
+              textAlign: 'center',
+              margin: 0,
+              textShadow: '0 2px 8px rgba(0,0,0,0.15)'
+            }}>
+              Je sous-loue mon logement
+            </h2>
           </div>
         </div>
       </div>
-      <Footer />
-      <Chatbot />
-    </>
+
+      {/* Animations CSS */}
+      <style jsx>{`
+        @keyframes float {
+          0% {
+            transform: translate(0, 0) scale(1) rotate(0deg);
+          }
+          20% {
+            transform: translate(40px, -60px) scale(1.08) rotate(8deg);
+          }
+          40% {
+            transform: translate(-50px, -30px) scale(0.95) rotate(-6deg);
+          }
+          60% {
+            transform: translate(30px, 45px) scale(1.06) rotate(5deg);
+          }
+          80% {
+            transform: translate(-35px, 20px) scale(0.98) rotate(-4deg);
+          }
+          100% {
+            transform: translate(0, 0) scale(1) rotate(0deg);
+          }
+        }
+
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .floating-bubble {
+            width: 120px !important;
+            height: 120px !important;
+            max-width: 120px !important;
+            max-height: 120px !important;
+          }
+          
+          .mode-selection-container {
+            padding: 28px 16px !important;
+          }
+
+          .mode-selection-cards {
+            flex-direction: column;
+            gap: 20px !important;
+          }
+
+          .mode-selection-cards > div {
+            flex: 1 1 auto !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
+    </div>
   );
 }
