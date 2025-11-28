@@ -62,7 +62,7 @@ export const ownerVerificationTemplate = {
                       💡 Comment fonctionne Kokyage ?
                     </p>
                     <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #4A5568;">
-                      <strong style="color: #C96745;">Kokyage</strong> est une plateforme qui permet à vos locataires de sous-louer leur logement de manière légale et sécurisée, avec votre autorisation préalable. Vous gardez le contrôle total sur votre bien et recevez une notification pour chaque demande de sous-location.
+                      <strong style="color: #C96745;">Kokyage</strong> est une plateforme qui permet à vos locataires de sous-louer leur logement de manière légale et sécurisée, avec votre autorisation préalable. Vous gardez le contrôle total, et obtenez 40% des revenus générés par la sous-location.
                     </p>
                   </td>
                 </tr>
@@ -88,20 +88,6 @@ export const ownerVerificationTemplate = {
                   </td>
                 </tr>
               </table>
-
-              <p style="margin: 25px 0 20px; font-size: 16px; line-height: 1.6; color: #2D3748;">
-                Pour permettre la publication de cette annonce, nous devons nous assurer que vous autorisez bien la sous-location de votre bien.
-              </p>
-
-              <p style="margin: 0 0 30px; font-size: 16px; line-height: 1.6; color: #2D3748;">
-                <strong>Cliquez sur le bouton ci-dessous pour :</strong>
-              </p>
-
-              <ul style="margin: 0 0 30px; padding-left: 20px; font-size: 15px; line-height: 1.8; color: #4A5568;">
-                <li>Confirmer votre accord de sous-location</li>
-                <li>Consulter les conditions de l'annonce</li>
-                <li>Créer votre compte propriétaire (si nécessaire)</li>
-              </ul>
 
               <!-- Bouton CTA -->
               <table width="100%" cellpadding="0" cellspacing="0">
