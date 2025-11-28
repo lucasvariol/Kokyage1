@@ -56,7 +56,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {children}
-        <CookieBanner />
+        {/* <CookieBanner /> */}
       </body>
     </html>
   );
