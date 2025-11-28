@@ -1,34 +1,42 @@
-export function OwnerConsentAgreement({ ownerName = 'Le Propriétaire', tenantName = 'Nom du locataire principal', fullAddress = '' }) {
+ï»¿import ReactMarkdown from 'react-markdown';
+
+const OWNER_CONSENT_MD = 
+# ACCORD DE SOUS-LOCATION SUR KOKYAGE.COM
+
+**{ownerName}**, propriÃ©taire du logement sis **{fullAddress}**, autorise **{tenantName}**, titulaire du bail, Ã  sous-louer temporairement ledit bien sur la plateforme Kokyage.com. Le PropriÃ©taire accorde au Locataire principal la libertÃ© de fixer les dates de sous-location ainsi que le montant des nuitÃ©es.
+
+Les modalitÃ©s de location et de partage des revenus sont prÃ©cisÃ©es dans les Conditions GÃ©nÃ©rales d'Utilisation, accessibles [ici](/cgu).
+
+Le prÃ©sent accord ne s'applique qu'aux sous-locations publiÃ©es via Kokyage.com.
+
+Le PropriÃ©taire peut y mettre fin Ã  tout moment depuis la plateforme, sous rÃ©serve d'un prÃ©avis de quatorze (14) jours.
+
+En cas de rÃ©siliation, toute rÃ©servation dont la date de fin excÃ¨de le dÃ©lai de prÃ©avis, Ã  compter de la rÃ©ception de ladite rÃ©siliation, sera annulÃ©e.
+
+Ã€ dÃ©faut de rÃ©siliation, le prÃ©sent accord demeure en vigueur tant que le Locataire principal reste titulaire du bail du logement.
+;
+
+const customComponents = {
+  h1: ({node, ...props}) => (
+    <>
+      <h1 style={{fontSize: 18, fontWeight: 800, textAlign: 'center', margin: '0 0 16px', color: '#334155'}} {...props} />
+      <div style={{ height: 1, background: '#E2E8F0', margin: '8px 0 20px' }} />
+    </>
+  ),
+  p: ({node, ...props}) => <p style={{color: '#334155', lineHeight: 1.6, margin: '0 0 16px'}} {...props} />,
+  strong: ({node, ...props}) => <strong style={{fontWeight: 700}} {...props} />,
+  a: ({node, ...props}) => <a style={{color: '#D79077', fontWeight: 600, textDecoration: 'underline'}} target="_blank" {...props} />
+};
+
+export function OwnerConsentAgreement({ ownerName = 'Le PropriÃ©taire', tenantName = 'Nom du locataire principal', fullAddress = '' }) {
+  const content = OWNER_CONSENT_MD
+    .replace('{ownerName}', ownerName)
+    .replace('{tenantName}', tenantName)
+    .replace('{fullAddress}', fullAddress);
+
   return (
     <div style={{ color: '#334155', lineHeight: '1.6' }}>
-      <div style={{ fontWeight: 800, fontSize: 18, textAlign: 'center', marginBottom: 16 }}>
-        ACCORD DE SOUS-LOCATION SUR KOKYAGE.COM
-      </div>
-      <div style={{ height: 1, background: '#E2E8F0', margin: '8px 0 20px' }} />
-
-      <p style={{ marginTop: 0, marginBottom: 16 }}>
-        <strong>{ownerName}</strong>, propriétaire du logement sis <strong>{fullAddress}</strong>, autorise <strong>{tenantName}</strong>, titulaire du bail, à sous-louer temporairement ledit bien sur la plateforme Kokyage.com. Le Propriétaire accorde au Locataire principal la liberté de fixer les dates de sous-location ainsi que le montant des nuitées.
-      </p>
-
-      <p style={{ marginBottom: 16 }}>
-        Les modalités de location et de partage des revenus sont précisées dans les Conditions Générales d'Utilisation, accessibles <a href="/cgu" target="_blank" style={{ color: '#D79077', fontWeight: 600, textDecoration: 'underline' }}>ici</a>.
-      </p>
-
-      <p style={{ marginBottom: 16 }}>
-        Le présent accord ne s'applique qu'aux sous-locations publiées via Kokyage.com.
-      </p>
-
-      <p style={{ marginBottom: 16 }}>
-        Le Propriétaire peut y mettre fin à tout moment depuis la plateforme, sous réserve d'un préavis de quatorze (14) jours.
-      </p>
-
-      <p style={{ marginBottom: 16 }}>
-        En cas de résiliation, toute réservation dont la date de fin excède le délai de préavis, à compter de la réception de ladite résiliation, sera annulée.
-      </p>
-
-      <p style={{ marginBottom: 0 }}>
-        À défaut de résiliation, le présent accord demeure en vigueur tant que le Locataire principal reste titulaire du bail du logement.
-      </p>
+      <ReactMarkdown components={customComponents}>{content}</ReactMarkdown>
     </div>
   );
 }
