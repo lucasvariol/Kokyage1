@@ -54,6 +54,20 @@ export const ownerVerificationTemplate = {
                 Un locataire a référencé un logement sur <strong style="color: #C96745;">Kokyage</strong> et vous a désigné comme propriétaire de ce bien.
               </p>
 
+              <!-- Encadré explication du concept -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #E6F7F5; border-left: 4px solid #60A29D; border-radius: 8px; margin: 20px 0;">
+                <tr>
+                  <td style="padding: 18px 22px;">
+                    <p style="margin: 0 0 10px; font-size: 14px; font-weight: 700; color: #2D3748;">
+                      💡 Comment fonctionne Kokyage ?
+                    </p>
+                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #4A5568;">
+                      <strong style="color: #C96745;">Kokyage</strong> est une plateforme qui permet à vos locataires de sous-louer leur logement de manière légale et sécurisée, avec votre autorisation préalable. Vous gardez le contrôle total sur votre bien et recevez une notification pour chaque demande de sous-location.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
               <!-- Encadré avec les informations du logement -->
               <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F5F1ED; border-radius: 12px; margin: 25px 0;">
                 <tr>
