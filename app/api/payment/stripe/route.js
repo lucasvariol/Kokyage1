@@ -20,6 +20,16 @@ export async function POST(request) {
       metadata
     } = body;
 
+    console.log('[Stripe API] Incoming payment:', {
+      amount,
+      currency,
+      paymentMethodId,
+      userId,
+      userEmail,
+      listingId,
+      reservationData
+    });
+
     // 0. Récupérer/créer le Customer Stripe
     let customer;
     if (userId && userEmail) {
@@ -37,6 +47,9 @@ export async function POST(request) {
 
     // 0b. PaymentMethod sera attaché automatiquement lors de la création du PaymentIntent
     let paymentMethodToUse = paymentMethodId;
+    if (!paymentMethodToUse) {
+      console.warn('[Stripe API] No paymentMethodId provided');
+    }
 
     // Validation des données de base
     if (!amount) {
@@ -101,6 +114,13 @@ export async function POST(request) {
   return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
     });
 
+    console.log('[Stripe API] PaymentIntent created:', {
+      id: paymentIntent.id,
+      status: paymentIntent.status,
+      customer: paymentIntent.customer,
+      payment_method: paymentIntent.payment_method
+    });
+
     // 2. Empreinte bancaire (caution 300€) — on ne la crée qu'après succès du paiement principal
     let cautionIntent = null;
 
@@ -133,6 +153,7 @@ export async function POST(request) {
     if (paymentIntent.status === 'succeeded') {
       // Récupérer le PaymentMethod attaché au Customer après le succès
       const attachedPaymentMethod = paymentIntent.payment_method;
+      console.log('[Stripe API] PaymentIntent succeeded. Attached PM:', attachedPaymentMethod);
       
       // Calculer les jours avant l'arrivée
       const dateArrivee = reservationData?.dateArrivee ? new Date(reservationData.dateArrivee) : null;
