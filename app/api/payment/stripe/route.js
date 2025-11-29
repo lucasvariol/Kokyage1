@@ -35,32 +35,8 @@ export async function POST(request) {
       }
     }
 
-    // 0b. Vérifier/attacher le PaymentMethod au bon Customer de manière défensive
+    // 0b. PaymentMethod sera attaché automatiquement lors de la création du PaymentIntent
     let paymentMethodToUse = paymentMethodId;
-    if (paymentMethodId) {
-      const pm = await stripe.paymentMethods.retrieve(paymentMethodId);
-      // Si le PM est déjà rattaché à un autre customer, on réutilise ce customer
-      if (pm.customer && !customer) {
-        customer = typeof pm.customer === 'string' ? { id: pm.customer } : pm.customer;
-      }
-      // Si on a un customer cible mais le PM n'y est pas attaché, on tente l'attache
-      if (customer && (!pm.customer || (typeof pm.customer === 'string' ? pm.customer !== customer.id : pm.customer.id !== customer.id))) {
-        try {
-          await stripe.paymentMethods.attach(paymentMethodId, { customer: customer.id });
-        } catch (e) {
-          // Si l'attache échoue parce qu'il est déjà attaché ailleurs, on bascule sur le customer du PM
-          if (pm.customer) {
-            customer = typeof pm.customer === 'string' ? { id: pm.customer } : pm.customer;
-          } else {
-            throw e;
-          }
-        }
-      }
-      // Définir le PM par défaut pour ce customer
-      if (customer) {
-        await stripe.customers.update(customer.id, { invoice_settings: { default_payment_method: paymentMethodId } });
-      }
-    }
 
     // Validation des données de base
     if (!amount) {
@@ -114,22 +90,7 @@ export async function POST(request) {
       );
     }
 
-    // 1. S'assurer que le PaymentMethod est bien attaché au Customer
-    if (customer && paymentMethodToUse) {
-      try {
-        const pm = await stripe.paymentMethods.retrieve(paymentMethodToUse);
-        if (!pm.customer || pm.customer !== customer.id) {
-          await stripe.paymentMethods.attach(paymentMethodToUse, {
-            customer: customer.id,
-          });
-          console.log(`✅ PaymentMethod ${paymentMethodToUse} attaché au Customer ${customer.id}`);
-        }
-      } catch (attachError) {
-        console.log('⚠️ Erreur attache PM (peut-être déjà attaché):', attachError.message);
-      }
-    }
-
-    // 2. Paiement principal (on permet la réutilisation du PM ensuite)
+    // 1. Paiement principal (setup_future_usage attachera automatiquement le PM au Customer)
     const paymentIntent = await stripe.paymentIntents.create({
   ...paymentIntentConfig,
   payment_method: paymentMethodToUse,
@@ -140,7 +101,7 @@ export async function POST(request) {
   return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
     });
 
-    // 3. Empreinte bancaire (caution 300€) — on ne la crée qu'après succès du paiement principal
+    // 2. Empreinte bancaire (caution 300€) — on ne la crée qu'après succès du paiement principal
     let cautionIntent = null;
 
     // Si le paiement principal nécessite une action supplémentaire (3D Secure, etc.)
@@ -170,6 +131,9 @@ export async function POST(request) {
 
     // Paiement principal réussi
     if (paymentIntent.status === 'succeeded') {
+      // Récupérer le PaymentMethod attaché au Customer après le succès
+      const attachedPaymentMethod = paymentIntent.payment_method;
+      
       // Calculer les jours avant l'arrivée
       const dateArrivee = reservationData?.dateArrivee ? new Date(reservationData.dateArrivee) : null;
       const today = new Date();
@@ -244,7 +208,7 @@ export async function POST(request) {
             currency: cautionIntent.currency,
             client_secret: cautionIntent.client_secret
           },
-          payment_method_id: paymentMethodToUse,
+          payment_method_id: attachedPaymentMethod,
           message: 'Paiement effectué avec succès et empreinte bancaire enregistrée !'
         });
       } else {
@@ -274,7 +238,7 @@ export async function POST(request) {
             } : null
           },
           cautionIntent: null,
-          payment_method_id: paymentMethodToUse,
+          payment_method_id: attachedPaymentMethod,
           caution_scheduled: true,
           message: `Paiement effectué avec succès ! L'empreinte bancaire de caution (300€) sera créée 7 jours avant votre arrivée.`
         });
