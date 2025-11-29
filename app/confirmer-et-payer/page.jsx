@@ -11,7 +11,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { getFeeMultiplier, percentLabel } from '@/lib/commissions';
 
 // Charger Stripe
-const stripePromise = loadStripe(process.env.STRIPE_PUBLIC_KEY || '');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || '');
 
 function ConfirmerEtPayerContent() {
   const router = useRouter();

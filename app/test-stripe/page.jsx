@@ -4,7 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useState } from 'react';
 
-const stripePromise = loadStripe(process.env.STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 function TestStripeForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -80,16 +80,16 @@ function TestStripeForm() {
           <div className="text-xs space-y-1">
             <div>
               <strong>Public Key:</strong> {
-                process.env.STRIPE_PUBLIC_KEY 
-                  ? `${process.env.STRIPE_PUBLIC_KEY.substring(0, 20)}...` 
+                process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY 
+                  ? `${process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY.substring(0, 20)}...` 
                   : '❌ Non définie'
               }
             </div>
             <div>
               <strong>Status:</strong> {
-                process.env.STRIPE_PUBLIC_KEY?.startsWith('pk_test_')
+                process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY?.startsWith('pk_test_')
                   ? '✅ Mode test'
-                  : process.env.STRIPE_PUBLIC_KEY?.startsWith('pk_live_')
+                  : process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY?.startsWith('pk_live_')
                   ? '🔴 Mode production'
                   : '❌ Clé invalide'
               }

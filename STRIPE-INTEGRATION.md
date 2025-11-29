@@ -8,7 +8,7 @@ Ce document explique comment configurer complètement l'intégration Stripe pour
 
 ```bash
 # Stripe Configuration
-STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
+NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
 STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
 ```
 
@@ -127,7 +127,7 @@ export async function POST(request) {
 ### 6.4 Configuration de production
 ```bash
 # Variables d'environnement de production
-STRIPE_PUBLIC_KEY=pk_live_...
+NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_live_...
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 ```
