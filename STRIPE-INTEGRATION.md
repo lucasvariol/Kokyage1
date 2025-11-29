@@ -10,7 +10,6 @@ Ce document explique comment configurer complètement l'intégration Stripe pour
 # Stripe Configuration
 STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
 STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
 ```
 
 ### Obtenir vos clés :
@@ -130,7 +129,6 @@ export async function POST(request) {
 # Variables d'environnement de production
 STRIPE_PUBLIC_KEY=pk_live_...
 STRIPE_SECRET_KEY=sk_live_...
-NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
