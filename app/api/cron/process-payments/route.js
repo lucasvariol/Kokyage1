@@ -7,6 +7,14 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Fonction utilitaire pour formater une date en YYYY-MM-DD (heure locale, pas UTC)
+function formatLocalDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export async function GET(request) {
   // Sécurité : vérifier que l'appel vient de Vercel Cron
   const authHeader = request.headers.get('authorization');
@@ -47,7 +55,7 @@ export async function GET(request) {
       .eq('status', 'confirmed')
       .eq('payment_status', 'paid')
       .eq('host_validation_ok', true)
-      .lt('date_depart', new Date().toISOString().split('T')[0])
+      .lt('date_depart', formatLocalDate(new Date()))
       .eq('balances_allocated', false);
 
     if (error) {
@@ -414,12 +422,12 @@ export async function GET(request) {
 // Fonction pour créer les empreintes bancaires des réservations dans 7 jours
 async function createUpcomingCautions() {
   try {
-    // Date dans 7 jours
+    // Date dans 7 jours (en heure locale pour matcher le format stocké en BDD)
     const sevenDaysFromNow = new Date();
     sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-    const targetDate = sevenDaysFromNow.toISOString().split('T')[0];
+    const targetDate = formatLocalDate(sevenDaysFromNow);
 
-    console.log(`📅 Recherche des réservations débutant le ${targetDate}`);
+    console.log(`📅 Recherche des réservations débutant le ${targetDate} (heure locale)`);
 
     // Récupérer les réservations confirmées qui débutent dans 7 jours et n'ont pas encore de caution
     const { data: reservations, error } = await supabaseAdmin
@@ -548,9 +556,9 @@ async function releaseCautions() {
     // Trouver les réservations avec caution autorisée et date_depart + 14 jours dépassée
     const fourteenDaysAgo = new Date();
     fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-    const targetDate = fourteenDaysAgo.toISOString().split('T')[0];
+    const targetDate = formatLocalDate(fourteenDaysAgo);
 
-    console.log(`📅 Recherche des cautions à libérer (départ avant le ${targetDate})`);
+    console.log(`📅 Recherche des cautions à libérer (départ avant le ${targetDate}) [heure locale]`);
 
     const { data: reservations, error } = await supabaseAdmin
       .from('reservations')
