@@ -429,12 +429,12 @@ async function createUpcomingCautions() {
 
     console.log(`📅 Recherche des réservations débutant le ${targetDate} (heure locale)`);
 
-    // Récupérer les réservations confirmées qui débutent dans 7 jours et n'ont pas encore de caution
+    // Récupérer les réservations confirmées qui débutent dans 7 jours ou moins et n'ont pas encore de caution
     const { data: reservations, error } = await supabaseAdmin
       .from('reservations')
       .select('id, user_id, payment_method_id, date_arrivee, caution_status, caution_intent_id, status')
       .eq('status', 'confirmed')
-      .eq('date_arrivee', targetDate)
+      .lte('date_arrivee', targetDate)
       .or('caution_status.is.null,caution_status.eq.pending')
       .not('payment_method_id', 'is', null);
 
