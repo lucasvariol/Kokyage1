@@ -2,13 +2,13 @@ import './globals.css';
 import CookieBanner from './_components/CookieBanner';
 
 export const metadata = {
-  title: 'Kokyage - Sous-location Légale | Partagez vos Revenus Locatifs avec votre Propriétaire',
-  description: 'Sous-louez légalement votre logement pendant vos vacances. Partage de revenus 60/40 avec votre propriétaire. Airbnb légal, location courte durée autorisée, accord propriétaire en ligne.',
-  keywords: 'sous-location légale, sous louer appartement, location courte durée, Airbnb légal, partage revenus locatifs, accord propriétaire, sous location vacances, louer son appartement, revenus complémentaires, location saisonnière, sous-location autorisée',
+  title: 'Kokyage - Sous-louez pendant vos vacances',
+  description: 'Sous-louez votre logement pendant vos vacances avec Kokyage. Partagez les revenus avec votre propriétaire.',
+  keywords: 'sous-location légale, sous louer appartement, location courte durée, Airbnb, légal, partage revenus locatifs, accord propriétaire, sous location vacances, louer son appartement, revenus complémentaires, location saisonnière, sous-location autorisée, comment sous louer son appartement, puis je sous louer mon appartement, sous location avec accord propriétaire, gagner argent avec son logement, louer appartement vacances, location meublée courte durée, airbnb avec accord bailleur, sous louer légalement, revenus passifs immobilier, location saisonnière légale, sous location bail, autorisation sous location, partage revenus location, plateforme sous-location, sous louer pendant vacances, rentabiliser son logement, loi alur sous-location, sous location réglementée, contrat sous-location, location temporaire appartement, logement courte durée Paris Lyon Marseille Bordeaux Nice Toulouse Nantes, kokyage, cokyage, coquillage',
   authors: [{ name: 'Kokyage' }],
   openGraph: {
-    title: 'Kokyage - Sous-location Légale avec Partage de Revenus',
-    description: 'Sous-louez votre logement pendant vos absences. 60% pour vous, 40% pour votre propriétaire. 100% légal avec accord électronique. Location courte durée autorisée.',
+    title: 'Kokyage - Sous-louez pendant vos vacances',
+    description: 'Sous-louez votre logement pendant vos vacances avec Kokyage. Partagez les revenus avec votre propriétaire.',
     url: 'https://kokyage.com',
     siteName: 'Kokyage',
     images: [
@@ -24,8 +24,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kokyage - Sous-location Légale avec Partage de Revenus',
-    description: 'Sous-louez votre logement pendant vos absences. 60% pour vous, 40% pour votre propriétaire. 100% légal.',
+    title: 'Kokyage - Sous-louez pendant vos vacances',
+    description: 'Sous-louez votre logement pendant vos vacances avec Kokyage. Partagez les revenus avec votre propriétaire.',
     images: ['/favicon.png'],
   },
   robots: {
@@ -39,20 +39,81 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'votre-code-google-search-console', // À remplacer par votre code
-  },
+
   alternates: {
     canonical: 'https://kokyage.com',
   },
 };
 
 export default function RootLayout({ children }) {
+  // Données structurées JSON-LD pour les sitelinks Google
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Kokyage.com",
+    "url": "https://kokyage.com",
+    "description": "Sous-louez votre logement pendant vos vacances avec Kokyage. Partagez les revenus avec votre propriétaire.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://kokyage.com/logements?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "hasPart": [
+      {
+        "@type": "WebPage",
+        "name": "Trouver un Logement",
+        "description": "Partez dans une aventure authentique chez l'habitant.",
+        "url": "https://kokyage.com/je-recherche-un-logement"
+      },
+      {
+        "@type": "WebPage",
+        "name": "Sous-louer mon Logement",
+        "description": "Gagnez des revenus complémentaires en sous-louant votre logement en partageant les revenus avec votre propriétaire.",
+        "url": "https://kokyage.com/sous-louer"
+      },
+      {
+        "@type": "WebPage",
+        "name": "Comment ça Marche",
+        "description": "Découvrez le fonctionnement de Kokyage : partage de revenus 60/40, accord propriétaire en ligne, 100% légal.",
+        "url": "https://kokyage.com/fonctionnement"
+      }
+    ]
+  };
+
+  const organizationData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Kokyage",
+    "url": "https://kokyage.com",
+    "logo": "https://kokyage.com/logo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "contact@kokyage.com",
+      "contactType": "Customer Service",
+      "availableLanguage": "French"
+    },
+    "sameAs": [
+      "https://www.facebook.com/kokyage",
+      "https://www.instagram.com/kokyage",
+      "https://www.linkedin.com/company/kokyage"
+    ]
+  };
+
   return (
     <html lang="fr">
       <head>
         <link rel="icon" type="image/png" sizes="128x128" href="/favicon.png" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        
+        {/* Données structurées pour Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
+        />
       </head>
       <body>
         {children}
