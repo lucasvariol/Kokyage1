@@ -424,7 +424,7 @@ async function createUpcomingCautions() {
     // Récupérer les réservations confirmées qui débutent dans 7 jours et n'ont pas encore de caution
     const { data: reservations, error } = await supabaseAdmin
       .from('reservations')
-      .select('id, user_id, payment_method_id, date_arrivee, caution_status, caution_intent_id')
+      .select('id, user_id, payment_method_id, date_arrivee, caution_status, caution_intent_id, status')
       .eq('status', 'confirmed')
       .eq('date_arrivee', targetDate)
       .or('caution_status.is.null,caution_status.eq.pending')
@@ -435,7 +435,27 @@ async function createUpcomingCautions() {
       return { success: false, error: error.message };
     }
 
+    console.log(`🔍 Requête CRON - conditions:`);
+    console.log(`   - status = 'confirmed'`);
+    console.log(`   - date_arrivee = '${targetDate}'`);
+    console.log(`   - caution_status IS NULL OR = 'pending'`);
+    console.log(`   - payment_method_id NOT NULL`);
+    console.log(`📊 Résultat: ${reservations?.length || 0} réservation(s) trouvée(s)`);
+
     if (!reservations || reservations.length === 0) {
+      // Vérifier s'il y a des réservations sans cette condition pour déboguer
+      const { data: allUpcoming } = await supabaseAdmin
+        .from('reservations')
+        .select('id, date_arrivee, status, payment_method_id, caution_status')
+        .eq('date_arrivee', targetDate);
+      
+      console.log(`🔍 Debug: ${allUpcoming?.length || 0} réservation(s) avec date_arrivee = ${targetDate} (tous statuts confondus)`);
+      if (allUpcoming && allUpcoming.length > 0) {
+        allUpcoming.forEach(r => {
+          console.log(`   - Réservation #${r.id}: status=${r.status}, payment_method_id=${r.payment_method_id ? 'OUI' : 'NON'}, caution_status=${r.caution_status || 'null'}`);
+        });
+      }
+      
       console.log('ℹ️ Aucune réservation nécessitant une caution dans 7 jours');
       return { success: true, processed: 0, results: [] };
     }
