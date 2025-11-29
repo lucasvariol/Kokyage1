@@ -114,7 +114,22 @@ export async function POST(request) {
       );
     }
 
-    // 1. Paiement principal (on permet la réutilisation du PM ensuite)
+    // 1. S'assurer que le PaymentMethod est bien attaché au Customer
+    if (customer && paymentMethodToUse) {
+      try {
+        const pm = await stripe.paymentMethods.retrieve(paymentMethodToUse);
+        if (!pm.customer || pm.customer !== customer.id) {
+          await stripe.paymentMethods.attach(paymentMethodToUse, {
+            customer: customer.id,
+          });
+          console.log(`✅ PaymentMethod ${paymentMethodToUse} attaché au Customer ${customer.id}`);
+        }
+      } catch (attachError) {
+        console.log('⚠️ Erreur attache PM (peut-être déjà attaché):', attachError.message);
+      }
+    }
+
+    // 2. Paiement principal (on permet la réutilisation du PM ensuite)
     const paymentIntent = await stripe.paymentIntents.create({
   ...paymentIntentConfig,
   payment_method: paymentMethodToUse,
@@ -125,7 +140,7 @@ export async function POST(request) {
   return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
     });
 
-    // 2. Empreinte bancaire (caution 300€) — on ne la crée qu'après succès du paiement principal
+    // 3. Empreinte bancaire (caution 300€) — on ne la crée qu'après succès du paiement principal
     let cautionIntent = null;
 
     // Si le paiement principal nécessite une action supplémentaire (3D Secure, etc.)
