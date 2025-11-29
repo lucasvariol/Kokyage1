@@ -392,12 +392,17 @@ export async function GET(request) {
     console.log('\n🔒 Création des empreintes bancaires pour les réservations dans 7 jours...');
     const cautionResults = await createUpcomingCautions();
     
+    // 10. NOUVEAU: Libérer les cautions après 14 jours
+    console.log('\n🔓 Libération des cautions après 14 jours...');
+    const cautionReleaseResults = await releaseCautions();
+    
     return Response.json({
       success: true,
       processed: results.length,
       results,
       pending_balances_processed: pendingResults,
-      cautions_created: cautionResults
+      cautions_created: cautionResults,
+      cautions_released: cautionReleaseResults
     });
 
   } catch (error) {
@@ -510,6 +515,102 @@ async function createUpcomingCautions() {
 
   } catch (error) {
     console.error('❌ Erreur création cautions:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+// Fonction pour libérer les cautions après 14 jours
+async function releaseCautions() {
+  try {
+    // Trouver les réservations avec caution autorisée et date_depart + 14 jours dépassée
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+    const targetDate = fourteenDaysAgo.toISOString().split('T')[0];
+
+    console.log(`📅 Recherche des cautions à libérer (départ avant le ${targetDate})`);
+
+    const { data: reservations, error } = await supabaseAdmin
+      .from('reservations')
+      .select('id, caution_intent_id, caution_status, date_depart, litige')
+      .eq('caution_status', 'authorized')
+      .not('caution_intent_id', 'is', null)
+      .lte('date_depart', targetDate);
+
+    if (error) {
+      console.error('❌ Erreur récupération cautions:', error);
+      return { success: false, error: error.message };
+    }
+
+    if (!reservations || reservations.length === 0) {
+      console.log('ℹ️ Aucune caution à libérer');
+      return { success: true, processed: 0, results: [] };
+    }
+
+    console.log(`🔒 ${reservations.length} caution(s) à vérifier`);
+
+    const results = [];
+
+    for (const reservation of reservations) {
+      try {
+        // Vérifier s'il y a un litige
+        const hasDispute = reservation.litige === true || reservation.litige === 'pending';
+
+        if (hasDispute) {
+          console.log(`⚠️ Caution #${reservation.id} maintenue - Litige en cours`);
+          results.push({
+            reservation_id: reservation.id,
+            success: false,
+            reason: 'dispute'
+          });
+          continue;
+        }
+
+        // Libérer la caution
+        console.log(`🔓 Libération caution pour réservation #${reservation.id}`);
+
+        const paymentIntent = await stripe.paymentIntents.cancel(
+          reservation.caution_intent_id
+        );
+
+        await supabaseAdmin
+          .from('reservations')
+          .update({
+            caution_status: 'released',
+            caution_released_at: new Date().toISOString()
+          })
+          .eq('id', reservation.id);
+
+        console.log(`✅ Caution libérée: ${paymentIntent.amount / 100}€`);
+
+        results.push({
+          reservation_id: reservation.id,
+          success: true,
+          amount: paymentIntent.amount / 100
+        });
+
+      } catch (err) {
+        console.error(`❌ Erreur libération caution #${reservation.id}:`, err.message);
+        results.push({
+          reservation_id: reservation.id,
+          success: false,
+          error: err.message
+        });
+      }
+    }
+
+    console.log(`✅ ${results.filter(r => r.success).length} caution(s) libérée(s)`);
+
+    return {
+      success: true,
+      processed: reservations.length,
+      results
+    };
+
+  } catch (error) {
+    console.error('❌ Erreur libération cautions:', error);
     return {
       success: false,
       error: error.message
