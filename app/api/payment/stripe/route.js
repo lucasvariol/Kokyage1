@@ -159,9 +159,16 @@ export async function POST(request) {
       console.log('[Stripe API] PaymentIntent succeeded. Attached PM:', attachedPaymentMethod);
       
       // Calculer les jours avant l'arrivée
-      const dateArrivee = reservationData?.dateArrivee ? new Date(reservationData.dateArrivee) : null;
+      const dateArrivee = reservationData?.startDate ? new Date(reservationData.startDate) : null;
       const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate day calculation
+      if (dateArrivee) {
+        dateArrivee.setHours(0, 0, 0, 0);
+      }
       const daysUntilArrival = dateArrivee ? Math.floor((dateArrivee - today) / (1000 * 60 * 60 * 24)) : 0;
+      
+      console.log('[Stripe API] Date arrivée:', dateArrivee?.toISOString());
+      console.log('[Stripe API] Jours avant arrivée:', daysUntilArrival);
 
       // Si l'arrivée est dans 7 jours ou moins, créer la caution immédiatement
       if (daysUntilArrival <= 7) {
