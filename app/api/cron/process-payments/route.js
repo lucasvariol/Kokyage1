@@ -411,15 +411,19 @@ export async function GET(request) {
   }
 }
 
-// Fonction pour créer les empreintes bancaires des réservations dans 7 jours
+// Fonction pour créer les empreintes bancaires des réservations dans 7 jours ou moins
 async function createUpcomingCautions() {
   try {
-    // Date dans 7 jours
-    const sevenDaysFromNow = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const sevenDaysFromNow = new Date(today);
     sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-    const targetDate = sevenDaysFromNow.toISOString().split('T')[0];
+    
+    const todayStr = today.toISOString().split('T')[0];
+    const sevenDaysStr = sevenDaysFromNow.toISOString().split('T')[0];
 
-    console.log(`📅 Recherche des réservations débutant le ${targetDate}`);
+    console.log(`📅 Recherche des réservations entre ${todayStr} et ${sevenDaysStr} (≤7 jours)`);
 
     // DEBUG: Vérifier toutes les réservations confirmées d'abord
     const { data: allConfirmed, error: debugError } = await supabaseAdmin
@@ -435,12 +439,13 @@ async function createUpcomingCautions() {
       });
     }
 
-    // Récupérer les réservations confirmées qui débutent dans 7 jours et n'ont pas encore de caution
+    // Récupérer les réservations confirmées qui débutent dans 7 jours ou moins et n'ont pas encore de caution
     const { data: reservations, error } = await supabaseAdmin
       .from('reservations')
       .select('id, user_id, payment_method_id, date_arrivee, caution_status, caution_intent_id')
       .eq('status', 'confirmed')
-      .eq('date_arrivee', targetDate)
+      .gte('date_arrivee', todayStr)
+      .lte('date_arrivee', sevenDaysStr)
       .or('caution_status.is.null,caution_status.eq.pending')
       .not('payment_method_id', 'is', null);
 
@@ -449,10 +454,10 @@ async function createUpcomingCautions() {
       return { success: false, error: error.message };
     }
 
-    console.log(`🔍 Filtrage final: ${reservations?.length || 0} réservation(s) avec date=${targetDate}, payment_method_id NOT NULL, caution_status NULL/pending`);
+    console.log(`🔍 Filtrage final: ${reservations?.length || 0} réservation(s) avec date_arrivee entre ${todayStr} et ${sevenDaysStr}, payment_method_id NOT NULL, caution_status NULL/pending`);
 
     if (!reservations || reservations.length === 0) {
-      console.log('ℹ️ Aucune réservation nécessitant une caution dans 7 jours');
+      console.log('ℹ️ Aucune réservation nécessitant une caution dans les 7 prochains jours');
       return { success: true, processed: 0, results: [] };
     }
 
