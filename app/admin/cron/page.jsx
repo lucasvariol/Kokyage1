@@ -54,20 +54,30 @@ export default function AdminCronPage() {
     setResult(null);
 
     try {
-      const response = await fetch('/api/cron/process-payments', {
-        method: 'GET',
+      // Récupérer le token de session pour l'authentification
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('Session expirée. Veuillez vous reconnecter.');
+      }
+
+      // Appeler la route admin dédiée qui gère l'authentification
+      const response = await fetch('/api/admin/trigger-cron', {
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET || ''}`
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
         }
       });
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors du déclenchement du CRON');
+        throw new Error(result.error || 'Erreur lors du déclenchement du CRON');
       }
 
-      setResult(data);
+      // Le résultat du CRON est dans result.data
+      setResult(result.data);
     } catch (err) {
       console.error('Erreur:', err);
       setError(err.message);
