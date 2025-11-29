@@ -6,6 +6,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2023-10-16',
 });
 
+const STRIPE_KEY_MODE = (process.env.STRIPE_SECRET_KEY || '').includes('_test_') ? 'test' : 'live';
+console.log(`[Stripe API] Running in ${STRIPE_KEY_MODE} mode`);
+
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -300,6 +303,22 @@ export async function POST(request) {
       );
     }
     
+    // Cas fréquent: PaymentMethod introuvable (souvent dû à une clé Stripe en mode différent)
+    if (error.type === 'StripeInvalidRequestError' && /No such PaymentMethod/i.test(error.message)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Erreur Stripe: ${error.message}. Vérifiez que le PaymentMethod vient du même environnement (${STRIPE_KEY_MODE}) que la clé serveur.`,
+          hint: `Si vous testez localement, utilisez des cartes de test et une clé sk_test_ côté serveur. En production, utilisez sk_live_.`,
+          transaction: {
+            status: 'error',
+            error: error.message
+          }
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { 
         success: false,
@@ -309,7 +328,8 @@ export async function POST(request) {
         transaction: {
           status: 'error',
           error: error.message
-        }
+        },
+        stripeEnv: STRIPE_KEY_MODE
       },
       { status: 500 }
     );
