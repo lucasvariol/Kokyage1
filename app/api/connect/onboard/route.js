@@ -27,6 +27,17 @@ export async function POST(request) {
 
     let accountId = profile?.stripe_account_id;
 
+    // Vérifier que le compte existe vraiment dans Stripe
+    if (accountId) {
+      try {
+        await stripe.accounts.retrieve(accountId);
+        console.log(`✅ Compte Stripe existant trouvé: ${accountId}`);
+      } catch (err) {
+        console.warn(`⚠️ Compte Stripe ${accountId} introuvable, création d'un nouveau compte`);
+        accountId = null; // Forcer la création d'un nouveau compte
+      }
+    }
+
     if (!accountId) {
       const account = await stripe.accounts.create({
         type: 'express',
