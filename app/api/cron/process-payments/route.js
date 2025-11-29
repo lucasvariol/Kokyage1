@@ -443,6 +443,18 @@ async function createUpcomingCautions() {
       try {
         console.log(`💳 Création caution pour réservation #${reservation.id}`);
 
+        // Attacher le PaymentMethod au Customer si ce n'est pas déjà fait
+        try {
+          await stripe.paymentMethods.attach(reservation.payment_method_id, {
+            customer: reservation.user_id,
+          });
+        } catch (attachError) {
+          // Si déjà attaché, continuer
+          if (!attachError.message.includes('already been attached')) {
+            throw attachError;
+          }
+        }
+
         // Créer le PaymentIntent pour l'empreinte de 300€
         // La caution sera automatiquement libérée 14 jours après la date de départ
         const cautionIntent = await stripe.paymentIntents.create({
