@@ -12,8 +12,7 @@ const CARD_ELEMENT_OPTIONS = {
       fontFamily: 'system-ui, -apple-system, sans-serif',
       '::placeholder': {
         color: '#9ca3af',
-      },
-      padding: '12px',
+      }
     },
     invalid: {
       color: '#ef4444',

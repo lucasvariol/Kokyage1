@@ -155,76 +155,115 @@ export async function POST(request) {
 
     // Paiement principal réussi
     if (paymentIntent.status === 'succeeded') {
-      // Créer l'empreinte bancaire (caution) maintenant que le PM est réutilisable côté customer
-      cautionIntent = await stripe.paymentIntents.create({
-        amount: 30000, // 300€ en centimes
-        currency: 'eur',
-        payment_method: paymentMethodToUse,
-        customer: customer ? customer.id : undefined,
-        confirmation_method: 'manual',
-        capture_method: 'manual', // autorisation, pas de débit
-        confirm: true,
-  description: 'Empreinte bancaire caution Kokyage',
-        return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
-        metadata: {
-          type: 'caution',
-          userId: userId || 'test-user',
-          listingId: listingId || '',
-          reservation: JSON.stringify(reservationData || {})
-        }
-      });
+      // Calculer les jours avant l'arrivée
+      const dateArrivee = reservationData?.dateArrivee ? new Date(reservationData.dateArrivee) : null;
+      const today = new Date();
+      const daysUntilArrival = dateArrivee ? Math.floor((dateArrivee - today) / (1000 * 60 * 60 * 24)) : 0;
 
-      // Si la caution nécessite une action (rare mais possible)
-      if (cautionIntent.status === 'requires_action') {
+      // Si l'arrivée est dans 7 jours ou moins, créer la caution immédiatement
+      if (daysUntilArrival <= 7) {
+        cautionIntent = await stripe.paymentIntents.create({
+          amount: 30000, // 300€ en centimes
+          currency: 'eur',
+          payment_method: paymentMethodToUse,
+          customer: customer ? customer.id : undefined,
+          confirmation_method: 'manual',
+          capture_method: 'manual', // autorisation, pas de débit
+          confirm: true,
+          description: 'Empreinte bancaire caution Kokyage',
+          return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
+          metadata: {
+            type: 'caution',
+            userId: userId || 'test-user',
+            listingId: listingId || '',
+            reservation: JSON.stringify(reservationData || {})
+          }
+        });
+
+        // Si la caution nécessite une action (rare mais possible)
+        if (cautionIntent.status === 'requires_action') {
+          return NextResponse.json({
+            requiresAction: true,
+            paymentIntent: {
+              id: paymentIntent.id,
+              client_secret: paymentIntent.client_secret,
+              status: paymentIntent.status
+            },
+            cautionIntent: {
+              id: cautionIntent.id,
+              status: cautionIntent.status,
+              client_secret: cautionIntent.client_secret
+            },
+            message: 'Action requise pour la caution (3D Secure).'
+          });
+        }
+
         return NextResponse.json({
-          requiresAction: true,
+          success: true,
+          transaction: {
+            transactionId: paymentIntent.id,
+            status: paymentIntent.status,
+            amount: paymentIntent.amount,
+            currency: paymentIntent.currency
+          },
           paymentIntent: {
             id: paymentIntent.id,
-            client_secret: paymentIntent.client_secret,
-            status: paymentIntent.status
+            status: paymentIntent.status,
+            amount: paymentIntent.amount,
+            currency: paymentIntent.currency,
+            charges: paymentIntent.charges?.data?.[0] ? {
+              id: paymentIntent.charges.data[0].id,
+              receipt_url: paymentIntent.charges.data[0].receipt_url,
+              payment_method_details: {
+                card: {
+                  last4: paymentIntent.charges.data[0].payment_method_details?.card?.last4,
+                  brand: paymentIntent.charges.data[0].payment_method_details?.card?.brand
+                }
+              }
+            } : null
           },
           cautionIntent: {
             id: cautionIntent.id,
             status: cautionIntent.status,
+            amount: cautionIntent.amount,
+            currency: cautionIntent.currency,
             client_secret: cautionIntent.client_secret
           },
-          message: 'Action requise pour la caution (3D Secure).'
+          payment_method_id: paymentMethodToUse,
+          message: 'Paiement effectué avec succès et empreinte bancaire enregistrée !'
+        });
+      } else {
+        // Arrivée dans plus de 7 jours : sauvegarder le PaymentMethod pour création différée
+        return NextResponse.json({
+          success: true,
+          transaction: {
+            transactionId: paymentIntent.id,
+            status: paymentIntent.status,
+            amount: paymentIntent.amount,
+            currency: paymentIntent.currency
+          },
+          paymentIntent: {
+            id: paymentIntent.id,
+            status: paymentIntent.status,
+            amount: paymentIntent.amount,
+            currency: paymentIntent.currency,
+            charges: paymentIntent.charges?.data?.[0] ? {
+              id: paymentIntent.charges.data[0].id,
+              receipt_url: paymentIntent.charges.data[0].receipt_url,
+              payment_method_details: {
+                card: {
+                  last4: paymentIntent.charges.data[0].payment_method_details?.card?.last4,
+                  brand: paymentIntent.charges.data[0].payment_method_details?.card?.brand
+                }
+              }
+            } : null
+          },
+          cautionIntent: null,
+          payment_method_id: paymentMethodToUse,
+          caution_scheduled: true,
+          message: `Paiement effectué avec succès ! L'empreinte bancaire de caution (300€) sera créée 7 jours avant votre arrivée.`
         });
       }
-
-      return NextResponse.json({
-        success: true,
-        transaction: {
-          transactionId: paymentIntent.id,
-          status: paymentIntent.status,
-          amount: paymentIntent.amount,
-          currency: paymentIntent.currency
-        },
-        paymentIntent: {
-          id: paymentIntent.id,
-          status: paymentIntent.status,
-          amount: paymentIntent.amount,
-          currency: paymentIntent.currency,
-          charges: paymentIntent.charges?.data?.[0] ? {
-            id: paymentIntent.charges.data[0].id,
-            receipt_url: paymentIntent.charges.data[0].receipt_url,
-            payment_method_details: {
-              card: {
-                last4: paymentIntent.charges.data[0].payment_method_details?.card?.last4,
-                brand: paymentIntent.charges.data[0].payment_method_details?.card?.brand
-              }
-            }
-          } : null
-        },
-        cautionIntent: {
-          id: cautionIntent.id,
-          status: cautionIntent.status,
-          amount: cautionIntent.amount,
-          currency: cautionIntent.currency,
-          client_secret: cautionIntent.client_secret
-        },
-        message: 'Paiement effectué avec succès et empreinte bancaire enregistrée !'
-      });
     }
 
     // Autres statuts
