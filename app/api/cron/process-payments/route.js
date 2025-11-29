@@ -467,22 +467,31 @@ async function createUpcomingCautions() {
 
     for (const reservation of reservations) {
       try {
-        console.log(`💳 Création caution pour réservation #${reservation.id}`);
+        console.log(`\n💳 === Traitement réservation #${reservation.id} ===`);
+        console.log(`   📅 Date arrivée: ${reservation.date_arrivee}`);
+        console.log(`   👤 User ID: ${reservation.user_id}`);
+        console.log(`   💳 Payment Method ID: ${reservation.payment_method_id}`);
+        console.log(`   🔐 Caution status actuel: ${reservation.caution_status || 'NULL'}`);
 
         // Attacher le PaymentMethod au Customer si ce n'est pas déjà fait
+        console.log(`   🔗 Tentative d'attachement du PaymentMethod au Customer...`);
         try {
           await stripe.paymentMethods.attach(reservation.payment_method_id, {
             customer: reservation.user_id,
           });
+          console.log(`   ✅ PaymentMethod attaché avec succès`);
         } catch (attachError) {
           // Si déjà attaché, continuer
-          if (!attachError.message.includes('already been attached')) {
+          if (attachError.message.includes('already been attached')) {
+            console.log(`   ℹ️  PaymentMethod déjà attaché (normal)`);
+          } else {
+            console.error(`   ❌ Erreur attachement PaymentMethod:`, attachError.message);
             throw attachError;
           }
         }
 
         // Créer le PaymentIntent pour l'empreinte de 300€
-        // La caution sera automatiquement libérée 14 jours après la date de départ
+        console.log(`   🏦 Création du PaymentIntent pour la caution de 300€...`);
         const cautionIntent = await stripe.paymentIntents.create({
           amount: 30000, // 300€ en centimes
           currency: 'eur',
@@ -497,8 +506,13 @@ async function createUpcomingCautions() {
           }
         });
 
+        console.log(`   ✅ PaymentIntent créé: ${cautionIntent.id}`);
+        console.log(`   📊 Status: ${cautionIntent.status}`);
+        console.log(`   💰 Montant: ${cautionIntent.amount / 100}€`);
+
         // Mettre à jour la réservation
-        await supabaseAdmin
+        console.log(`   💾 Mise à jour de la réservation dans la base de données...`);
+        const { error: updateError } = await supabaseAdmin
           .from('reservations')
           .update({
             caution_intent_id: cautionIntent.id,
@@ -507,7 +521,12 @@ async function createUpcomingCautions() {
           })
           .eq('id', reservation.id);
 
-        console.log(`✅ Caution créée pour #${reservation.id}: ${cautionIntent.id}`);
+        if (updateError) {
+          console.error(`   ❌ Erreur mise à jour DB:`, updateError);
+          throw updateError;
+        }
+
+        console.log(`   ✅✅✅ Caution créée et enregistrée avec succès pour #${reservation.id}`);
 
         results.push({
           reservation_id: reservation.id,
@@ -517,7 +536,9 @@ async function createUpcomingCautions() {
         });
 
       } catch (err) {
-        console.error(`❌ Erreur création caution #${reservation.id}:`, err.message);
+        console.error(`\n❌❌❌ ERREUR création caution #${reservation.id}:`);
+        console.error(`   Message: ${err.message}`);
+        console.error(`   Stack: ${err.stack}`);
         results.push({
           reservation_id: reservation.id,
           success: false,
