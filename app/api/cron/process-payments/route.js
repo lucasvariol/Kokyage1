@@ -544,6 +544,12 @@ async function releaseCautions() {
       return { success: false, error: error.message };
     }
 
+    console.log(`📋 Requête cautions: caution_status=authorized, date_depart<=${targetDate}, caution_intent_id NOT NULL`);
+    console.log(`📋 Résultats trouvés:`, reservations?.length || 0);
+    if (reservations && reservations.length > 0) {
+      console.log(`📋 Détails:`, JSON.stringify(reservations, null, 2));
+    }
+
     if (!reservations || reservations.length === 0) {
       console.log('ℹ️ Aucune caution à libérer');
       return { success: true, processed: 0, results: [] };
