@@ -111,6 +111,58 @@ export async function GET(request) {
           }
         }
 
+        // 2b. Renouveler la caution si elle va expirer avant la fin du séjour + 14 jours
+        if (reservation.caution_status === 'authorized' && reservation.caution_intent_id && reservation.payment_method_id) {
+          try {
+            // Récupérer la date de création de la caution actuelle
+            const cautionIntent = await stripe.paymentIntents.retrieve(reservation.caution_intent_id);
+            const cautionCreatedDate = new Date(cautionIntent.created * 1000);
+            const daysSinceCautionCreated = Math.floor((new Date() - cautionCreatedDate) / (1000 * 60 * 60 * 24));
+            
+            // Calculer combien de jours il reste jusqu'à la fin du séjour + 14 jours
+            const endDate = new Date(reservation.date_depart);
+            endDate.setDate(endDate.getDate() + 14); // Ajouter 14 jours après le départ
+            const daysUntilEnd = Math.floor((endDate - new Date()) / (1000 * 60 * 60 * 24));
+            
+            // Si la caution a 25 jours et qu'il reste encore du temps, la renouveler
+            if (daysSinceCautionCreated >= 25 && daysUntilEnd > 0) {
+              console.log(`🔄 Renouvellement caution pour #${reservation.id} (${daysSinceCautionCreated} jours, encore ${daysUntilEnd} jours nécessaires)`);
+              
+              // Créer une nouvelle caution
+              const newCautionIntent = await stripe.paymentIntents.create({
+                amount: 30000,
+                currency: 'eur',
+                payment_method: reservation.payment_method_id,
+                customer: reservation.user_id,
+                capture_method: 'manual',
+                confirm: true,
+                description: `Caution renouvelée pour réservation #${reservation.id}`,
+                metadata: {
+                  reservation_id: reservation.id,
+                  type: 'caution_renewal',
+                  previous_intent: reservation.caution_intent_id
+                }
+              });
+              
+              // Libérer l'ancienne caution
+              await stripe.paymentIntents.cancel(reservation.caution_intent_id);
+              
+              // Mettre à jour avec la nouvelle caution
+              await supabaseAdmin
+                .from('reservations')
+                .update({
+                  caution_intent_id: newCautionIntent.id,
+                  caution_renewed_at: new Date().toISOString()
+                })
+                .eq('id', reservation.id);
+              
+              console.log(`✅ Caution renouvelée: nouvelle ${newCautionIntent.id}, ancienne libérée`);
+            }
+          } catch (err) {
+            console.error(`❌ Erreur renouvellement caution #${reservation.id}:`, err.message);
+          }
+        }
+
         // 3. Récupérer les IDs du propriétaire et locataire principal
         const listing = reservation.listings;
         if (!listing) {
