@@ -496,7 +496,8 @@ function ConfirmerEtPayerContent() {
           taxPrice: calculatedPrices.taxPrice,
           totalPrice: calculatedPrices.totalPrice,
           transactionId: paymentResult.transaction.transactionId,
-          cautionIntentId: paymentResult?.cautionIntent?.id || null
+          cautionIntentId: paymentResult?.cautionIntent?.id || null,
+          paymentMethodId: paymentResult?.payment_method_id || null
         })
       });
 

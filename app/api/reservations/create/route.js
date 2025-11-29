@@ -19,7 +19,8 @@ export async function POST(request) {
       taxPrice,
       totalPrice,
       transactionId,
-      cautionIntentId
+      cautionIntentId,
+      paymentMethodId
     } = body;
 
     // Pour les tests, utiliser un guestId par défaut si non fourni
@@ -102,6 +103,7 @@ export async function POST(request) {
         platform_share,
         caution_intent_id: cautionIntentId || null,
         caution_status: cautionIntentId ? 'authorized' : null,
+        payment_method_id: paymentMethodId || null,
         status: 'confirmed',
         payment_status: 'paid',
         host_validation_ok: false
