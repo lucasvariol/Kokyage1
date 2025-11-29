@@ -23,7 +23,7 @@ export async function generateMetadata({ params }) {
       ? listing.images[0] 
       : (listing.images ? JSON.parse(listing.images)[0] : null);
     
-    const imageUrl = firstImage || 'https://kokyage.com/favicon.png';
+    const imageUrl = firstImage || 'https://kokyage.com/logo.png';
 
     return {
       title: `${listing.title} - ${listing.city} | Kokyage`,
