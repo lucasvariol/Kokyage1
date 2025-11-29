@@ -3,7 +3,7 @@
  */
 
 export const reservationPaymentConfirmedTemplate = {
-  subject: '💳 Nouveau paiement confirmé pour votre logement',
+  subject: 'Une nouvelle réservation doit être validée',
 
   getHtml: ({
     tenantName,

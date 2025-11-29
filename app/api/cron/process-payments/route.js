@@ -388,16 +388,120 @@ export async function GET(request) {
     console.log('\n🔍 Vérification des soldes en attente...');
     const pendingResults = await processPendingBalances();
     
+    // 9. NOUVEAU: Créer les empreintes bancaires pour les réservations dans 7 jours
+    console.log('\n🔒 Création des empreintes bancaires pour les réservations dans 7 jours...');
+    const cautionResults = await createUpcomingCautions();
+    
     return Response.json({
       success: true,
       processed: results.length,
       results,
-      pending_balances_processed: pendingResults
+      pending_balances_processed: pendingResults,
+      cautions_created: cautionResults
     });
 
   } catch (error) {
     console.error('❌ Erreur globale:', error);
     return Response.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// Fonction pour créer les empreintes bancaires des réservations dans 7 jours
+async function createUpcomingCautions() {
+  try {
+    // Date dans 7 jours
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+    const targetDate = sevenDaysFromNow.toISOString().split('T')[0];
+
+    console.log(`📅 Recherche des réservations débutant le ${targetDate}`);
+
+    // Récupérer les réservations confirmées qui débutent dans 7 jours et n'ont pas encore de caution
+    const { data: reservations, error } = await supabaseAdmin
+      .from('reservations')
+      .select('id, user_id, payment_method_id, date_arrivee, caution_status, caution_intent_id')
+      .eq('status', 'confirmed')
+      .eq('date_arrivee', targetDate)
+      .or('caution_status.is.null,caution_status.eq.pending')
+      .not('payment_method_id', 'is', null);
+
+    if (error) {
+      console.error('❌ Erreur récupération réservations:', error);
+      return { success: false, error: error.message };
+    }
+
+    if (!reservations || reservations.length === 0) {
+      console.log('ℹ️ Aucune réservation nécessitant une caution dans 7 jours');
+      return { success: true, processed: 0, results: [] };
+    }
+
+    console.log(`🔒 ${reservations.length} réservation(s) nécessitant une caution`);
+
+    const results = [];
+
+    for (const reservation of reservations) {
+      try {
+        console.log(`💳 Création caution pour réservation #${reservation.id}`);
+
+        // Créer le PaymentIntent pour l'empreinte de 300€
+        // La caution sera automatiquement libérée 14 jours après la date de départ
+        const cautionIntent = await stripe.paymentIntents.create({
+          amount: 30000, // 300€ en centimes
+          currency: 'eur',
+          payment_method: reservation.payment_method_id,
+          customer: reservation.user_id,
+          capture_method: 'manual', // Empreinte uniquement, pas de capture immédiate
+          confirm: true,
+          description: `Caution pour réservation #${reservation.id} - Libération automatique 14 jours après le départ`,
+          metadata: {
+            reservation_id: reservation.id,
+            type: 'caution'
+          }
+        });
+
+        // Mettre à jour la réservation
+        await supabaseAdmin
+          .from('reservations')
+          .update({
+            caution_intent_id: cautionIntent.id,
+            caution_status: 'authorized',
+            caution_created_at: new Date().toISOString()
+          })
+          .eq('id', reservation.id);
+
+        console.log(`✅ Caution créée pour #${reservation.id}: ${cautionIntent.id}`);
+
+        results.push({
+          reservation_id: reservation.id,
+          success: true,
+          caution_intent_id: cautionIntent.id,
+          amount: 300
+        });
+
+      } catch (err) {
+        console.error(`❌ Erreur création caution #${reservation.id}:`, err.message);
+        results.push({
+          reservation_id: reservation.id,
+          success: false,
+          error: err.message
+        });
+      }
+    }
+
+    console.log(`✅ ${results.filter(r => r.success).length} caution(s) créée(s)`);
+
+    return {
+      success: true,
+      processed: reservations.length,
+      results
+    };
+
+  } catch (error) {
+    console.error('❌ Erreur création cautions:', error);
+    return {
+      success: false,
+      error: error.message
+    };
   }
 }
 

@@ -4,7 +4,7 @@
  */
 
 export const emailVerificationTemplate = {
-  subject: "Confirmez votre adresse email - Kokyage",
+  subject: "Confirmez votre adresse email",
   
   getHtml: ({ prenom, verificationUrl }) => `
 <!DOCTYPE html>

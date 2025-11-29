@@ -41,7 +41,7 @@ export const ownerVerificationConfirmedTemplate = {
               </p>
 
               <p style="color: #4B5563; font-size: 16px; line-height: 1.8; margin: 0 0 25px;">
-                Excellente nouvelle ! Le propriétaire réel de votre logement a confirmé son accord pour la mise en location sur Kokyage.
+                Excellente nouvelle ! Le propriétaire de votre logement a confirmé son accord pour la mise en location sur Kokyage.
               </p>
 
               <!-- Box logement -->
