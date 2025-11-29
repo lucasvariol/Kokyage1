@@ -427,7 +427,8 @@ async function createUpcomingCautions() {
     sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
     const targetDate = formatLocalDate(sevenDaysFromNow);
 
-    console.log(`📅 Recherche des réservations débutant le ${targetDate} (heure locale)`);
+    console.log(`📅 Recherche des réservations débutant le ${targetDate} ou avant (heure locale)`);
+    console.log(`🕐 Date actuelle: ${formatLocalDate(new Date())}`);
 
     // Récupérer les réservations confirmées qui débutent dans 7 jours ou moins et n'ont pas encore de caution
     const { data: reservations, error } = await supabaseAdmin
@@ -443,28 +444,60 @@ async function createUpcomingCautions() {
       return { success: false, error: error.message };
     }
 
-    console.log(`🔍 Requête CRON - conditions:`);
-    console.log(`   - status = 'confirmed'`);
-    console.log(`   - date_arrivee = '${targetDate}'`);
-    console.log(`   - caution_status IS NULL OR = 'pending'`);
-    console.log(`   - payment_method_id NOT NULL`);
-    console.log(`📊 Résultat: ${reservations?.length || 0} réservation(s) trouvée(s)`);
+    console.log(`\n🔍 Requête CRON - conditions:`);
+    console.log(`   ✓ status = 'confirmed'`);
+    console.log(`   ✓ date_arrivee <= '${targetDate}'`);
+    console.log(`   ✓ caution_status IS NULL OR = 'pending'`);
+    console.log(`   ✓ payment_method_id NOT NULL`);
+    console.log(`\n📊 Résultat: ${reservations?.length || 0} réservation(s) trouvée(s)`);
+
+    if (reservations && reservations.length > 0) {
+      console.log(`\n📋 Détail des réservations trouvées:`);
+      reservations.forEach(r => {
+        console.log(`   - #${r.id}: date_arrivee=${r.date_arrivee}, user_id=${r.user_id}, payment_method_id=${r.payment_method_id?.substring(0, 20)}...`);
+      });
+    }
 
     if (!reservations || reservations.length === 0) {
-      // Vérifier s'il y a des réservations sans cette condition pour déboguer
-      const { data: allUpcoming } = await supabaseAdmin
-        .from('reservations')
-        .select('id, date_arrivee, status, payment_method_id, caution_status')
-        .eq('date_arrivee', targetDate);
+      console.log(`\n🔍 DEBUG - Recherche de TOUTES les réservations confirmées à venir...`);
       
-      console.log(`🔍 Debug: ${allUpcoming?.length || 0} réservation(s) avec date_arrivee = ${targetDate} (tous statuts confondus)`);
-      if (allUpcoming && allUpcoming.length > 0) {
-        allUpcoming.forEach(r => {
-          console.log(`   - Réservation #${r.id}: status=${r.status}, payment_method_id=${r.payment_method_id ? 'OUI' : 'NON'}, caution_status=${r.caution_status || 'null'}`);
+      // 1. Toutes les réservations confirmées
+      const { data: allConfirmed } = await supabaseAdmin
+        .from('reservations')
+        .select('id, date_arrivee, status, payment_method_id, caution_status, caution_intent_id')
+        .eq('status', 'confirmed')
+        .gte('date_arrivee', formatLocalDate(new Date()));
+      
+      console.log(`   → ${allConfirmed?.length || 0} réservation(s) confirmée(s) à venir`);
+      
+      if (allConfirmed && allConfirmed.length > 0) {
+        allConfirmed.forEach(r => {
+          const hasPM = r.payment_method_id ? '✅' : '❌';
+          const cautionStatus = r.caution_status || 'null';
+          const cautionId = r.caution_intent_id ? '✅' : '❌';
+          console.log(`      #${r.id}: arrivée=${r.date_arrivee}, PM=${hasPM}, caution_status=${cautionStatus}, caution_intent=${cautionId}`);
         });
       }
       
-      console.log('ℹ️ Aucune réservation nécessitant une caution dans 7 jours');
+      // 2. Réservations dans la fenêtre de 7 jours
+      const { data: inWindow } = await supabaseAdmin
+        .from('reservations')
+        .select('id, date_arrivee, status, payment_method_id, caution_status')
+        .lte('date_arrivee', targetDate)
+        .gte('date_arrivee', formatLocalDate(new Date()));
+      
+      console.log(`\n   → ${inWindow?.length || 0} réservation(s) dans la fenêtre [aujourd'hui → ${targetDate}]`);
+      
+      if (inWindow && inWindow.length > 0) {
+        inWindow.forEach(r => {
+          const hasPM = r.payment_method_id ? '✅ OUI' : '❌ NON';
+          const status = r.status;
+          const cautionStatus = r.caution_status || 'null';
+          console.log(`      #${r.id}: arrivée=${r.date_arrivee}, status=${status}, PM=${hasPM}, caution=${cautionStatus}`);
+        });
+      }
+      
+      console.log('\n❌ Aucune réservation ne remplit TOUS les critères pour créer une caution');
       return { success: true, processed: 0, results: [] };
     }
 
@@ -474,21 +507,30 @@ async function createUpcomingCautions() {
 
     for (const reservation of reservations) {
       try {
-        console.log(`💳 Création caution pour réservation #${reservation.id}`);
+        console.log(`\n💳 Création caution pour réservation #${reservation.id}`);
+        console.log(`   📅 Date arrivée: ${reservation.date_arrivee}`);
+        console.log(`   👤 User ID: ${reservation.user_id}`);
+        console.log(`   💳 Payment Method: ${reservation.payment_method_id}`);
 
         // Attacher le PaymentMethod au Customer si ce n'est pas déjà fait
+        console.log(`   🔗 Tentative d'attachement du PaymentMethod au Customer...`);
         try {
           await stripe.paymentMethods.attach(reservation.payment_method_id, {
             customer: reservation.user_id,
           });
+          console.log(`   ✅ PaymentMethod attaché avec succès`);
         } catch (attachError) {
           // Si déjà attaché, continuer
-          if (!attachError.message.includes('already been attached')) {
+          if (attachError.message.includes('already been attached')) {
+            console.log(`   ℹ️ PaymentMethod déjà attaché`);
+          } else {
+            console.error(`   ❌ Erreur attachement:`, attachError.message);
             throw attachError;
           }
         }
 
         // Créer le PaymentIntent pour l'empreinte de 300€
+        console.log(`   💰 Création du PaymentIntent pour 300€...`);
         // La caution sera automatiquement libérée 14 jours après la date de départ
         const cautionIntent = await stripe.paymentIntents.create({
           amount: 30000, // 300€ en centimes
@@ -504,8 +546,13 @@ async function createUpcomingCautions() {
           }
         });
 
+        console.log(`   ✅ PaymentIntent créé: ${cautionIntent.id}`);
+        console.log(`   💰 Montant: ${cautionIntent.amount / 100}€`);
+        console.log(`   📊 Status: ${cautionIntent.status}`);
+
         // Mettre à jour la réservation
-        await supabaseAdmin
+        console.log(`   💾 Mise à jour de la réservation dans la BDD...`);
+        const { error: updateError } = await supabaseAdmin
           .from('reservations')
           .update({
             caution_intent_id: cautionIntent.id,
@@ -514,7 +561,13 @@ async function createUpcomingCautions() {
           })
           .eq('id', reservation.id);
 
-        console.log(`✅ Caution créée pour #${reservation.id}: ${cautionIntent.id}`);
+        if (updateError) {
+          console.error(`   ❌ Erreur mise à jour BDD:`, updateError);
+          throw updateError;
+        }
+
+        console.log(`   ✅ BDD mise à jour avec succès`);
+        console.log(`✅ Caution créée et enregistrée pour #${reservation.id}: ${cautionIntent.id}`);
 
         results.push({
           reservation_id: reservation.id,
@@ -524,7 +577,13 @@ async function createUpcomingCautions() {
         });
 
       } catch (err) {
-        console.error(`❌ Erreur création caution #${reservation.id}:`, err.message);
+        console.error(`\n❌ ERREUR création caution #${reservation.id}:`);
+        console.error(`   Message: ${err.message}`);
+        console.error(`   Type: ${err.type || 'unknown'}`);
+        console.error(`   Code: ${err.code || 'unknown'}`);
+        if (err.raw) {
+          console.error(`   Raw:`, err.raw);
+        }
         results.push({
           reservation_id: reservation.id,
           success: false,
@@ -533,7 +592,20 @@ async function createUpcomingCautions() {
       }
     }
 
-    console.log(`✅ ${results.filter(r => r.success).length} caution(s) créée(s)`);
+    const successCount = results.filter(r => r.success).length;
+    const failCount = results.filter(r => !r.success).length;
+    
+    console.log(`\n📊 RÉSUMÉ - Création des cautions:`);
+    console.log(`   ✅ Succès: ${successCount}`);
+    console.log(`   ❌ Échecs: ${failCount}`);
+    console.log(`   📝 Total traité: ${results.length}`);
+
+    if (failCount > 0) {
+      console.log(`\n⚠️ Détail des échecs:`);
+      results.filter(r => !r.success).forEach(r => {
+        console.log(`   - Réservation #${r.reservation_id}: ${r.error}`);
+      });
+    }
 
     return {
       success: true,
