@@ -1,0 +1,190 @@
+import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
+
+/**
+ * API pour créer un avis (review)
+ * POST /api/reviews/create
+ * 
+ * Body: {
+ *   reservationId: uuid,
+ *   rating: 1-5,
+ *   comment: string,
+ *   reviewerType: 'guest' | 'host'
+ * }
+ */
+
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const { reservationId, rating, comment, reviewerType } = body;
+
+    // Validation
+    if (!reservationId || !rating || !reviewerType) {
+      return NextResponse.json(
+        { error: 'Données manquantes (reservationId, rating, reviewerType requis)' },
+        { status: 400 }
+      );
+    }
+
+    if (!['guest', 'host'].includes(reviewerType)) {
+      return NextResponse.json(
+        { error: 'reviewerType doit être "guest" ou "host"' },
+        { status: 400 }
+      );
+    }
+
+    if (rating < 1 || rating > 5) {
+      return NextResponse.json(
+        { error: 'La note doit être entre 1 et 5' },
+        { status: 400 }
+      );
+    }
+
+    // Récupérer la réservation
+    const { data: reservation, error: reservationError } = await supabaseAdmin
+      .from('reservations')
+      .select('id, listing_id, user_id, guest_id, host_id, date_depart, created_at')
+      .eq('id', reservationId)
+      .single();
+
+    if (reservationError || !reservation) {
+      return NextResponse.json(
+        { error: 'Réservation introuvable' },
+        { status: 404 }
+      );
+    }
+
+    // Vérifier que le délai de 14 jours n'est pas dépassé
+    const departDate = new Date(reservation.date_depart);
+    const today = new Date();
+    const daysSinceDeparture = Math.floor((today - departDate) / (1000 * 60 * 60 * 24));
+
+    if (daysSinceDeparture > 14) {
+      return NextResponse.json(
+        { error: 'Le délai de 14 jours pour laisser un avis est dépassé' },
+        { status: 400 }
+      );
+    }
+
+    // Déterminer le reviewer et le reviewee
+    let reviewerId, revieweeId, listingId = null;
+
+    if (reviewerType === 'guest') {
+      // Le voyageur note l'hôte et le logement
+      reviewerId = reservation.guest_id || reservation.user_id;
+      revieweeId = reservation.host_id;
+      listingId = reservation.listing_id;
+    } else {
+      // L'hôte note le voyageur (pas de listing_id)
+      reviewerId = reservation.host_id;
+      revieweeId = reservation.guest_id || reservation.user_id;
+    }
+
+    // Vérifier qu'un avis n'existe pas déjà pour cette réservation par ce reviewer
+    const { data: existingReview } = await supabaseAdmin
+      .from('reviews')
+      .select('id')
+      .eq('reservation_id', reservationId)
+      .eq('user_id', reviewerId)
+      .single();
+
+    if (existingReview) {
+      return NextResponse.json(
+        { error: 'Vous avez déjà laissé un avis pour cette réservation' },
+        { status: 400 }
+      );
+    }
+
+    // Créer l'avis (non publié par défaut)
+    const { data: newReview, error: createError } = await supabaseAdmin
+      .from('reviews')
+      .insert({
+        reservation_id: reservationId,
+        listing_id: listingId,
+        user_id: reviewerId,
+        reviewee_id: revieweeId,
+        reviewer_type: reviewerType,
+        rating,
+        comment: comment || null,
+        is_published: false,
+        created_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (createError) {
+      console.error('❌ Erreur création avis:', createError);
+      return NextResponse.json(
+        { error: 'Erreur lors de la création de l\'avis' },
+        { status: 500 }
+      );
+    }
+
+    console.log('✅ Avis créé:', newReview.id);
+
+    // Vérifier si les deux parties ont laissé un avis
+    await checkAndPublishReviews(reservationId);
+
+    return NextResponse.json({
+      success: true,
+      review: newReview,
+      message: 'Avis enregistré avec succès. Il sera publié une fois que l\'autre partie aura également laissé son avis, ou après 14 jours.'
+    });
+
+  } catch (error) {
+    console.error('❌ Erreur API reviews/create:', error);
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * Fonction pour vérifier et publier les avis si les deux parties ont noté
+ */
+async function checkAndPublishReviews(reservationId) {
+  try {
+    // Récupérer tous les avis non publiés pour cette réservation
+    const { data: reviews, error } = await supabaseAdmin
+      .from('reviews')
+      .select('id, reviewer_type, created_at')
+      .eq('reservation_id', reservationId)
+      .eq('is_published', false);
+
+    if (error) {
+      console.error('❌ Erreur récupération avis:', error);
+      return;
+    }
+
+    if (!reviews || reviews.length < 2) {
+      console.log('ℹ️  Pas encore les deux avis pour la réservation', reservationId);
+      return;
+    }
+
+    // Vérifier qu'on a bien un avis guest et un avis host
+    const hasGuestReview = reviews.some(r => r.reviewer_type === 'guest');
+    const hasHostReview = reviews.some(r => r.reviewer_type === 'host');
+
+    if (hasGuestReview && hasHostReview) {
+      // Publier les deux avis
+      const now = new Date().toISOString();
+      const { error: updateError } = await supabaseAdmin
+        .from('reviews')
+        .update({
+          is_published: true,
+          published_at: now
+        })
+        .eq('reservation_id', reservationId)
+        .eq('is_published', false);
+
+      if (updateError) {
+        console.error('❌ Erreur publication avis:', updateError);
+      } else {
+        console.log('✅ Avis publiés pour la réservation', reservationId);
+      }
+    }
+  } catch (err) {
+    console.error('❌ Erreur checkAndPublishReviews:', err);
+  }
+}

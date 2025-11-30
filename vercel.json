@@ -3,6 +3,14 @@
     {
       "path": "/api/cron/process-payments",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/send-review-requests",
+      "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/cron/publish-pending-reviews",
+      "schedule": "0 3 * * *"
     }
   ]
 }
