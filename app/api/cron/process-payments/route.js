@@ -473,28 +473,27 @@ async function createUpcomingCautions() {
         console.log(`   💳 Payment Method ID: ${reservation.payment_method_id}`);
         console.log(`   🔐 Caution status actuel: ${reservation.caution_status || 'NULL'}`);
 
-        // Récupérer l'email de l'utilisateur
-        const { data: userProfile } = await supabaseAdmin
-          .from('profiles')
-          .select('email')
-          .eq('id', reservation.user_id)
-          .single();
+        // Récupérer l'email de l'utilisateur depuis Supabase Auth
+        const { data: { user: authUser }, error: authError } = await supabaseAdmin.auth.admin.getUserById(reservation.user_id);
 
-        if (!userProfile?.email) {
+        if (authError || !authUser?.email) {
+          console.error(`   ❌ Impossible de récupérer l'email:`, authError?.message);
           throw new Error('Email utilisateur introuvable');
         }
 
+        console.log(`   📧 Email utilisateur: ${authUser.email}`);
+
         // Récupérer ou créer le Customer Stripe
-        console.log(`   🔍 Recherche du Customer Stripe pour: ${userProfile.email}`);
+        console.log(`   🔍 Recherche du Customer Stripe pour: ${authUser.email}`);
         let customer;
-        const existingCustomers = await stripe.customers.list({ email: userProfile.email, limit: 1 });
+        const existingCustomers = await stripe.customers.list({ email: authUser.email, limit: 1 });
         
         if (existingCustomers.data.length > 0) {
           customer = existingCustomers.data[0];
           console.log(`   ✅ Customer existant trouvé: ${customer.id}`);
         } else {
           customer = await stripe.customers.create({
-            email: userProfile.email,
+            email: authUser.email,
             metadata: { userId: reservation.user_id }
           });
           console.log(`   ✅ Nouveau Customer créé: ${customer.id}`);
