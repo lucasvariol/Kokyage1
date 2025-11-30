@@ -13,6 +13,7 @@ export default function AdminCronPage() {
   const [error, setError] = useState(null);
   const [allowed, setAllowed] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [activeTab, setActiveTab] = useState('payments');
 
   // Check session and allow only PLATFORM_USER_ID via API
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function AdminCronPage() {
     })();
   }, [router]);
 
-  const triggerCron = async () => {
+  const triggerCron = async (endpoint = '/api/admin/trigger-cron') => {
     setLoading(true);
     setError(null);
     setResult(null);
@@ -61,11 +62,13 @@ export default function AdminCronPage() {
         throw new Error('Session expirée. Veuillez vous reconnecter.');
       }
 
-      // Appeler la route admin dédiée qui gère l'authentification
-      const response = await fetch('/api/admin/trigger-cron', {
-        method: 'POST',
+      // Appeler la route admin ou directement le CRON avec le secret
+      const response = await fetch(endpoint, {
+        method: endpoint.includes('/api/admin/') ? 'POST' : 'GET',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': endpoint.includes('/api/admin/') 
+            ? `Bearer ${session.access_token}` 
+            : `Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET || ''}`,
           'Content-Type': 'application/json'
         }
       });
@@ -76,8 +79,8 @@ export default function AdminCronPage() {
         throw new Error(result.error || 'Erreur lors du déclenchement du CRON');
       }
 
-      // Le résultat du CRON est dans result.data
-      setResult(result.data);
+      // Le résultat du CRON est dans result.data pour admin, sinon directement result
+      setResult(endpoint.includes('/api/admin/') ? result.data : result);
     } catch (err) {
       console.error('Erreur:', err);
       setError(err.message);
@@ -125,31 +128,90 @@ export default function AdminCronPage() {
             color: '#111827',
             marginBottom: 8
           }}>
-            Administration - CRON Paiements
+            Administration - Tâches CRON
           </h1>
           <p style={{
             fontSize: 16,
             color: '#6b7280',
             marginBottom: 32
           }}>
-            Déclenchez manuellement le traitement automatique des paiements
+            Déclenchez manuellement les traitements automatiques
           </p>
 
+          {/* Tabs */}
           <div style={{
-            background: '#ffffff',
-            borderRadius: 16,
-            padding: 32,
-            border: '1px solid #e5e7eb',
-            marginBottom: 24
+            display: 'flex',
+            gap: 8,
+            marginBottom: 24,
+            borderBottom: '2px solid #e5e7eb'
           }}>
-            <h2 style={{
-              fontSize: 20,
-              fontWeight: 600,
-              color: '#111827',
-              marginBottom: 16
+            <button
+              onClick={() => setActiveTab('payments')}
+              style={{
+                padding: '12px 24px',
+                background: 'transparent',
+                border: 'none',
+                borderBottom: activeTab === 'payments' ? '2px solid #111827' : '2px solid transparent',
+                color: activeTab === 'payments' ? '#111827' : '#6b7280',
+                fontWeight: activeTab === 'payments' ? 600 : 400,
+                cursor: 'pointer',
+                fontSize: 15,
+                marginBottom: -2
+              }}
+            >
+              💳 Paiements
+            </button>
+            <button
+              onClick={() => setActiveTab('reviews')}
+              style={{
+                padding: '12px 24px',
+                background: 'transparent',
+                border: 'none',
+                borderBottom: activeTab === 'reviews' ? '2px solid #111827' : '2px solid transparent',
+                color: activeTab === 'reviews' ? '#111827' : '#6b7280',
+                fontWeight: activeTab === 'reviews' ? 600 : 400,
+                cursor: 'pointer',
+                fontSize: 15,
+                marginBottom: -2
+              }}
+            >
+              ⭐ Demandes d'avis
+            </button>
+            <button
+              onClick={() => setActiveTab('publish')}
+              style={{
+                padding: '12px 24px',
+                background: 'transparent',
+                border: 'none',
+                borderBottom: activeTab === 'publish' ? '2px solid #111827' : '2px solid transparent',
+                color: activeTab === 'publish' ? '#111827' : '#6b7280',
+                fontWeight: activeTab === 'publish' ? 600 : 400,
+                cursor: 'pointer',
+                fontSize: 15,
+                marginBottom: -2
+              }}
+            >
+              📝 Publication avis
+            </button>
+          </div>
+
+          {/* Tab: Payments */}
+          {activeTab === 'payments' && (
+            <div style={{
+              background: '#ffffff',
+              borderRadius: 16,
+              padding: 32,
+              border: '1px solid #e5e7eb',
+              marginBottom: 24
             }}>
-              Traitement automatique des paiements
-            </h2>
+              <h2 style={{
+                fontSize: 20,
+                fontWeight: 600,
+                color: '#111827',
+                marginBottom: 16
+              }}>
+                Traitement automatique des paiements
+              </h2>
             
             <div style={{
               background: '#f0f9ff',
@@ -171,7 +233,7 @@ export default function AdminCronPage() {
             </div>
 
             <button
-              onClick={triggerCron}
+              onClick={() => triggerCron('/api/admin/trigger-cron')}
               disabled={loading}
               style={{
                 background: loading ? '#9ca3af' : '#111827',
@@ -210,7 +272,127 @@ export default function AdminCronPage() {
                 </>
               )}
             </button>
-          </div>
+            </div>
+          )}
+
+          {/* Tab: Review Requests */}
+          {activeTab === 'reviews' && (
+            <div style={{
+              background: '#ffffff',
+              borderRadius: 16,
+              padding: 32,
+              border: '1px solid #e5e7eb',
+              marginBottom: 24
+            }}>
+              <h2 style={{
+                fontSize: 20,
+                fontWeight: 600,
+                color: '#111827',
+                marginBottom: 16
+              }}>
+                Envoi des demandes d'avis
+              </h2>
+              
+              <div style={{
+                background: '#fef3c7',
+                border: '1px solid #fde047',
+                borderRadius: 12,
+                padding: 16,
+                marginBottom: 24,
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: '#92400e'
+              }}>
+                <strong>Ce traitement effectue :</strong>
+                <ul style={{ marginLeft: 20, marginTop: 8 }}>
+                  <li>Recherche les réservations se terminant aujourd'hui</li>
+                  <li>Envoie un email au voyageur pour noter le séjour</li>
+                  <li>Envoie un email à l'hôte pour noter le voyageur</li>
+                  <li>Normalement déclenché automatiquement à 18h</li>
+                </ul>
+              </div>
+
+              <button
+                onClick={() => triggerCron('/api/cron/send-review-requests')}
+                disabled={loading}
+                style={{
+                  background: loading ? '#9ca3af' : '#F59E0B',
+                  color: '#ffffff',
+                  padding: '14px 28px',
+                  borderRadius: 10,
+                  border: 'none',
+                  fontSize: 16,
+                  fontWeight: 600,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  transition: 'all 0.2s'
+                }}
+              >
+                {loading ? 'Envoi en cours...' : '📧 Envoyer les demandes d\'avis'}
+              </button>
+            </div>
+          )}
+
+          {/* Tab: Publish Reviews */}
+          {activeTab === 'publish' && (
+            <div style={{
+              background: '#ffffff',
+              borderRadius: 16,
+              padding: 32,
+              border: '1px solid #e5e7eb',
+              marginBottom: 24
+            }}>
+              <h2 style={{
+                fontSize: 20,
+                fontWeight: 600,
+                color: '#111827',
+                marginBottom: 16
+              }}>
+                Publication automatique des avis
+              </h2>
+              
+              <div style={{
+                background: '#dbeafe',
+                border: '1px solid #93c5fd',
+                borderRadius: 12,
+                padding: 16,
+                marginBottom: 24,
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: '#1e40af'
+              }}>
+                <strong>Ce traitement effectue :</strong>
+                <ul style={{ marginLeft: 20, marginTop: 8 }}>
+                  <li>Recherche les avis non publiés créés il y a plus de 14 jours</li>
+                  <li>Publie automatiquement ces avis (visibles publiquement)</li>
+                  <li>Normalement déclenché automatiquement à 3h du matin</li>
+                </ul>
+              </div>
+
+              <button
+                onClick={() => triggerCron('/api/cron/publish-pending-reviews')}
+                disabled={loading}
+                style={{
+                  background: loading ? '#9ca3af' : '#3B82F6',
+                  color: '#ffffff',
+                  padding: '14px 28px',
+                  borderRadius: 10,
+                  border: 'none',
+                  fontSize: 16,
+                  fontWeight: 600,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  transition: 'all 0.2s'
+                }}
+              >
+                {loading ? 'Publication en cours...' : '📝 Publier les avis en attente'}
+              </button>
+            </div>
+          )}
 
           {/* Affichage des résultats */}
           {result && (
