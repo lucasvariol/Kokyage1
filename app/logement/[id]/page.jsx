@@ -2791,67 +2791,99 @@ export default function Page({ params }) {
                             )}
                           </div>
 
-                          {/* Section Prix moderne */}
-                          <div style={{
-                            marginTop: 12,
-                            background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
-                            border: '2px solid #e2e8f0',
-                            borderRadius: 14,
-                            padding: '16px 18px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between'
-                          }}>
-                            <div style={{ flex: 1 }}>
-                              <div style={{ 
-                                fontSize: nights > 0 ? 32 : 28, 
-                                fontWeight: 900, 
-                                color: '#0f172a',
-                                lineHeight: 1,
-                                marginBottom: 4,
-                                background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text'
-                              }}>
-                                {nights > 0 ? formatEUR(total) : formatEUR(perNightBaseWithFees)}
-                              </div>
-                              <div style={{ 
-                                fontSize: 12, 
-                                color: '#64748b', 
-                                fontWeight: 600 
-                              }}>
-                                {nights > 0 ? 'Total du séjour' : 'Par nuit'}
-                              </div>
-                            </div>
-                            {nights > 0 && (
+                          {/* Section Prix moderne - affiché seulement si dates sélectionnées */}
+                          {range?.from && range?.to && nights > 0 && (
+                            <>
                               <div style={{
-                                textAlign: 'right',
-                                paddingLeft: 12,
-                                borderLeft: '1px solid #e2e8f0'
+                                marginTop: 12,
+                                background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
+                                border: '2px solid #e2e8f0',
+                                borderRadius: 14,
+                                padding: '16px 18px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
                               }}>
-                                <div style={{ 
-                                  fontSize: 20, 
-                                  fontWeight: 800, 
-                                  color: '#2563eb',
-                                  lineHeight: 1,
-                                  marginBottom: 4
-                                }}>
-                                  {nights}
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ 
+                                    fontSize: 32, 
+                                    fontWeight: 900, 
+                                    color: '#0f172a',
+                                    lineHeight: 1,
+                                    marginBottom: 4,
+                                    background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    backgroundClip: 'text'
+                                  }}>
+                                    {formatEUR(total)}
+                                  </div>
+                                  <div style={{ 
+                                    fontSize: 12, 
+                                    color: '#64748b', 
+                                    fontWeight: 600 
+                                  }}>
+                                    Total du séjour
+                                  </div>
                                 </div>
-                                <div style={{ 
-                                  fontSize: 11, 
-                                  color: '#64748b', 
-                                  fontWeight: 600 
+                                <div style={{
+                                  textAlign: 'right',
+                                  paddingLeft: 12,
+                                  borderLeft: '1px solid #e2e8f0'
                                 }}>
-                                  nuit{nights > 1 ? 's' : ''}
+                                  <div style={{ 
+                                    fontSize: 20, 
+                                    fontWeight: 800, 
+                                    color: '#2563eb',
+                                    lineHeight: 1,
+                                    marginBottom: 4
+                                  }}>
+                                    {nights}
+                                  </div>
+                                  <div style={{ 
+                                    fontSize: 11, 
+                                    color: '#64748b', 
+                                    fontWeight: 600 
+                                  }}>
+                                    nuit{nights > 1 ? 's' : ''}
+                                  </div>
                                 </div>
                               </div>
-                            )}
-                          </div>
+
+                              {/* Annulation gratuite */}
+                              <div style={{
+                                marginTop: 12,
+                                background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+                                border: '1px solid #86efac',
+                                borderRadius: 12,
+                                padding: '12px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10
+                              }}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ fontSize: 13, fontWeight: 700, color: '#15803d', marginBottom: 2 }}>
+                                    Annulation gratuite
+                                  </div>
+                                  <div style={{ fontSize: 11, color: '#166534', fontWeight: 600 }}>
+                                    Jusqu'au {(() => {
+                                      const arrival = range.from;
+                                      const cancellation = new Date(arrival.getTime() - (7 * 24 * 60 * 60 * 1000));
+                                      const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+                                      return `${cancellation.getDate()} ${months[cancellation.getMonth()]} ${cancellation.getFullYear()}`;
+                                    })()}
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
 
                           {/* Détail du prix (totaux du séjour) — affiché uniquement au clic */}
-                          {nights > 0 && (
+                          {range?.from && range?.to && nights > 0 && (
                             <>
                               <button
                                 type="button"
