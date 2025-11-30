@@ -228,7 +228,9 @@ export default function Header({ activeTab, setActiveTab }) {
                   e.target.style.boxShadow = '0 3px 10px rgba(96,162,157,0.18)';
                 }}
               >
-                {pathname === '/je-cherche-un-sejour' ? 'Je sous-loue un logement' : 'Je cherche un séjour'}
+                {pathname === '/je-cherche-un-sejour'
+                  ? (isMobile ? 'sous-louer' : 'Je sous-loue un logement')
+                  : (isMobile ? 'voyager' : 'Je cherche un séjour')}
               </Link>
             )}
 
@@ -403,7 +405,9 @@ export default function Header({ activeTab, setActiveTab }) {
                       gap: '8px',
                       transition: 'all 0.2s ease'
                     }}>
-                      {pathname === '/je-cherche-un-sejour' ? '🏠 Je sous-loue un logement' : '🏖️ Je cherche un séjour'}
+                      {pathname === '/je-cherche-un-sejour'
+                        ? (isMobile ? '🏠 sous-louer' : '🏠 Je sous-loue un logement')
+                        : (isMobile ? '🏖️ voyager' : '🏖️ Je cherche un séjour')}
                     </Link>
                   )}
                   
