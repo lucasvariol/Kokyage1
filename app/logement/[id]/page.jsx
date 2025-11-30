@@ -2580,8 +2580,8 @@ export default function Page({ params }) {
                         </div>
                       )}
 
-                      {/* Card Avis - Nouveau composant interactif - uniquement si publié */}
-                      {item && item.id && item.status === 'validé modérateur' && <ReviewsSection listingId={item.id} />}
+                      {/* Card Avis - Nouveau composant interactif */}
+                      {item && item.id && <ReviewsSection listingId={item.id} />}
                     </div>
 
                     {/* Colonne droite - Card de réservation sticky (masquée pour le propriétaire) */}

@@ -30,6 +30,7 @@ export async function GET(req) {
         user_id
       `)
       .eq('listing_id', listing_id)
+      .eq('is_published', true)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
