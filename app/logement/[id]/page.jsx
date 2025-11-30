@@ -1307,12 +1307,18 @@ export default function Page({ params }) {
         setImages(imgs);
 
         // Récupérer réservations
-        const { data: resData } = await supabase
+        const { data: resData, error: resError } = await supabase
           .from('reservations')
-          .select('id, user:users(full_name), start_date, end_date, status')
+          .select('id, user_id, date_arrivee, date_depart, status')
           .eq('listing_id', params.id)
-          .order('start_date', { ascending: false });
-        setReservations(resData || []);
+          .order('date_arrivee', { ascending: false });
+        
+        if (resError) {
+          console.error('Erreur chargement réservations:', resError);
+          setReservations([]);
+        } else {
+          setReservations(resData || []);
+        }
 
         // Récupérer disponibilités (nuits sélectionnables) - filtrer côté client pour robustesse
         setAvailabilityLoading(true);
@@ -2762,10 +2768,10 @@ export default function Page({ params }) {
                               >
                                 <div>
                                   <div style={{ fontWeight: 600, color: '#111827', fontSize: 15, marginBottom: 4 }}>
-                                    {r.user?.full_name || "Voyageur"}
+                                    Réservation #{r.id.slice(0, 8).toUpperCase()}
                                   </div>
                                   <div style={{ color: '#6b7280', fontSize: 13, fontWeight: 500 }}>
-                                    {new Date(r.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} → {new Date(r.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    {new Date(r.date_arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} → {new Date(r.date_depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                                   </div>
                                 </div>
                                 <span style={{
