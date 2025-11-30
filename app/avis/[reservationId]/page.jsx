@@ -31,7 +31,7 @@ export default function ReviewPage({ params }) {
       // Récupérer l'utilisateur connecté
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        router.push('/connexion');
+        router.push('/inscription');
         return;
       }
 
@@ -210,103 +210,182 @@ export default function ReviewPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F1ED]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/20">
       <Header />
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-          <div className="text-center mb-8">
-            <div className="text-5xl mb-4">⭐</div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              {reviewerType === 'guest' ? 'Comment s\'est passé votre séjour ?' : 'Évaluez votre voyageur'}
-            </h1>
-            <p className="text-gray-600">
-              {reservation?.listings?.title} • {reservation?.listings?.city}
-            </p>
+      <div className="container mx-auto px-4 py-12 md:py-20">
+        <div className="max-w-3xl mx-auto">
+          {/* Header Card */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-blue-100/50 border border-white/60 overflow-hidden mb-6">
+            <div className="relative bg-gradient-to-br from-blue-600 via-cyan-500 to-teal-500 px-8 py-12 text-center">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
+              <div className="relative">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-lg rounded-2xl mb-4 shadow-lg">
+                  <span className="text-5xl">⭐</span>
+                </div>
+                <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">
+                  {reviewerType === 'guest' ? 'Partagez votre expérience' : 'Évaluez votre voyageur'}
+                </h1>
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-white/95 text-sm font-medium">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
+                  </svg>
+                  {reservation?.listings?.title} • {reservation?.listings?.city}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Rating */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
-                Note générale
-              </label>
-              <div className="flex justify-center gap-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => setRating(star)}
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    className="text-5xl transition-transform hover:scale-110 focus:outline-none"
-                  >
-                    {(hoverRating || rating) >= star ? '⭐' : '☆'}
-                  </button>
-                ))}
+          {/* Form Card */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-blue-100/50 border border-white/60 p-8 md:p-10">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Rating */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-4 uppercase tracking-wide">
+                  Votre note
+                </label>
+                <div className="flex justify-center gap-3 mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRating(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className="group relative transition-all duration-300 hover:scale-125 focus:outline-none focus:scale-125"
+                    >
+                      <span className={`text-6xl transition-all duration-300 ${
+                        (hoverRating || rating) >= star 
+                          ? 'drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]' 
+                          : 'opacity-30 grayscale'
+                      }`}>
+                        {(hoverRating || rating) >= star ? '⭐' : '☆'}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                {rating > 0 && (
+                  <div className="text-center">
+                    <span className={`inline-block px-4 py-2 rounded-full text-sm font-bold ${
+                      rating === 5 ? 'bg-green-100 text-green-800' :
+                      rating === 4 ? 'bg-blue-100 text-blue-800' :
+                      rating === 3 ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {rating === 1 && '😞 Très décevant'}
+                      {rating === 2 && '😕 Décevant'}
+                      {rating === 3 && '😐 Correct'}
+                      {rating === 4 && '😊 Bien'}
+                      {rating === 5 && '🤩 Excellent'}
+                    </span>
+                  </div>
+                )}
               </div>
-              {rating > 0 && (
-                <p className="text-center text-sm text-gray-500 mt-2">
-                  {rating === 1 && 'Très décevant'}
-                  {rating === 2 && 'Décevant'}
-                  {rating === 3 && 'Correct'}
-                  {rating === 4 && 'Bien'}
-                  {rating === 5 && 'Excellent'}
+
+              {/* Comment */}
+              <div>
+                <label htmlFor="comment" className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">
+                  Votre avis <span className="text-gray-400 normal-case font-normal">(optionnel)</span>
+                </label>
+                <textarea
+                  id="comment"
+                  rows={6}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder={reviewerType === 'guest' 
+                    ? "Qu'avez-vous particulièrement apprécié ? Propreté, équipements, communication avec l'hôte, emplacement..."
+                    : "Comment s'est comporté votre voyageur ? Respect des lieux, communication, ponctualité, propreté..."
+                  }
+                  className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-all duration-200 placeholder:text-gray-400 bg-white/50 backdrop-blur"
+                />
+                <p className="mt-2 text-xs text-gray-500 flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
+                  </svg>
+                  Soyez honnête et constructif. Votre avis aide la communauté.
                 </p>
-              )}
-            </div>
-
-            {/* Comment */}
-            <div>
-              <label htmlFor="comment" className="block text-sm font-semibold text-gray-700 mb-2">
-                Commentaire (optionnel)
-              </label>
-              <textarea
-                id="comment"
-                rows={5}
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder={reviewerType === 'guest' 
-                  ? "Partagez votre expérience : propreté, équipements, communication avec l'hôte..."
-                  : "Partagez votre expérience : respect des lieux, communication, ponctualité..."
-                }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              />
-            </div>
-
-            {/* Notice */}
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-              <p className="text-sm text-yellow-800">
-                ⏰ <strong>Vous avez 14 jours</strong> pour laisser votre avis. 
-                Votre avis sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours.
-              </p>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
-                <p className="text-sm text-red-800">{error}</p>
               </div>
-            )}
 
-            {/* Buttons */}
-            <div className="flex gap-4">
-              <button
-                type="button"
-                onClick={() => router.push('/reservations')}
-                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
-                disabled={submitting}
-              >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                disabled={submitting || rating === 0}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-[#4ECDC4] to-[#3B82F6] text-white rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {submitting ? 'Envoi...' : 'Publier l\'avis'}
-              </button>
-            </div>
-          </form>
+              {/* Notice */}
+              <div className="relative overflow-hidden bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-2xl p-5">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-200/30 rounded-full -mr-16 -mt-16"></div>
+                <div className="relative flex gap-3">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center">
+                      <span className="text-xl">⏰</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-amber-900 mb-1">Publication différée</p>
+                    <p className="text-sm text-amber-800 leading-relaxed">
+                      Vous avez <strong>14 jours</strong> pour laisser votre avis. 
+                      Il sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div className="relative overflow-hidden bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200 rounded-2xl p-5">
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-red-400 rounded-xl flex items-center justify-center">
+                        <span className="text-xl">⚠️</span>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-red-900 mb-1">Erreur</p>
+                      <p className="text-sm text-red-800">{error}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => router.push('/reservations')}
+                  className="flex-1 px-8 py-4 border-2 border-gray-200 text-gray-700 rounded-2xl font-bold hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 disabled:opacity-50"
+                  disabled={submitting}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || rating === 0}
+                  className="flex-1 px-8 py-4 bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-500 text-white rounded-2xl font-bold hover:shadow-xl hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                >
+                  {submitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                      </svg>
+                      Envoi en cours...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                      </svg>
+                      Publier l'avis
+                    </span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Trust Badge */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600 flex items-center justify-center gap-2">
+              <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+              </svg>
+              Vos données sont protégées et votre avis anonyme jusqu'à publication
+            </p>
+          </div>
         </div>
       </div>
       <Footer />
