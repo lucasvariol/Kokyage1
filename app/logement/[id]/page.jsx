@@ -251,8 +251,18 @@ function Gallery({ images }) {
           .mobile-view-all {
             display: flex !important;
           }
+          .header-top-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+          }
+          .header-top-row > div:first-child {
+            order: 1;
+          }
           .share-container {
-            position: static !important;
+            order: 2;
+            position: absolute !important;
+            top: 10px !important;
+            right: 0 !important;
           }
           .share-menu-mobile {
             position: fixed !important;
@@ -2018,8 +2028,8 @@ export default function Page({ params }) {
                         boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
                         border: '1px solid #f3f4f6'
                       }}>
-                        <div className="header-top-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-                          <div style={{ flex: 1 }}>
+                        <div className="header-top-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 16 }}>
+                          <div style={{ flex: 1, minWidth: '250px' }}>
                             {role === 'tenant' && (
                               <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
                                 {(() => { const m = getStatusMeta(item.status); return (
