@@ -251,6 +251,10 @@ function Gallery({ images }) {
           .mobile-view-all {
             display: flex !important;
           }
+          .share-menu-mobile {
+            right: 0 !important;
+            left: auto !important;
+          }
         }
         @media (min-width: 769px) {
           .gallery-carousel-wrapper {
@@ -2173,6 +2177,7 @@ export default function Page({ params }) {
                             {showShareMenu && (
                               <div
                                 data-share-menu
+                                className="share-menu-mobile"
                                 style={{
                                   position: 'absolute',
                                   top: '100%',
