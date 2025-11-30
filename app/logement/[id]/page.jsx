@@ -251,9 +251,15 @@ function Gallery({ images }) {
           .mobile-view-all {
             display: flex !important;
           }
+          .share-container {
+            position: static !important;
+          }
           .share-menu-mobile {
-            right: 0 !important;
+            position: fixed !important;
+            right: 16px !important;
             left: auto !important;
+            max-width: calc(100vw - 32px) !important;
+            top: auto !important;
           }
         }
         @media (min-width: 769px) {
@@ -2130,7 +2136,7 @@ export default function Page({ params }) {
                               </div>
                             )}
                           </div>
-                          <div style={{ position: 'relative' }}>
+                          <div className="share-container" style={{ position: 'relative' }}>
                             <button
                               onClick={() => setShowShareMenu(!showShareMenu)}
                               className="share-button"
