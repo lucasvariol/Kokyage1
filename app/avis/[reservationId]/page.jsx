@@ -19,10 +19,18 @@ export default function ReviewPage({ params }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [hoverRating, setHoverRating] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     loadReservation();
   }, [reservationId]);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(typeof window !== 'undefined' && window.innerWidth <= 600);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const loadReservation = async () => {
     try {
@@ -218,7 +226,7 @@ export default function ReviewPage({ params }) {
                   Votre avis a été enregistré avec succès.
                 </p>
                 <p style={{ fontSize: 15, color: '#6b7280' }}>
-                  Il sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours.
+                  Il sera publié une fois que l'hôte aura également laissé son avis, ou automatiquement après 14 jours.
                 </p>
               </div>
             </div>
@@ -232,19 +240,19 @@ export default function ReviewPage({ params }) {
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #eff6ff 100%)' }}>
       <Header />
-      <div className="container" style={{ padding: 24 }}>
-        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+      <div className="container" style={{ padding: isMobile ? 12 : 24 }}>
+        <div style={{ maxWidth: isMobile ? '100%' : 900, margin: '0 auto' }}>
           {/* Header Card */}
-          <div style={{ background: 'linear-gradient(90deg, #2563eb, #7c3aed)', borderRadius: 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', padding: 32, marginBottom: 24, color: '#fff' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
-              <div style={{ width: 64, height: 64, background: 'rgba(255,255,255,0.2)', borderRadius: 16, backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 32 }}>{reviewerType === 'guest' ? '⭐' : '👤'}</span>
+          <div style={{ background: 'linear-gradient(90deg, #2563eb, #7c3aed)', borderRadius: isMobile ? 18 : 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', padding: isMobile ? 20 : 32, marginBottom: isMobile ? 16 : 24, color: '#fff' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 16, marginBottom: isMobile ? 12 : 16 }}>
+              <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, background: 'rgba(255,255,255,0.2)', borderRadius: 16, backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: isMobile ? 26 : 32 }}>{reviewerType === 'guest' ? '⭐' : '👤'}</span>
               </div>
               <div style={{ flex: 1 }}>
-                <h1 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 6px' }}>
+                <h1 style={{ fontSize: isMobile ? 22 : 32, fontWeight: 800, margin: '0 0 6px' }}>
                   {reviewerType === 'guest' ? 'Votre avis compte !' : 'Évaluez votre voyageur'}
                 </h1>
-                <p style={{ color: '#dbeafe', fontSize: 18 }}>
+                <p style={{ color: '#dbeafe', fontSize: isMobile ? 14 : 18 }}>
                   {reservation?.listings?.title} · {reservation?.listings?.city}
                 </p>
               </div>
@@ -252,11 +260,11 @@ export default function ReviewPage({ params }) {
           </div>
 
           {/* Form Card */}
-          <div style={{ background: '#fff', borderRadius: 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', border: '1px solid #f3f4f6', overflow: 'hidden' }}>
+          <div style={{ background: '#fff', borderRadius: isMobile ? 18 : 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', border: '1px solid #f3f4f6', overflow: 'hidden' }}>
             <form onSubmit={handleSubmit}>
               {/* Rating Section */}
-              <div style={{ padding: 32, borderBottom: '1px solid #f3f4f6' }}>
-                <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', marginBottom: 24, textAlign: 'center' }}>
+              <div style={{ padding: isMobile ? 20 : 32, borderBottom: '1px solid #f3f4f6' }}>
+                <h2 style={{ fontSize: isMobile ? 18 : 20, fontWeight: 700, color: '#111827', marginBottom: isMobile ? 16 : 24, textAlign: 'center' }}>
                   Comment évaluez-vous cette expérience ?
                 </h2>
                 <svg width="0" height="0" style={{ position: 'absolute' }}>
@@ -267,7 +275,7 @@ export default function ReviewPage({ params }) {
                     </linearGradient>
                   </defs>
                 </svg>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: isMobile ? 10 : 16, marginBottom: isMobile ? 12 : 16 }}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -280,7 +288,7 @@ export default function ReviewPage({ params }) {
                       onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
                     >
                       <svg 
-                        style={{ width: 48, height: 48, transition: 'all 0.2s ease' }}
+                        style={{ width: isMobile ? 36 : 48, height: isMobile ? 36 : 48, transition: 'all 0.2s ease' }}
                         fill={(hoverRating || rating) >= star ? 'url(#starGradient)' : '#E5E7EB'}
                         viewBox="0 0 24 24"
                       >
@@ -290,15 +298,15 @@ export default function ReviewPage({ params }) {
                   ))}
                 </div>
                 {rating > 0 && (
-                  <p style={{ textAlign: 'center', fontSize: 18, fontWeight: 600, background: 'linear-gradient(90deg, #d97706, #dc2626)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
+                  <p style={{ textAlign: 'center', fontSize: isMobile ? 16 : 18, fontWeight: 600, background: 'linear-gradient(90deg, #d97706, #dc2626)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
                     {rating === 5 ? '🎉 Excellent !' : rating === 4 ? '👍 Très bien' : rating === 3 ? '👌 Bien' : rating === 2 ? '😐 Moyen' : '😕 Décevant'}
                   </p>
                 )}
               </div>
 
               {/* Comment Section */}
-              <div style={{ padding: 32, borderBottom: '1px solid #f3f4f6' }}>
-                <label htmlFor="comment" style={{ display: 'block', fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 12 }}>
+              <div style={{ padding: isMobile ? 20 : 32, borderBottom: '1px solid #f3f4f6' }}>
+                <label htmlFor="comment" style={{ display: 'block', fontSize: isMobile ? 16 : 18, fontWeight: 700, color: '#111827', marginBottom: isMobile ? 8 : 12 }}>
                   Partagez votre expérience
                 </label>
                 <textarea
@@ -310,24 +318,24 @@ export default function ReviewPage({ params }) {
                     ? "Racontez-nous ce qui a rendu votre séjour mémorable..."
                     : "Décrivez votre expérience avec ce voyageur..."
                   }
-                  style={{ width: '100%', padding: '16px 20px', border: '2px solid #e5e7eb', borderRadius: 16, resize: 'none', fontSize: 16, outline: 'none' }}
+                  style={{ width: '100%', padding: isMobile ? '12px 14px' : '16px 20px', border: '2px solid #e5e7eb', borderRadius: 16, resize: 'none', fontSize: isMobile ? 15 : 16, outline: 'none' }}
                 />
               </div>
 
               {/* Notice */}
-              <div style={{ padding: 32, background: 'linear-gradient(90deg, #eff6ff, #f5f3ff)', borderBottom: '1px solid #f3f4f6' }}>
-                <div style={{ display: 'flex', gap: 16 }}>
+              <div style={{ padding: isMobile ? 16 : 32, background: 'linear-gradient(90deg, #eff6ff, #f5f3ff)', borderBottom: '1px solid #f3f4f6' }}>
+                <div style={{ display: 'flex', gap: isMobile ? 12 : 16 }}>
                   <div style={{ flexShrink: 0 }}>
-                    <div style={{ width: 40, height: 40, background: '#3b82f6', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: isMobile ? 34 : 40, height: isMobile ? 34 : 40, background: '#3b82f6', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                     </div>
                   </div>
                   <div style={{ flex: 1 }}>
-                    <h3 style={{ fontWeight: 700, color: '#111827', marginBottom: 6 }}>À propos de la publication</h3>
-                    <p style={{ fontSize: 14, color: '#4b5563', lineHeight: 1.6 }}>
-                      Votre avis sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours. Vous avez 14 jours pour laisser votre avis.
+                    <h3 style={{ fontWeight: 700, color: '#111827', marginBottom: isMobile ? 4 : 6 }}>À propos de la publication</h3>
+                    <p style={{ fontSize: isMobile ? 13 : 14, color: '#4b5563', lineHeight: 1.6 }}>
+                      Votre avis sera publié une fois que l'hôte aura également laissé son avis, ou automatiquement après 14 jours.
                     </p>
                   </div>
                 </div>
@@ -335,22 +343,22 @@ export default function ReviewPage({ params }) {
 
               {/* Error */}
               {error && (
-                <div style={{ padding: 32, background: '#fef2f2', borderBottom: '1px solid #fee2e2' }}>
-                  <div style={{ display: 'flex', gap: 12 }}>
+                <div style={{ padding: isMobile ? 20 : 32, background: '#fef2f2', borderBottom: '1px solid #fee2e2' }}>
+                  <div style={{ display: 'flex', gap: isMobile ? 8 : 12 }}>
                     <svg style={{ width: 24, height: 24, color: '#dc2626', flexShrink: 0 }} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
-                    <p style={{ color: '#b91c1c', fontWeight: 600 }}>{error}</p>
+                    <p style={{ color: '#b91c1c', fontWeight: 600, fontSize: isMobile ? 14 : 16 }}>{error}</p>
                   </div>
                 </div>
               )}
 
               {/* Buttons */}
-              <div style={{ padding: 32, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+              <div style={{ padding: isMobile ? 20 : 32, display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center', justifyContent: 'space-between', gap: isMobile ? 12 : 16 }}>
                 <button
                   type="button"
                   onClick={() => router.push('/reservations')}
-                  style={{ padding: '12px 24px', borderRadius: 14, fontWeight: 600, color: '#374151', background: '#fff', border: '1px solid #e5e7eb' }}
+                  style={{ width: isMobile ? '100%' : 'auto', padding: isMobile ? '12px 16px' : '12px 24px', borderRadius: 14, fontWeight: 600, color: '#374151', background: '#fff', border: '1px solid #e5e7eb' }}
                   disabled={submitting}
                 >
                   Annuler
@@ -358,11 +366,11 @@ export default function ReviewPage({ params }) {
                 <button
                   type="submit"
                   disabled={submitting || rating === 0}
-                  style={{ padding: '12px 28px', borderRadius: 14, fontWeight: 700, color: '#fff', background: 'linear-gradient(90deg, #2563eb, #7c3aed)', border: 'none', boxShadow: '0 10px 24px rgba(99,102,241,0.35)' }}
+                  style={{ width: isMobile ? '100%' : 'auto', padding: isMobile ? '12px 16px' : '12px 28px', borderRadius: 14, fontWeight: 700, color: '#fff', background: 'linear-gradient(90deg, #2563eb, #7c3aed)', border: 'none', boxShadow: '0 10px 24px rgba(99,102,241,0.35)' }}
                 >
                   {submitting ? (
-                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                      <svg style={{ animation: 'spin 1s linear infinite', width: 20, height: 20 }} viewBox="0 0 24 24">
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: isMobile ? 6 : 8 }}>
+                      <svg style={{ animation: 'spin 1s linear infinite', width: isMobile ? 18 : 20, height: isMobile ? 18 : 20 }} viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
