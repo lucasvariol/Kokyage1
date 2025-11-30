@@ -156,12 +156,12 @@ export default function ReviewPage({ params }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #eff6ff 100%)' }}>
         <Header />
-        <div className="container mx-auto px-4 py-16 text-center">
-          <div className="animate-pulse">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl"></div>
-            <p className="text-lg font-medium text-gray-700">Chargement...</p>
+        <div className="container" style={{ padding: 32, textAlign: 'center' }}>
+          <div>
+            <div style={{ width: 64, height: 64, margin: '0 auto 16px', borderRadius: 16, background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}></div>
+            <p style={{ fontSize: 18, color: '#374151', fontWeight: 600 }}>Chargement...</p>
           </div>
         </div>
         <Footer />
@@ -171,22 +171,23 @@ export default function ReviewPage({ params }) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #eff6ff 100%)' }}>
         <Header />
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-red-500 to-orange-500 p-6 text-center">
-                <div className="w-20 h-20 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4">
-                  <span className="text-5xl">⚠️</span>
+        <div className="container" style={{ padding: 32 }}>
+          <div style={{ maxWidth: 720, margin: '0 auto' }}>
+            <div style={{ background: '#fff', borderRadius: 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', border: '1px solid #f3f4f6', overflow: 'hidden' }}>
+              <div style={{ background: 'linear-gradient(90deg, #ef4444, #f97316)', padding: 24, textAlign: 'center' }}>
+                <div style={{ width: 80, height: 80, margin: '0 auto 16px', borderRadius: 40, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: 48 }}>⚠️</span>
                 </div>
-                <h1 className="text-3xl font-bold text-white">Oups !</h1>
+                <h1 style={{ fontSize: 28, fontWeight: 700, color: '#fff', margin: 0 }}>Oups !</h1>
               </div>
-              <div className="p-8 text-center">
-                <p className="text-lg text-gray-700 mb-8">{error}</p>
+              <div style={{ padding: 32, textAlign: 'center' }}>
+                <p style={{ fontSize: 18, color: '#374151', marginBottom: 24 }}>{error}</p>
                 <button
                   onClick={() => router.push('/reservations')}
-                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all"
+                  className="btn btn-primary"
+                  style={{ padding: '12px 24px', borderRadius: 14, background: 'linear-gradient(90deg, #2563eb, #7c3aed)', color: '#fff', border: 'none' }}
                 >
                   Retour aux réservations
                 </button>
@@ -201,22 +202,22 @@ export default function ReviewPage({ params }) {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #eff6ff 100%)' }}>
         <Header />
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-center">
-                <div className="w-24 h-24 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 animate-bounce">
-                  <span className="text-6xl">✅</span>
+        <div className="container" style={{ padding: 32 }}>
+          <div style={{ maxWidth: 720, margin: '0 auto' }}>
+            <div style={{ background: '#fff', borderRadius: 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', border: '1px solid #f3f4f6', overflow: 'hidden' }}>
+              <div style={{ background: 'linear-gradient(90deg, #22c55e, #10b981)', padding: 24, textAlign: 'center' }}>
+                <div style={{ width: 96, height: 96, margin: '0 auto 16px', borderRadius: 48, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: 56 }}>✅</span>
                 </div>
-                <h1 className="text-3xl font-bold text-white">Merci pour votre avis !</h1>
+                <h1 style={{ fontSize: 28, fontWeight: 700, color: '#fff', margin: 0 }}>Merci pour votre avis !</h1>
               </div>
-              <div className="p-8 text-center">
-                <p className="text-lg text-gray-700 mb-3 font-medium">
+              <div style={{ padding: 32, textAlign: 'center' }}>
+                <p style={{ fontSize: 18, color: '#374151', marginBottom: 8, fontWeight: 600 }}>
                   Votre avis a été enregistré avec succès.
                 </p>
-                <p className="text-base text-gray-600">
+                <p style={{ fontSize: 15, color: '#6b7280' }}>
                   Il sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours.
                 </p>
               </div>
@@ -229,21 +230,21 @@ export default function ReviewPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #eff6ff 100%)' }}>
       <Header />
-      <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="max-w-3xl mx-auto">
+      <div className="container" style={{ padding: 24 }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
           {/* Header Card */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-xl p-8 mb-8 text-white">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                <span className="text-4xl">{reviewerType === 'guest' ? '⭐' : '👤'}</span>
+          <div style={{ background: 'linear-gradient(90deg, #2563eb, #7c3aed)', borderRadius: 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', padding: 32, marginBottom: 24, color: '#fff' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
+              <div style={{ width: 64, height: 64, background: 'rgba(255,255,255,0.2)', borderRadius: 16, backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 32 }}>{reviewerType === 'guest' ? '⭐' : '👤'}</span>
               </div>
-              <div className="flex-1">
-                <h1 className="text-3xl md:text-4xl font-bold mb-1">
+              <div style={{ flex: 1 }}>
+                <h1 style={{ fontSize: 32, fontWeight: 800, margin: '0 0 6px' }}>
                   {reviewerType === 'guest' ? 'Votre avis compte !' : 'Évaluez votre voyageur'}
                 </h1>
-                <p className="text-blue-100 text-lg">
+                <p style={{ color: '#dbeafe', fontSize: 18 }}>
                   {reservation?.listings?.title} · {reservation?.listings?.city}
                 </p>
               </div>
@@ -251,11 +252,11 @@ export default function ReviewPage({ params }) {
           </div>
 
           {/* Form Card */}
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+          <div style={{ background: '#fff', borderRadius: 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', border: '1px solid #f3f4f6', overflow: 'hidden' }}>
             <form onSubmit={handleSubmit}>
               {/* Rating Section */}
-              <div className="p-8 border-b border-gray-100">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+              <div style={{ padding: 32, borderBottom: '1px solid #f3f4f6' }}>
+                <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', marginBottom: 24, textAlign: 'center' }}>
                   Comment évaluez-vous cette expérience ?
                 </h2>
                 <svg width="0" height="0" style={{ position: 'absolute' }}>
@@ -266,7 +267,7 @@ export default function ReviewPage({ params }) {
                     </linearGradient>
                   </defs>
                 </svg>
-                <div className="flex items-center justify-center gap-4 mb-4">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginBottom: 16 }}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -274,10 +275,12 @@ export default function ReviewPage({ params }) {
                       onClick={() => setRating(star)}
                       onMouseEnter={() => setHoverRating(star)}
                       onMouseLeave={() => setHoverRating(0)}
-                      className="transition-all duration-200 hover:scale-125 focus:outline-none group"
+                      style={{ transition: 'transform 0.2s ease', outline: 'none' }}
+                      onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.15)'; }}
+                      onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
                     >
                       <svg 
-                        className="w-12 h-12 md:w-14 md:h-14 transition-all" 
+                        style={{ width: 48, height: 48, transition: 'all 0.2s ease' }}
                         fill={(hoverRating || rating) >= star ? 'url(#starGradient)' : '#E5E7EB'}
                         viewBox="0 0 24 24"
                       >
@@ -287,15 +290,15 @@ export default function ReviewPage({ params }) {
                   ))}
                 </div>
                 {rating > 0 && (
-                  <p className="text-center text-lg font-medium bg-gradient-to-r from-amber-600 to-red-600 bg-clip-text text-transparent">
+                  <p style={{ textAlign: 'center', fontSize: 18, fontWeight: 600, background: 'linear-gradient(90deg, #d97706, #dc2626)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
                     {rating === 5 ? '🎉 Excellent !' : rating === 4 ? '👍 Très bien' : rating === 3 ? '👌 Bien' : rating === 2 ? '😐 Moyen' : '😕 Décevant'}
                   </p>
                 )}
               </div>
 
               {/* Comment Section */}
-              <div className="p-8 border-b border-gray-100">
-                <label htmlFor="comment" className="block text-lg font-semibold text-gray-900 mb-3">
+              <div style={{ padding: 32, borderBottom: '1px solid #f3f4f6' }}>
+                <label htmlFor="comment" style={{ display: 'block', fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 12 }}>
                   Partagez votre expérience
                 </label>
                 <textarea
@@ -307,23 +310,23 @@ export default function ReviewPage({ params }) {
                     ? "Racontez-nous ce qui a rendu votre séjour mémorable..."
                     : "Décrivez votre expérience avec ce voyageur..."
                   }
-                  className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-base transition-all"
+                  style={{ width: '100%', padding: '16px 20px', border: '2px solid #e5e7eb', borderRadius: 16, resize: 'none', fontSize: 16, outline: 'none' }}
                 />
               </div>
 
               {/* Notice */}
-              <div className="p-8 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-100">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+              <div style={{ padding: 32, background: 'linear-gradient(90deg, #eff6ff, #f5f3ff)', borderBottom: '1px solid #f3f4f6' }}>
+                <div style={{ display: 'flex', gap: 16 }}>
+                  <div style={{ flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, background: '#3b82f6', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-1">À propos de la publication</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontWeight: 700, color: '#111827', marginBottom: 6 }}>À propos de la publication</h3>
+                    <p style={{ fontSize: 14, color: '#4b5563', lineHeight: 1.6 }}>
                       Votre avis sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours. Vous avez 14 jours pour laisser votre avis.
                     </p>
                   </div>
@@ -332,22 +335,22 @@ export default function ReviewPage({ params }) {
 
               {/* Error */}
               {error && (
-                <div className="p-8 bg-red-50 border-b border-red-100">
-                  <div className="flex gap-3">
-                    <svg className="w-6 h-6 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <div style={{ padding: 32, background: '#fef2f2', borderBottom: '1px solid #fee2e2' }}>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <svg style={{ width: 24, height: 24, color: '#dc2626', flexShrink: 0 }} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
-                    <p className="text-red-700 font-medium">{error}</p>
+                    <p style={{ color: '#b91c1c', fontWeight: 600 }}>{error}</p>
                   </div>
                 </div>
               )}
 
               {/* Buttons */}
-              <div className="p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div style={{ padding: 32, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
                 <button
                   type="button"
                   onClick={() => router.push('/reservations')}
-                  className="w-full sm:w-auto px-8 py-3 text-gray-700 font-semibold rounded-xl hover:bg-gray-100 transition-all"
+                  style={{ padding: '12px 24px', borderRadius: 14, fontWeight: 600, color: '#374151', background: '#fff', border: '1px solid #e5e7eb' }}
                   disabled={submitting}
                 >
                   Annuler
@@ -355,11 +358,11 @@ export default function ReviewPage({ params }) {
                 <button
                   type="submit"
                   disabled={submitting || rating === 0}
-                  className="w-full sm:w-auto px-10 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-base hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  style={{ padding: '12px 28px', borderRadius: 14, fontWeight: 700, color: '#fff', background: 'linear-gradient(90deg, #2563eb, #7c3aed)', border: 'none', boxShadow: '0 10px 24px rgba(99,102,241,0.35)' }}
                 >
                   {submitting ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                      <svg style={{ animation: 'spin 1s linear infinite', width: 20, height: 20 }} viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
