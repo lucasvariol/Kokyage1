@@ -57,13 +57,14 @@ CREATE TRIGGER set_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_updated_at();
 
--- Create a view for listing ratings summary
+-- Create a view for listing ratings summary (only published reviews)
 CREATE OR REPLACE VIEW public.listing_ratings AS
 SELECT 
   listing_id,
   COUNT(*) as review_count,
   ROUND(AVG(rating)::numeric, 1) as average_rating
 FROM public.reviews
+WHERE is_published = TRUE
 GROUP BY listing_id;
 
 -- Grant access to the view
