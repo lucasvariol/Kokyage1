@@ -61,6 +61,42 @@ export default function Header({ activeTab, setActiveTab }) {
           .slice(0, 2)
           .toUpperCase();
         setUserInitials(initials);
+
+        // Fallback: fetch photo_url from profiles table if no avatar from metadata
+        if (!avatar) {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('photo_url, full_name, prenom, nom')
+            .eq('id', session.user.id)
+            .single();
+          if (!profileError && profileData) {
+            if (profileData.photo_url) {
+              let photo = profileData.photo_url;
+              // If stored as a relative path (no http), attempt to build a public URL (assuming bucket 'avatars')
+              if (photo && !/^https?:\/\//.test(photo) && !photo.startsWith('/')) {
+                // Try storage public URL (will work if bucket exists and path matches). Ignore errors silently.
+                try {
+                  const { data: pub } = supabase.storage.from('avatars').getPublicUrl(photo);
+                  if (pub?.publicUrl) photo = pub.publicUrl;
+                } catch (_) {}
+              }
+              setUserAvatar(photo);
+            }
+            // Improve initials if we got detailed name parts
+            if (!initials && (profileData.prenom || profileData.nom)) {
+              const composite = `${profileData.prenom || ''} ${profileData.nom || ''}`.trim();
+              if (composite) {
+                const profInit = composite
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase();
+                setUserInitials(profInit);
+              }
+            }
+          }
+        }
       } else {
         setUserAvatar(null);
         setUserInitials('');
@@ -83,6 +119,39 @@ export default function Header({ activeTab, setActiveTab }) {
           .slice(0, 2)
           .toUpperCase();
         setUserInitials(initials);
+
+        // Fallback fetch when auth state changes
+        if (!avatar) {
+          (async () => {
+            const { data: profileData, error: profileError } = await supabase
+              .from('profiles')
+              .select('photo_url, full_name, prenom, nom')
+              .eq('id', session.user.id)
+              .single();
+            if (!profileError && profileData && profileData.photo_url) {
+              let photo = profileData.photo_url;
+              if (photo && !/^https?:\/\//.test(photo) && !photo.startsWith('/')) {
+                try {
+                  const { data: pub } = supabase.storage.from('avatars').getPublicUrl(photo);
+                  if (pub?.publicUrl) photo = pub.publicUrl;
+                } catch (_) {}
+              }
+              setUserAvatar(photo);
+            }
+            if (!initials && (profileData?.prenom || profileData?.nom)) {
+              const composite = `${profileData?.prenom || ''} ${profileData?.nom || ''}`.trim();
+              if (composite) {
+                const profInit = composite
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase();
+                setUserInitials(profInit);
+              }
+            }
+          })();
+        }
       } else {
         setUserAvatar(null);
         setUserInitials('');
