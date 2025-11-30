@@ -156,10 +156,13 @@ export default function ReviewPage({ params }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F5F1ED]">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <Header />
         <div className="container mx-auto px-4 py-16 text-center">
-          <p className="text-lg text-gray-600">Chargement...</p>
+          <div className="animate-pulse">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl"></div>
+            <p className="text-lg font-medium text-gray-700">Chargement...</p>
+          </div>
         </div>
         <Footer />
       </div>
@@ -168,19 +171,27 @@ export default function ReviewPage({ params }) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#F5F1ED]">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <Header />
         <div className="container mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8 text-center">
-            <div className="text-6xl mb-4">⚠️</div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Oups !</h1>
-            <p className="text-gray-600 mb-6">{error}</p>
-            <button
-              onClick={() => router.push('/reservations')}
-              className="px-6 py-3 bg-gradient-to-r from-[#4ECDC4] to-[#3B82F6] text-white rounded-lg font-semibold hover:opacity-90 transition"
-            >
-              Retour aux réservations
-            </button>
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-red-500 to-orange-500 p-6 text-center">
+                <div className="w-20 h-20 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4">
+                  <span className="text-5xl">⚠️</span>
+                </div>
+                <h1 className="text-3xl font-bold text-white">Oups !</h1>
+              </div>
+              <div className="p-8 text-center">
+                <p className="text-lg text-gray-700 mb-8">{error}</p>
+                <button
+                  onClick={() => router.push('/reservations')}
+                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  Retour aux réservations
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <Footer />
@@ -190,18 +201,26 @@ export default function ReviewPage({ params }) {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#F5F1ED]">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <Header />
         <div className="container mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8 text-center">
-            <div className="text-6xl mb-4">✅</div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Merci pour votre avis !</h1>
-            <p className="text-gray-600 mb-2">
-              Votre avis a été enregistré avec succès.
-            </p>
-            <p className="text-sm text-gray-500">
-              Il sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours.
-            </p>
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-center">
+                <div className="w-24 h-24 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 animate-bounce">
+                  <span className="text-6xl">✅</span>
+                </div>
+                <h1 className="text-3xl font-bold text-white">Merci pour votre avis !</h1>
+              </div>
+              <div className="p-8 text-center">
+                <p className="text-lg text-gray-700 mb-3 font-medium">
+                  Votre avis a été enregistré avec succès.
+                </p>
+                <p className="text-base text-gray-600">
+                  Il sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
         <Footer />
@@ -210,26 +229,36 @@ export default function ReviewPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <Header />
       <div className="container mx-auto px-4 py-8 md:py-12">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="mb-10">
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-              {reviewerType === 'guest' ? 'Laissez un avis sur votre séjour' : 'Évaluez votre voyageur'}
-            </h1>
-            <p className="text-gray-600 text-lg">
-              {reservation?.listings?.title} · {reservation?.listings?.city}
-            </p>
+        <div className="max-w-3xl mx-auto">
+          {/* Header Card */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-xl p-8 mb-8 text-white">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                <span className="text-4xl">{reviewerType === 'guest' ? '⭐' : '👤'}</span>
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl md:text-4xl font-bold mb-1">
+                  {reviewerType === 'guest' ? 'Votre avis compte !' : 'Évaluez votre voyageur'}
+                </h1>
+                <p className="text-blue-100 text-lg">
+                  {reservation?.listings?.title} · {reservation?.listings?.city}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Form Card */}
-          <div className="bg-white border border-gray-200 rounded-xl p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Rating */}
-              <div className="pb-6 border-b border-gray-200">
-                <div className="flex items-center gap-3">
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+            <form onSubmit={handleSubmit}>
+              {/* Rating Section */}
+              <div className="p-8 border-b border-gray-100">
+                <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+                  Comment évaluez-vous cette expérience ?
+                </h2>
+                <div className="flex items-center justify-center gap-4 mb-4">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -237,56 +266,86 @@ export default function ReviewPage({ params }) {
                       onClick={() => setRating(star)}
                       onMouseEnter={() => setHoverRating(star)}
                       onMouseLeave={() => setHoverRating(0)}
-                      className="transition-all duration-150 hover:scale-110 focus:outline-none"
+                      className="transition-all duration-200 hover:scale-125 focus:outline-none group"
                     >
                       <svg 
-                        className="w-10 h-10 transition-colors" 
-                        fill={(hoverRating || rating) >= star ? '#FF385C' : '#E5E7EB'}
+                        className="w-12 h-12 md:w-14 md:h-14 transition-all" 
+                        fill={(hoverRating || rating) >= star ? 'url(#starGradient)' : '#E5E7EB'}
                         viewBox="0 0 24 24"
                       >
+                        <defs>
+                          <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style={{stopColor: '#F59E0B'}} />
+                            <stop offset="100%" style={{stopColor: '#EF4444'}} />
+                          </linearGradient>
+                        </defs>
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                       </svg>
                     </button>
                   ))}
                 </div>
+                {rating > 0 && (
+                  <p className="text-center text-lg font-medium bg-gradient-to-r from-amber-600 to-red-600 bg-clip-text text-transparent">
+                    {rating === 5 ? '🎉 Excellent !' : rating === 4 ? '👍 Très bien' : rating === 3 ? '👌 Bien' : rating === 2 ? '😐 Moyen' : '😕 Décevant'}
+                  </p>
+                )}
               </div>
 
-              {/* Comment */}
-              <div>
-                <label htmlFor="comment" className="block text-base font-medium text-gray-900 mb-2">
-                  Commentaire public
+              {/* Comment Section */}
+              <div className="p-8 border-b border-gray-100">
+                <label htmlFor="comment" className="block text-lg font-semibold text-gray-900 mb-3">
+                  Partagez votre expérience
                 </label>
                 <textarea
                   id="comment"
-                  rows={5}
+                  rows={6}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder={reviewerType === 'guest' 
-                    ? "Partagez les détails de votre expérience avec les futurs voyageurs"
-                    : "Partagez votre expérience avec les futurs hôtes"
+                    ? "Racontez-nous ce qui a rendu votre séjour mémorable..."
+                    : "Décrivez votre expérience avec ce voyageur..."
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent resize-none text-base"
+                  className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-base transition-all"
                 />
               </div>
 
               {/* Notice */}
-              <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-600">
-                Votre avis sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours. Vous avez 14 jours pour laisser votre avis.
+              <div className="p-8 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-100">
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">À propos de la publication</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Votre avis sera publié une fois que l'autre partie aura également laissé son avis, ou automatiquement après 14 jours. Vous avez 14 jours pour laisser votre avis.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Error */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-600">
-                  {error}
+                <div className="p-8 bg-red-50 border-b border-red-100">
+                  <div className="flex gap-3">
+                    <svg className="w-6 h-6 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <p className="text-red-700 font-medium">{error}</p>
+                  </div>
                 </div>
               )}
 
               {/* Buttons */}
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+              <div className="p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <button
                   type="button"
                   onClick={() => router.push('/reservations')}
-                  className="text-base font-medium text-gray-700 underline hover:text-black transition"
+                  className="w-full sm:w-auto px-8 py-3 text-gray-700 font-semibold rounded-xl hover:bg-gray-100 transition-all"
                   disabled={submitting}
                 >
                   Annuler
@@ -294,9 +353,19 @@ export default function ReviewPage({ params }) {
                 <button
                   type="submit"
                   disabled={submitting || rating === 0}
-                  className="px-8 py-3 bg-gradient-to-r from-[#FF385C] to-[#E61E4D] text-white rounded-lg font-medium text-base hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-10 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-base hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  {submitting ? 'Envoi en cours...' : 'Envoyer'}
+                  {submitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Envoi...
+                    </span>
+                  ) : (
+                    'Publier mon avis'
+                  )}
                 </button>
               </div>
             </form>
