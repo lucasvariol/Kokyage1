@@ -1188,33 +1188,30 @@ export default function Page({ params }) {
       // Fetch host profile separately since there's no direct FK
       let hostProfile = null;
       if (data?.owner_id) {
+        // Try to fetch host profile client-side (RLS may block if logged out)
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('id, prenom, photo_url, full_name, name')
           .eq('id', data.owner_id)
           .single();
-        
-        console.log('🔍 Debug host profile:');
-        console.log('Owner ID:', data.owner_id);
-        console.log('Profile data:', profileData);
-        console.log('Profile error:', profileError);
-        
+
         if (profileData) {
-          // Extract only first name from various fields
           let firstName = 'Hôte';
-          if (profileData.prenom) {
-            firstName = profileData.prenom.split(' ')[0]; // Prendre seulement le premier mot
-          } else if (profileData.full_name) {
-            firstName = profileData.full_name.split(' ')[0];
-          } else if (profileData.name) {
-            firstName = profileData.name.split(' ')[0];
+          if (profileData.prenom) firstName = profileData.prenom.split(' ')[0];
+          else if (profileData.full_name) firstName = profileData.full_name.split(' ')[0];
+          else if (profileData.name) firstName = profileData.name.split(' ')[0];
+          hostProfile = { id: profileData.id, prenom: firstName, photo_url: profileData.photo_url };
+        } else if (profileError && !currentUser) {
+          // Fallback to public host endpoint (service role) when unauthenticated
+          try {
+            const res = await fetch(`/api/listings/host-public/${params.id}`);
+            if (res.ok) {
+              const json = await res.json();
+              if (json?.host) hostProfile = json.host;
+            }
+          } catch (e) {
+            console.warn('Public host fallback error:', e);
           }
-          
-          hostProfile = {
-            id: profileData.id,
-            prenom: firstName,
-            photo_url: profileData.photo_url
-          };
         }
       }
       
