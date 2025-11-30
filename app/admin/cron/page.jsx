@@ -162,36 +162,20 @@ export default function AdminCronPage() {
               💳 Paiements
             </button>
             <button
-              onClick={() => setActiveTab('reviews')}
+              onClick={() => setActiveTab('daily')}
               style={{
                 padding: '12px 24px',
                 background: 'transparent',
                 border: 'none',
-                borderBottom: activeTab === 'reviews' ? '2px solid #111827' : '2px solid transparent',
-                color: activeTab === 'reviews' ? '#111827' : '#6b7280',
-                fontWeight: activeTab === 'reviews' ? 600 : 400,
+                borderBottom: activeTab === 'daily' ? '2px solid #111827' : '2px solid transparent',
+                color: activeTab === 'daily' ? '#111827' : '#6b7280',
+                fontWeight: activeTab === 'daily' ? 600 : 400,
                 cursor: 'pointer',
                 fontSize: 15,
                 marginBottom: -2
               }}
             >
-              ⭐ Demandes d'avis
-            </button>
-            <button
-              onClick={() => setActiveTab('publish')}
-              style={{
-                padding: '12px 24px',
-                background: 'transparent',
-                border: 'none',
-                borderBottom: activeTab === 'publish' ? '2px solid #111827' : '2px solid transparent',
-                color: activeTab === 'publish' ? '#111827' : '#6b7280',
-                fontWeight: activeTab === 'publish' ? 600 : 400,
-                cursor: 'pointer',
-                fontSize: 15,
-                marginBottom: -2
-              }}
-            >
-              📝 Publication avis
+              🌅 Tâches quotidiennes (18h)
             </button>
           </div>
 
@@ -275,8 +259,8 @@ export default function AdminCronPage() {
             </div>
           )}
 
-          {/* Tab: Review Requests */}
-          {activeTab === 'reviews' && (
+          {/* Tab: Daily Tasks */}
+          {activeTab === 'daily' && (
             <div style={{
               background: '#ffffff',
               borderRadius: 16,
@@ -290,7 +274,7 @@ export default function AdminCronPage() {
                 color: '#111827',
                 marginBottom: 16
               }}>
-                Envoi des demandes d'avis
+                Tâches quotidiennes (18h)
               </h2>
               
               <div style={{
@@ -305,15 +289,14 @@ export default function AdminCronPage() {
               }}>
                 <strong>Ce traitement effectue :</strong>
                 <ul style={{ marginLeft: 20, marginTop: 8 }}>
-                  <li>Recherche les réservations se terminant aujourd'hui</li>
-                  <li>Envoie un email au voyageur pour noter le séjour</li>
-                  <li>Envoie un email à l'hôte pour noter le voyageur</li>
-                  <li>Normalement déclenché automatiquement à 18h</li>
+                  <li>📧 Envoie les demandes d'avis aux voyageurs et hôtes (réservations terminant aujourd'hui)</li>
+                  <li>📝 Publie automatiquement les avis en attente depuis 14+ jours</li>
+                  <li>⏰ Normalement déclenché automatiquement tous les jours à 18h</li>
                 </ul>
               </div>
 
               <button
-                onClick={() => triggerCron('/api/cron/send-review-requests')}
+                onClick={() => triggerCron('/api/cron/daily-tasks')}
                 disabled={loading}
                 style={{
                   background: loading ? '#9ca3af' : '#F59E0B',
@@ -330,66 +313,7 @@ export default function AdminCronPage() {
                   transition: 'all 0.2s'
                 }}
               >
-                {loading ? 'Envoi en cours...' : '📧 Envoyer les demandes d\'avis'}
-              </button>
-            </div>
-          )}
-
-          {/* Tab: Publish Reviews */}
-          {activeTab === 'publish' && (
-            <div style={{
-              background: '#ffffff',
-              borderRadius: 16,
-              padding: 32,
-              border: '1px solid #e5e7eb',
-              marginBottom: 24
-            }}>
-              <h2 style={{
-                fontSize: 20,
-                fontWeight: 600,
-                color: '#111827',
-                marginBottom: 16
-              }}>
-                Publication automatique des avis
-              </h2>
-              
-              <div style={{
-                background: '#dbeafe',
-                border: '1px solid #93c5fd',
-                borderRadius: 12,
-                padding: 16,
-                marginBottom: 24,
-                fontSize: 14,
-                lineHeight: 1.6,
-                color: '#1e40af'
-              }}>
-                <strong>Ce traitement effectue :</strong>
-                <ul style={{ marginLeft: 20, marginTop: 8 }}>
-                  <li>Recherche les avis non publiés créés il y a plus de 14 jours</li>
-                  <li>Publie automatiquement ces avis (visibles publiquement)</li>
-                  <li>Normalement déclenché automatiquement à 3h du matin</li>
-                </ul>
-              </div>
-
-              <button
-                onClick={() => triggerCron('/api/cron/publish-pending-reviews')}
-                disabled={loading}
-                style={{
-                  background: loading ? '#9ca3af' : '#3B82F6',
-                  color: '#ffffff',
-                  padding: '14px 28px',
-                  borderRadius: 10,
-                  border: 'none',
-                  fontSize: 16,
-                  fontWeight: 600,
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  transition: 'all 0.2s'
-                }}
-              >
-                {loading ? 'Publication en cours...' : '📝 Publier les avis en attente'}
+                {loading ? 'Traitement en cours...' : '🌅 Déclencher les tâches quotidiennes'}
               </button>
             </div>
           )}
