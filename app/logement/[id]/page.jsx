@@ -251,27 +251,8 @@ function Gallery({ images }) {
           .mobile-view-all {
             display: flex !important;
           }
-          .header-top-row {
-            flex-wrap: wrap !important;
-          }
-          .header-left-content {
-            flex: 1 !important;
-            min-width: 0 !important;
-          }
-          .host-info-wrapper {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            width: 100% !important;
-          }
           .share-container {
-            position: relative !important;
-            margin-left: 12px !important;
-          }
-          .share-button {
-            padding: 8px 12px !important;
-            font-size: 12px !important;
-            min-width: auto !important;
+            position: static !important;
           }
           .share-menu-mobile {
             position: fixed !important;
@@ -1325,19 +1306,17 @@ export default function Page({ params }) {
           : (data.images ? JSON.parse(data.images) : []);
         setImages(imgs);
 
-        // Récupérer réservations
+        // Récupérer réservations pour ce logement spécifique
         const { data: resData, error: resError } = await supabase
           .from('reservations')
-          .select('id, user_id, date_arrivee, date_depart, status')
-          .eq('listing_id', params.id)
-          .order('date_arrivee', { ascending: false });
+          .select('id, user:users(full_name), start_date, end_date, status')
+          .eq('listing_id', parseInt(params.id, 10))
+          .order('start_date', { ascending: false });
         
         if (resError) {
-          console.error('Erreur chargement réservations:', resError);
-          setReservations([]);
-        } else {
-          setReservations(resData || []);
+          console.error('Error fetching reservations:', resError);
         }
+        setReservations(resData || []);
 
         // Récupérer disponibilités (nuits sélectionnables) - filtrer côté client pour robustesse
         setAvailabilityLoading(true);
@@ -2040,7 +2019,7 @@ export default function Page({ params }) {
                         border: '1px solid #f3f4f6'
                       }}>
                         <div className="header-top-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-                          <div className="header-left-content" style={{ flex: 1 }}>
+                          <div style={{ flex: 1 }}>
                             {role === 'tenant' && (
                               <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
                                 {(() => { const m = getStatusMeta(item.status); return (
@@ -2105,64 +2084,63 @@ export default function Page({ params }) {
                               <span style={{ fontWeight: 600 }}>{item.city}</span>
                             </div>
 
-                            {/* Informations hôte et bouton partager */}
-                            <div className="host-info-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                              {item.host && (
+                            {/* Informations hôte */}
+                            {item.host && (
+                              <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                                padding: '10px 0'
+                              }}>
                                 <div style={{
+                                  width: 44,
+                                  height: 44,
+                                  borderRadius: '50%',
+                                  overflow: 'hidden',
+                                  background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                                   display: 'flex',
                                   alignItems: 'center',
-                                  gap: 10,
-                                  padding: '10px 0',
-                                  flex: 1
+                                  justifyContent: 'center',
+                                  flexShrink: 0
                                 }}>
+                                  {item.host.photo_url ? (
+                                    <img 
+                                      src={item.host.photo_url} 
+                                      alt={item.host.prenom || 'Hôte'}
+                                      style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover'
+                                      }}
+                                    />
+                                  ) : (
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+                                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                      <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                  )}
+                                </div>
+                                <div>
                                   <div style={{
-                                    width: 44,
-                                    height: 44,
-                                    borderRadius: '50%',
-                                    overflow: 'hidden',
-                                    background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    flexShrink: 0
+                                    fontSize: 13,
+                                    color: '#6b7280',
+                                    fontWeight: 500,
+                                    marginBottom: 2
                                   }}>
-                                    {item.host.photo_url ? (
-                                      <img 
-                                        src={item.host.photo_url} 
-                                        alt={item.host.prenom || 'Hôte'}
-                                        style={{
-                                          width: '100%',
-                                          height: '100%',
-                                          objectFit: 'cover'
-                                        }}
-                                      />
-                                    ) : (
-                                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="12" cy="7" r="4"></circle>
-                                      </svg>
-                                    )}
+                                    Hôte
                                   </div>
-                                  <div>
-                                    <div style={{
-                                      fontSize: 13,
-                                      color: '#6b7280',
-                                      fontWeight: 500,
-                                      marginBottom: 2
-                                    }}>
-                                      Hôte
-                                    </div>
-                                    <div style={{
-                                      fontSize: 15,
-                                      fontWeight: 700,
-                                      color: '#111827'
-                                    }}>
-                                      {item.host.prenom || 'Hôte'}
-                                    </div>
+                                  <div style={{
+                                    fontSize: 15,
+                                    fontWeight: 700,
+                                    color: '#111827'
+                                  }}>
+                                    {item.host.prenom || 'Hôte'}
                                   </div>
                                 </div>
-                              )}
-                              <div className="share-container" style={{ position: 'relative' }}>
+                              </div>
+                            )}
+                          </div>
+                          <div className="share-container" style={{ position: 'relative' }}>
                             <button
                               onClick={() => setShowShareMenu(!showShareMenu)}
                               className="share-button"
@@ -2355,8 +2333,6 @@ export default function Page({ params }) {
                                 </button>
                               </div>
                             )}
-                              </div>
-                            </div>
                           </div>
                         </div>
 
@@ -2790,10 +2766,10 @@ export default function Page({ params }) {
                               >
                                 <div>
                                   <div style={{ fontWeight: 600, color: '#111827', fontSize: 15, marginBottom: 4 }}>
-                                    Réservation #{r.id.slice(0, 8).toUpperCase()}
+                                    {r.user?.full_name || "Voyageur"}
                                   </div>
                                   <div style={{ color: '#6b7280', fontSize: 13, fontWeight: 500 }}>
-                                    {new Date(r.date_arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} → {new Date(r.date_depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    {new Date(r.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} → {new Date(r.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                                   </div>
                                 </div>
                                 <span style={{
