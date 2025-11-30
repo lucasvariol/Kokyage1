@@ -251,8 +251,27 @@ function Gallery({ images }) {
           .mobile-view-all {
             display: flex !important;
           }
+          .header-top-row {
+            flex-wrap: wrap !important;
+          }
+          .header-left-content {
+            flex: 1 !important;
+            min-width: 0 !important;
+          }
+          .host-info-wrapper {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: 100% !important;
+          }
           .share-container {
-            position: static !important;
+            position: relative !important;
+            margin-left: 12px !important;
+          }
+          .share-button {
+            padding: 8px 12px !important;
+            font-size: 12px !important;
+            min-width: auto !important;
           }
           .share-menu-mobile {
             position: fixed !important;
@@ -2021,7 +2040,7 @@ export default function Page({ params }) {
                         border: '1px solid #f3f4f6'
                       }}>
                         <div className="header-top-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-                          <div style={{ flex: 1 }}>
+                          <div className="header-left-content" style={{ flex: 1 }}>
                             {role === 'tenant' && (
                               <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
                                 {(() => { const m = getStatusMeta(item.status); return (
@@ -2086,63 +2105,64 @@ export default function Page({ params }) {
                               <span style={{ fontWeight: 600 }}>{item.city}</span>
                             </div>
 
-                            {/* Informations hôte */}
-                            {item.host && (
-                              <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 10,
-                                padding: '10px 0'
-                              }}>
+                            {/* Informations hôte et bouton partager */}
+                            <div className="host-info-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                              {item.host && (
                                 <div style={{
-                                  width: 44,
-                                  height: 44,
-                                  borderRadius: '50%',
-                                  overflow: 'hidden',
-                                  background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                                   display: 'flex',
                                   alignItems: 'center',
-                                  justifyContent: 'center',
-                                  flexShrink: 0
+                                  gap: 10,
+                                  padding: '10px 0',
+                                  flex: 1
                                 }}>
-                                  {item.host.photo_url ? (
-                                    <img 
-                                      src={item.host.photo_url} 
-                                      alt={item.host.prenom || 'Hôte'}
-                                      style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'cover'
-                                      }}
-                                    />
-                                  ) : (
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
-                                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                      <circle cx="12" cy="7" r="4"></circle>
-                                    </svg>
-                                  )}
-                                </div>
-                                <div>
                                   <div style={{
-                                    fontSize: 13,
-                                    color: '#6b7280',
-                                    fontWeight: 500,
-                                    marginBottom: 2
+                                    width: 44,
+                                    height: 44,
+                                    borderRadius: '50%',
+                                    overflow: 'hidden',
+                                    background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0
                                   }}>
-                                    Hôte
+                                    {item.host.photo_url ? (
+                                      <img 
+                                        src={item.host.photo_url} 
+                                        alt={item.host.prenom || 'Hôte'}
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                          objectFit: 'cover'
+                                        }}
+                                      />
+                                    ) : (
+                                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                      </svg>
+                                    )}
                                   </div>
-                                  <div style={{
-                                    fontSize: 15,
-                                    fontWeight: 700,
-                                    color: '#111827'
-                                  }}>
-                                    {item.host.prenom || 'Hôte'}
+                                  <div>
+                                    <div style={{
+                                      fontSize: 13,
+                                      color: '#6b7280',
+                                      fontWeight: 500,
+                                      marginBottom: 2
+                                    }}>
+                                      Hôte
+                                    </div>
+                                    <div style={{
+                                      fontSize: 15,
+                                      fontWeight: 700,
+                                      color: '#111827'
+                                    }}>
+                                      {item.host.prenom || 'Hôte'}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                          <div className="share-container" style={{ position: 'relative' }}>
+                              )}
+                              <div className="share-container" style={{ position: 'relative' }}>
                             <button
                               onClick={() => setShowShareMenu(!showShareMenu)}
                               className="share-button"
@@ -2335,6 +2355,8 @@ export default function Page({ params }) {
                                 </button>
                               </div>
                             )}
+                              </div>
+                            </div>
                           </div>
                         </div>
 
