@@ -271,6 +271,25 @@ function Gallery({ images }) {
             max-width: calc(100vw - 32px) !important;
             top: auto !important;
           }
+          .info-chips-grid {
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 6px !important;
+          }
+          .info-chip {
+            padding: 8px 4px !important;
+          }
+          .info-chip svg {
+            width: 14px !important;
+            height: 14px !important;
+            margin-bottom: 4px !important;
+          }
+          .info-chip-value {
+            font-size: 14px !important;
+            margin-bottom: 1px !important;
+          }
+          .info-chip-label {
+            font-size: 9px !important;
+          }
         }
         @media (min-width: 769px) {
           .gallery-carousel-wrapper {
