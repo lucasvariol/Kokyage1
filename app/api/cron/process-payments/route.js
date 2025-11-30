@@ -525,6 +525,7 @@ async function createUpcomingCautions() {
           customer: customer.id,
           capture_method: 'manual', // Empreinte uniquement, pas de capture immédiate
           confirm: true,
+          return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
           description: `Caution pour réservation #${reservation.id} - Libération automatique 14 jours après le départ`,
           metadata: {
             reservation_id: reservation.id,
