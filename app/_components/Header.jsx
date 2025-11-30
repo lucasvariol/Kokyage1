@@ -13,6 +13,8 @@ export default function Header({ activeTab, setActiveTab }) {
   const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [userAvatar, setUserAvatar] = useState(null);
+  const [userInitials, setUserInitials] = useState('');
   
   // Detect mobile screen
   useEffect(() => {
@@ -47,12 +49,44 @@ export default function Header({ activeTab, setActiveTab }) {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setConnected(!!session);
+      if (session?.user) {
+        const meta = session.user.user_metadata || {};
+        const avatar = meta.avatar_url || meta.avatar || null;
+        setUserAvatar(avatar || null);
+        const name = meta.full_name || meta.name || session.user.email || '';
+        const initials = (name || '')
+          .split(' ')
+          .map((n) => n[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase();
+        setUserInitials(initials);
+      } else {
+        setUserAvatar(null);
+        setUserInitials('');
+      }
       setLoading(false);
     };
     checkSession();
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setConnected(!!session);
+      if (session?.user) {
+        const meta = session.user.user_metadata || {};
+        const avatar = meta.avatar_url || meta.avatar || null;
+        setUserAvatar(avatar || null);
+        const name = meta.full_name || meta.name || session.user.email || '';
+        const initials = (name || '')
+          .split(' ')
+          .map((n) => n[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase();
+        setUserInitials(initials);
+      } else {
+        setUserAvatar(null);
+        setUserInitials('');
+      }
     });
     
     return () => subscription?.unsubscribe();
@@ -117,6 +151,23 @@ export default function Header({ activeTab, setActiveTab }) {
     zIndex: 101,
     padding: 0,
     outline: 'none'
+  };
+
+  const avatarStyle = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    overflow: 'hidden',
+    border: '1px solid rgba(96,162,157,0.2)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(96,162,157,0.1)',
+    color: '#2D3748',
+    fontWeight: 700,
+    fontSize: '12px',
+    textDecoration: 'none'
   };
 
   const lineStyle = {
@@ -229,6 +280,17 @@ export default function Header({ activeTab, setActiveTab }) {
                 whiteSpace: 'nowrap'
               }}>
                 Proposer un logement
+              </Link>
+            )}
+
+            {/* Profile avatar when connected */}
+            {connected && (
+              <Link href="/profil" style={avatarStyle} aria-label="Profil">
+                {userAvatar ? (
+                  <img src={userAvatar} alt="Profil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <span>{userInitials || 'ME'}</span>
+                )}
               </Link>
             )}
 
