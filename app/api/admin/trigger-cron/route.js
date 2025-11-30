@@ -23,8 +23,13 @@ export async function POST(request) {
     }
 
     // Vérifier que c'est l'admin (PLATFORM_USER_ID)
-    const platformUserId = process.env.NEXT_PUBLIC_PLATFORM_USER_ID;
+    const platformUserId = process.env.PLATFORM_USER_ID;
+    if (!platformUserId) {
+      console.error('❌ PLATFORM_USER_ID non configuré');
+      return Response.json({ error: 'Configuration serveur manquante' }, { status: 500 });
+    }
     if (user.id !== platformUserId) {
+      console.log('❌ Accès refusé:', user.id, '!==', platformUserId);
       return Response.json({ error: 'Accès refusé - réservé aux administrateurs' }, { status: 403 });
     }
 
