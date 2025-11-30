@@ -2611,10 +2611,14 @@ export default function Page({ params }) {
                               <div style={{ display: 'flex', gap: 8 }}>
                                 <input
                                   readOnly
-                                  onClick={() => setActiveField('from')}
+                                  onClick={() => {
+                                    // Permet de re-sélectionner une arrivée et efface la date de départ
+                                    setActiveField('from');
+                                    setRange(r => ({ from: r.from, to: undefined }));
+                                  }}
                                   value={range.from ? range.from.toLocaleDateString('fr-FR') : ''}
                                   placeholder="jj/mm/aaaa"
-                                  style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: activeField==='from' ? '2px solid #93c5fd' : '1px solid #e2e8f0', background: '#fff' }}
+                                  style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: activeField==='from' ? '2px solid #93c5fd' : '1px solid #e2e8f0', background: '#fff', cursor: 'pointer' }}
                                 />
                               </div>
                             </div>
