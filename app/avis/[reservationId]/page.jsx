@@ -258,6 +258,14 @@ export default function ReviewPage({ params }) {
                 <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
                   Comment évaluez-vous cette expérience ?
                 </h2>
+                <svg width="0" height="0" style={{ position: 'absolute' }}>
+                  <defs>
+                    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{stopColor: '#F59E0B'}} />
+                      <stop offset="100%" style={{stopColor: '#EF4444'}} />
+                    </linearGradient>
+                  </defs>
+                </svg>
                 <div className="flex items-center justify-center gap-4 mb-4">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -273,12 +281,6 @@ export default function ReviewPage({ params }) {
                         fill={(hoverRating || rating) >= star ? 'url(#starGradient)' : '#E5E7EB'}
                         viewBox="0 0 24 24"
                       >
-                        <defs>
-                          <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style={{stopColor: '#F59E0B'}} />
-                            <stop offset="100%" style={{stopColor: '#EF4444'}} />
-                          </linearGradient>
-                        </defs>
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                       </svg>
                     </button>
