@@ -473,11 +473,38 @@ async function createUpcomingCautions() {
         console.log(`   💳 Payment Method ID: ${reservation.payment_method_id}`);
         console.log(`   🔐 Caution status actuel: ${reservation.caution_status || 'NULL'}`);
 
+        // Récupérer l'email de l'utilisateur
+        const { data: userProfile } = await supabaseAdmin
+          .from('profiles')
+          .select('email')
+          .eq('id', reservation.user_id)
+          .single();
+
+        if (!userProfile?.email) {
+          throw new Error('Email utilisateur introuvable');
+        }
+
+        // Récupérer ou créer le Customer Stripe
+        console.log(`   🔍 Recherche du Customer Stripe pour: ${userProfile.email}`);
+        let customer;
+        const existingCustomers = await stripe.customers.list({ email: userProfile.email, limit: 1 });
+        
+        if (existingCustomers.data.length > 0) {
+          customer = existingCustomers.data[0];
+          console.log(`   ✅ Customer existant trouvé: ${customer.id}`);
+        } else {
+          customer = await stripe.customers.create({
+            email: userProfile.email,
+            metadata: { userId: reservation.user_id }
+          });
+          console.log(`   ✅ Nouveau Customer créé: ${customer.id}`);
+        }
+
         // Attacher le PaymentMethod au Customer si ce n'est pas déjà fait
         console.log(`   🔗 Tentative d'attachement du PaymentMethod au Customer...`);
         try {
           await stripe.paymentMethods.attach(reservation.payment_method_id, {
-            customer: reservation.user_id,
+            customer: customer.id,
           });
           console.log(`   ✅ PaymentMethod attaché avec succès`);
         } catch (attachError) {
@@ -496,7 +523,7 @@ async function createUpcomingCautions() {
           amount: 30000, // 300€ en centimes
           currency: 'eur',
           payment_method: reservation.payment_method_id,
-          customer: reservation.user_id,
+          customer: customer.id,
           capture_method: 'manual', // Empreinte uniquement, pas de capture immédiate
           confirm: true,
           description: `Caution pour réservation #${reservation.id} - Libération automatique 14 jours après le départ`,
