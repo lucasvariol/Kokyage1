@@ -5,7 +5,8 @@ import Footer from '@/app/_components/Footer';
 import ArticleContent from './ArticleContent';
 
 export async function generateMetadata({ params }) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   if (!post) return { title: 'Article non trouvé' };
   
   return {
@@ -22,11 +23,12 @@ export async function generateStaticParams() {
 }
 
 export default async function ArticlePage({ params }) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
   
   const relatedPosts = getRelatedPosts(post.slug, post.category, 3);
-  const currentUrl = `https://kokyage.com/blog/${post.slug}`;
+  const currentUrl = `https://kokyage.com/blog/${slug}`;
   
   return (
     <>
