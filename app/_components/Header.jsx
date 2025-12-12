@@ -306,10 +306,12 @@ export default function Header({ activeTab, setActiveTab }) {
             {/* Navigation desktop pour utilisateurs non connectés */}
             {!connected && (
               <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <Link href="/fonctionnement" className="desktop-button" style={secondaryButtonStyle}>
+                <Link href="/fonctionnement" className="desktop-button" style={secondaryButtonStyle}>
                   Comment ça marche
                 </Link>
-                
+                <Link href="/blog" className="desktop-button" style={secondaryButtonStyle}>
+                  Blog
+                </Link>
                 <Link href="/ajout-logement" className="desktop-button" style={{
                   background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                   color: 'white',
@@ -494,6 +496,23 @@ export default function Header({ activeTab, setActiveTab }) {
                     Proposer un logement
                   </Link>
                   
+                  <Link href="/blog" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#1F2937',
+                    background: 'rgba(96,162,157,0.12)',
+                    border: '1px solid rgba(96,162,157,0.25)',
+                    padding: '14px 20px',
+                    borderRadius: '12px',
+                    marginBottom: '12px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    textDecoration: 'none'
+                  }}>
+                    📚 Blog
+                  </Link>
+
                   <Link href="/fonctionnement" style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -632,6 +651,23 @@ export default function Header({ activeTab, setActiveTab }) {
                   🔍 Rechercher un logement
                 </Link>
                 
+                <Link href="/blog" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#1F2937',
+                  background: 'rgba(96,162,157,0.12)',
+                  border: '1px solid rgba(96,162,157,0.25)',
+                  padding: '14px 20px',
+                  borderRadius: '12px',
+                  marginBottom: '12px',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  textDecoration: 'none'
+                }}>
+                  📚 Blog
+                </Link>
+
                 <Link href="/ajout-logement" style={{
                   display: 'flex',
                   alignItems: 'center',

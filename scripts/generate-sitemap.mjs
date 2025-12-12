@@ -1,10 +1,12 @@
 import fs from 'fs/promises';
 import path from 'path';
+import matter from 'gray-matter';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://kokyage.com';
 const root = process.cwd();
 const appDir = path.join(root, 'app');
 const pagesDir = path.join(root, 'pages');
+const blogDir = path.join(root, 'content/blog');
 const outDir = path.join(root, 'public');
 const outFile = path.join(outDir, 'sitemap.xml');
 
@@ -62,6 +64,22 @@ async function collectFromDirectory(dir, baseFrom) {
     if (await exists(pagesDir)) {
       const urls = await collectFromDirectory(pagesDir, pagesDir);
       for (const u of urls) allUrls.set(u.loc, u.lastmod);
+    }
+
+    // Add blog posts
+    if (await exists(blogDir)) {
+      const files = await fs.readdir(blogDir);
+      for (const file of files) {
+        if (file.endsWith('.md')) {
+          const fullPath = path.join(blogDir, file);
+          const content = await fs.readFile(fullPath, 'utf8');
+          const { data } = matter(content);
+          const slug = file.replace(/\.md$/, '');
+          const url = `${siteUrl.replace(/\/$/, '')}/blog/${slug}`;
+          const lastmod = data.date || new Date().toISOString();
+          allUrls.set(url, lastmod);
+        }
+      }
     }
 
     // Ensure root URL exists
