@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 
 /**
- * Middleware de sécurité Next.js
+ * Proxy de sécurité Next.js 16
  * S'exécute avant chaque requête pour ajouter les headers de sécurité HTTP
  * et protéger l'application contre les attaques courantes
  */
-export function middleware(request) {
+export default function proxy(request) {
   const response = NextResponse.next();
   
   // ====================
