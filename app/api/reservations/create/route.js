@@ -3,12 +3,26 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { Resend } from 'resend';
 import { reservationPaymentConfirmedTemplate } from '@/email-templates/reservation-payment-confirmed';
 import { calculateShares } from '@/lib/commissions';
+import { createReservationSchema, validateOrError } from '@/lib/validators';
+import logger from '@/lib/logger';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request) {
   try {
     const body = await request.json();
+    
+    // ✅ VALIDATION SÉCURISÉE DES INPUTS
+    const validation = validateOrError(createReservationSchema, body);
+    if (!validation.valid) {
+      logger.warn('Invalid reservation data', { errors: validation.errors });
+      return NextResponse.json(
+        { error: validation.message, errors: validation.errors },
+        { status: 400 }
+      );
+    }
+
+    // Données validées et typées
     const {
       listingId,
       guestId,
@@ -21,40 +35,27 @@ export async function POST(request) {
       transactionId,
       cautionIntentId,
       paymentMethodId
-    } = body;
+    } = validation.data;
 
-    // Pour les tests, utiliser un guestId par défaut si non fourni
-    const finalGuestId = guestId || '0583f884-6001-4f3f-9e21-4c7f47859674';
-
-    // Validation des données
-    if (!listingId || !startDate || !endDate || !guests || !totalPrice || !transactionId) {
-      return NextResponse.json(
-        { error: 'Données manquantes pour créer la réservation' },
-        { status: 400 }
-      );
-    }
+    logger.api('POST', '/api/reservations/create', { listingId, guestId, totalPrice });
 
     // Récupérer les infos du logement (owner et id_proprietaire, price)
-    console.log('🔍 Recherche du listing avec ID:', listingId);
+    logger.debug('Fetching listing', { listingId });
     const { data: listing, error: listingError } = await supabaseAdmin
       .from('listings')
       .select('owner_id, id_proprietaire, price_per_night, title, city')
       .eq('id', listingId)
       .single();
 
-    console.log('📊 Résultat de la requête listing:');
-    console.log('- Data:', listing);
-    console.log('- Error:', listingError);
-
     if (listingError || !listing) {
-      console.log('❌ Listing non trouvé ou erreur:', listingError?.message);
+      logger.error('Listing not found', { listingId, error: listingError?.message });
       return NextResponse.json(
-        { error: 'Logement non trouvé', details: listingError?.message },
+        { error: 'Logement non trouvé' },
         { status: 404 }
       );
     }
 
-    console.log('✅ Listing trouvé:', listing);
+    logger.debug('Listing found', { listingId, title: listing.title });
 
     // Calculer le nombre de nuits - Parser les dates YYYY-MM-DD comme dates locales
     const parseLocalDate = (dateStr) => {
