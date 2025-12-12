@@ -145,17 +145,24 @@
   }
 }
 
-@media (max-width: 768px) {
-  .breadcrumb {
-    padding: 10px 15px;
-    font-size: 0.8rem;
-  }
+  @media (max-width: 768px) {
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
 
-  .article-header {
-    padding: 40px 15px;
-  }
+    * {
+      max-width: 100%;
+    }
 
-  .article-category-badge {
+    .breadcrumb {
+      padding: 10px 15px;
+      font-size: 0.8rem;
+    }
+
+    .article-header {
+      padding: 40px 15px;
+    }  .article-category-badge {
     font-size: 0.8rem;
     padding: 6px 12px;
   }
@@ -180,14 +187,22 @@
 
   .article-layout {
     padding: 20px 0;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
-  .article-body {
-    padding: 20px 15px;
-    border-radius: 0;
+  .article-content-wrapper {
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
-  .article-cta {
+    .article-body {
+      padding: 20px 15px;
+      border-radius: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }  .article-cta {
     margin: 30px 0;
   }
 
@@ -219,6 +234,8 @@
   font-size: 1.1rem;
   line-height: 1.8;
   color: #2d3748;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 @media (max-width: 768px) {
@@ -262,6 +279,9 @@
 
 .article-content p {
   margin-bottom: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -293,6 +313,8 @@
   .article-content li {
     margin-bottom: 10px;
     font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 }
 
@@ -304,6 +326,8 @@
 .article-content a {
   color: #667eea;
   text-decoration: underline;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .article-content a:hover {
@@ -337,6 +361,7 @@
   margin: 30px 0;
   overflow-x: auto;
   display: block;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (max-width: 768px) {
@@ -376,6 +401,9 @@
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 0.9em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .article-content pre {
@@ -385,11 +413,32 @@
   border-radius: 8px;
   overflow-x: auto;
   margin: 20px 0;
+  max-width: 100%;
 }
 
 .article-content pre code {
   background: none;
   padding: 0;
+}
+
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .article-content pre {
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 0.85rem;
+  }
+  
+  .article-content img {
+    margin: 15px 0;
+    border-radius: 4px;
+  }
   color: inherit;
 }
 

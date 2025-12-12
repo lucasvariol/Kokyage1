@@ -60,11 +60,26 @@ export default function BlogClient({ allPosts, categories }) {
       </section>
 
       <style jsx>{`
+        * {
+          box-sizing: border-box;
+        }
+
+        .blog-page {
+          overflow-x: hidden;
+          max-width: 100vw;
+        }
+
+        .container {
+          max-width: 100%;
+          overflow-x: hidden;
+        }
+
         .blog-hero {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: white;
           padding: 80px 20px;
           text-align: center;
+          overflow-x: hidden;
         }
 
         .blog-hero h1 {
@@ -120,6 +135,15 @@ export default function BlogClient({ allPosts, categories }) {
           gap: 30px;
           max-width: 1200px;
           margin: 0 auto;
+          width: 100%;
+        }
+
+        @media (max-width: 768px) {
+          .blog-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 0 15px;
+          }
         }
 
         .no-posts {
