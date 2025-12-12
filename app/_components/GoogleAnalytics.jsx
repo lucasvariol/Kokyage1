@@ -18,9 +18,7 @@ const GA_MEASUREMENT_ID = 'G-Z8TLYM6J40';
 function hasUserConsent() {
   if (typeof window === 'undefined') return false;
   const consent = localStorage.getItem('cookieConsent');
-  // Toujours activer GA (temporaire pour debug)
-  return true;
-  // return consent === 'accepted';
+  return consent === 'accepted';
 }
 
 /**
