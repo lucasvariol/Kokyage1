@@ -1,13 +1,24 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { chatbotSchema, validateOrError } from '@/lib/validators';
+import logger from '@/lib/logger';
 
 // Vous devrez installer openai: npm install openai
 // Et ajouter votre clé API dans .env.local: OPENAI_API_KEY=sk-...
 
 export async function POST(request) {
   try {
-    const { messages, userProfile, assistanceType } = await request.json();
+    const body = await request.json();
+    
+    // Validation
+    const validation = validateOrError(chatbotSchema, body);
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.message }, { status: 400 });
+    }
+    
+    const { messages, userProfile, assistanceType } = validation.data;
+    logger.api('POST', '/api/chatbot', { messagesCount: messages.length, assistanceType });
 
     // Vérifier si la clé API OpenAI est configurée en premier
     if (!process.env.OPENAI_API_KEY) {

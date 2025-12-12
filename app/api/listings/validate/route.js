@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { validateListingSchema, validateOrError } from '@/lib/validators';
+import logger from '@/lib/logger';
 
 export async function POST(req) {
   try {
-    const { listingId, action } = await req.json();
-    if (!listingId) return NextResponse.json({ error: 'Missing listingId' }, { status: 400 });
+    const body = await req.json();
+    
+    // Validation
+    const validation = validateOrError(validateListingSchema, body);
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.message }, { status: 400 });
+    }
+    
+    const { listingId, action } = validation.data;
+    logger.api('POST', '/api/listings/validate', { listingId, action });
 
     let newStatus = 'validé propriétaire';
     if (action === 'reject') newStatus = 'refusé propriétaire';

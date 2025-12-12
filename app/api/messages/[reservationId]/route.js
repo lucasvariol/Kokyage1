@@ -81,11 +81,18 @@ export async function GET(request, { params }) {
 export async function POST(request, { params }) {
   try {
     const { reservationId } = params;
-    const { message } = await request.json();
-
-    if (!message || !message.trim()) {
-      return NextResponse.json({ error: 'Le message ne peut pas être vide' }, { status: 400 });
+    const body = await request.json();
+    
+    // Validation sécurisée
+    const validation = validateOrError(sendMessageSimpleSchema, body);
+    if (!validation.valid) {
+      return NextResponse.json(
+        { error: validation.message },
+        { status: 400 }
+      );
     }
+
+    const { message } = validation.data;
 
     const cookieStore = cookies();
 

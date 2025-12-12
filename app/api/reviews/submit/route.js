@@ -1,14 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
+import logger from '@/lib/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
+const submitReviewSchema = z.object({
+  listing_id: z.number().int().positive(),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().max(2000).optional(),
+});
+
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { listing_id, rating, comment } = body;
+    
+    // Validation
+    const result = submitReviewSchema.safeParse(body);
+    if (!result.success) {
+      return Response.json({ error: result.error.errors[0].message }, { status: 400 });
+    }
+    
+    const { listing_id, rating, comment } = result.data;
+    logger.api('POST', '/api/reviews/submit', { listing_id, rating });
 
     // Get user from session
     const authHeader = req.headers.get('authorization');

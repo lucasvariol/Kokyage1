@@ -3,6 +3,8 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { Resend } from 'resend';
 import { reservationHostRejectedTemplate } from '@/email-templates/reservation-host-rejected';
 import Stripe from 'stripe';
+import { hostRejectReservationSchema, validateOrError } from '@/lib/validators';
+import logger from '@/lib/logger';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -23,10 +25,16 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { reservationId } = await request.json();
-    if (!reservationId) {
-      return NextResponse.json({ error: 'Missing reservationId' }, { status: 400 });
+    const body = await request.json();
+    
+    // Validation
+    const validation = validateOrError(hostRejectReservationSchema, body);
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.message }, { status: 400 });
     }
+    
+    const { reservationId, reason } = validation.data;
+    logger.api('POST', '/api/reservations/host-reject', { reservationId });
 
     const { data: reservation, error: reservationError } = await supabaseAdmin
       .from('reservations')
