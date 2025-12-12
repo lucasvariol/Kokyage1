@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { createPaymentSchema, validateOrError } from '@/lib/validators';
+import logger from '@/lib/logger';
 
 // Configuration Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -7,11 +9,22 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 });
 
 const STRIPE_KEY_MODE = (process.env.STRIPE_SECRET_KEY || '').includes('_test_') ? 'test' : 'live';
-console.log(`[Stripe API] Running in ${STRIPE_KEY_MODE} mode`);
+logger.info(`[Stripe API] Running in ${STRIPE_KEY_MODE} mode`);
 
 export async function POST(request) {
   try {
     const body = await request.json();
+    
+    // Validation sécurisée des inputs
+    const validation = validateOrError(createPaymentSchema, body);
+    if (!validation.valid) {
+      logger.warn('Invalid payment data', { errors: validation.errors });
+      return NextResponse.json(
+        { error: validation.message, errors: validation.errors },
+        { status: 400 }
+      );
+    }
+
     const { 
       amount, 
       currency = 'eur',
@@ -21,17 +34,9 @@ export async function POST(request) {
       listingId,
       reservationData,
       metadata
-    } = body;
+    } = validation.data;
 
-    console.log('[Stripe API] Incoming payment:', {
-      amount,
-      currency,
-      paymentMethodId,
-      userId,
-      userEmail,
-      listingId,
-      reservationData
-    });
+    logger.payment('Stripe payment request', { amount, currency, listingId });
 
     // 0. Récupérer/créer le Customer Stripe
     let customer;

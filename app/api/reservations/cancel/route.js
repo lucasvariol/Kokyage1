@@ -3,6 +3,8 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { Resend } from 'resend';
 import { reservationGuestCancelledTemplate } from '@/email-templates/reservation-guest-cancelled';
 import Stripe from 'stripe';
+import { cancelReservationSchema, validateOrError } from '@/lib/validators';
+import logger from '@/lib/logger';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -10,14 +12,19 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { reservationId, reason = 'Annulé par le voyageur' } = body;
-
-    if (!reservationId) {
+    
+    // Validation sécurisée
+    const validation = validateOrError(cancelReservationSchema, body);
+    if (!validation.valid) {
+      logger.warn('Invalid cancellation data', { errors: validation.errors });
       return NextResponse.json(
-        { error: 'ID de réservation manquant' },
+        { error: validation.message, errors: validation.errors },
         { status: 400 }
       );
     }
+
+    const { reservationId, reason = 'Annulé par le voyageur' } = validation.data;
+    logger.api('POST', '/api/reservations/cancel', { reservationId });
 
     // Vérifier que la réservation appartient à l'utilisateur connecté
     const authHeader = request.headers.get('authorization') || '';

@@ -1,12 +1,28 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { z } from 'zod';
+import logger from '@/lib/logger';
+
+// Schéma spécifique pour cette API (avec reviewerType)
+const createReviewWithTypeSchema = z.object({
+  reservationId: z.number().int().positive(),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().min(20).max(2000),
+  reviewerType: z.enum(['guest', 'host']),
+  cleanliness: z.number().int().min(1).max(5).optional(),
+  accuracy: z.number().int().min(1).max(5).optional(),
+  communication: z.number().int().min(1).max(5).optional(),
+  location: z.number().int().min(1).max(5).optional(),
+  checkin: z.number().int().min(1).max(5).optional(),
+  value: z.number().int().min(1).max(5).optional(),
+});
 
 /**
  * API pour créer un avis (review)
  * POST /api/reviews/create
  * 
  * Body: {
- *   reservationId: uuid,
+ *   reservationId: number,
  *   rating: 1-5,
  *   comment: string,
  *   reviewerType: 'guest' | 'host'
@@ -16,29 +32,23 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { reservationId, rating, comment, reviewerType } = body;
-
-    // Validation
-    if (!reservationId || !rating || !reviewerType) {
+    
+    // Validation sécurisée avec Zod
+    const result = createReviewWithTypeSchema.safeParse(body);
+    if (!result.success) {
+      const errors = result.error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+      }));
+      logger.warn('Invalid review data', { errors });
       return NextResponse.json(
-        { error: 'Données manquantes (reservationId, rating, reviewerType requis)' },
+        { error: errors[0].message, errors },
         { status: 400 }
       );
     }
 
-    if (!['guest', 'host'].includes(reviewerType)) {
-      return NextResponse.json(
-        { error: 'reviewerType doit être "guest" ou "host"' },
-        { status: 400 }
-      );
-    }
-
-    if (rating < 1 || rating > 5) {
-      return NextResponse.json(
-        { error: 'La note doit être entre 1 et 5' },
-        { status: 400 }
-      );
-    }
+    const { reservationId, rating, comment, reviewerType, cleanliness, accuracy, communication, location, checkin, value } = result.data;
+    logger.api('POST', '/api/reviews/create', { reservationId, rating, reviewerType });
 
     // Récupérer la réservation
     const { data: reservation, error: reservationError } = await supabaseAdmin
