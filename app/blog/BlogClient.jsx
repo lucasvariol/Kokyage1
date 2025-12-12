@@ -134,16 +134,44 @@ export default function BlogClient({ allPosts, categories }) {
         }
 
         @media (max-width: 768px) {
+          .blog-hero {
+            padding: 50px 15px;
+          }
+
           .blog-hero h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
           }
 
           .blog-hero p {
-            font-size: 1rem;
+            font-size: 0.95rem;
+            padding: 0 10px;
+          }
+
+          .blog-content {
+            padding: 40px 15px;
+          }
+
+          .blog-filters {
+            gap: 8px;
+            margin-bottom: 30px;
+          }
+
+          .filter-btn {
+            padding: 8px 14px;
+            font-size: 0.85rem;
           }
 
           .blog-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .no-posts {
+            padding: 40px 15px;
+          }
+
+          .no-posts p {
+            font-size: 1rem;
           }
         }
 
@@ -198,12 +226,25 @@ export default function BlogClient({ allPosts, categories }) {
           padding: 24px;
         }
 
+        @media (max-width: 768px) {
+          :global(.article-card-content) {
+            padding: 18px;
+          }
+        }
+
         :global(.article-card-title) {
           font-size: 1.4rem;
           font-weight: 700;
           margin-bottom: 12px;
           line-height: 1.4;
           color: #1a202c;
+        }
+
+        @media (max-width: 768px) {
+          :global(.article-card-title) {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+          }
         }
 
         :global(.article-card-description) {
@@ -216,6 +257,13 @@ export default function BlogClient({ allPosts, categories }) {
           overflow: hidden;
         }
 
+        @media (max-width: 768px) {
+          :global(.article-card-description) {
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+          }
+        }
+
         :global(.article-card-meta) {
           display: flex;
           gap: 16px;
@@ -223,6 +271,13 @@ export default function BlogClient({ allPosts, categories }) {
           color: #718096;
           padding-top: 12px;
           border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+          :global(.article-card-meta) {
+            font-size: 0.8rem;
+            gap: 12px;
+          }
         }
       `}</style>
     </main>
