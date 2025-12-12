@@ -125,7 +125,7 @@ export default function CookieBanner() {
             marginBottom: '12px',
             fontFamily: 'Inter, system-ui, sans-serif'
           }}>
-            Cookies & Confidentialité
+            Cookies
           </h2>
 
           <p style={{
