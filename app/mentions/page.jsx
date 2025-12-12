@@ -141,6 +141,9 @@ export default function Page() {
                     <strong style={{ color: '#374151' }}>SIRET :</strong> [Numéro à compléter]
                   </p>
                   <p style={{ marginBottom: '12px' }}>
+                    <strong style={{ color: '#374151' }}>Numéro de TVA :</strong> [Numéro à compléter]
+                  </p>
+                  <p style={{ marginBottom: '12px' }}>
                     <strong style={{ color: '#374151' }}>Email :</strong> <a href="mailto:contact@kokyage.com" style={{ color: '#4ECDC4', textDecoration: 'none', fontWeight: 600 }}>contact@kokyage.com</a>
                   </p>
                   <p style={{ margin: 0 }}>
@@ -239,26 +242,6 @@ export default function Page() {
                 </p>
                 <p style={{ color: '#4B5563' }}>
                   Vous pouvez paramétrer votre navigateur pour refuser les cookies, mais cela peut limiter certaines fonctionnalités du site.
-                </p>
-              </article>
-
-              {/* Responsabilité */}
-              <article style={{ marginBottom: '48px' }}>
-                <h2 style={{ 
-                  fontSize: '1.75rem', 
-                  fontWeight: 800, 
-                  color: '#1F2937',
-                  marginBottom: '24px',
-                  paddingBottom: '16px',
-                  borderBottom: '2px solid #E5E7EB'
-                }}>
-                  Limitation de responsabilité
-                </h2>
-                <p style={{ marginBottom: '16px', color: '#4B5563' }}>
-                  Kokyage s'efforce de fournir des informations exactes et à jour sur le site, mais ne peut garantir l'exactitude, la précision ou l'exhaustivité des informations mises à disposition.
-                </p>
-                <p style={{ color: '#4B5563' }}>
-                  Kokyage ne saurait être tenu responsable des dommages directs ou indirects résultant de l'accès au site ou de l'utilisation des informations qu'il contient.
                 </p>
               </article>
 
