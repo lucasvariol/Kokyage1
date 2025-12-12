@@ -1,137 +1,133 @@
-# Politique de Confidentialité
-
-**Dernière mise à jour : [Date]**
+# POLITIQUE DE TRAITEMENT DES DONNÉES PERSONNELLES
 
 Bienvenue sur Kokyage. Nous accordons une grande importance à la protection de vos données personnelles et nous nous engageons à respecter votre vie privée.
 
-Cette Politique de Confidentialité décrit comment nous collectons, utilisons, stockons et protégeons vos informations personnelles lorsque vous utilisez notre plateforme.
+La politique énoncée ci-après s'applique au traitement de données personnelles effectuée par KOKYAGE (ci-après dénommé « le responsable de traitement »).
 
 ---
 
-## 1. Informations que nous collectons
+## 1 – DISPOSITIONS GÉNÉRALES
 
-### 1.1 Informations que vous nous fournissez
+Le responsable du traitement des informations et des traitements de données personnelles effectués par le responsable du traitement, sauf mention contraire dans les dispositions spécifiques.
 
-Lorsque vous utilisez Kokyage, vous pouvez être amené à nous fournir :
+### 1.1 CADRE JURIDIQUE APPLICABLE AU TRAITEMENT DES DONNÉES PERSONNELLES
 
-- **Informations d'inscription** : nom, prénom, adresse e-mail, numéro de téléphone
-- **Informations de profil** : photo, biographie, préférences
-- **Informations de paiement** : données bancaires traitées par notre prestataire Stripe
-- **Communications** : messages échangés avec d'autres utilisateurs ou avec notre support
+Le responsable de traitement déclare qu'il effectue le traitement de données personnelles conformément au règlement (UE) 2016/679 du Parlement européen et du Conseil du 27 avril 2016 relatif à la protection des personnes physiques à l'égard du traitement des données à caractère personnel et à la libre circulation de ces données (règlement général sur la protection des données – ci-après dénommé le « RGPD ») et à la loi n°78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés (ci-après dénommée la « loi informatique et liberté »), ainsi qu'aux autres dispositions législatives et réglementaires applicables.
 
-### 1.2 Informations collectées automatiquement
+### 1.2 RESPONSABLE DU TRAITEMENT ET AUTRES INTERVENANTS
 
-Nous collectons automatiquement certaines informations lorsque vous utilisez la plateforme :
+Le traitement est effectué à l'adresse URL suivante : kokyage.com et concerne le ou les bénéficiaires suivants : les utilisateurs du site internet.
 
-- **Données de navigation** : adresse IP, type de navigateur, pages visitées
-- **Données de localisation** : avec votre consentement, pour afficher les logements à proximité
-- **Cookies et technologies similaires** : pour améliorer votre expérience utilisateur
+**Siège / adresse de correspondance :** 63 rue du 22 septembre, 92400, Courbevoie, France
 
----
+**Adresse de courrier électronique :** contact@kokyage.com
 
-## 2. Comment nous utilisons vos informations
-
-Nous utilisons vos données personnelles pour :
-
-- **Fournir nos services** : gestion de votre compte, réservations, paiements
-- **Améliorer la plateforme** : analyses statistiques, développement de nouvelles fonctionnalités
-- **Communication** : notifications de réservation, mises à jour, support client
-- **Sécurité** : prévention de la fraude, protection contre les abus
-- **Obligations légales** : respect des lois fiscales et réglementaires
+Le responsable du traitement n'a pas nommé de représentant ni de délégué à la protection des données.
 
 ---
 
-## 3. Partage de vos informations
+## 2 – DESTINATAIRES DES DONNÉES À CARACTÈRE PERSONNEL
 
-Nous ne vendons jamais vos données personnelles. Nous partageons vos informations uniquement dans les cas suivants :
-
-### 3.1 Avec d'autres utilisateurs
-
-- Les hôtes et voyageurs voient les informations nécessaires à la réservation (nom, photo de profil, dates)
-
-### 3.2 Avec nos prestataires de services
-
-- **Stripe** : pour le traitement sécurisé des paiements
-- **Supabase** : pour l'hébergement et la gestion de la base de données
-- **Services d'e-mail** : pour l'envoi de notifications
-
-### 3.3 Pour des raisons légales
-
-Nous pouvons divulguer vos informations si la loi l'exige ou pour protéger nos droits et ceux de nos utilisateurs.
+Les destinataires des données sont :
+- Les utilisateurs de Kokyage voient les informations nécessaires à la réservation, le déroulement, le dépôt ou la gestion de litiges
+- Les prestataires techniques et de paiement
+- Verifier : pour le traitement sécurisé des paiements
+- Google Analytics pour les statistiques de trafic et de données
+- Brevoail : pour l'envoi de notifications
 
 ---
 
-## 4. Sécurité de vos données
+## 3 – TRANSFERT DE DONNÉES
 
-Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles pour protéger vos données :
-
-- Chiffrement des données sensibles (SSL/TLS)
-- Accès restreint aux données personnelles
-- Surveillance et audits de sécurité réguliers
-- Partenariat avec des prestataires certifiés (Stripe, Supabase)
-
-Toutefois, aucune méthode de transmission sur Internet n'est totalement sécurisée. Nous ne pouvons garantir une sécurité absolue.
+Le responsable de traitement ne peut s'interdire d'effectuer ou transférer de données à caractère personnel en un pays tiers ou à une organisation internationale.
 
 ---
 
-## 5. Vos droits
+## 4 – DURÉE DE CONSERVATION DES DONNÉES À CARACTÈRE PERSONNEL
 
-Conformément au RGPD et aux lois françaises sur la protection des données, vous disposez des droits suivants :
-
-- **Droit d'accès** : obtenir une copie de vos données personnelles
-- **Droit de rectification** : corriger des données inexactes ou incomplètes
-- **Droit à l'effacement** : demander la suppression de vos données
-- **Droit à la limitation** : restreindre le traitement de vos données
-- **Droit à la portabilité** : recevoir vos données dans un format structuré
-- **Droit d'opposition** : vous opposer au traitement de vos données à des fins marketing
-- **Droit de retrait du consentement** : retirer votre consentement à tout moment
-
-Pour exercer ces droits, contactez-nous à : **[adresse e-mail de contact]**
+Les données personnelles des clients seront conservées pendant la durée nécessaire à la documentation de nos services, augmentée de trois années à compter à compter de la dernière sollicitation ou de notre part pour des raisons de preuve.
 
 ---
 
-## 6. Cookies et technologies similaires
+## 5 – DROITS DE LA PERSONNE DONT LES DONNÉES SONT COLLECTÉES
 
-Nous utilisons des cookies pour :
+La personne dont les données personnelles sont collectées a le droit :
 
-- Maintenir votre session active
-- Mémoriser vos préférences
-- Analyser l'utilisation de la plateforme
-- Afficher des contenus personnalisés
+- **Droit d'accès et d'information** – Le responsable de traitement traite les données à caractère personnel, la rectification des données inexactes ou incomplètes, la suppression de certaines données, la limitation du traitement relatif à la personne concernée,
+- de s'opposer au traitement,
+- de la portabilité des données,
+- de formuler des instructions sur le devenir de ses données après sa mort,
+- De retirer son consentement à tout moment, sans porter atteinte à la licité du traitement fondé sur le consentement effectué avant le retrait de celui-ci, lorsque le traitement est fondé sur le consentement de la personne concernée (article 7, point 3) du RGPD). La personne concernée a également le droit de déposer une plainte auprès d'une autorité de contrôle compétente en matière de traitement de données à caractère personnel (pour la France, la Commission nationale informatique et libertés).
 
-Vous pouvez gérer vos préférences de cookies via les paramètres de votre navigateur.
-
----
-
-## 7. Conservation des données
-
-Nous conservons vos données personnelles aussi longtemps que nécessaire pour :
-
-- Fournir nos services
-- Respecter nos obligations légales (conservation fiscale, comptable)
-- Résoudre des litiges éventuels
-
-Les données de compte inactif peuvent être supprimées après **[X ans]** d'inactivité.
+Le droit à la portabilité des données ne concerne que les seules données communiquées par la personne concernée au responsable de traitement et ne s'applique pas lorsque le traitement est nécessaire à l'exécution d'une mission d'intérêt public ou relevant de l'exercice de l'autorité publique dont est investi le responsable de traitement ou lorsque les données collectées dans le cadre de l'article 9, point 1) du RGPD), la demande de devenir à un caractère contractuel, la personne concernée ayant fourni son consentement, le traitement est nécessaire à la sauvegarde des intérêts vitaux de la personne concernée ou à ceux d'une autre personne physique, le traitement a été rendu public avec le consentement de la personne concernée, le traitement est nécessaire à l'exécution d'une mission d'intérêt public ou relevant de l'exercice de l'autorité publique dont est investi le responsable de traitement, ou le traitement est nécessaire aux fins de la constatation, de l'exercice ou de la défense de droits en justice, ou bien lorsque ce traitement est nécessaire à la réalisation d'un contrat auquel la personne concernée est partie ou à la prise de mesures précontractuelles prises à la demande de la personne concernée, exécuté dans le cadre de l'exercice de ses attributions.
 
 ---
 
-## 8. Modifications de cette politique
+## 6 – PRISE DE DÉCISION AUTOMATISÉE – PROFILAGE
 
-Nous pouvons mettre à jour cette Politique de Confidentialité périodiquement. Toute modification sera publiée sur cette page avec une date de mise à jour.
-
-Nous vous encourageons à consulter régulièrement cette page pour rester informé de la manière dont nous protégeons vos données.
+Base juridique – Le traitement sera nécessaire à l'exécution du contrat auquel la personne concernée est partie ou à la prise de mesures précontractuelles prises à la demande de la personne concernée, est autorisé par le droit de l'Union ou le droit de l'État membre auquel le responsable du traitement est soumis et qui prévoit également des mesures appropriées pour la sauvegarde des droits et libertés et des intérêts légitimes de la personne concernée, se fonde sur le consentement explicite de la personne concernée (dans le cas de données sensibles, article 9, point 2) du RGPD).
 
 ---
 
-## 9. Contact
+## 2 – DISPOSITIONS SPÉCIFIQUES
 
-Pour toute question concernant cette Politique de Confidentialité ou pour exercer vos droits, vous pouvez nous contacter :
+Les dispositions qui suivent sont applicables à chaque type de traitement de données personnelles, conformément aux dispositions générales.
 
-- **Email** : contact@kokyage.com
-- **Adresse postale** : [Adresse de l'entreprise]
+### 2.1 GESTION DES CLIENTS, PROSPECTS, UTILISATEURS ET ABONNÉS
 
-Vous avez également le droit de déposer une plainte auprès de la CNIL (Commission Nationale de l'Informatique et des Libertés) si vous estimez que vos droits ne sont pas respectés.
+**Données personnelles traitées** – Nous traitons les données personnelles suivantes : identité, prénom, nom, date de naissance, adresse, adresse e-mail, téléphone, profession, adresse IP, informations de navigation, photo de profil, adresse postale, localisation.
+
+Le traitement de données personnelles est destiné à la gestion de la relation avec nos contacts et prospects, l'édition de documents comptables, le développement de son activité commerciale, la commercialisation de nos services. Le traitement concerne : ses clients, contacts, prospects, fournisseurs, ses prestataires de services, ses partenaires commerciaux et les personnes concernées par les informations liées aux actualités de notre organisation, nos produits et nos services.
+
+**Base juridique** – Le traitement de données personnelles est fondé sur le consentement de la personne, le contrat conclu avec la personne, ou sur l'intérêt légitime du responsable de traitement. Lorsque le traitement est nécessaire au respect d'une obligation légale à laquelle le responsable de traitement est soumis, la personne concernée sera informée et elle ne pourra s'y opposer. Concernant les finalités poursuivies par le traitement, il en est ainsi de l'édition de documents comptables, la personne concernée ne peut s'y opposer. La base juridique du traitement sera alors la nécessité du respect d'une obligation légale à laquelle le responsable de traitement est soumis (article 6, paragraphe 1, point c) du RGPD), la demande de devenir à un caractère contractuel et la personne concernée doit fournir les données à caractère personnel pour être en mesure de conclure le contrat (le contrat ne pourra être conclu si la personne concernée ne communique pas les données demandées), le traitement des données à caractère personnel relève de l'intérêt légitime poursuivi par le responsable de traitement ou par un tiers et consistant à développer son activité commerciale et à communiquer sur les actualités de notre organisation, nos produits et nos services. La personne concernée, au moment du recueil des données, se trouve dans la possibilité de s'opposer à ce traitement.
+
+### 2.2 GESTION DE LA RELATION AVEC NOS CLIENTS
+
+**Données personnelles traitées** – Nous traitons les données personnelles suivantes : identité, prénom, nom, entreprise ou organisation, fonction, profession, coordonnées téléphoniques, adresse électronique, adresse postale, adresse IP, informations de localisation, numéro de téléphone, numéro de réservation, canal de distribution, modalités de paiement, historique de paiement, documents comptables, références bancaires, données financières, statut et historique de la réservation, adresse de livraison, date de fin d'abonnement et de résiliation, photo de profil, d'identité et de l'étude statistique de l'utilisation de notre site, nos produits et nos services.
+
+**Finalités** – Ce traitement est utilisé à des fins d'analyse et d'étude statistique de l'utilisation de notre site, nos produits et nos services.
+
+**Base juridique** – Le traitement et nécessaire à l'exécution des contrats auxquels la personne concernée est partie ou à la prise de mesures précontractuelles prises à la demande de la personne concernée. Il en est ainsi des finalités poursuivies par le traitement, à savoir la fourniture des services de l'article 6, paragraphe 1, point b) du RGPD.
+
+### 2.3 EXÉCUTION DES RÉSERVATIONS PASSÉES SUR NOTRE SITE INTERNET
+
+**Données personnelles traitées** – Nous traitons les données personnelles suivantes : identité, prénom, nom, entreprise ou organisation, fonction, profession, coordonnées téléphoniques, adresse électronique, adresse postale, adresse IP, informations de localisation, numéro de réservation, canal de distribution, modalités de paiement, informations de paiement.
+
+**Finalités** – Ce traitement sera utilisé à des fins de gestion et de paiement des réservations passées sur notre site internet (analyse de la relation avec nos contacts, traitement des commandes, gestion de notre relation client et de notre commerce).
+
+**Base juridique** – Le traitement est nécessaire à l'exécution du contrat conclu entre nous. Il est lié à l'article 6, paragraphe 1, point b) du RGPD), la demande de devenir à un caractère contractuel et la personne concernée doit fournir les données pour conclure le contrat (le contrat ne pourra être conclu si la personne concernée ne communique pas les données demandées).
+
+### 2.4 ANALYSE ET AMÉLIORATION DE NOS PRODUITS ET SERVICES
+
+**Données personnelles traitées** – Nous traitons les données personnelles suivantes : identité, prénom, nom, entreprise ou organisation, fonction, profession, coordonnées téléphoniques, adresse électronique, adresse postale, adresse IP, informations de navigation, photo de profil, adresse postale.
+
+**Finalités** – Ce traitement est utilisé à des fins d'analyse d'étude statistique et d'étude statistique de l'utilisation de notre site, nos produits et nos services pour améliorer et optimiser nos produits et services. Il est fondé sur l'article 6, paragraphe 1, point f) du RGPD), et est nécessaire aux fins des intérêts légitimes que nous poursuivons ou qu'un tiers poursuit : bénéficier des services et produits de nos partenaires pour améliorer nos services. Au moment du recueil des données, la personne concernée se trouve dans la possibilité de s'opposer à ce traitement (article 21, paragraphe 1, point b) du RGPD) et à est rédaction aux fins des intérêts légitimes que nous ou un tiers poursuivons : la demande de devenir un meilleur contrat (nos conditions générales d'utilisation), l'analyse de commercialisation des produits et des services, le développement et l'amélioration de notre site internet ainsi que nos services et produits et la sécurité et l'amélioration de nos produits et services, afin de permettre un meilleur retour sur nos users.
+
+### 2.5 UTILISATION DE GOOGLE ANALYTICS
+
+**Données personnelles traitées** – Google traite les données mentionnées dans sa politique de confidentialité : https://policies.google.com/privacy?hl=fr
+
+**Finalités** – Ce traitement est utilisé à des fins d'analyse d'étude statistique de l'utilisation de notre site.
+
+**Base juridique** – Le traitement repose sur le consentement de la personne concernée (article 6, paragraphe 1, point a) du RGPD), et nécessite son accord préalable pour améliorer et optimiser notre site Internet au bénéfice des utilisateurs. Il est fondé sur l'article 6, paragraphe 1, point f) du RGPD) et est nécessaire aux fins des intérêts légitimes que nous ou un tiers poursuivons : l'analyse de navigation pour améliorer l'utilisation de notre site internet, analyser la navigation de Google, la personne concernée doit donner son indication de Google : https://tools.google.com/dlpage/gaoptout
+
+### 2.6 VEILLER À LA SÉCURITÉ DES CLIENTS PERSONNES À DES FRAUDES ET OPTIMISER LES PERFORMANCES TECHNIQUES DE NOS SERVICES
+
+**Données personnelles traitées** – Nous traitons les données personnelles suivantes : identité, prénom, nom, entreprise ou organisation, fonction, profession, coordonnées téléphoniques, adresse électronique, adresse postale, adresse IP, informations de localisation, photo de profil.
+
+**Finalités** – Ce traitement est destiné à assurer la sécurité de nos produits et services et les activités liées en matière de cyber-sécurité et de confidentialité.
+
+**Base juridique** – Le traitement repose sur le consentement de la personne concernée (article 6, paragraphe 1, point a) du RGPD), et il est nécessaire au respect d'une obligation légale à laquelle le responsable de traitement est soumis : afin d'assurer la conformité de nos services avec la législation applicable, la personne concernée sera informée et elle ne pourra s'y opposer. Le traitement et nécessaire aux fins de nos intérêts légitimes ou de ceux d'un tiers, dans la limite des droits et libertés de la personne concernée (article 6, paragraphe 1, point f) du RGPD.
+
+### 2.7 SÉCURITÉ ET PROTECTION
+
+**Données personnelles traitées** – Nous traitons les données personnelles suivantes : identité, prénom, nom, entreprise ou organisation, fonction, profession, coordonnées téléphoniques, adresse électronique, adresse postale, adresse IP, informations de localisation, photo de profil, date du profil et d'information sur les actualités liées à notre site internet et à nos produits et services ou bien réaliser les activités liées en matière de relation avec nos clients.
+
+**Finalités** – Ce traitement est utilisé à des fins de gestion et d'assurance de la sécurité et de la protection de nos services.
+
+**Base juridique** – Le traitement est nécessaire au respect d'une obligation légale à laquelle le responsable de traitement est soumis. La personne concernée sera informée et elle ne pourra s'y opposer. Le traitement et nécessaire aux fins de nos intérêts légitimes de lutter contre les risques de fraude dans le cadre de nos activités, la personne concernée au moment du recueil des données, se trouve dans la possibilité de s'opposer à ce traitement (article 21, point 1 du RGPD) et est redirection aux fins des intérêts légitimes que nous poursuivons ou qu'un tiers poursuit (article 6, paragraphe 1, point f) du RGPD).
 
 ---
 
-**Kokyage** s'engage à protéger votre vie privée et à traiter vos données personnelles de manière transparente et sécurisée.
+**Kokyage** s'engage à protéger votre vie privée et à traiter vos données personnelles de manière transparente et sécurisée conformément au RGPD.
+
