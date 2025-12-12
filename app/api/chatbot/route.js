@@ -11,7 +11,6 @@ export async function POST(request) {
 
     // Vérifier si la clé API OpenAI est configurée en premier
     if (!process.env.OPENAI_API_KEY) {
-      console.error('OPENAI_API_KEY non configurée');
       return NextResponse.json({
         message: "⚠️ Le chatbot n'est pas encore configuré. Pour l'activer, ajoutez votre clé API OpenAI dans les variables d'environnement.\n\nEn attendant, n'hésitez pas à consulter notre FAQ ou à nous contacter directement !"
       });
