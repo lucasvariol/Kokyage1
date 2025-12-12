@@ -17,12 +17,18 @@ export default function CookieBanner() {
     localStorage.setItem('cookieConsent', 'accepted');
     localStorage.setItem('cookieConsentDate', new Date().toISOString());
     setShowBanner(false);
+    
+    // Déclencher un événement personnalisé pour notifier GoogleAnalytics
+    window.dispatchEvent(new Event('cookieConsentAccepted'));
   };
 
   const handleReject = () => {
     localStorage.setItem('cookieConsent', 'rejected');
     localStorage.setItem('cookieConsentDate', new Date().toISOString());
     setShowBanner(false);
+    
+    // Déclencher un événement pour notifier le refus
+    window.dispatchEvent(new Event('cookieConsentRejected'));
   };
 
   if (!showBanner) return null;

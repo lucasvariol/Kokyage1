@@ -7,10 +7,19 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 const GA_MEASUREMENT_ID = 'G-Z8TLYM6J40';
+
+/**
+ * Vérifie si l'utilisateur a accepté les cookies
+ */
+function hasUserConsent() {
+  if (typeof window === 'undefined') return false;
+  const consent = localStorage.getItem('cookieConsent');
+  return consent === 'accepted';
+}
 
 /**
  * Initialise Google Analytics
@@ -19,45 +28,91 @@ const GA_MEASUREMENT_ID = 'G-Z8TLYM6J40';
 export function GoogleAnalytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isEnabled, setIsEnabled] = useState(false);
 
-  // Charger le script GA au montage du composant
+  // Vérifier le consentement au montage et écouter les changements
   useEffect(() => {
-    // Vérifier si gtag est déjà chargé
-    if (typeof window.gtag === 'function') {
-      return;
-    }
+    // Vérifier le consentement initial
+    const checkConsent = () => {
+      setIsEnabled(hasUserConsent());
+    };
+    
+    checkConsent();
 
-    // Créer le script gtag.js
-    const script = document.createElement('script');
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-    script.async = true;
-    document.head.appendChild(script);
+    // Écouter les événements de consentement
+    const handleConsentAccepted = () => {
+      setIsEnabled(true);
+      initializeGA();
+    };
 
-    // Initialiser dataLayer et gtag
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      window.dataLayer.push(arguments);
-    }
-    window.gtag = gtag;
+    const handleConsentRejected = () => {
+      setIsEnabled(false);
+      // Supprimer les scripts GA si déjà chargés
+      if (typeof window.gtag === 'function') {
+        // Désactiver GA
+        window[`ga-disable-${GA_MEASUREMENT_ID}`] = true;
+      }
+    };
 
-    gtag('js', new Date());
-    gtag('config', GA_MEASUREMENT_ID, {
-      page_path: window.location.pathname,
-    });
+    window.addEventListener('cookieConsentAccepted', handleConsentAccepted);
+    window.addEventListener('cookieConsentRejected', handleConsentRejected);
+
+    return () => {
+      window.removeEventListener('cookieConsentAccepted', handleConsentAccepted);
+      window.removeEventListener('cookieConsentRejected', handleConsentRejected);
+    };
   }, []);
+
+  // Initialiser GA si consentement donné
+  useEffect(() => {
+    if (isEnabled && hasUserConsent()) {
+      initializeGA();
+    }
+  }, [isEnabled]);
 
   // Tracker les changements de page (navigation côté client)
   useEffect(() => {
-    if (typeof window.gtag === 'function') {
+    if (isEnabled && hasUserConsent() && typeof window.gtag === 'function') {
       const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
       
       window.gtag('config', GA_MEASUREMENT_ID, {
         page_path: url,
       });
     }
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, isEnabled]);
 
   return null;
+}
+
+/**
+ * Fonction d'initialisation de GA (appelée une seule fois)
+ */
+function initializeGA() {
+  if (typeof window === 'undefined') return;
+  
+  // Vérifier si gtag est déjà chargé
+  if (typeof window.gtag === 'function') {
+    return;
+  }
+
+  // Créer le script gtag.js
+  const script = document.createElement('script');
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+  script.async = true;
+  document.head.appendChild(script);
+
+  // Initialiser dataLayer et gtag
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  window.gtag = gtag;
+
+  gtag('js', new Date());
+  gtag('config', GA_MEASUREMENT_ID, {
+    page_path: window.location.pathname,
+    anonymize_ip: true, // Anonymiser les IPs pour RGPD
+  });
 }
 
 /**

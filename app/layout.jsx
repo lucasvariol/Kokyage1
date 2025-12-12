@@ -119,7 +119,7 @@ export default function RootLayout({ children }) {
       <body>
         <GoogleAnalytics />
         {children}
-        {/* <CookieBanner /> */}
+        <CookieBanner />
       </body>
     </html>
   );
