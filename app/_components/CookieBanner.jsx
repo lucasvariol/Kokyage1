@@ -135,27 +135,40 @@ export default function CookieBanner() {
             marginBottom: '24px',
             fontFamily: 'Inter, system-ui, sans-serif'
           }}>
-            Nous utilisons des cookies essentiels pour le fonctionnement du site (authentification, paiements sécurisés) et Google Analytics pour améliorer votre expérience.
+            En poursuivant votre navigation sur ce site, vous acceptez l'utilisation de cookies afin de vous fournir les services que vous demandez expressément et de réaliser des statistiques anonymes de visites pour nous permettre d'améliorer l'expérience utilisateur.
           </p>
 
-          <p style={{
-            fontSize: '0.85rem',
-            color: '#9CA3AF',
-            marginBottom: '24px',
-            fontFamily: 'Inter, system-ui, sans-serif'
-          }}>
-            En acceptant, vous nous aidez à mieux comprendre l'utilisation de Kokyage.{' '}
-            <a 
-              href="/privacy" 
-              style={{ 
-                color: '#4ECDC4', 
-                textDecoration: 'none', 
-                fontWeight: 600
-              }}
-            >
-              Politique de confidentialité
-            </a>
-          </p>
+          {/* Bouton En savoir plus */}
+          <a
+            href="/privacy"
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '14px 32px',
+              fontSize: '1rem',
+              fontWeight: 600,
+              color: '#4ECDC4',
+              background: 'white',
+              border: '2px solid #4ECDC4',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              fontFamily: 'Inter, system-ui, sans-serif',
+              textDecoration: 'none',
+              marginBottom: '12px',
+              boxSizing: 'border-box'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = '#F0FFFE';
+              e.target.style.borderColor = '#44B5AC';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'white';
+              e.target.style.borderColor = '#4ECDC4';
+            }}
+          >
+            En savoir plus
+          </a>
 
           {/* Gros bouton Accepter */}
           <button
