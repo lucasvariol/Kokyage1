@@ -44,7 +44,7 @@ export default function CookieBanner() {
       backdropFilter: 'blur(20px)',
       borderTop: '1px solid rgba(0, 0, 0, 0.1)',
       boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.15)',
-      padding: '24px',
+      padding: '16px',
       animation: 'slideUp 0.4s ease-out'
     }}>
       <style jsx>{`
@@ -58,35 +58,43 @@ export default function CookieBanner() {
             opacity: 1;
           }
         }
+        
+        @media (min-width: 768px) {
+          .cookie-banner-container {
+            padding: 24px !important;
+          }
+        }
       `}</style>
 
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '24px',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between'
-      }}>
+      <div 
+        className="cookie-banner-container"
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between'
+        }}>
         {/* Contenu */}
         <div style={{ flex: '1 1 400px', minWidth: '280px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-            <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🍪</span>
+            <span style={{ fontSize: '1.3rem', flexShrink: 0 }}>🍪</span>
             <div>
               <h3 style={{
-                fontSize: '1.1rem',
+                fontSize: '0.95rem',
                 fontWeight: 700,
                 color: '#1F2937',
-                marginBottom: '8px',
+                marginBottom: '6px',
                 fontFamily: 'Inter, system-ui, sans-serif'
               }}>
                 Nous utilisons des cookies
               </h3>
               <p style={{
-                fontSize: '0.95rem',
+                fontSize: '0.85rem',
                 color: '#6B7280',
-                lineHeight: 1.6,
+                lineHeight: 1.5,
                 margin: 0,
                 fontFamily: 'Inter, system-ui, sans-serif'
               }}>
@@ -113,20 +121,20 @@ export default function CookieBanner() {
         {/* Boutons */}
         <div style={{
           display: 'flex',
-          gap: '12px',
+          gap: '10px',
           flexWrap: 'wrap',
           alignItems: 'center'
         }}>
           <button
             onClick={handleReject}
             style={{
-              padding: '12px 24px',
-              fontSize: '0.95rem',
+              padding: '10px 20px',
+              fontSize: '0.85rem',
               fontWeight: 600,
               color: '#6B7280',
               background: 'transparent',
               border: '2px solid #E5E7EB',
-              borderRadius: '12px',
+              borderRadius: '10px',
               cursor: 'pointer',
               transition: 'all 0.2s',
               fontFamily: 'Inter, system-ui, sans-serif',
@@ -147,13 +155,13 @@ export default function CookieBanner() {
           <button
             onClick={handleAccept}
             style={{
-              padding: '12px 32px',
-              fontSize: '0.95rem',
+              padding: '10px 24px',
+              fontSize: '0.85rem',
               fontWeight: 700,
               color: 'white',
               background: 'linear-gradient(135deg, #4ECDC4 0%, #44B5AC 100%)',
               border: 'none',
-              borderRadius: '12px',
+              borderRadius: '10px',
               cursor: 'pointer',
               boxShadow: '0 4px 12px rgba(78, 205, 196, 0.3)',
               transition: 'all 0.2s',
