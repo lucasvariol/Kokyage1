@@ -8,6 +8,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { getFeeMultiplier, percentLabel } from '@/lib/commissions';
+import { trackEvent } from '../_components/GoogleAnalytics';
 
 const MapPreview = dynamic(() => import('../_components/MapPreview'), { ssr: false });
 
@@ -852,6 +853,16 @@ function LogementsInner() {
 
   async function handleSearch() {
     applyFilters();
+    
+    // Tracker la recherche
+    if (destination) {
+      trackEvent('search', {
+        search_term: destination,
+        guests: voyageurs,
+        check_in: arrivee || null,
+        check_out: depart || null
+      });
+    }
     
     // Scroll to results indicator on mobile after search
     if (isMobile && resultsIndicatorRef.current) {
@@ -2886,7 +2897,17 @@ function LogementsInner() {
                       </div>
                       <a
                         href={`/logement/${it.id}`}
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Tracker le clic sur un logement
+                          trackEvent('select_item', {
+                            item_id: it.id,
+                            item_name: it.title,
+                            item_category: 'Logement',
+                            price: it.price_per_night * getFeeMultiplier(),
+                            location: it.city
+                          });
+                        }}
                         style={{
                           padding: 'clamp(8px, 2vw, 10px) clamp(14px, 3vw, 18px)',
                           borderRadius: 10,

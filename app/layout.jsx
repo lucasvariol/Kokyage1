@@ -1,5 +1,6 @@
 import './globals.css';
 import CookieBanner from './_components/CookieBanner';
+import { GoogleAnalytics } from './_components/GoogleAnalytics';
 
 export const metadata = {
   title: 'Kokyage - Sous-louez pendant vos vacances',
@@ -19,7 +20,7 @@ export const metadata = {
         alt: 'Kokyage',
       }
     ],
-    locale: 'fr_FR',
+    locale: 'fr_FR', 
     type: 'website',
   },
   twitter: {
@@ -116,6 +117,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <GoogleAnalytics />
         {children}
         {/* <CookieBanner /> */}
       </body>

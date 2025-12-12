@@ -8,6 +8,7 @@ import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { trackEvent, trackConversion } from '../_components/GoogleAnalytics';
 import { getFeeMultiplier, percentLabel } from '@/lib/commissions';
 
 // Charger Stripe
@@ -146,6 +147,11 @@ function ConfirmerEtPayerContent() {
           email: authEmail
         });
 
+        // Tracker l'inscription
+        trackEvent('sign_up', {
+          method: 'email'
+        });
+
         // Envoyer l'email de vérification
         const emailResponse = await fetch('/api/emails/verify-email', {
           method: 'POST',
@@ -241,6 +247,11 @@ function ConfirmerEtPayerContent() {
 
       setAuthSuccess('✅ Connexion réussie !');
       setAuthLoading(false);
+
+      // Tracker la connexion
+      trackEvent('login', {
+        method: 'email'
+      });
 
       setTimeout(() => {
         setShowAuthModal(false);
@@ -506,6 +517,29 @@ function ConfirmerEtPayerContent() {
       if (!reservationResponse.ok || !reservationResult.success) {
         throw new Error(reservationResult.error || 'Erreur lors de la création de la réservation');
       }
+
+      // Tracker la conversion (réservation payée)
+      trackConversion('purchase', {
+        value: parseFloat(totalPrice),
+        currency: 'EUR',
+        transaction_id: reservationResult.reservation.id,
+        items: [{
+          item_id: listing.id,
+          item_name: listing.title,
+          item_category: 'Logement',
+          price: parseFloat(totalPrice),
+          quantity: 1
+        }]
+      });
+
+      // Tracker l'événement de réservation
+      trackEvent('reservation_completed', {
+        listing_id: listing.id,
+        listing_city: listing.city,
+        price: parseFloat(totalPrice),
+        guests: parseInt(guests),
+        nights: Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24))
+      });
 
       // 3. Tenter l'envoi automatique d'une facture Stripe (non bloquant en cas d'échec)
       try {

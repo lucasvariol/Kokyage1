@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { getFeeMultiplier, getPlatformPercent } from '@/lib/commissions';
 import { OwnerConsentAgreement } from '@/owner-consent';
 import { generateOwnerConsentText } from '@/lib/generateOwnerConsentText';
+import { trackEvent } from '../_components/GoogleAnalytics';
 
 const MapPreview = dynamic(() => import('../_components/MapPreview'), { ssr: false });
 
@@ -581,6 +582,14 @@ export default function Page() {
         console.error('💥 Erreur log accord consentement:', consentError);
         // On ne bloque pas la création de l'annonce
       }
+
+      // Tracker l'ajout de logement
+      trackEvent('listing_created', {
+        listing_id: listingData.id,
+        city: city,
+        price: parseFloat(price),
+        bedrooms: parseInt(bedrooms) || 0
+      });
 
   router.push("/calendrier");
     }
