@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createPaymentSchema, validateOrError } from '@/lib/validators';
 import logger from '@/lib/logger';
+import { applyRateLimit, paymentRateLimit } from '@/lib/ratelimit';
 
 // Configuration Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -12,6 +13,12 @@ const STRIPE_KEY_MODE = (process.env.STRIPE_SECRET_KEY || '').includes('_test_')
 logger.info(`[Stripe API] Running in ${STRIPE_KEY_MODE} mode`);
 
 export async function POST(request) {
+  // Rate limiting: 3 paiements par 5 minutes
+  const rateLimitResult = await applyRateLimit(paymentRateLimit, request);
+  if (!rateLimitResult.success) {
+    return rateLimitResult.response;
+  }
+
   try {
     const body = await request.json();
     

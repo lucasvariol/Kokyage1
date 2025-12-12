@@ -79,6 +79,12 @@ export async function GET(request, { params }) {
 // POST /api/messages/[reservationId]
 // Envoie un nouveau message
 export async function POST(request, { params }) {
+  // Rate limiting: 10 messages par minute
+  const rateLimitResult = await applyRateLimit(contentRateLimit, request);
+  if (!rateLimitResult.success) {
+    return rateLimitResult.response;
+  }
+
   try {
     const { reservationId } = params;
     const body = await request.json();

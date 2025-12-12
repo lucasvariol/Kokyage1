@@ -5,10 +5,17 @@ import { reservationPaymentConfirmedTemplate } from '@/email-templates/reservati
 import { calculateShares } from '@/lib/commissions';
 import { createReservationSchema, validateOrError } from '@/lib/validators';
 import logger from '@/lib/logger';
+import { applyRateLimit, contentRateLimit } from '@/lib/ratelimit';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request) {
+  // Rate limiting: 10 réservations par minute
+  const rateLimitResult = await applyRateLimit(contentRateLimit, request);
+  if (!rateLimitResult.success) {
+    return rateLimitResult.response;
+  }
+
   try {
     const body = await request.json();
     

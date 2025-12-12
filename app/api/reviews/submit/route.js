@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import logger from '@/lib/logger';
+import { applyRateLimit, contentRateLimit } from '@/lib/ratelimit';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -14,6 +15,12 @@ const submitReviewSchema = z.object({
 });
 
 export async function POST(req) {
+  // Rate limiting: 10 avis par minute
+  const rateLimitResult = await applyRateLimit(contentRateLimit, req);
+  if (!rateLimitResult.success) {
+    return rateLimitResult.response;
+  }
+
   try {
     const body = await req.json();
     

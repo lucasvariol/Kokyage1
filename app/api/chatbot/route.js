@@ -3,11 +3,18 @@ import fs from 'fs';
 import path from 'path';
 import { chatbotSchema, validateOrError } from '@/lib/validators';
 import logger from '@/lib/logger';
+import { applyRateLimit, chatbotRateLimit } from '@/lib/ratelimit';
 
 // Vous devrez installer openai: npm install openai
 // Et ajouter votre clé API dans .env.local: OPENAI_API_KEY=sk-...
 
 export async function POST(request) {
+  // Rate limiting: 20 messages par heure (coûts OpenAI)
+  const rateLimitResult = await applyRateLimit(chatbotRateLimit, request);
+  if (!rateLimitResult.success) {
+    return rateLimitResult.response;
+  }
+
   try {
     const body = await request.json();
     
