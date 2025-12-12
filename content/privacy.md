@@ -115,11 +115,3 @@ Les dispositions qui suivent sont spécifiques à chaque type de traitement de d
 
 **Base juridique** – Ce traitement est nécessaire au respect des obligations légales auxquelles le responsable du traitement est soumis (article 6, paragraphe 1, point c) du RGPD) et il est nécessaire aux fins des intérêts légitimes que nous poursuivons, consistant à assurer la sécurité de nos produits et de nos services et à prévenir les activités illicites (article 6, paragraphe 1, point f) du RGPD). La demande de données est conforme aux dispositions législatives et réglementaires applicables. La personne concernée est tenue de fournir ces données si elle souhaite bénéficier de nos produits et services, consulter notre site Internet, nous contacter par courrier électronique. Si la personne concernée ne fournit pas les données, elle ne pourra pas bénéficier de nos produits et services.
 
----
-
-**Kokyage** s'engage à protéger votre vie privée et à traiter vos données personnelles de manière transparente et sécurisée conformément au RGPD.
-
----
-
-**Kokyage** s'engage à protéger votre vie privée et à traiter vos données personnelles de manière transparente et sécurisée conformément au RGPD.
-
