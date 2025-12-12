@@ -272,3 +272,66 @@
   padding: 0;
   color: inherit;
 }
+
+/* Table of contents styles */
+.table-of-contents {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.table-of-contents h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #1a202c;
+}
+
+.table-of-contents ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.table-of-contents li {
+  margin-bottom: 10px;
+}
+
+.table-of-contents a {
+  color: #4a5568;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  display: block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+}
+
+.table-of-contents a:hover {
+  color: #667eea;
+  background: #f7fafc;
+  border-left-color: #667eea;
+}
+
+.table-of-contents li.active a {
+  color: #667eea;
+  font-weight: 600;
+  background: #f0f4ff;
+  border-left-color: #667eea;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset pour les ancres (à cause du header sticky) */
+.article-content h2 {
+  scroll-margin-top: 120px;
+}
+
+.article-content h3 {
+  scroll-margin-top: 120px;
+}

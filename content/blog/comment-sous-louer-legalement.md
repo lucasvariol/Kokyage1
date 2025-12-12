@@ -1,5 +1,5 @@
 ---
-title: "Comment sous-louer son logement légalement en 2025 ?"
+title: "Comment sous-louer son logement légalement en 2026 ?"
 description: "Informations pratiques pour sous-louer votre appartement ou maison : démarches, lois Alur et ELAN, sanctions, fiscalité et conseils pratiques."
 date: "2025-01-15"
 author: "Kokyage"

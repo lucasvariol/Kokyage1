@@ -14,7 +14,7 @@ export default function TableOfContents({ headings }) {
           }
         });
       },
-      { rootMargin: '-100px 0px -80% 0px' }
+      { rootMargin: '-100px 0px -66% 0px' }
     );
 
     headings.forEach(({ id }) => {
@@ -25,6 +25,25 @@ export default function TableOfContents({ headings }) {
     return () => observer.disconnect();
   }, [headings]);
 
+  const handleClick = (e, id) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 100; // Espace en haut pour le header
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+
+      // Mettre à jour l'URL sans recharger
+      window.history.pushState(null, '', `#${id}`);
+      setActiveId(id);
+    }
+  };
+
   if (!headings || headings.length === 0) return null;
 
   return (
@@ -33,7 +52,12 @@ export default function TableOfContents({ headings }) {
       <ul>
         {headings.map(({ text, id }) => (
           <li key={id} className={activeId === id ? 'active' : ''}>
-            <a href={`#${id}`}>{text}</a>
+            <a 
+              href={`#${id}`}
+              onClick={(e) => handleClick(e, id)}
+            >
+              {text}
+            </a>
           </li>
         ))}
       </ul>
