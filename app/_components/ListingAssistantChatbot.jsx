@@ -329,6 +329,8 @@ export default function ListingAssistantChatbot({ onPriceGenerated, onDescriptio
                       message.content
                     ) : (
                       <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeSanitize]}
                         components={{
                           p: ({node, ...props}) => <p style={{ margin: '0 0 8px 0' }} {...props} />,
                           strong: ({node, ...props}) => <strong style={{ fontWeight: 700, color: '#C96745' }} {...props} />,

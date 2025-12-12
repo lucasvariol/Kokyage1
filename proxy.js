@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 /**
  * Proxy de sécurité Next.js 16
@@ -140,13 +141,11 @@ export default function proxy(request) {
     );
     
     if (isSuspicious) {
-      console.warn('🚨 [SECURITY] Suspicious request detected:', {
-        ip: request.ip || request.headers.get('x-forwarded-for'),
+      logger.security('Suspicious request detected', {
         method: request.method,
         path: pathname,
         query: queryString,
         userAgent: request.headers.get('user-agent'),
-        timestamp: new Date().toISOString()
       });
       
       // Optionnel: bloquer la requête

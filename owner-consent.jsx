@@ -1,4 +1,6 @@
 ﻿import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
+import remarkGfm from 'remark-gfm';
 
 const OWNER_CONSENT_MD = `
 # ACCORD DE SOUS-LOCATION SUR KOKYAGE.COM
@@ -36,7 +38,13 @@ export function OwnerConsentAgreement({ ownerName = 'Le Propriétaire', tenantNa
 
   return (
     <div style={{ color: '#334155', lineHeight: '1.6' }}>
-      <ReactMarkdown components={customComponents}>{content}</ReactMarkdown>
+      <ReactMarkdown 
+        components={customComponents}
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeSanitize]}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   );
 }

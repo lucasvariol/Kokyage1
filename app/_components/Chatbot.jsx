@@ -409,6 +409,8 @@ export default function Chatbot() {
                       message.content
                     ) : (
                       <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeSanitize]}
                         components={{
                           // Styles personnalisés pour les éléments Markdown
                           p: ({node, ...props}) => <p style={{ margin: '0 0 8px 0' }} {...props} />,

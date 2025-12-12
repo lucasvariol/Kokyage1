@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { logger } from '@/lib/logger';
 
 export async function GET(request, { params }) {
   try {
@@ -9,7 +10,7 @@ export async function GET(request, { params }) {
       return NextResponse.json({ valid: false, error: 'Token manquant' }, { status: 400 });
     }
 
-    console.log('🔍 Verifying token:', token);
+    logger.info('Verifying owner token (masked)', { token });
 
     // Chercher le token dans pending_owner_verification
     const { data: verification, error } = await supabaseAdmin
@@ -28,14 +29,17 @@ export async function GET(request, { params }) {
       .gt('expires_at', new Date().toISOString())
       .single();
 
-    console.log('📊 Query result:', { verification, error });
+    logger.debug('Owner token query finished', {
+      found: Boolean(verification),
+      error: error?.message,
+    });
 
     if (error || !verification) {
-      console.log('❌ Token not found or error:', error);
+      logger.warn('Owner token invalid or expired', { error: error?.message });
       return NextResponse.json({ valid: false, error: 'Token invalide ou expiré' }, { status: 404 });
     }
 
-    console.log('✅ Token valid for listing:', verification.listing_id);
+    logger.info('Owner token valid', { listingId: verification.listing_id });
 
     const listingData = verification.listings;
     const email = verification.email;
@@ -65,7 +69,7 @@ export async function GET(request, { params }) {
     });
 
   } catch (e) {
-    console.error('💥 verify-owner-token error:', e);
+    logger.error('verify-owner-token error', { error: e?.message });
     return NextResponse.json({ 
       valid: false, 
       error: 'Erreur serveur', 

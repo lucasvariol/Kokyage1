@@ -1,6 +1,8 @@
 ﻿import fs from 'fs';
 import path from 'path';
 import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
+import remarkGfm from 'remark-gfm';
 import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 
@@ -46,7 +48,13 @@ export default function Page() {
             boxShadow: '0 12px 32px rgba(0,0,0,0.08)',
             padding: '32px'
           }}>
-            <ReactMarkdown components={customComponents}>{content}</ReactMarkdown>
+            <ReactMarkdown 
+              components={customComponents}
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeSanitize]}
+            >
+              {content}
+            </ReactMarkdown>
           </div>
         </section>
       </main>
