@@ -44,7 +44,7 @@ export default function CookieBanner() {
       backdropFilter: 'blur(20px)',
       borderTop: '1px solid rgba(0, 0, 0, 0.1)',
       boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.15)',
-      padding: '16px',
+      padding: '10px 12px',
       animation: 'slideUp 0.4s ease-out'
     }}>
       <style jsx>{`
@@ -73,32 +73,33 @@ export default function CookieBanner() {
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
-          gap: '16px',
+          gap: '12px',
           flexWrap: 'wrap',
           justifyContent: 'space-between'
         }}>
         {/* Contenu */}
-        <div style={{ flex: '1 1 400px', minWidth: '280px' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-            <span style={{ fontSize: '1.3rem', flexShrink: 0 }}>🍪</span>
+        <div style={{ flex: '1 1 280px', minWidth: '200px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+            <span style={{ fontSize: '1rem', flexShrink: 0 }}>🍪</span>
             <div>
               <h3 style={{
-                fontSize: '0.95rem',
+                fontSize: '0.8rem',
                 fontWeight: 700,
                 color: '#1F2937',
-                marginBottom: '6px',
-                fontFamily: 'Inter, system-ui, sans-serif'
+                marginBottom: '3px',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                lineHeight: 1.3
               }}>
-                Nous utilisons des cookies
+                Cookies
               </h3>
               <p style={{
-                fontSize: '0.85rem',
+                fontSize: '0.75rem',
                 color: '#6B7280',
-                lineHeight: 1.5,
+                lineHeight: 1.3,
                 margin: 0,
                 fontFamily: 'Inter, system-ui, sans-serif'
               }}>
-                Nous utilisons des cookies essentiels pour le fonctionnement du site (authentification, paiements) et améliorer votre expérience.{' '}
+                Cookies essentiels pour le site.{' '}
                 <a 
                   href="/privacy" 
                   style={{ 
@@ -121,20 +122,20 @@ export default function CookieBanner() {
         {/* Boutons */}
         <div style={{
           display: 'flex',
-          gap: '10px',
-          flexWrap: 'wrap',
+          gap: '8px',
+          flexWrap: 'nowrap',
           alignItems: 'center'
         }}>
           <button
             onClick={handleReject}
             style={{
-              padding: '10px 20px',
-              fontSize: '0.85rem',
+              padding: '8px 14px',
+              fontSize: '0.75rem',
               fontWeight: 600,
               color: '#6B7280',
               background: 'transparent',
-              border: '2px solid #E5E7EB',
-              borderRadius: '10px',
+              border: '1.5px solid #E5E7EB',
+              borderRadius: '8px',
               cursor: 'pointer',
               transition: 'all 0.2s',
               fontFamily: 'Inter, system-ui, sans-serif',
@@ -155,26 +156,26 @@ export default function CookieBanner() {
           <button
             onClick={handleAccept}
             style={{
-              padding: '10px 24px',
-              fontSize: '0.85rem',
+              padding: '8px 16px',
+              fontSize: '0.75rem',
               fontWeight: 700,
               color: 'white',
               background: 'linear-gradient(135deg, #4ECDC4 0%, #44B5AC 100%)',
               border: 'none',
-              borderRadius: '10px',
+              borderRadius: '8px',
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(78, 205, 196, 0.3)',
+              boxShadow: '0 2px 8px rgba(78, 205, 196, 0.3)',
               transition: 'all 0.2s',
               fontFamily: 'Inter, system-ui, sans-serif',
               whiteSpace: 'nowrap'
             }}
             onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 20px rgba(78, 205, 196, 0.4)';
+              e.target.style.transform = 'translateY(-1px)';
+              e.target.style.boxShadow = '0 4px 12px rgba(78, 205, 196, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 12px rgba(78, 205, 196, 0.3)';
+              e.target.style.boxShadow = '0 2px 8px rgba(78, 205, 196, 0.3)';
             }}
           >
             Accepter
