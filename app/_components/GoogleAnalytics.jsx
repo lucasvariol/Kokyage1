@@ -7,7 +7,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 const GA_MEASUREMENT_ID = 'G-Z8TLYM6J40';
@@ -25,7 +25,7 @@ function hasUserConsent() {
  * Initialise Google Analytics
  * Charge le script gtag.js et configure GA4
  */
-export function GoogleAnalytics() {
+function GoogleAnalyticsInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isEnabled, setIsEnabled] = useState(false);
@@ -82,6 +82,17 @@ export function GoogleAnalytics() {
   }, [pathname, searchParams, isEnabled]);
 
   return null;
+}
+
+/**
+ * Wrapper avec Suspense pour éviter les erreurs de pré-rendu
+ */
+export function GoogleAnalytics() {
+  return (
+    <Suspense fallback={null}>
+      <GoogleAnalyticsInner />
+    </Suspense>
+  );
 }
 
 /**
