@@ -1,9 +1,9 @@
 ---
 title: "Comment sous-louer son logement légalement en 2025 ?"
-description: "Guide complet pour sous-louer votre appartement ou maison en toute légalité : démarches, lois Alur et ELAN, sanctions, fiscalité et conseils pratiques."
+description: "Informations pratiques pour sous-louer votre appartement ou maison : démarches, lois Alur et ELAN, sanctions, fiscalité et conseils pratiques."
 date: "2025-01-15"
 author: "Kokyage"
-category: "Guide juridique"
+category: "Informations pratiques"
 keywords: ["sous-location", "loi alur", "sous-louer légalement", "accord propriétaire", "location courte durée", "airbnb légal"]
 image: "/images/blog/sous-location-legale.jpg"
 ---

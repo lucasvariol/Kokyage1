@@ -57,9 +57,9 @@ Texte avec **gras**, *italique*, [liens](/page).
 
 ## 🎨 Catégories disponibles
 
-- Guide juridique
+- Informations pratiques
 - Fiscalité
-- Conseils pratiques
+- Astuces location
 - Actualités
 - Témoignages
 
