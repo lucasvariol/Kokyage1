@@ -309,9 +309,6 @@ export default function Header({ activeTab, setActiveTab }) {
                 <Link href="/fonctionnement" className="desktop-button" style={secondaryButtonStyle}>
                   Comment ça marche
                 </Link>
-                <Link href="/blog" className="desktop-button" style={secondaryButtonStyle}>
-                  Blog
-                </Link>
                 <Link href="/ajout-logement" className="desktop-button" style={{
                   background: 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
                   color: 'white',
@@ -495,23 +492,6 @@ export default function Header({ activeTab, setActiveTab }) {
                   }}>
                     Proposer un logement
                   </Link>
-                  
-                  <Link href="/blog" style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#1F2937',
-                    background: 'rgba(96,162,157,0.12)',
-                    border: '1px solid rgba(96,162,157,0.25)',
-                    padding: '14px 20px',
-                    borderRadius: '12px',
-                    marginBottom: '12px',
-                    fontWeight: '600',
-                    fontSize: '14px',
-                    textDecoration: 'none'
-                  }}>
-                    📚 Blog
-                  </Link>
 
                   <Link href="/fonctionnement" style={{
                     display: 'flex',
@@ -649,23 +629,6 @@ export default function Header({ activeTab, setActiveTab }) {
                   boxShadow: '0 4px 12px rgba(59,130,246,0.25)'
                 }}>
                   🔍 Rechercher un logement
-                </Link>
-                
-                <Link href="/blog" style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#1F2937',
-                  background: 'rgba(96,162,157,0.12)',
-                  border: '1px solid rgba(96,162,157,0.25)',
-                  padding: '14px 20px',
-                  borderRadius: '12px',
-                  marginBottom: '12px',
-                  fontWeight: '600',
-                  fontSize: '14px',
-                  textDecoration: 'none'
-                }}>
-                  📚 Blog
                 </Link>
 
                 <Link href="/ajout-logement" style={{
