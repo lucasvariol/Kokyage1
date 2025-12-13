@@ -491,6 +491,92 @@ export default function ReservationDetailPage() {
                 <span>{formatEUR(reservation.total_price)}</span>
               </div>
             </div>
+
+            {/* Bouton télécharger facture */}
+            {reservation.payment_intent_id && (
+              <div style={{ marginTop: 16 }}>
+                <button
+                  onClick={async () => {
+                    setSendingInvoice(true);
+                    try {
+                      const response = await fetch('/api/invoices/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          paymentIntentId: reservation.payment_intent_id,
+                          reservationId: reservation.id,
+                          reservation: {
+                            id: reservation.id,
+                            base_price: reservation.base_price,
+                            tax_price: reservation.tax_price,
+                            total_price: reservation.total_price,
+                            nights: reservation.nights,
+                            date_arrivee: reservation.date_arrivee,
+                            date_depart: reservation.date_depart,
+                            start_date: reservation.start_date,
+                            end_date: reservation.end_date,
+                            listing_id: reservation.listing_id,
+                            listing_price_per_night: reservation.listing_price_per_night,
+                          },
+                          listing: {
+                            id: reservation.listing_id,
+                            price_per_night: reservation.listing_price_per_night,
+                          }
+                        })
+                      });
+
+                      const data = await response.json();
+                      
+                      if (data.success && data.invoice?.invoice_pdf) {
+                        // Ouvrir le PDF dans un nouvel onglet
+                        window.open(data.invoice.invoice_pdf, '_blank');
+                      } else {
+                        alert('Impossible de générer la facture');
+                      }
+                    } catch (error) {
+                      console.error('Erreur téléchargement facture:', error);
+                      alert('Erreur lors du téléchargement de la facture');
+                    } finally {
+                      setSendingInvoice(false);
+                    }
+                  }}
+                  disabled={sendingInvoice}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: sendingInvoice ? '#94a3b8' : '#111827',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 8,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: sendingInvoice ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!sendingInvoice) {
+                      e.target.style.background = '#1f2937';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!sendingInvoice) {
+                      e.target.style.background = '#111827';
+                    }
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  {sendingInvoice ? 'Génération en cours...' : 'Télécharger la facture'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
