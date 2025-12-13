@@ -70,10 +70,12 @@ export async function POST(request) {
     const pricePerNight = Number(listing?.price_per_night || reservation?.listing_price_per_night || 0);
     const hebergementAmount = Math.round(pricePerNight * nights * 100);
     
-    // Frais de plateforme TTC
+    // Frais de plateforme TTC (déjà inclus dans base_price)
+    // IMPORTANT: on considère ce montant comme TTC pour éviter que Stripe rajoute la TVA par-dessus.
     const fraisTTC = baseAmount - hebergementAmount;
     
-    // Créer/récupérer le taux de TVA français
+    // Créer/récupérer le taux de TVA français (INCLUSIF)
+    // Objectif: afficher la TVA sur la ligne "Frais" sans augmenter le total (le prix payé inclut déjà la TVA).
     const VAT_RATE = Number(process.env.VAT_RATE || 20); // Taux de TVA en %
     let taxRate;
     try {
@@ -82,17 +84,18 @@ export async function POST(request) {
       taxRate = existingTaxRates.data.find(rate => 
         rate.percentage === VAT_RATE && 
         rate.active && 
-        rate.jurisdiction === 'FR'
+        rate.jurisdiction === 'FR' &&
+        rate.inclusive === true
       );
       
       // Si pas trouvé, créer un nouveau tax_rate
       if (!taxRate) {
         taxRate = await stripe.taxRates.create({
           display_name: 'TVA',
-          description: `TVA française ${VAT_RATE}%`,
+          description: `TVA française ${VAT_RATE}% (incluse)`,
           jurisdiction: 'FR',
           percentage: VAT_RATE,
-          inclusive: true, // TVA incluse dans le prix (pas en sus)
+          inclusive: true, // TVA incluse dans le prix
         });
         console.log('✅ Tax rate créé:', taxRate.id);
       } else {
@@ -102,12 +105,15 @@ export async function POST(request) {
       console.error('❌ Erreur création tax_rate:', taxError);
     }
     
-    // Les frais sont TTC, on passe le montant TTC directement avec taxe inclusive
+    // Les frais sont TTC, on calcule le HT pour logs/contrôles
+    const fraisHT = Math.round(fraisTTC / (1 + VAT_RATE / 100));
+
     console.log('📊 Calcul facture:', {
       nights,
       pricePerNight,
       hebergementAmount,
       fraisTTC,
+      fraisHT,
       taxAmount,
       totalAmount,
       taxRateId: taxRate?.id
@@ -119,6 +125,9 @@ export async function POST(request) {
       collection_method: 'send_invoice',
       days_until_due: 0,
       auto_advance: false,
+      // On ne veut PAS que Stripe applique des taxes par défaut à toutes les lignes
+      automatic_tax: { enabled: false },
+      default_tax_rates: [],
       description: `Réservation #${effectiveReservationId.slice(0, 8).toUpperCase()} - Séjour Kokyage du ${reservation?.date_arrivee || reservation?.start_date || ''} au ${reservation?.date_depart || reservation?.end_date || ''}`.trim(),
       footer: process.env.STRIPE_INVOICE_FOOTER || 'KOKYAGE - SAS au capital de 10 000€ - SIRET: XXX XXX XXX - RCS Paris - TVA: FRXX XXX XXX XXX',
       rendering_options: {
@@ -144,7 +153,8 @@ export async function POST(request) {
       }));
     }
     
-    // Ligne 2: Frais de plateforme TTC avec TVA inclusive
+    // Ligne 2: Frais de plateforme (TTC) avec TVA INCLUSE appliquée uniquement sur cette ligne
+    // (Stripe extrait la TVA mais ne modifie pas le total)
     if (fraisTTC > 0 && taxRate) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
@@ -152,7 +162,7 @@ export async function POST(request) {
         amount: fraisTTC,
         currency,
         description: 'Frais de plateforme Kokyage',
-        tax_rates: [taxRate.id], // TVA déjà incluse dans le montant
+        tax_rates: [taxRate.id], // TVA affichée sur cette ligne uniquement (incluse)
       }));
     }
 
