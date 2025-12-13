@@ -44,7 +44,9 @@ export async function GET(request) {
           id_proprietaire
         )
       `)
-      .eq('status', 'confirmed')
+      // Traiter comme paiement classique si la réservation est confirmée OU marquée "canceled/cancelled"
+      // (cas: statut annulé mais validation hôte OK => on alloue/paye les parts normalement)
+      .in('status', ['confirmed', 'canceled', 'cancelled'])
       .eq('payment_status', 'paid')
       .eq('host_validation_ok', true)
       .lt('date_depart', new Date().toISOString().split('T')[0])
