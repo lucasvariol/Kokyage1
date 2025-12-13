@@ -69,12 +69,40 @@ export async function POST(request) {
     const nights = Number(reservation?.nights || 1);
     const pricePerNight = Number(listing?.price_per_night || reservation?.listing_price_per_night || 0);
     const hebergementAmount = Math.round(pricePerNight * nights * 100);
-    const fraisTTC = baseAmount - hebergementAmount; // Frais TTC = base_price - hébergement
     
-    // Les frais de plateforme sont TTC, on extrait la TVA (20%)
-    const TVA_RATE = 0.20;
-    const fraisHT = Math.round(fraisTTC / (1 + TVA_RATE));
-    const fraisTVA = fraisTTC - fraisHT;
+    // Frais de plateforme TTC (17%)
+    const fraisTTC = baseAmount - hebergementAmount;
+    
+    // Créer/récupérer le taux de TVA français 20%
+    let taxRate;
+    try {
+      // Chercher si le tax_rate existe déjà
+      const existingTaxRates = await stripe.taxRates.list({ limit: 10 });
+      taxRate = existingTaxRates.data.find(rate => 
+        rate.percentage === 20 && 
+        rate.active && 
+        rate.jurisdiction === 'FR'
+      );
+      
+      // Si pas trouvé, créer un nouveau tax_rate
+      if (!taxRate) {
+        taxRate = await stripe.taxRates.create({
+          display_name: 'TVA',
+          description: 'TVA française',
+          jurisdiction: 'FR',
+          percentage: 20,
+          inclusive: false, // TVA en sus (pas incluse dans le prix)
+        });
+        console.log('✅ Tax rate créé:', taxRate.id);
+      } else {
+        console.log('✅ Tax rate existant utilisé:', taxRate.id);
+      }
+    } catch (taxError) {
+      console.error('❌ Erreur création tax_rate:', taxError);
+    }
+    
+    // Les frais sont TTC, on calcule le HT pour l'affichage
+    const fraisHT = Math.round(fraisTTC / 1.20);
 
     console.log('📊 Calcul facture:', {
       nights,
@@ -82,9 +110,9 @@ export async function POST(request) {
       hebergementAmount,
       fraisTTC,
       fraisHT,
-      fraisTVA,
       taxAmount,
-      totalAmount
+      totalAmount,
+      taxRateId: taxRate?.id
     });
 
     // Crée une facture en mode "send_invoice" pour envoi par email
@@ -107,7 +135,7 @@ export async function POST(request) {
 
     const lineItemPromises = [];
     
-    // Ligne 1: Hébergement
+    // Ligne 1: Hébergement (pas de TVA sur l'hébergement meublé)
     if (hebergementAmount > 0) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
@@ -118,29 +146,19 @@ export async function POST(request) {
       }));
     }
     
-    // Ligne 2: Frais de plateforme HT
-    if (fraisHT > 0) {
+    // Ligne 2: Frais de plateforme HT + TVA automatique via tax_rate
+    if (fraisHT > 0 && taxRate) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
         invoice: invoice.id,
         amount: fraisHT,
         currency,
-        description: 'Frais de plateforme Kokyage (HT)',
-      }));
-    }
-    
-    // Ligne 3: TVA sur frais de plateforme
-    if (fraisTVA > 0) {
-      lineItemPromises.push(stripe.invoiceItems.create({
-        customer: customerId,
-        invoice: invoice.id,
-        amount: fraisTVA,
-        currency,
-        description: 'TVA sur frais de plateforme (20%)',
+        description: 'Frais de plateforme Kokyage',
+        tax_rates: [taxRate.id], // Stripe calcule automatiquement la TVA
       }));
     }
 
-    // Ligne 4: Taxes de séjour
+    // Ligne 3: Taxe de séjour
     if (taxAmount > 0) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
