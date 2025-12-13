@@ -67,7 +67,7 @@ export async function POST(request) {
     // Vérifier la réservation avec toutes les infos nécessaires
     const { data: reservation, error: checkError } = await supabaseAdmin
       .from('reservations')
-      .select('id, user_id, guest_id, host_id, listing_id, status, date_arrivee, date_depart, guests, nights, total_price, transaction_id, caution_intent_id')
+      .select('id, user_id, guest_id, host_id, listing_id, status, date_arrivee, date_depart, guests, nights, total_price, base_price, tax_price, transaction_id, caution_intent_id, refund_50_percent_date, refund_0_percent_date, proprietor_share, main_tenant_share, platform_share')
       .eq('id', reservationId)
       .single();
 
@@ -95,11 +95,25 @@ export async function POST(request) {
       );
     }
 
-    // Annuler la réservation
+    // Calculer les nouvelles parts en fonction de ce qui n'est pas remboursé
+    const keptRate = 1 - refundRate; // Ce qui reste après remboursement
+    const newProprietorShare = (reservation.proprietor_share || 0) * keptRate;
+    const newMainTenantShare = (reservation.main_tenant_share || 0) * keptRate;
+    const newPlatformShare = (reservation.platform_share || 0) * keptRate;
+
+    console.log(`💼 Répartition après annulation (${keptRate * 100}% conservé):`);
+    console.log(`   - Propriétaire: ${newProprietorShare.toFixed(2)}€`);
+    console.log(`   - Locataire principal: ${newMainTenantShare.toFixed(2)}€`);
+    console.log(`   - Plateforme: ${newPlatformShare.toFixed(2)}€`);
+
+    // Annuler la réservation et mettre à jour les parts
     const { error: updateError } = await supabaseAdmin
       .from('reservations')
       .update({ 
-        status: 'cancelled'
+        status: 'cancelled',
+        proprietor_share: newProprietorShare,
+        main_tenant_share: newMainTenantShare,
+        platform_share: newPlatformShare
       })
       .eq('id', reservationId);
 
@@ -132,7 +146,41 @@ export async function POST(request) {
       console.error('Erreur déblocage dates:', dateError);
     }
 
-    // Remboursement Stripe intégral
+    // Calculer le taux de remboursement en fonction de la date d'annulation
+    const now = new Date();
+    let refundRate = 1.0; // Par défaut 100%
+    
+    if (reservation.refund_50_percent_date && reservation.refund_0_percent_date) {
+      const refund50Date = new Date(reservation.refund_50_percent_date);
+      const refund0Date = new Date(reservation.refund_0_percent_date);
+      
+      if (now >= refund0Date) {
+        refundRate = 0; // Après la date limite → 0%
+      } else if (now >= refund50Date) {
+        refundRate = 0.5; // Entre les deux dates → 50%
+      } else {
+        refundRate = 1.0; // Avant la première date → 100%
+      }
+    } else {
+      // Fallback si les dates ne sont pas définies : utiliser 6 et 2 jours avant arrivée
+      const arrivalDate = new Date(reservation.date_arrivee);
+      const sixDaysBefore = new Date(arrivalDate);
+      sixDaysBefore.setDate(arrivalDate.getDate() - 6);
+      const twoDaysBefore = new Date(arrivalDate);
+      twoDaysBefore.setDate(arrivalDate.getDate() - 2);
+      
+      if (now >= twoDaysBefore) {
+        refundRate = 0;
+      } else if (now >= sixDaysBefore) {
+        refundRate = 0.5;
+      } else {
+        refundRate = 1.0;
+      }
+    }
+
+    console.log(`📊 Taux de remboursement calculé: ${refundRate * 100}%`);
+
+    // Remboursement Stripe selon le taux calculé
     let refundAmount = 0;
     try {
       if (reservation.transaction_id && String(reservation.transaction_id).startsWith('pi_')) {
@@ -146,13 +194,20 @@ export async function POST(request) {
 
             if (alreadyRefunded) {
               console.log('ℹ️ Paiement déjà remboursé.');
-            } else {
+            } else if (refundRate > 0) {
+              // Calculer le montant à rembourser (en centimes)
+              const totalAmountCents = Math.round(reservation.total_price * 100);
+              const refundAmountCents = Math.round(totalAmountCents * refundRate);
+              
               const refund = await stripe.refunds.create({
                 payment_intent: reservation.transaction_id,
+                amount: refundAmountCents,
                 reason: 'requested_by_customer'
               });
               refundAmount = (refund.amount || 0) / 100;
-              console.log('💰 Remboursement intégral créé:', refund.id, refundAmount, 'EUR');
+              console.log(`💰 Remboursement ${refundRate * 100}% créé:`, refund.id, refundAmount, 'EUR');
+            } else {
+              console.log('ℹ️ Annulation tardive : aucun remboursement (0%).');
             }
           } else {
             console.log('ℹ️ PaymentIntent non débité, remboursement non nécessaire.');

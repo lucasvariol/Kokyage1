@@ -442,6 +442,16 @@ export default function ReservationDetailPage() {
           user?.id === reservation.guest_id ||
           user?.id === reservation.host_id
         ) && (() => {
+          // Vérifier si le séjour a déjà commencé
+          const now = new Date();
+          const arrivalDate = new Date(reservation.date_arrivee);
+          const hasStarted = now >= arrivalDate;
+          
+          // Ne pas afficher le bouton si le séjour a commencé
+          if (hasStarted) {
+            return null;
+          }
+          
           const refundInfo = getRefundInfo();
           
           return (
