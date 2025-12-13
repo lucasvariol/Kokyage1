@@ -50,7 +50,7 @@ export async function POST(request) {
     if (userId && userEmail) {
       // Recherche d'un customer existant par email
       const existingCustomers = await stripe.customers.list({ email: userEmail, limit: 1 });
-      if (existingCustomers.data.length > 0) {
+      if (existingCustomers?.data && existingCustomers.data.length > 0) {
         customer = existingCustomers.data[0];
       } else {
         customer = await stripe.customers.create({
