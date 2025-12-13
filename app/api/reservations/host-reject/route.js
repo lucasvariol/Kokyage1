@@ -92,48 +92,9 @@ export async function POST(request) {
       console.error('Erreur déblocage dates:', dateError);
     }
 
-    // Remboursement Stripe (idempotent et tolérant)
-    let refundAmount = 0;
+    // IMPORTANT: les remboursements Stripe sont gérés uniquement par le CRON.
+    // Ici, on libère uniquement la caution si elle existe (autorisation), sans rembourser le paiement principal.
     try {
-      // Ne tenter un remboursement que si l'ID ressemble à un PaymentIntent Stripe réel
-      if (reservation.transaction_id && String(reservation.transaction_id).startsWith('pi_')) {
-        try {
-          const paymentIntent = await stripe.paymentIntents.retrieve(reservation.transaction_id);
-
-          if (paymentIntent.status === 'succeeded') {
-            // Vérifier s'il y a déjà eu un remboursement
-            const existingRefunds = await stripe.refunds.list({ payment_intent: reservation.transaction_id, limit: 1 });
-            const alreadyRefunded = existingRefunds?.data?.some(r => r.status !== 'failed' && r.status !== 'canceled');
-
-            if (alreadyRefunded) {
-              console.log('ℹ️ Paiement déjà remboursé. Aucun nouvel avoir créé.');
-            } else {
-              const refund = await stripe.refunds.create({
-                payment_intent: reservation.transaction_id,
-                reason: 'requested_by_customer'
-              });
-              refundAmount = (refund.amount || 0) / 100;
-              console.log('💰 Remboursement créé:', refund.id, refundAmount, 'EUR');
-            }
-          } else {
-            console.log('ℹ️ PaymentIntent non débité (status:', paymentIntent.status, '), remboursement non nécessaire.');
-          }
-        } catch (stripeErr) {
-          // Gérer proprement les cas idempotents ou tests
-          const code = stripeErr?.code || stripeErr?.raw?.code;
-          if (code === 'charge_already_refunded') {
-            console.warn('⚠️ Paiement déjà remboursé (Stripe). On continue.');
-          } else if (code === 'resource_missing') {
-            console.warn('⚠️ PaymentIntent introuvable. Probablement un ID de test. On continue.');
-          } else {
-            console.warn('⚠️ Erreur Stripe lors du remboursement:', stripeErr.message);
-          }
-        }
-      } else if (reservation.transaction_id) {
-        console.log('ℹ️ Remboursement ignoré: transaction_id non Stripe ou test ->', reservation.transaction_id);
-      }
-
-      // Annuler l'autorisation de caution si elle existe (et ressemble à un PI)
       if (reservation.caution_intent_id && String(reservation.caution_intent_id).startsWith('pi_')) {
         try {
           await stripe.paymentIntents.cancel(reservation.caution_intent_id);
@@ -145,8 +106,7 @@ export async function POST(request) {
         console.log('ℹ️ Annulation caution ignorée: caution_intent_id non Stripe ou test ->', reservation.caution_intent_id);
       }
     } catch (stripeError) {
-      // Ne bloque pas l'annulation si le remboursement échoue: on journalise et on continue
-      console.warn('⚠️ Remboursement Stripe non abouti, mais réservation annulée:', stripeError?.message || stripeError);
+      console.warn('⚠️ Annulation caution non aboutie:', stripeError?.message || stripeError);
     }
 
     // Envoyer email au voyageur

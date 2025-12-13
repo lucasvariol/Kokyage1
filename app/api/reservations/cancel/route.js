@@ -206,57 +206,9 @@ export async function POST(request) {
       console.error('Erreur déblocage dates:', dateError);
     }
 
-    // Remboursement Stripe selon le taux calculé
-    let refundAmount = 0;
-    let refundedAt = null;
+    // IMPORTANT: les remboursements Stripe sont gérés uniquement par le CRON.
+    // Ici, on libère uniquement la caution si elle existe (autorisation), sans rembourser le paiement principal.
     try {
-      if (reservation.transaction_id && String(reservation.transaction_id).startsWith('pi_')) {
-        try {
-          const paymentIntent = await stripe.paymentIntents.retrieve(reservation.transaction_id);
-
-          if (paymentIntent.status === 'succeeded') {
-            // Vérifier s'il y a déjà eu un remboursement
-            const existingRefunds = await stripe.refunds.list({ payment_intent: reservation.transaction_id, limit: 10 });
-            const effectiveRefunds = (existingRefunds?.data || []).filter((r) => r.status !== 'failed' && r.status !== 'canceled');
-            const alreadyRefunded = effectiveRefunds.length > 0;
-
-            if (alreadyRefunded) {
-              const latest = effectiveRefunds.sort((a, b) => (b.created || 0) - (a.created || 0))[0];
-              refundAmount = (latest?.amount || 0) / 100;
-              refundedAt = latest?.created ? new Date(latest.created * 1000).toISOString() : new Date().toISOString();
-              console.log('ℹ️ Paiement déjà remboursé.');
-            } else if (refundRate > 0) {
-              // Calculer le montant à rembourser (en centimes)
-              const totalAmountCents = Math.round(reservation.total_price * 100);
-              const refundAmountCents = Math.round(totalAmountCents * refundRate);
-              
-              const refund = await stripe.refunds.create({
-                payment_intent: reservation.transaction_id,
-                amount: refundAmountCents,
-                reason: 'requested_by_customer'
-              });
-              refundAmount = (refund.amount || 0) / 100;
-              refundedAt = new Date().toISOString();
-              console.log(`💰 Remboursement ${refundRate * 100}% créé:`, refund.id, refundAmount, 'EUR');
-            } else {
-              console.log('ℹ️ Annulation tardive : aucun remboursement (0%).');
-            }
-          } else {
-            console.log('ℹ️ PaymentIntent non débité, remboursement non nécessaire.');
-          }
-        } catch (stripeErr) {
-          const code = stripeErr?.code || stripeErr?.raw?.code;
-          if (code === 'charge_already_refunded') {
-            console.warn('⚠️ Paiement déjà remboursé.');
-          } else if (code === 'resource_missing') {
-            console.warn('⚠️ PaymentIntent introuvable.');
-          } else {
-            console.warn('⚠️ Erreur Stripe:', stripeErr.message);
-          }
-        }
-      }
-
-      // Annuler l'autorisation de caution si elle existe
       if (reservation.caution_intent_id && String(reservation.caution_intent_id).startsWith('pi_')) {
         try {
           await stripe.paymentIntents.cancel(reservation.caution_intent_id);
@@ -266,22 +218,7 @@ export async function POST(request) {
         }
       }
     } catch (stripeError) {
-      console.warn('⚠️ Remboursement non abouti:', stripeError?.message || stripeError);
-    }
-
-    // Enregistrer le log de remboursement (si applicable)
-    if (refundedAt) {
-      try {
-        await supabaseAdmin
-          .from('reservations')
-          .update({
-            refund_amount: refundAmount,
-            refunded_at: refundedAt,
-          })
-          .eq('id', reservationId);
-      } catch (refundLogError) {
-        console.warn('⚠️ Impossible de loguer refund_amount/refunded_at:', refundLogError?.message || refundLogError);
-      }
+      console.warn('⚠️ Annulation caution non aboutie:', stripeError?.message || stripeError);
     }
 
     // Envoyer email à l'hôte
@@ -371,8 +308,7 @@ export async function POST(request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Réservation annulée avec succès. Vous avez été remboursé intégralement.',
-      refundAmount
+      message: 'Réservation annulée avec succès. Le remboursement sera traité automatiquement.'
     });
 
   } catch (error) {
