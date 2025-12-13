@@ -1346,11 +1346,12 @@ export default function Page({ params: propsParams }) {
         setImages(imgs);
 
         // Récupérer réservations pour ce logement spécifique
-        const { data: resData, error: resError } = await supabase
+        const listingId = parseInt(params.id, 10);
+        const { data: resData, error: resError } = !isNaN(listingId) ? await supabase
           .from('reservations')
-          .select('id, user:users(full_name), start_date, end_date, status')
-          .eq('listing_id', parseInt(params.id, 10))
-          .order('start_date', { ascending: false });
+          .select('id, user_id, start_date, end_date, status')
+          .eq('listing_id', listingId)
+          .order('start_date', { ascending: false }) : { data: null, error: { message: 'Invalid listing ID' } };
         
         if (resError) {
           console.error('Error fetching reservations:', resError);

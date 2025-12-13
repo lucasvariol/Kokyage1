@@ -102,7 +102,7 @@ export default function middleware(request) {
   const cspDirectives = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://maps.googleapis.com https://*.wemap.com https://www.googletagmanager.com https://www.google-analytics.com",
-    "connect-src 'self' https://*.supabase.co https://api.openai.com https://api.stripe.com https://api-adresse.data.gouv.fr https://*.wemap.com wss://*.supabase.co https://www.google-analytics.com https://analytics.google.com",
+    "connect-src 'self' https://*.supabase.co https://api.openai.com https://api.stripe.com https://api-adresse.data.gouv.fr https://*.wemap.com wss://*.supabase.co https://*.google-analytics.com https://analytics.google.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data: https://fonts.gstatic.com",
