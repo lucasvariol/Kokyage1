@@ -493,7 +493,7 @@ export default function ReservationDetailPage() {
             </div>
 
             {/* Bouton télécharger facture */}
-            {reservation.payment_intent_id && (
+            {reservation.transaction_id && (
               <div style={{ marginTop: 16 }}>
                 <button
                   onClick={async () => {
@@ -503,7 +503,7 @@ export default function ReservationDetailPage() {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                          paymentIntentId: reservation.payment_intent_id,
+                          paymentIntentId: reservation.transaction_id,
                           reservationId: reservation.id,
                           reservation: {
                             id: reservation.id,
