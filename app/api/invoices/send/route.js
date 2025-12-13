@@ -73,13 +73,14 @@ export async function POST(request) {
     // Frais de plateforme TTC (17%)
     const fraisTTC = baseAmount - hebergementAmount;
     
-    // Créer/récupérer le taux de TVA français 20%
+    // Créer/récupérer le taux de TVA français
+    const VAT_RATE = Number(process.env.VAT_RATE || 20); // Taux de TVA en %
     let taxRate;
     try {
       // Chercher si le tax_rate existe déjà
       const existingTaxRates = await stripe.taxRates.list({ limit: 10 });
       taxRate = existingTaxRates.data.find(rate => 
-        rate.percentage === 20 && 
+        rate.percentage === VAT_RATE && 
         rate.active && 
         rate.jurisdiction === 'FR'
       );
@@ -88,9 +89,9 @@ export async function POST(request) {
       if (!taxRate) {
         taxRate = await stripe.taxRates.create({
           display_name: 'TVA',
-          description: 'TVA française',
+          description: `TVA française ${VAT_RATE}%`,
           jurisdiction: 'FR',
-          percentage: 20,
+          percentage: VAT_RATE,
           inclusive: false, // TVA en sus (pas incluse dans le prix)
         });
         console.log('✅ Tax rate créé:', taxRate.id);
@@ -102,7 +103,7 @@ export async function POST(request) {
     }
     
     // Les frais sont TTC, on calcule le HT pour l'affichage
-    const fraisHT = Math.round(fraisTTC / 1.20);
+    const fraisHT = Math.round(fraisTTC / (1 + VAT_RATE / 100));
 
     console.log('📊 Calcul facture:', {
       nights,
