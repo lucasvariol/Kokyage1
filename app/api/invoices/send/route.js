@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2023-10-16',
@@ -32,6 +33,42 @@ export async function POST(request) {
 
     if (!customerId) {
       return NextResponse.json({ error: 'Impossible de déterminer le customer Stripe' }, { status: 400 });
+    }
+
+    // Met à jour le nom du customer Stripe (affiché dans "Facturer à") avec prénom + nom
+    // Source: profils Supabase liés à la réservation
+    try {
+      const customer = await stripe.customers.retrieve(customerId);
+      const currentName = typeof customer !== 'string' ? (customer.name || '') : '';
+
+      const { data: reservationRow } = await supabaseAdmin
+        .from('reservations')
+        .select('guest_id, user_id')
+        .eq('id', effectiveReservationId)
+        .maybeSingle();
+
+      const profileId = reservationRow?.guest_id || reservationRow?.user_id;
+      if (profileId) {
+        const { data: profile } = await supabaseAdmin
+          .from('profiles')
+          .select('prenom, nom, full_name, name')
+          .eq('id', profileId)
+          .maybeSingle();
+
+        const fullName = (
+          profile?.full_name ||
+          `${profile?.prenom || ''} ${profile?.nom || ''}`.trim() ||
+          profile?.name ||
+          ''
+        ).trim();
+
+        const shouldUpdateName = Boolean(fullName) && (currentName.trim() === '' || currentName.trim().toLowerCase() === 'tester le client');
+        if (shouldUpdateName) {
+          await stripe.customers.update(customerId, { name: fullName });
+        }
+      }
+    } catch (customerNameError) {
+      console.warn('⚠️ Impossible de mettre à jour le nom du customer Stripe:', customerNameError?.message || customerNameError);
     }
 
     // Idempotence basique : ne crée pas une nouvelle facture si elle existe déjà
