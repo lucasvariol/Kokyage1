@@ -3242,12 +3242,15 @@ export default function Page({ params: propsParams }) {
                               };
                               
                               // Construire les paramètres pour la page de confirmation
-                              const listingIdParam = (item?.id ?? params?.id ?? '').toString();
-                              if (!listingIdParam) {
+                              // Utiliser item.id en priorité (déjà chargé), sinon fallback sur params.id
+                              const listingIdParam = String(item?.id || params?.id || '');
+                              console.log('listingIdParam pour réservation:', listingIdParam, { item_id: item?.id, params_id: params?.id });
+                              if (!listingIdParam || listingIdParam === '') {
                                 console.warn('Missing listingId for confirmer-et-payer');
+                                alert('Erreur: ID du logement manquant');
                                 return;
                               }
-                              const urlParams = new URLSearchParams({
+                              const queryParams = new URLSearchParams({
                                 listingId: listingIdParam,
                                 startDate: formatLocalDate(range.from),
                                 endDate: formatLocalDate(range.to),
@@ -3257,7 +3260,7 @@ export default function Page({ params: propsParams }) {
                                 taxPrice: Math.round(taxTotal * 100), // Centimes
                                 totalPrice: Math.round(total * 100) // Centimes
                               });
-                              router.push(`/confirmer-et-payer?${urlParams.toString()}`);
+                              router.push(`/confirmer-et-payer?${queryParams.toString()}`);
                             }
                           }}
                           style={{
