@@ -494,6 +494,12 @@ function ConfirmerEtPayerContent() {
       }
 
       // 2. Si le paiement est réussi, créer la réservation et bloquer les dates
+      
+      // Calculer les dates de remboursement
+      const arrivalDate = parseLocalDate(searchParams.get('startDate') || startDate);
+      const refund50Date = new Date(arrivalDate.getTime() - (6 * 24 * 60 * 60 * 1000)); // 6 jours avant
+      const refund0Date = new Date(arrivalDate.getTime() - (2 * 24 * 60 * 60 * 1000));  // 2 jours avant
+      
       const reservationResponse = await fetch('/api/reservations/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -508,7 +514,9 @@ function ConfirmerEtPayerContent() {
           totalPrice: calculatedPrices.totalPrice,
           transactionId: paymentResult.transaction.transactionId,
           cautionIntentId: paymentResult?.cautionIntent?.id || null,
-          paymentMethodId: paymentResult?.payment_method_id || null
+          paymentMethodId: paymentResult?.payment_method_id || null,
+          refund50PercentDate: refund50Date.toISOString().split('T')[0],
+          refund0PercentDate: refund0Date.toISOString().split('T')[0]
         })
       });
 

@@ -41,7 +41,9 @@ export async function POST(request) {
       totalPrice,
       transactionId,
       cautionIntentId,
-      paymentMethodId
+      paymentMethodId,
+      refund50PercentDate,
+      refund0PercentDate
     } = validation.data;
 
     logger.api('POST', '/api/reservations/create', { listingId, guestId, totalPrice });
@@ -112,6 +114,8 @@ export async function POST(request) {
         caution_intent_id: cautionIntentId || null,
         caution_status: cautionIntentId ? 'authorized' : null,
         payment_method_id: paymentMethodId || null,
+        refund_50_percent_date: refund50PercentDate || null,
+        refund_0_percent_date: refund0PercentDate || null,
         status: 'confirmed',
         payment_status: 'paid',
         host_validation_ok: false
