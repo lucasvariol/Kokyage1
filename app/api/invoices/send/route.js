@@ -66,7 +66,12 @@ export async function POST(request) {
     const nights = Number(reservation?.nights || 1);
     const pricePerNight = Number(listing?.price_per_night || reservation?.listing_price_per_night || 0);
     const hebergementAmount = Math.round(pricePerNight * nights * 100);
-    const fraisAmount = baseAmount - hebergementAmount; // Frais = base_price - hébergement
+    const fraisTTC = baseAmount - hebergementAmount; // Frais TTC = base_price - hébergement
+    
+    // Les frais de plateforme sont TTC, on extrait la TVA (20%)
+    const TVA_RATE = 0.20;
+    const fraisHT = Math.round(fraisTTC / (1 + TVA_RATE));
+    const fraisTVA = fraisTTC - fraisHT;
 
     // Crée une facture en mode "send_invoice" pour envoi par email
     const invoice = await stripe.invoices.create({
@@ -95,14 +100,25 @@ export async function POST(request) {
       }));
     }
     
-    // Ligne 2: Frais de plateforme
-    if (fraisAmount > 0) {
+    // Ligne 2: Frais de plateforme HT
+    if (fraisHT > 0) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
         invoice: invoice.id,
-        amount: fraisAmount,
+        amount: fraisHT,
         currency,
-        description: 'Frais de plateforme Kokyage',
+        description: 'Frais de plateforme Kokyage (HT)',
+      }));
+    }
+    
+    // Ligne 3: TVA sur frais de plateforme
+    if (fraisTVA > 0) {
+      lineItemPromises.push(stripe.invoiceItems.create({
+        customer: customerId,
+        invoice: invoice.id,
+        amount: fraisTVA,
+        currency,
+        description: 'TVA sur frais de plateforme (20%)',
       }));
     }
 
