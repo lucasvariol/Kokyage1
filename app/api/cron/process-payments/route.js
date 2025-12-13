@@ -28,7 +28,10 @@ export async function GET(request) {
         proprietor_share,
         main_tenant_share,
         platform_share,
+        base_price,
+        tax_price,
         total_price,
+        transaction_id,
         caution_status,
         caution_intent_id,
         balances_allocated,
@@ -134,6 +137,63 @@ export async function GET(request) {
         const platformAmount = Number(reservation.platform_share || 0);
 
         console.log(`💰 Répartition: Propriétaire ${proprietorAmount}€, Locataire principal ${mainTenantAmount}€, Plateforme ${platformAmount}€`);
+
+        // 4b. Si la réservation est annulée, s'assurer que le voyageur est remboursé (total ou partiel)
+        // Règle: le remboursement correspond à la partie NON conservée. On l'infère via les parts réduites.
+        const statusValue = String(reservation.status || '').toLowerCase();
+        const isCanceled = statusValue === 'canceled' || statusValue === 'cancelled';
+        if (isCanceled) {
+          const transactionId = reservation.transaction_id;
+          const totalPrice = Number(reservation.total_price || 0);
+          const basePrice = Number(reservation.base_price || 0);
+          const keptBaseAmount = proprietorAmount + mainTenantAmount + platformAmount;
+
+          // Si base_price est renseigné, on déduit le taux conservé via les parts.
+          // Exemple: base_price=125.58, parts=62.79 => keptRate=0.5 => refundRate=0.5
+          let refundRate = 0;
+          if (basePrice > 0) {
+            const keptRate = Math.max(0, Math.min(1, keptBaseAmount / basePrice));
+            refundRate = Math.max(0, Math.min(1, 1 - keptRate));
+          } else {
+            // Fallback: si aucune part n'est conservée, on considère un remboursement total
+            refundRate = keptBaseAmount <= 0 ? 1 : 0;
+          }
+
+          // Si on doit rembourser quelque chose, on vérifie/émet le remboursement Stripe avant les payouts.
+          if (refundRate > 0 && totalPrice > 0 && transactionId && String(transactionId).startsWith('pi_')) {
+            console.log(`↩️ Réservation annulée #${reservation.id}: remboursement requis (taux ${(refundRate * 100).toFixed(0)}%)`);
+
+            // Idempotence: ne pas rembourser si un remboursement existe déjà
+            const existingRefunds = await stripe.refunds.list({ payment_intent: transactionId, limit: 10 });
+            const alreadyRefunded = existingRefunds?.data?.some((r) => r.status !== 'failed' && r.status !== 'canceled');
+
+            if (alreadyRefunded) {
+              console.log(`ℹ️ Remboursement déjà existant pour ${transactionId}, on continue.`);
+            } else {
+              const refundAmountCents = Math.round(totalPrice * 100 * refundRate);
+              if (refundAmountCents > 0) {
+                try {
+                  const refund = await stripe.refunds.create({
+                    payment_intent: transactionId,
+                    amount: refundAmountCents,
+                    reason: 'requested_by_customer',
+                    metadata: {
+                      reservation_id: reservation.id,
+                      cron: 'process-payments',
+                      refund_rate: String(refundRate),
+                    }
+                  });
+                  console.log(`✅ Remboursement Stripe créé: ${refund.id} (${refund.amount / 100}€)`);
+                } catch (refundErr) {
+                  console.error(`❌ Échec remboursement Stripe pour réservation #${reservation.id}:`, refundErr?.message || refundErr);
+                  // Sécurité: ne pas payer les parties si le remboursement attendu n'a pas pu être effectué.
+                  // On laisse balances_allocated à false pour réessayer au prochain cron.
+                  throw refundErr;
+                }
+              }
+            }
+          }
+        }
 
         // 5. Mettre à jour les soldes des profils
         const updates = [];
