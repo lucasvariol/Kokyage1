@@ -13,6 +13,7 @@ export default function ReservationDetailPage() {
   const [loading, setLoading] = useState(true);
   const [canceling, setCanceling] = useState(false);
   const [user, setUser] = useState(null);
+  const [showCancellationPolicy, setShowCancellationPolicy] = useState(false);
 
   // Format prix - CORRECTION : les prix sont en euros dans la DB (286.56 = 286,56€)
   const formatEUR = (amount) => {
@@ -36,6 +37,53 @@ export default function ReservationDetailPage() {
       month: 'long',
       year: 'numeric'
     });
+  };
+
+  // Fonction pour formater une date courte (pour les dates limites de remboursement)
+  const formatShortDate = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  // Calculer le taux de remboursement actuel basé sur les dates
+  const getRefundInfo = () => {
+    if (!reservation || reservation.status !== 'confirmed') {
+      return { rate: 0, label: 'Aucun remboursement', color: '#ef4444' };
+    }
+
+    const now = new Date();
+    const refund50Date = reservation.refund_50_percent_date ? new Date(reservation.refund_50_percent_date) : null;
+    const refund0Date = reservation.refund_0_percent_date ? new Date(reservation.refund_0_percent_date) : null;
+
+    // Si pas de dates définies, utiliser les valeurs par défaut (7 jours et 2 jours avant arrivée)
+    const arrivalDate = new Date(reservation.date_arrivee || reservation.start_date);
+    const defaultRefund50 = refund50Date || new Date(arrivalDate.getTime() - (6 * 24 * 60 * 60 * 1000));
+    const defaultRefund0 = refund0Date || new Date(arrivalDate.getTime() - (2 * 24 * 60 * 60 * 1000));
+
+    if (now < defaultRefund50) {
+      return { 
+        rate: 100, 
+        label: 'Remboursement intégral', 
+        color: '#10b981',
+        deadline: formatShortDate(defaultRefund50)
+      };
+    } else if (now < defaultRefund0) {
+      return { 
+        rate: 50, 
+        label: 'Remboursement partiel (50%)', 
+        color: '#f59e0b',
+        deadline: formatShortDate(defaultRefund0)
+      };
+    } else {
+      return { 
+        rate: 0, 
+        label: 'Aucun remboursement', 
+        color: '#ef4444',
+        deadline: null
+      };
+    }
   };
 
   useEffect(() => {
@@ -113,7 +161,14 @@ export default function ReservationDetailPage() {
   }, [id, router]);
 
   const handleCancel = async () => {
-    if (!window.confirm('Êtes-vous sûr de vouloir annuler cette réservation ? Vous serez remboursé intégralement et l\'hôte sera notifié.')) {
+    const refundInfo = getRefundInfo();
+    const confirmMessage = refundInfo.rate === 100
+      ? `Êtes-vous sûr de vouloir annuler cette réservation ? Vous serez remboursé intégralement (${formatEUR(reservation.total_price)}) sous 5 à 10 jours et l'hôte sera notifié.`
+      : refundInfo.rate === 50
+      ? `Êtes-vous sûr de vouloir annuler cette réservation ? Vous serez remboursé à 50% (${formatEUR(reservation.total_price / 2)}) sous 5 à 10 jours et l'hôte sera notifié.`
+      : `Êtes-vous sûr de vouloir annuler cette réservation ? Vous ne serez pas remboursé car le délai d'annulation est dépassé.`;
+
+    if (!window.confirm(confirmMessage)) {
       return;
     }
 
@@ -315,33 +370,50 @@ export default function ReservationDetailPage() {
             </div>
           </div>
 
-          {/* Détails du prix - Prix récupérés depuis la table reservations dans Supabase */}
+          {/* Détails du prix */}
           <div style={{
             borderTop: '1px solid #f1f5f9',
-            paddingTop: 24
+            paddingTop: 24,
+            marginBottom: 24
           }}>
-            <h3 style={{ fontSize: 14, fontWeight: 800, color: '#64748b', marginBottom: 12 }}>
-              DÉTAIL DU PRIX
+            <h3 style={{ fontSize: 16, fontWeight: 800, color: '#111827', marginBottom: 16 }}>
+              Détail du prix
             </h3>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <span>Prix de base ({reservation.nights} nuit{reservation.nights > 1 ? 's' : ''})</span>
-              <span>{formatEUR(reservation.base_price)}</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <span>Taxes et frais</span>
-              <span>{formatEUR(reservation.tax_price)}</span>
-            </div>
             <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: 18,
-              fontWeight: 800,
-              color: '#0f172a',
-              paddingTop: 12,
-              borderTop: '1px solid #f1f5f9'
+              background: '#f8fafc',
+              borderRadius: 12,
+              padding: 16
             }}>
-              <span>Total</span>
-              <span>{formatEUR(reservation.total_price)}</span>
+              {/* Hébergement */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 14, color: '#374151' }}>
+                <span>Hébergement ({reservation.nights} nuit{reservation.nights > 1 ? 's' : ''})</span>
+                <span style={{ fontWeight: 700 }}>
+                  {formatEUR((reservation.listing_price_per_night || 0) * reservation.nights)}
+                </span>
+              </div>
+              
+              {/* Frais de plateforme */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 14, color: '#374151' }}>
+                <span>Frais de plateforme</span>
+                <span style={{ fontWeight: 700 }}>
+                  {formatEUR(reservation.base_price - ((reservation.listing_price_per_night || 0) * reservation.nights))}
+                </span>
+              </div>
+              
+              {/* Taxes */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, fontSize: 14, color: '#374151' }}>
+                <span>Taxes de séjour</span>
+                <span style={{ fontWeight: 700 }}>{formatEUR(reservation.tax_price)}</span>
+              </div>
+              
+              {/* Séparateur */}
+              <div style={{ height: 1, background: '#e2e8f0', marginBottom: 12 }} />
+              
+              {/* Total */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, color: '#0f172a', fontWeight: 900 }}>
+                <span>Total</span>
+                <span>{formatEUR(reservation.total_price)}</span>
+              </div>
             </div>
           </div>
 
@@ -364,73 +436,271 @@ export default function ReservationDetailPage() {
           )}
         </div>
 
-        {/* Actions */}
+        {/* Actions et politique d'annulation */}
         {reservation.status === 'confirmed' && (
           user?.id === reservation.user_id ||
           user?.id === reservation.guest_id ||
           user?.id === reservation.host_id
-        ) && (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              padding: '20px 24px',
-              background: 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(220,38,38,0.05))',
-              borderRadius: '16px',
-              border: '2px solid rgba(239,68,68,0.2)',
-              marginBottom: '20px'
-            }}>
-              <div style={{ fontSize: '2rem', marginBottom: '12px' }}>⚠️</div>
-              <p style={{ 
-                color: '#991B1B', 
-                fontWeight: 600, 
-                fontSize: '15px',
-                margin: '0 0 8px 0'
-              }}>
-                Annulation avec remboursement intégral
-              </p>
-              <p style={{ 
-                color: '#7F1D1D', 
-                fontSize: '14px',
-                margin: 0,
-                lineHeight: 1.6
-              }}>
-                En annulant, vous serez remboursé sous 5 à 10 jours et l'hôte sera automatiquement notifié par email.
-              </p>
-            </div>
-            <button
-              onClick={handleCancel}
-              disabled={canceling}
-              style={{
-                background: canceling 
-                  ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)'
-                  : 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
-                color: '#fff',
-                border: 'none',
+        ) && (() => {
+          const refundInfo = getRefundInfo();
+          
+          return (
+            <div style={{ marginBottom: 32 }}>
+              {/* Encart politique d'annulation actuelle */}
+              <div style={{
+                background: '#f9fafb',
+                border: '1px solid #e5e7eb',
                 borderRadius: 12,
-                padding: '14px 32px',
-                fontWeight: 800,
-                fontSize: '15px',
-                cursor: canceling ? 'not-allowed' : 'pointer',
-                opacity: canceling ? 0.7 : 1,
-                boxShadow: canceling ? 'none' : '0 10px 25px rgba(239,68,68,0.3)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                if (!canceling) {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 15px 35px rgba(239,68,68,0.4)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!canceling) {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 10px 25px rgba(239,68,68,0.3)';
-                }
-              }}
-            >
-              {canceling ? '⏳ Annulation en cours...' : '🚫 Annuler la réservation'}
-            </button>
-          </div>
-        )}
+                padding: 14,
+                marginBottom: 20,
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 12
+              }}>
+                <div style={{
+                  background: refundInfo.color,
+                  borderRadius: '50%',
+                  padding: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  {refundInfo.rate === 100 ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  ) : refundInfo.rate === 50 ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                      <line x1="12" y1="2" x2="12" y2="22"></line>
+                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontWeight: 600,
+                    color: '#111827',
+                    fontSize: 14,
+                    marginBottom: 4
+                  }}>
+                    {refundInfo.label}
+                    {refundInfo.deadline && refundInfo.rate > 0 && (
+                      <span style={{ fontWeight: 400, color: '#6b7280' }}>
+                        {' '}jusqu'au {refundInfo.deadline}
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => setShowCancellationPolicy(!showCancellationPolicy)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#111827',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: 0,
+                      textDecoration: 'underline',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4
+                    }}
+                  >
+                    {showCancellationPolicy ? 'Masquer les détails' : 'Voir la politique complète'}
+                    <svg 
+                      width="12" 
+                      height="12" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2.5"
+                      style={{
+                        transform: showCancellationPolicy ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s'
+                      }}
+                    >
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Politique d'annulation détaillée */}
+              {showCancellationPolicy && (
+                <div style={{
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: 12,
+                  padding: 16,
+                  marginBottom: 20,
+                  fontSize: 13,
+                  lineHeight: 1.6
+                }}>
+                  <div style={{
+                    fontWeight: 600,
+                    color: '#111827',
+                    marginBottom: 12,
+                    fontSize: 14
+                  }}>
+                    Politique d'annulation complète
+                  </div>
+                  
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <div style={{
+                        background: '#111827',
+                        color: '#fff',
+                        borderRadius: 6,
+                        padding: '4px 8px',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        height: 'fit-content',
+                        minWidth: 60,
+                        textAlign: 'center'
+                      }}>
+                        100%
+                      </div>
+                      <div style={{ flex: 1, color: '#374151' }}>
+                        <strong>Remboursement intégral</strong><br />
+                        Jusqu'au <strong>
+                          {formatShortDate(reservation.refund_50_percent_date || 
+                            new Date(new Date(reservation.date_arrivee).getTime() - (6 * 24 * 60 * 60 * 1000)))}
+                        </strong>
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <div style={{
+                        background: '#6b7280',
+                        color: '#fff',
+                        borderRadius: 6,
+                        padding: '4px 8px',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        height: 'fit-content',
+                        minWidth: 60,
+                        textAlign: 'center'
+                      }}>
+                        50%
+                      </div>
+                      <div style={{ flex: 1, color: '#374151' }}>
+                        <strong>Remboursement partiel (50%)</strong><br />
+                        Jusqu'au <strong>
+                          {formatShortDate(reservation.refund_0_percent_date || 
+                            new Date(new Date(reservation.date_arrivee).getTime() - (2 * 24 * 60 * 60 * 1000)))}
+                        </strong>
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <div style={{
+                        background: '#ef4444',
+                        color: '#fff',
+                        borderRadius: 6,
+                        padding: '4px 8px',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        height: 'fit-content',
+                        minWidth: 60,
+                        textAlign: 'center'
+                      }}>
+                        0%
+                      </div>
+                      <div style={{ flex: 1, color: '#374151' }}>
+                        <strong>Aucun remboursement</strong><br />
+                        Après le <strong>
+                          {formatShortDate(reservation.refund_0_percent_date || 
+                            new Date(new Date(reservation.date_arrivee).getTime() - (2 * 24 * 60 * 60 * 1000)))}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Bouton d'annulation */}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  padding: '20px 24px',
+                  background: refundInfo.rate === 100
+                    ? 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.05))'
+                    : refundInfo.rate === 50
+                    ? 'linear-gradient(135deg, rgba(245,158,11,0.08), rgba(217,119,6,0.05))'
+                    : 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(220,38,38,0.05))',
+                  borderRadius: '16px',
+                  border: refundInfo.rate === 100
+                    ? '2px solid rgba(16,185,129,0.2)'
+                    : refundInfo.rate === 50
+                    ? '2px solid rgba(245,158,11,0.2)'
+                    : '2px solid rgba(239,68,68,0.2)',
+                  marginBottom: '20px'
+                }}>
+                  <div style={{ fontSize: '2rem', marginBottom: '12px' }}>
+                    {refundInfo.rate === 100 ? '✓' : refundInfo.rate === 50 ? '⚠️' : '⚠️'}
+                  </div>
+                  <p style={{ 
+                    color: refundInfo.rate === 100 ? '#065f46' : refundInfo.rate === 50 ? '#92400e' : '#991B1B',
+                    fontWeight: 600, 
+                    fontSize: '15px',
+                    margin: '0 0 8px 0'
+                  }}>
+                    {refundInfo.label}
+                  </p>
+                  <p style={{ 
+                    color: refundInfo.rate === 100 ? '#047857' : refundInfo.rate === 50 ? '#78350f' : '#7F1D1D',
+                    fontSize: '14px',
+                    margin: 0,
+                    lineHeight: 1.6
+                  }}>
+                    En annulant maintenant, vous serez remboursé{' '}
+                    {refundInfo.rate === 100 ? 'intégralement' : refundInfo.rate === 50 ? 'à 50%' : 'de 0€'}{' '}
+                    {refundInfo.rate > 0 && 'sous 5 à 10 jours'} et l'hôte sera automatiquement notifié par email.
+                  </p>
+                </div>
+                <button
+                  onClick={handleCancel}
+                  disabled={canceling}
+                  style={{
+                    background: canceling 
+                      ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)'
+                      : 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 12,
+                    padding: '14px 32px',
+                    fontWeight: 800,
+                    fontSize: '15px',
+                    cursor: canceling ? 'not-allowed' : 'pointer',
+                    opacity: canceling ? 0.7 : 1,
+                    boxShadow: canceling ? 'none' : '0 10px 25px rgba(239,68,68,0.3)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!canceling) {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 15px 35px rgba(239,68,68,0.4)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!canceling) {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 10px 25px rgba(239,68,68,0.3)';
+                    }
+                  }}
+                >
+                  {canceling ? '⏳ Annulation en cours...' : '🚫 Annuler la réservation'}
+                </button>
+              </div>
+            </div>
+          );
+        })()}
 
         {reservation.status === 'canceled' && (
           <div style={{
