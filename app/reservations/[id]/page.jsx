@@ -43,9 +43,29 @@ export default function ReservationDetailPage() {
   // Fonction pour formater une date courte (pour les dates limites de remboursement)
   const formatShortDate = (dateStr) => {
     if (!dateStr) return '';
-    const date = new Date(dateStr);
+    const date = dateStr instanceof Date ? dateStr : parseDateOnly(dateStr);
     const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  // Parse une date au format YYYY-MM-DD en heure locale (évite le décalage UTC)
+  const parseDateOnly = (value) => {
+    if (!value) return null;
+    if (value instanceof Date) return value;
+    const str = String(value);
+    const m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) {
+      return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    }
+    return new Date(str);
+  };
+
+  const endOfDay = (value) => {
+    const date = parseDateOnly(value);
+    if (!date || Number.isNaN(date.getTime())) return null;
+    const d = new Date(date);
+    d.setHours(23, 59, 59, 999);
+    return d;
   };
 
   // Calculer le taux de remboursement actuel basé sur les dates
@@ -55,22 +75,26 @@ export default function ReservationDetailPage() {
     }
 
     const now = new Date();
-    const refund50Date = reservation.refund_50_percent_date ? new Date(reservation.refund_50_percent_date) : null;
-    const refund0Date = reservation.refund_0_percent_date ? new Date(reservation.refund_0_percent_date) : null;
+    const refund50Date = reservation.refund_50_percent_date ? parseDateOnly(reservation.refund_50_percent_date) : null;
+    const refund0Date = reservation.refund_0_percent_date ? parseDateOnly(reservation.refund_0_percent_date) : null;
 
     // Si pas de dates définies, utiliser les valeurs par défaut (7 jours et 2 jours avant arrivée)
-    const arrivalDate = new Date(reservation.date_arrivee || reservation.start_date);
+    const arrivalDate = parseDateOnly(reservation.date_arrivee || reservation.start_date);
     const defaultRefund50 = refund50Date || new Date(arrivalDate.getTime() - (6 * 24 * 60 * 60 * 1000));
     const defaultRefund0 = refund0Date || new Date(arrivalDate.getTime() - (2 * 24 * 60 * 60 * 1000));
 
-    if (now < defaultRefund50) {
+    // Date incluse : valable jusqu'à la fin de la journée
+    const refund50Deadline = endOfDay(defaultRefund50);
+    const refund0Deadline = endOfDay(defaultRefund0);
+
+    if (refund50Deadline && now <= refund50Deadline) {
       return { 
         rate: 100, 
         label: 'Remboursement intégral', 
         color: '#10b981',
         deadline: formatShortDate(defaultRefund50)
       };
-    } else if (now < defaultRefund0) {
+    } else if (refund0Deadline && now <= refund0Deadline) {
       return { 
         rate: 50, 
         label: 'Remboursement partiel (50%)', 

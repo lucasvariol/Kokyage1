@@ -147,31 +147,57 @@ export async function POST(request) {
     }
 
     // Calculer le taux de remboursement en fonction de la date d'annulation
+    // IMPORTANT: la date limite est incluse (valable jusqu'à la fin de la journée)
+    const parseDateOnly = (value) => {
+      if (!value) return null;
+      const str = String(value);
+      const m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m) {
+        return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+      }
+      return new Date(str);
+    };
+
+    const endOfDay = (value) => {
+      const date = parseDateOnly(value);
+      if (!date || Number.isNaN(date.getTime())) return null;
+      const d = new Date(date);
+      d.setHours(23, 59, 59, 999);
+      return d;
+    };
+
     const now = new Date();
     let refundRate = 1.0; // Par défaut 100%
-    
-    if (reservation.refund_50_percent_date && reservation.refund_0_percent_date) {
-      const refund50Date = new Date(reservation.refund_50_percent_date);
-      const refund0Date = new Date(reservation.refund_0_percent_date);
-      
-      if (now >= refund0Date) {
-        refundRate = 0; // Après la date limite → 0%
-      } else if (now >= refund50Date) {
+
+    const refund50Deadline = reservation.refund_50_percent_date
+      ? endOfDay(reservation.refund_50_percent_date)
+      : null;
+    const refund0Deadline = reservation.refund_0_percent_date
+      ? endOfDay(reservation.refund_0_percent_date)
+      : null;
+
+    if (refund50Deadline && refund0Deadline) {
+      if (now > refund0Deadline) {
+        refundRate = 0; // Après la date limite (lendemain) → 0%
+      } else if (now > refund50Deadline) {
         refundRate = 0.5; // Entre les deux dates → 50%
       } else {
-        refundRate = 1.0; // Avant la première date → 100%
+        refundRate = 1.0; // Jusqu'à la première date incluse → 100%
       }
     } else {
       // Fallback si les dates ne sont pas définies : utiliser 6 et 2 jours avant arrivée
-      const arrivalDate = new Date(reservation.date_arrivee);
+      const arrivalDate = parseDateOnly(reservation.date_arrivee);
       const sixDaysBefore = new Date(arrivalDate);
       sixDaysBefore.setDate(arrivalDate.getDate() - 6);
       const twoDaysBefore = new Date(arrivalDate);
       twoDaysBefore.setDate(arrivalDate.getDate() - 2);
-      
-      if (now >= twoDaysBefore) {
+
+      const sixDaysBeforeDeadline = endOfDay(sixDaysBefore);
+      const twoDaysBeforeDeadline = endOfDay(twoDaysBefore);
+
+      if (twoDaysBeforeDeadline && now > twoDaysBeforeDeadline) {
         refundRate = 0;
-      } else if (now >= sixDaysBefore) {
+      } else if (sixDaysBeforeDeadline && now > sixDaysBeforeDeadline) {
         refundRate = 0.5;
       } else {
         refundRate = 1.0;
