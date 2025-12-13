@@ -440,27 +440,47 @@ export default function ReservationDetailPage() {
               borderRadius: 12,
               padding: 16
             }}>
-              {/* Hébergement */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 14, color: '#374151' }}>
-                <span>Hébergement ({reservation.nights} nuit{reservation.nights > 1 ? 's' : ''})</span>
-                <span style={{ fontWeight: 700 }}>
-                  {formatEUR((reservation.listing_price_per_night || 0) * reservation.nights)}
-                </span>
-              </div>
-              
-              {/* Frais de plateforme */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 14, color: '#374151' }}>
-                <span>Frais de plateforme</span>
-                <span style={{ fontWeight: 700 }}>
-                  {formatEUR(reservation.base_price - ((reservation.listing_price_per_night || 0) * reservation.nights))}
-                </span>
-              </div>
-              
-              {/* Taxes */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, fontSize: 14, color: '#374151' }}>
-                <span>Taxes de séjour</span>
-                <span style={{ fontWeight: 700 }}>{formatEUR(reservation.tax_price)}</span>
-              </div>
+              {(() => {
+                const VAT_RATE = 20; // Taux TVA
+                const hebergement = (reservation.listing_price_per_night || 0) * reservation.nights;
+                const fraisTTC = reservation.base_price - hebergement;
+                const fraisHT = fraisTTC / (1 + VAT_RATE / 100);
+                const fraisTVA = fraisTTC - fraisHT;
+                
+                return (
+                  <>
+                    {/* Hébergement */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 14, color: '#374151' }}>
+                      <span>Hébergement ({reservation.nights} nuit{reservation.nights > 1 ? 's' : ''})</span>
+                      <span style={{ fontWeight: 700 }}>
+                        {formatEUR(hebergement)}
+                      </span>
+                    </div>
+                    
+                    {/* Frais de plateforme HT */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 14, color: '#374151' }}>
+                      <span>Frais de plateforme Kokyage</span>
+                      <span style={{ fontWeight: 700 }}>
+                        {formatEUR(fraisHT)}
+                      </span>
+                    </div>
+                    
+                    {/* TVA sur frais */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13, color: '#64748b', paddingLeft: 16 }}>
+                      <span>TVA ({VAT_RATE}%)</span>
+                      <span style={{ fontWeight: 600 }}>
+                        {formatEUR(fraisTVA)}
+                      </span>
+                    </div>
+                    
+                    {/* Taxes de séjour */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, fontSize: 14, color: '#374151' }}>
+                      <span>Taxe de séjour</span>
+                      <span style={{ fontWeight: 700 }}>{formatEUR(reservation.tax_price)}</span>
+                    </div>
+                  </>
+                );
+              })()}
               
               {/* Séparateur */}
               <div style={{ height: 1, background: '#e2e8f0', marginBottom: 12 }} />
