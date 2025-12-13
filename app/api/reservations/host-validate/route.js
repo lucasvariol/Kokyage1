@@ -4,8 +4,10 @@ import { Resend } from 'resend';
 import { reservationHostValidatedTemplate } from '@/email-templates/reservation-host-validated';
 import { hostValidateReservationSchema, validateOrError } from '@/lib/validators';
 import logger from '@/lib/logger';
+import Stripe from 'stripe';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2023-10-16' });
 
 export async function POST(request) {
   try {
@@ -36,7 +38,7 @@ export async function POST(request) {
 
     const { data: reservation, error: reservationError } = await supabaseAdmin
       .from('reservations')
-      .select('id, host_id, user_id, listing_id, host_validation_ok, status, date_arrivee, date_depart, guests, nights, total_price')
+      .select('id, host_id, user_id, listing_id, host_validation_ok, status, date_arrivee, date_depart, guests, nights, total_price, transaction_id, payment_status')
       .eq('id', reservationId)
       .single();
 
@@ -54,11 +56,46 @@ export async function POST(request) {
       return NextResponse.json({ ok: true, reservation });
     }
 
+    // Si l'hôte accepte: capturer le paiement principal (débit) maintenant.
+    let nextPaymentStatus = reservation.payment_status;
+    if (nextValue === true) {
+      const transactionId = reservation.transaction_id;
+
+      // Si le paiement est seulement autorisé (capture manuelle), on capture à l'acceptation.
+      if (transactionId && String(transactionId).startsWith('pi_') && reservation.payment_status !== 'paid') {
+        try {
+          const pi = await stripe.paymentIntents.retrieve(transactionId);
+
+          if (pi.status === 'requires_capture') {
+            await stripe.paymentIntents.capture(transactionId);
+            nextPaymentStatus = 'paid';
+            console.log('✅ Paiement capturé à l\'acceptation hôte:', transactionId);
+          } else if (pi.status === 'succeeded') {
+            nextPaymentStatus = 'paid';
+            console.log('ℹ️ Paiement déjà capturé/success:', transactionId);
+          } else if (pi.status === 'canceled') {
+            return NextResponse.json({ error: 'Paiement annulé, impossible de valider la réservation.' }, { status: 400 });
+          } else if (pi.status === 'requires_action' || pi.status === 'requires_payment_method' || pi.status === 'requires_confirmation') {
+            return NextResponse.json({ error: `Paiement non finalisé (${pi.status}). Le voyageur doit recommencer le paiement.` }, { status: 402 });
+          } else {
+            return NextResponse.json({ error: `Statut de paiement inattendu (${pi.status}).` }, { status: 400 });
+          }
+        } catch (stripeErr) {
+          console.error('❌ Échec capture paiement à l\'acceptation hôte:', stripeErr?.message || stripeErr);
+          return NextResponse.json({ error: 'Impossible de capturer le paiement. Réessayez plus tard.' }, { status: 502 });
+        }
+      }
+    }
+
+    const updatePayload = nextValue === true
+      ? { host_validation_ok: true, payment_status: nextPaymentStatus }
+      : { host_validation_ok: false };
+
     const { data: updatedReservation, error: updateError } = await supabaseAdmin
       .from('reservations')
-      .update({ host_validation_ok: nextValue })
+      .update(updatePayload)
       .eq('id', reservationId)
-      .select('id, host_validation_ok, status')
+      .select('id, host_validation_ok, status, payment_status')
       .single();
 
     if (updateError) {

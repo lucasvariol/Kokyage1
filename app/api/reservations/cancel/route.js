@@ -67,7 +67,7 @@ export async function POST(request) {
     // Vérifier la réservation avec toutes les infos nécessaires
     const { data: reservation, error: checkError } = await supabaseAdmin
       .from('reservations')
-      .select('id, user_id, guest_id, host_id, listing_id, status, date_arrivee, date_depart, guests, nights, total_price, base_price, tax_price, transaction_id, caution_intent_id, refund_50_percent_date, refund_0_percent_date, proprietor_share, main_tenant_share, platform_share')
+      .select('id, user_id, guest_id, host_id, listing_id, status, date_arrivee, date_depart, guests, nights, total_price, base_price, tax_price, transaction_id, payment_status, caution_intent_id, refund_50_percent_date, refund_0_percent_date, proprietor_share, main_tenant_share, platform_share')
       .eq('id', reservationId)
       .single();
 
@@ -179,6 +179,28 @@ export async function POST(request) {
 
     if (updateError) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
+
+    // Si le paiement principal est une autorisation non capturée, l'annuler pour libérer les fonds
+    try {
+      const transactionId = reservation.transaction_id;
+      if (transactionId && String(transactionId).startsWith('pi_') && reservation.payment_status !== 'paid') {
+        try {
+          const pi = await stripe.paymentIntents.retrieve(transactionId);
+          if (pi.status === 'requires_capture' || pi.status === 'requires_confirmation' || pi.status === 'requires_action') {
+            await stripe.paymentIntents.cancel(transactionId);
+            await supabaseAdmin
+              .from('reservations')
+              .update({ payment_status: 'canceled' })
+              .eq('id', reservationId);
+            console.log('🔓 Autorisation paiement principal annulée (fonds libérés):', transactionId);
+          }
+        } catch (cancelPayErr) {
+          console.warn('⚠️ Annulation autorisation paiement principal non aboutie:', cancelPayErr?.message || cancelPayErr);
+        }
+      }
+    } catch (stripeError) {
+      console.warn('⚠️ Check/annulation paiement principal non abouti:', stripeError?.message || stripeError);
     }
 
     // Débloquer les dates dans disponibilities

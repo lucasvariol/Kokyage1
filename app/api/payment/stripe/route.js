@@ -136,15 +136,17 @@ export async function POST(request) {
       );
     }
 
-    // 1. Paiement principal (setup_future_usage attachera automatiquement le PM au Customer)
+    // 1. Paiement principal
+    // Objectif produit: ne pas débiter immédiatement, mais autoriser la carte, puis capturer au moment de l'acceptation hôte.
     const paymentIntent = await stripe.paymentIntents.create({
-  ...paymentIntentConfig,
-  payment_method: paymentMethodToUse,
-  customer: customer ? customer.id : undefined,
-  confirmation_method: 'manual',
-  confirm: true,
-  setup_future_usage: 'off_session',
-  return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
+      ...paymentIntentConfig,
+      payment_method: paymentMethodToUse,
+      customer: customer ? customer.id : undefined,
+      confirmation_method: 'manual',
+      capture_method: 'manual', // autorisation, pas de débit immédiat
+      confirm: true,
+      setup_future_usage: 'off_session',
+      return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
     });
 
     console.log('[Stripe API] PaymentIntent created:', {
@@ -182,8 +184,8 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    // Paiement principal réussi
-    if (paymentIntent.status === 'succeeded') {
+    // Paiement principal autorisé (non capturé) ou capturé (cas rare)
+    if (paymentIntent.status === 'requires_capture' || paymentIntent.status === 'succeeded') {
       // Récupérer le PaymentMethod attaché au Customer après le succès
       const attachedPaymentMethod = paymentIntent.payment_method;
       console.log('[Stripe API] PaymentIntent succeeded. Attached PM:', attachedPaymentMethod);
@@ -270,7 +272,9 @@ export async function POST(request) {
             client_secret: cautionIntent.client_secret
           },
           payment_method_id: attachedPaymentMethod,
-          message: 'Paiement effectué avec succès et empreinte bancaire enregistrée !'
+          message: paymentIntent.status === 'requires_capture'
+            ? "Paiement autorisé (non débité). Le débit aura lieu lors de l'acceptation par l'hôte. Empreinte bancaire enregistrée !"
+            : 'Paiement effectué avec succès et empreinte bancaire enregistrée !'
         });
       } else {
         // Arrivée dans plus de 7 jours : sauvegarder le PaymentMethod pour création différée
@@ -301,7 +305,9 @@ export async function POST(request) {
           cautionIntent: null,
           payment_method_id: attachedPaymentMethod,
           caution_scheduled: true,
-          message: `Paiement effectué avec succès ! L'empreinte bancaire de caution (300€) sera créée 7 jours avant votre arrivée.`
+          message: paymentIntent.status === 'requires_capture'
+            ? "Paiement autorisé (non débité). Le débit aura lieu lors de l'acceptation par l'hôte. L'empreinte bancaire de caution (300€) sera créée 7 jours avant votre arrivée."
+            : `Paiement effectué avec succès ! L'empreinte bancaire de caution (300€) sera créée 7 jours avant votre arrivée.`
         });
       }
     }

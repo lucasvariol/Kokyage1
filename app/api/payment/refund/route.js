@@ -22,9 +22,26 @@ export async function POST(request) {
       );
     }
 
-    logger.info('🔄 Tentative de remboursement', { paymentIntentId, reason });
+    logger.info('🔄 Tentative annulation/remboursement', { paymentIntentId, reason });
 
-    // Créer un remboursement complet
+    // Nouveau flux: si le PI est autorisé mais non capturé, on annule (libère les fonds) au lieu de rembourser.
+    const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (pi.status === 'requires_capture' || pi.status === 'requires_confirmation' || pi.status === 'requires_action') {
+      const canceled = await stripe.paymentIntents.cancel(paymentIntentId);
+      logger.info('✅ PaymentIntent annulé (autorisation libérée)', { paymentIntentId, status: canceled.status });
+      return NextResponse.json({
+        success: true,
+        canceled: true,
+        paymentIntent: {
+          id: canceled.id,
+          status: canceled.status,
+          amount: canceled.amount,
+          currency: canceled.currency
+        }
+      });
+    }
+
+    // Flux historique: paiement capturé => remboursement
     const refund = await stripe.refunds.create({
       payment_intent: paymentIntentId,
       reason: 'requested_by_customer',

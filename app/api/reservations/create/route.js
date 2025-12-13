@@ -117,7 +117,7 @@ export async function POST(request) {
         refund_50_percent_date: refund50PercentDate || null,
         refund_0_percent_date: refund0PercentDate || null,
         status: 'confirmed',
-        payment_status: 'paid',
+        payment_status: 'authorized',
         host_validation_ok: false
       })
       .select()
@@ -205,9 +205,13 @@ export async function POST(request) {
       // Continuer sans les détails
     }
 
-    // Notifier le locataire principal (owner_id) qu'un paiement vient d'être confirmé
+    // NOTE: le paiement est seulement autorisé (capture manuelle) au moment de la réservation.
+    // Le débit (capture) est déclenché à l'acceptation hôte.
+    // Donc on n'envoie pas l'email « paiement confirmé » ici (sauf si le paiement est déjà capturé).
     try {
-      if (listing?.owner_id) {
+      if (reservation?.payment_status !== 'paid') {
+        console.log('ℹ️ Email paiement confirmé non envoyé: paiement non capturé', { payment_status: reservation?.payment_status });
+      } else if (listing?.owner_id) {
         const { data: hostUserData, error: hostUserError } = await supabaseAdmin.auth.admin.getUserById(listing.owner_id);
         if (hostUserError) throw hostUserError;
 
