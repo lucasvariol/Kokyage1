@@ -52,7 +52,6 @@ export async function GET(request) {
       .in('status', ['confirmed', 'canceled', 'cancelled'])
       .eq('payment_status', 'paid')
       .eq('host_validation_ok', true)
-      .lt('date_depart', new Date().toISOString().split('T')[0])
       .eq('balances_allocated', false);
 
     if (error) {
@@ -67,6 +66,21 @@ export async function GET(request) {
     for (const reservation of reservations || []) {
       try {
         console.log(`💳 Traitement réservation #${reservation.id}`);
+
+        // Pour les réservations confirmées, on ne payout qu'après la fin du séjour.
+        // Pour les réservations annulées (canceled/cancelled) avec validation hôte OK, on traite immédiatement.
+        const todayStr = new Date().toISOString().split('T')[0];
+        const statusValueEarly = String(reservation.status || '').toLowerCase();
+        if (statusValueEarly === 'confirmed' && reservation.date_depart && String(reservation.date_depart) >= todayStr) {
+          console.log(`⏭️ Réservation #${reservation.id} ignorée - séjour pas terminé (date_depart=${reservation.date_depart})`);
+          results.push({
+            reservation_id: reservation.id,
+            success: false,
+            skipped: true,
+            reason: 'Stay not ended'
+          });
+          continue;
+        }
 
         // Vérification de sécurité : host_validation_ok doit être TRUE
         if (reservation.host_validation_ok !== true) {
