@@ -3223,12 +3223,17 @@ export default function Page({ params: propsParams }) {
                               };
                               
                               // Construire les paramètres pour la page de confirmation
+                              const listingIdParam = (item?.id ?? params?.id ?? '').toString();
+                              if (!listingIdParam) {
+                                console.warn('Missing listingId for confirmer-et-payer');
+                                return;
+                              }
                               const params = new URLSearchParams({
-                                listingId: item.id,
+                                listingId: listingIdParam,
                                 startDate: formatLocalDate(range.from),
                                 endDate: formatLocalDate(range.to),
-                                guests: selectedGuests,
-                                nights: nights,
+                                guests: String(selectedGuests),
+                                nights: String(nights),
                                 basePrice: Math.round(basePlusFeesTotal * 100), // Centimes
                                 taxPrice: Math.round(taxTotal * 100), // Centimes
                                 totalPrice: Math.round(total * 100) // Centimes
