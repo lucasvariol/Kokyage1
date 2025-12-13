@@ -70,7 +70,7 @@ export async function POST(request) {
     const pricePerNight = Number(listing?.price_per_night || reservation?.listing_price_per_night || 0);
     const hebergementAmount = Math.round(pricePerNight * nights * 100);
     
-    // Frais de plateforme TTC (17%)
+    // Frais de plateforme TTC
     const fraisTTC = baseAmount - hebergementAmount;
     
     // Créer/récupérer le taux de TVA français
@@ -92,7 +92,7 @@ export async function POST(request) {
           description: `TVA française ${VAT_RATE}%`,
           jurisdiction: 'FR',
           percentage: VAT_RATE,
-          inclusive: false, // TVA en sus (pas incluse dans le prix)
+          inclusive: true, // TVA incluse dans le prix (pas en sus)
         });
         console.log('✅ Tax rate créé:', taxRate.id);
       } else {
@@ -102,15 +102,12 @@ export async function POST(request) {
       console.error('❌ Erreur création tax_rate:', taxError);
     }
     
-    // Les frais sont TTC, on calcule le HT pour l'affichage
-    const fraisHT = Math.round(fraisTTC / (1 + VAT_RATE / 100));
-
+    // Les frais sont TTC, on passe le montant TTC directement avec taxe inclusive
     console.log('📊 Calcul facture:', {
       nights,
       pricePerNight,
       hebergementAmount,
       fraisTTC,
-      fraisHT,
       taxAmount,
       totalAmount,
       taxRateId: taxRate?.id
@@ -147,15 +144,15 @@ export async function POST(request) {
       }));
     }
     
-    // Ligne 2: Frais de plateforme HT + TVA automatique via tax_rate
-    if (fraisHT > 0 && taxRate) {
+    // Ligne 2: Frais de plateforme TTC avec TVA inclusive
+    if (fraisTTC > 0 && taxRate) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
         invoice: invoice.id,
-        amount: fraisHT,
+        amount: fraisTTC,
         currency,
         description: 'Frais de plateforme Kokyage',
-        tax_rates: [taxRate.id], // Stripe calcule automatiquement la TVA
+        tax_rates: [taxRate.id], // TVA déjà incluse dans le montant
       }));
     }
 
