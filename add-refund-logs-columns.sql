@@ -3,4 +3,5 @@
 
 alter table public.reservations
   add column if not exists refund_amount numeric,
-  add column if not exists refunded_at timestamptz;
+  add column if not exists refunded_at timestamptz,
+  add column if not exists caution_released_at timestamptz;

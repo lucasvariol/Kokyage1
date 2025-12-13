@@ -92,8 +92,24 @@ export async function POST(request) {
     try {
       if (reservation.caution_intent_id && String(reservation.caution_intent_id).startsWith('pi_')) {
         try {
-          await stripe.paymentIntents.cancel(reservation.caution_intent_id);
+          const paymentIntent = await stripe.paymentIntents.cancel(reservation.caution_intent_id);
           console.log('🔓 Autorisation caution annulée:', reservation.caution_intent_id);
+
+          // Log en base (tolérant si la colonne n'existe pas encore)
+          const { error: cautionLogError } = await supabaseAdmin
+            .from('reservations')
+            .update({
+              caution_status: 'released',
+              caution_released_at: new Date().toISOString()
+            })
+            .eq('id', reservation.id);
+          if (cautionLogError) {
+            console.warn('⚠️ Log caution non écrit (migration manquante ?):', cautionLogError.message);
+          }
+
+          if (paymentIntent?.status) {
+            console.log('ℹ️ Status Stripe caution après annulation:', paymentIntent.status);
+          }
         } catch (cautionError) {
           console.warn('Erreur annulation caution:', cautionError.message);
         }
