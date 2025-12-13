@@ -35,6 +35,8 @@ export async function POST(request) {
     }
 
     // Idempotence basique : ne crée pas une nouvelle facture si elle existe déjà
+    // TEMPORAIREMENT DÉSACTIVÉ POUR TESTS
+    /*
     try {
       const existingInvoices = await stripe.invoices.search({
         query: `metadata['reservationId']:'${effectiveReservationId}'`,
@@ -56,6 +58,8 @@ export async function POST(request) {
     } catch (searchError) {
       console.warn('⚠️ Recherche de facture existante échouée (continuation):', searchError?.message || searchError);
     }
+    */
+    console.log('⚠️ Vérification idempotence désactivée - création forcée d\'une nouvelle facture');
 
     const currency = paymentIntent.currency || 'eur';
     const baseAmount = Math.round(Number(reservation?.base_price || 0) * 100);
