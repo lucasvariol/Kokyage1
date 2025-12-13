@@ -226,7 +226,13 @@ export default function ReservationDetailPage() {
             total_price: reservation.total_price,
             date_arrivee: reservation.date_arrivee,
             date_depart: reservation.date_depart,
-            listing_id: reservation.listing_id
+            listing_id: reservation.listing_id,
+            nights: reservation.nights,
+            listing_price_per_night: reservation.listing_price_per_night
+          },
+          listing: {
+            id: reservation.listing_id,
+            price_per_night: reservation.listing_price_per_night
           }
         })
       });
@@ -466,24 +472,6 @@ export default function ReservationDetailPage() {
               </div>
             </div>
           </div>
-
-          {/* Informations de paiement */}
-          {reservation.transaction_id && (
-            <div style={{
-              marginTop: 24,
-              padding: 16,
-              background: '#f8fafc',
-              borderRadius: 12,
-              border: '1px solid #f1f5f9'
-            }}>
-              <h3 style={{ fontSize: 14, fontWeight: 800, color: '#64748b', marginBottom: 8 }}>
-                TRANSACTION
-              </h3>
-              <p style={{ fontSize: 12, color: '#64748b', fontFamily: 'monospace' }}>
-                ID: {reservation.transaction_id}
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Actions et politique d'annulation */}

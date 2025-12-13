@@ -61,6 +61,12 @@ export async function POST(request) {
     const baseAmount = Math.round(Number(reservation?.base_price || 0) * 100);
     const taxAmount = Math.round(Number(reservation?.tax_price || 0) * 100);
     const totalAmount = Math.max(0, Math.round(Number(reservation?.total_price || paymentIntent.amount || 0)));
+    
+    // Calcul de l'hébergement et des frais séparément
+    const nights = Number(reservation?.nights || 1);
+    const pricePerNight = Number(listing?.price_per_night || reservation?.listing_price_per_night || 0);
+    const hebergementAmount = Math.round(pricePerNight * nights * 100);
+    const fraisAmount = baseAmount - hebergementAmount; // Frais = base_price - hébergement
 
     // Crée une facture en mode "send_invoice" pour envoi par email
     const invoice = await stripe.invoices.create({
@@ -77,23 +83,49 @@ export async function POST(request) {
     });
 
     const lineItemPromises = [];
-    if (baseAmount > 0) {
+    
+    // Ligne 1: Hébergement
+    if (hebergementAmount > 0) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
         invoice: invoice.id,
-        amount: baseAmount,
+        amount: hebergementAmount,
         currency,
-        description: 'Hébergement et frais Kokyage',
+        description: `Hébergement (${nights} nuit${nights > 1 ? 's' : ''})`,
+      }));
+    }
+    
+    // Ligne 2: Frais de plateforme
+    if (fraisAmount > 0) {
+      lineItemPromises.push(stripe.invoiceItems.create({
+        customer: customerId,
+        invoice: invoice.id,
+        amount: fraisAmount,
+        currency,
+        description: 'Frais de plateforme Kokyage',
       }));
     }
 
+    
+    // Ligne 2: Frais de plateforme
+    if (fraisAmount > 0) {
+      lineItemPromises.push(stripe.invoiceItems.create({
+        customer: customerId,
+        invoice: invoice.id,
+        amount: fraisAmount,
+        currency,
+        description: 'Frais de plateforme Kokyage',
+      }));
+    }
+
+    // Ligne 3: Taxes de séjour
     if (taxAmount > 0) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
         invoice: invoice.id,
         amount: taxAmount,
         currency,
-        description: 'Taxes de séjour',
+        description: 'Taxe de séjour',
       }));
     }
 
