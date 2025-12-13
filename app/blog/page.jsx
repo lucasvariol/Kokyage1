@@ -2,6 +2,7 @@ import { getAllPosts, getCategories } from '@/lib/markdown';
 import Header from '@/app/_components/Header';
 import Footer from '@/app/_components/Footer';
 import BlogClient from './BlogClient';
+import BlogProtection from '@/app/_components/blog/BlogProtection';
 
 export const metadata = {
   title: 'Blog Kokyage | Guides et conseils location',
@@ -15,7 +16,9 @@ export default function BlogPage() {
   return (
     <>
       <Header />
-      <BlogClient allPosts={allPosts} categories={categories} />
+      <BlogProtection>
+        <BlogClient allPosts={allPosts} categories={categories} />
+      </BlogProtection>
       <Footer />
     </>
   );

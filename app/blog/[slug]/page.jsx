@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Header from '@/app/_components/Header';
 import Footer from '@/app/_components/Footer';
 import ArticleContent from './ArticleContent';
+import BlogProtection from '@/app/_components/blog/BlogProtection';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -33,7 +34,9 @@ export default async function ArticlePage({ params }) {
   return (
     <>
       <Header />
-      <ArticleContent post={post} relatedPosts={relatedPosts} currentUrl={currentUrl} />
+      <BlogProtection>
+        <ArticleContent post={post} relatedPosts={relatedPosts} currentUrl={currentUrl} />
+      </BlogProtection>
       <Footer />
     </>
   );
