@@ -3247,7 +3247,7 @@ export default function Page({ params: propsParams }) {
                                 console.warn('Missing listingId for confirmer-et-payer');
                                 return;
                               }
-                              const params = new URLSearchParams({
+                              const urlParams = new URLSearchParams({
                                 listingId: listingIdParam,
                                 startDate: formatLocalDate(range.from),
                                 endDate: formatLocalDate(range.to),
@@ -3257,7 +3257,7 @@ export default function Page({ params: propsParams }) {
                                 taxPrice: Math.round(taxTotal * 100), // Centimes
                                 totalPrice: Math.round(total * 100) // Centimes
                               });
-                              router.push(`/confirmer-et-payer?${params.toString()}`);
+                              router.push(`/confirmer-et-payer?${urlParams.toString()}`);
                             }
                           }}
                           style={{
