@@ -208,6 +208,7 @@ export async function POST(request) {
 
     // Remboursement Stripe selon le taux calculé
     let refundAmount = 0;
+    let refundedAt = null;
     try {
       if (reservation.transaction_id && String(reservation.transaction_id).startsWith('pi_')) {
         try {
@@ -215,10 +216,14 @@ export async function POST(request) {
 
           if (paymentIntent.status === 'succeeded') {
             // Vérifier s'il y a déjà eu un remboursement
-            const existingRefunds = await stripe.refunds.list({ payment_intent: reservation.transaction_id, limit: 1 });
-            const alreadyRefunded = existingRefunds?.data?.some(r => r.status !== 'failed' && r.status !== 'canceled');
+            const existingRefunds = await stripe.refunds.list({ payment_intent: reservation.transaction_id, limit: 10 });
+            const effectiveRefunds = (existingRefunds?.data || []).filter((r) => r.status !== 'failed' && r.status !== 'canceled');
+            const alreadyRefunded = effectiveRefunds.length > 0;
 
             if (alreadyRefunded) {
+              const latest = effectiveRefunds.sort((a, b) => (b.created || 0) - (a.created || 0))[0];
+              refundAmount = (latest?.amount || 0) / 100;
+              refundedAt = latest?.created ? new Date(latest.created * 1000).toISOString() : new Date().toISOString();
               console.log('ℹ️ Paiement déjà remboursé.');
             } else if (refundRate > 0) {
               // Calculer le montant à rembourser (en centimes)
@@ -231,6 +236,7 @@ export async function POST(request) {
                 reason: 'requested_by_customer'
               });
               refundAmount = (refund.amount || 0) / 100;
+              refundedAt = new Date().toISOString();
               console.log(`💰 Remboursement ${refundRate * 100}% créé:`, refund.id, refundAmount, 'EUR');
             } else {
               console.log('ℹ️ Annulation tardive : aucun remboursement (0%).');
@@ -261,6 +267,21 @@ export async function POST(request) {
       }
     } catch (stripeError) {
       console.warn('⚠️ Remboursement non abouti:', stripeError?.message || stripeError);
+    }
+
+    // Enregistrer le log de remboursement (si applicable)
+    if (refundedAt) {
+      try {
+        await supabaseAdmin
+          .from('reservations')
+          .update({
+            refund_amount: refundAmount,
+            refunded_at: refundedAt,
+          })
+          .eq('id', reservationId);
+      } catch (refundLogError) {
+        console.warn('⚠️ Impossible de loguer refund_amount/refunded_at:', refundLogError?.message || refundLogError);
+      }
     }
 
     // Envoyer email à l'hôte

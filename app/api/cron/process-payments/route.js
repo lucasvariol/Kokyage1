@@ -184,6 +184,15 @@ export async function GET(request) {
                     }
                   });
                   console.log(`✅ Remboursement Stripe créé: ${refund.id} (${refund.amount / 100}€)`);
+
+                  // Log refund dans la réservation
+                  await supabaseAdmin
+                    .from('reservations')
+                    .update({
+                      refund_amount: (refund.amount || 0) / 100,
+                      refunded_at: new Date().toISOString(),
+                    })
+                    .eq('id', reservation.id);
                 } catch (refundErr) {
                   console.error(`❌ Échec remboursement Stripe pour réservation #${reservation.id}:`, refundErr?.message || refundErr);
                   // Sécurité: ne pas payer les parties si le remboursement attendu n'a pas pu être effectué.
