@@ -97,7 +97,7 @@ export async function POST(request) {
     const { data: reservation, error: reservationError } = await supabaseAdmin
       .from('reservations')
       .insert({
-        user_id: finalGuestId,  // Utiliser user_id au lieu de guest_id
+        user_id: guestId,  // Utiliser user_id au lieu de guest_id
         listing_id: listingId,
         host_id: listing.owner_id,
         date_arrivee: startDate,  // Date d'arrivée
@@ -222,9 +222,9 @@ export async function POST(request) {
             supabaseAdmin
               .from('profiles')
               .select('name')
-              .eq('id', finalGuestId)
+              .eq('id', guestId)
               .maybeSingle(),
-            supabaseAdmin.auth.admin.getUserById(finalGuestId)
+            supabaseAdmin.auth.admin.getUserById(guestId)
           ]);
 
           if (hostProfileResult?.error) throw hostProfileResult.error;
