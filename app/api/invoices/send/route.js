@@ -35,30 +35,45 @@ export async function POST(request) {
     }
 
     // Idempotence basique : ne crée pas une nouvelle facture si elle existe déjà
-    // DÉSACTIVÉ POUR TESTS
-    /*
     try {
       const existingInvoices = await stripe.invoices.search({
-        query: `metadata['reservationId']:'${effectiveReservationId}'`,
+        query: `metadata['reservationId']:'${effectiveReservationId}' AND metadata['paymentIntentId']:'${paymentIntentId}'`,
         limit: 1,
       });
       const existing = existingInvoices.data?.[0];
       if (existing) {
+        let ensured = existing;
+        // Si la facture est en brouillon, on la finalise avant de renvoyer les URLs.
+        if (ensured.status === 'draft') {
+          ensured = await stripe.invoices.finalizeInvoice(ensured.id, { auto_advance: false });
+        }
+
+        // On tente de la marquer comme payée (paiement déjà effectué via PaymentIntent)
+        if (ensured.status === 'open') {
+          try {
+            ensured = await stripe.invoices.pay(ensured.id, { paid_out_of_band: true });
+          } catch (payError) {
+            console.warn('⚠️ Impossible de marquer la facture existante comme payée:', payError?.message || payError);
+          }
+        }
+
+        // Optionnel : renvoyer par email à chaque demande est bruyant, donc on évite.
+        // L'utilisateur télécharge via invoice_pdf/hosted_invoice_url.
+        const refreshed = await stripe.invoices.retrieve(ensured.id);
         return NextResponse.json({
           success: true,
           alreadyExists: true,
           invoice: {
-            id: existing.id,
-            status: existing.status,
-            hosted_invoice_url: existing.hosted_invoice_url,
-            invoice_pdf: existing.invoice_pdf,
+            id: refreshed.id,
+            status: refreshed.status,
+            hosted_invoice_url: refreshed.hosted_invoice_url,
+            invoice_pdf: refreshed.invoice_pdf,
           },
         });
       }
     } catch (searchError) {
       console.warn('⚠️ Recherche de facture existante échouée (continuation):', searchError?.message || searchError);
     }
-    */
 
     const currency = paymentIntent.currency || 'eur';
     const baseAmount = Math.round(Number(reservation?.base_price || 0) * 100);
@@ -70,12 +85,10 @@ export async function POST(request) {
     const pricePerNight = Number(listing?.price_per_night || reservation?.listing_price_per_night || 0);
     const hebergementAmount = Math.round(pricePerNight * nights * 100);
     
-    // Frais de plateforme TTC (déjà inclus dans base_price)
-    // IMPORTANT: on considère ce montant comme TTC pour éviter que Stripe rajoute la TVA par-dessus.
-    const fraisTTC = baseAmount - hebergementAmount;
+    // Frais de plateforme TTC (reste du montant "base" après hébergement)
+    const fraisTTC = Math.max(0, baseAmount - hebergementAmount);
     
-    // Créer/récupérer le taux de TVA français (INCLUSIF)
-    // Objectif: afficher la TVA sur la ligne "Frais" sans augmenter le total (le prix payé inclut déjà la TVA).
+    // Créer/récupérer le taux de TVA français
     const VAT_RATE = Number(process.env.VAT_RATE || 20); // Taux de TVA en %
     let taxRate;
     try {
@@ -84,18 +97,17 @@ export async function POST(request) {
       taxRate = existingTaxRates.data.find(rate => 
         rate.percentage === VAT_RATE && 
         rate.active && 
-        rate.jurisdiction === 'FR' &&
-        rate.inclusive === true
+        rate.jurisdiction === 'FR'
       );
       
       // Si pas trouvé, créer un nouveau tax_rate
       if (!taxRate) {
         taxRate = await stripe.taxRates.create({
           display_name: 'TVA',
-          description: `TVA française ${VAT_RATE}% (incluse)`,
+          description: `TVA française ${VAT_RATE}%`,
           jurisdiction: 'FR',
           percentage: VAT_RATE,
-          inclusive: true, // TVA incluse dans le prix
+          inclusive: false, // TVA en sus (pas incluse dans le prix)
         });
         console.log('✅ Tax rate créé:', taxRate.id);
       } else {
@@ -105,7 +117,7 @@ export async function POST(request) {
       console.error('❌ Erreur création tax_rate:', taxError);
     }
     
-    // Les frais sont TTC, on calcule le HT pour logs/contrôles
+    // Les frais sont TTC, on calcule le HT pour l'affichage
     const fraisHT = Math.round(fraisTTC / (1 + VAT_RATE / 100));
 
     console.log('📊 Calcul facture:', {
@@ -119,20 +131,14 @@ export async function POST(request) {
       taxRateId: taxRate?.id
     });
 
-    // Crée une facture en mode "send_invoice" pour envoi par email
+    // Crée une facture (paiement déjà effectué via PaymentIntent, on la marque payée out-of-band)
     const invoice = await stripe.invoices.create({
       customer: customerId,
       collection_method: 'send_invoice',
       days_until_due: 0,
       auto_advance: false,
-      // On ne veut PAS que Stripe applique des taxes par défaut à toutes les lignes
-      automatic_tax: { enabled: false },
-      default_tax_rates: [],
       description: `Réservation #${effectiveReservationId.slice(0, 8).toUpperCase()} - Séjour Kokyage du ${reservation?.date_arrivee || reservation?.start_date || ''} au ${reservation?.date_depart || reservation?.end_date || ''}`.trim(),
       footer: process.env.STRIPE_INVOICE_FOOTER || 'KOKYAGE - SAS au capital de 10 000€ - SIRET: XXX XXX XXX - RCS Paris - TVA: FRXX XXX XXX XXX',
-      rendering_options: {
-        amount_tax_display: 'include_inclusive_tax'
-      },
       metadata: {
         reservationId: effectiveReservationId,
         listingId: reservation?.listing_id || listing?.id || '',
@@ -153,16 +159,15 @@ export async function POST(request) {
       }));
     }
     
-    // Ligne 2: Frais de plateforme (TTC) avec TVA INCLUSE appliquée uniquement sur cette ligne
-    // (Stripe extrait la TVA mais ne modifie pas le total)
-    if (fraisTTC > 0 && taxRate) {
+    // Ligne 2: Frais de plateforme HT + TVA automatique via tax_rate
+    if (fraisHT > 0 && taxRate) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
         invoice: invoice.id,
-        amount: fraisTTC,
+        amount: fraisHT,
         currency,
         description: 'Frais de plateforme Kokyage',
-        tax_rates: [taxRate.id], // TVA affichée sur cette ligne uniquement (incluse)
+        tax_rates: [taxRate.id], // Stripe calcule automatiquement la TVA
       }));
     }
 
@@ -201,11 +206,12 @@ export async function POST(request) {
       try {
         await stripe.invoices.pay(finalizedInvoice.id, { paid_out_of_band: true });
       } catch (payError) {
+        // Important: si ça échoue, la PDF affichera un lien "Payer en ligne".
         console.warn('⚠️ Impossible de marquer la facture comme payée automatiquement:', payError?.message || payError);
       }
     }
 
-    // Envoie la facture par email
+    // Envoie la facture par email (best-effort)
     try {
       await stripe.invoices.sendInvoice(finalizedInvoice.id);
     } catch (sendError) {
