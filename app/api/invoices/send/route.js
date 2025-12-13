@@ -93,7 +93,8 @@ export async function POST(request) {
       collection_method: 'send_invoice',
       days_until_due: 0,
       auto_advance: false,
-      description: `Séjour Kokyage du ${reservation?.date_arrivee || reservation?.start_date || ''} au ${reservation?.date_depart || reservation?.end_date || ''}`.trim(),
+      description: `Réservation #${effectiveReservationId.slice(0, 8).toUpperCase()} - Séjour Kokyage du ${reservation?.date_arrivee || reservation?.start_date || ''} au ${reservation?.date_depart || reservation?.end_date || ''}`.trim(),
+      footer: process.env.STRIPE_INVOICE_FOOTER || 'KOKYAGE - SAS au capital de 10 000€ - SIRET: XXX XXX XXX - RCS Paris - TVA: FRXX XXX XXX XXX',
       rendering_options: {
         amount_tax_display: 'include_inclusive_tax'
       },
