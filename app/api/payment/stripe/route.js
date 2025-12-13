@@ -78,6 +78,18 @@ export async function POST(request) {
     const isTestMode = !paymentMethodId;
 
     // Créer le PaymentIntent avec Stripe
+    // Calcul détaillé pour métadonnées et traçabilité comptable
+    const nights = Number(reservationData?.nights || 1);
+    const pricePerNight = Number(reservationData?.pricePerNight || 0);
+    const hebergementTotal = pricePerNight * nights;
+    const basePrice = Number(reservationData?.basePrice || 0);
+    const taxPrice = Number(reservationData?.taxPrice || 0);
+    
+    // Frais de plateforme = basePrice - hébergement
+    const fraisTTC = basePrice - hebergementTotal;
+    const fraisHT = Math.round((fraisTTC / 1.20) * 100) / 100; // HT
+    const fraisTVA = Math.round((fraisTTC - fraisHT) * 100) / 100; // TVA 20%
+    
     const paymentIntentConfig = {
       amount: Math.round(amount), // Montant en centimes
       currency: currency,
@@ -85,10 +97,17 @@ export async function POST(request) {
         userId: userId || 'test-user',
         listingId: listingId || '',
         guests: reservationData?.guests?.toString() || '',
-        nights: reservationData?.nights?.toString() || '',
+        nights: nights.toString(),
+        // Détail comptable pour Stripe Dashboard
+        hebergement: hebergementTotal.toFixed(2),
+        frais_plateforme_ht: fraisHT.toFixed(2),
+        frais_plateforme_tva: fraisTVA.toFixed(2),
+        frais_plateforme_ttc: fraisTTC.toFixed(2),
+        taxe_sejour: taxPrice.toFixed(2),
+        total_ttc: (hebergementTotal + fraisTTC + taxPrice).toFixed(2),
         ...metadata
       },
-      description: `Réservation Kokyage - ${reservationData?.nights || 1} nuit(s)`,
+      description: `Réservation Kokyage - ${nights} nuit(s) - Hébergement: ${hebergementTotal}€ + Frais: ${fraisTTC}€ + Taxes: ${taxPrice}€`,
   // Affichage sur le relevé bancaire du client
   // Utiliser uniquement le suffixe pour les paiements carte
       statement_descriptor_suffix: 'KOKYAGE',
