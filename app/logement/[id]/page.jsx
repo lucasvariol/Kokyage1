@@ -1346,14 +1346,21 @@ export default function Page({ params: propsParams }) {
         setImages(imgs);
 
         // Récupérer réservations pour ce logement spécifique
-        const listingId = Number.parseInt(params?.id, 10);
-        if (!Number.isFinite(listingId) || Number.isNaN(listingId)) {
+        // Certains environnements utilisent un id numérique, d'autres une chaîne (uuid).
+        // On privilégie l'entier si possible, sinon on fallback sur params.id.
+        const listingIdRaw = params?.id;
+        const listingIdParsed = Number.parseInt(listingIdRaw, 10);
+        const listingIdFilter = Number.isFinite(listingIdParsed) && !Number.isNaN(listingIdParsed)
+          ? listingIdParsed
+          : listingIdRaw;
+
+        if (!listingIdFilter) {
           setReservations([]);
         } else {
           const { data: resData, error: resError } = await supabase
             .from('reservations')
             .select('id, user_id, start_date, end_date, status')
-            .eq('listing_id', listingId)
+            .eq('listing_id', listingIdFilter)
             .order('start_date', { ascending: false });
           if (resError) {
             console.error('Error fetching reservations:', resError);
@@ -1363,12 +1370,15 @@ export default function Page({ params: propsParams }) {
 
         // Récupérer disponibilités (nuits sélectionnables) - filtrer côté client pour robustesse
         setAvailabilityLoading(true);
-        const { data: dispoData } = Number.isFinite(listingId) && !Number.isNaN(listingId)
+        const { data: dispoData, error: dispoError } = listingIdFilter
           ? await supabase
               .from('disponibilities')
               .select('date, booked')
-              .eq('listing_id', listingId)
-          : { data: [] };
+              .eq('listing_id', listingIdFilter)
+          : { data: [], error: null };
+        if (dispoError) {
+          console.error('Error fetching disponibilities:', dispoError);
+        }
 
         const perDateStatus = {};
         (dispoData || []).forEach(d => {
@@ -1399,10 +1409,10 @@ export default function Page({ params: propsParams }) {
 
         // Récupérer statistiques des avis via API (plus robuste)
         try {
-          if (!Number.isFinite(listingId) || Number.isNaN(listingId)) {
+          if (!listingIdFilter) {
             setStats({ count: 0, avg: 0 });
           } else {
-            const res = await fetch(`/api/reviews?listing_id=${listingId}&limit=1&offset=0`, { cache: 'no-store' });
+            const res = await fetch(`/api/reviews?listing_id=${listingIdFilter}&limit=1&offset=0`, { cache: 'no-store' });
           if (res.ok) {
             const dataJson = await res.json();
             const summary = dataJson?.summary || { review_count: 0, average_rating: 0 };
