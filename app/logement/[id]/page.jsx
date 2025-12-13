@@ -5,7 +5,7 @@ import Footer from '../../_components/Footer';
 import { OwnerConsentAgreement } from '@/owner-consent';
 import { supabase } from '@/lib/supabaseClient';
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { getFeeMultiplier, percentLabel } from '@/lib/commissions';
 import ReviewsSection from '../../_components/ReviewsSection';
@@ -841,7 +841,12 @@ function StarInline({ fillPercent = 0, size = 18 }) {
   );
 }
 
-export default function Page({ params }) {
+export default function Page({ params: propsParams }) {
+  // Récupérer l'ID depuis l'URL (hook client-side)
+  const urlParams = useParams();
+  const params = urlParams || propsParams || {};
+  const router = useRouter();
+  
   const [item, setItem] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({});
@@ -898,7 +903,6 @@ export default function Page({ params }) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [addressConfirmed, setAddressConfirmed] = useState(false);
-  const router = useRouter();
 
   // Helper d'affichage pour montrer le libellé exact du statut et des couleurs cohérentes
   function getStatusMeta(status) {
@@ -1249,6 +1253,12 @@ export default function Page({ params }) {
 
   // --- useEffect principal ---
   useEffect(() => {
+    // Vérifier que params et params.id existent avant de fetch
+    if (!params?.id) {
+      console.error('Missing listing ID in params');
+      return;
+    }
+
     async function fetchData() {
       // Récupère utilisateur courant pour le rôle
       const { data: sessionData } = await supabase.auth.getSession();

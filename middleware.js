@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 
 /**
- * Proxy de sécurité Next.js 16
+ * Middleware de sécurité Next.js
  * S'exécute avant chaque requête pour ajouter les headers de sécurité HTTP
  * et protéger l'application contre les attaques courantes
  */
-export default function proxy(request) {
+export default function middleware(request) {
   const response = NextResponse.next();
   
   // ====================
@@ -101,8 +101,8 @@ export default function proxy(request) {
    */
   const cspDirectives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://maps.googleapis.com https://*.wemap.com",
-    "connect-src 'self' https://*.supabase.co https://api.openai.com https://api.stripe.com https://api-adresse.data.gouv.fr https://*.wemap.com wss://*.supabase.co",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://maps.googleapis.com https://*.wemap.com https://www.googletagmanager.com https://www.google-analytics.com",
+    "connect-src 'self' https://*.supabase.co https://api.openai.com https://api.stripe.com https://api-adresse.data.gouv.fr https://*.wemap.com wss://*.supabase.co https://www.google-analytics.com https://analytics.google.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data: https://fonts.gstatic.com",
