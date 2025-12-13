@@ -20,7 +20,6 @@ function ConfirmerEtPayerContent() {
   
   // Paramètres de la réservation
   const listingId = searchParams.get('listingId');
-  const listingIdNum = Number(listingId);
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
   const guests = searchParams.get('guests') || '2';
@@ -427,7 +426,7 @@ function ConfirmerEtPayerContent() {
         setConnected(!!user);
         console.log('User:', user);
 
-        if (!Number.isFinite(listingIdNum) || listingIdNum <= 0) {
+        if (!listingId || listingId === '') {
           console.log('No listingId, redirecting to home');
           router.push('/');
           return;
@@ -438,7 +437,7 @@ function ConfirmerEtPayerContent() {
         const { data: listingData, error } = await supabase
           .from('listings')
           .select('*')
-          .eq('id', listingIdNum)
+          .eq('id', listingId)
           .single();
 
         console.log('Listing query result:', { data: listingData, error });
@@ -455,7 +454,7 @@ function ConfirmerEtPayerContent() {
     };
 
     loadData();
-  }, [listingId, listingIdNum, router]);
+  }, [listingId, router]);
 
   // Gérer le paiement avec Stripe
   const handlePaymentSuccess = async (paymentMethodId) => {
@@ -478,7 +477,7 @@ function ConfirmerEtPayerContent() {
           currency: 'eur',
           userId: user.id,
           userEmail: user.email,
-          listingId: Number.isFinite(listingIdNum) ? listingIdNum : undefined,
+          listingId: listingId,
           reservationData: {
             startDate,
             endDate,
@@ -505,7 +504,7 @@ function ConfirmerEtPayerContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          listingId: listingIdNum,
+          listingId: listingId,
           guestId: user.id,
           startDate: searchParams.get('startDate') || startDate,
           endDate: searchParams.get('endDate') || endDate,
