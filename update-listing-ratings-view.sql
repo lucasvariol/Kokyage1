@@ -1,7 +1,8 @@
 -- Update the listing_ratings view to only include published reviews
 -- Run this SQL in your Supabase SQL Editor
 
-CREATE OR REPLACE VIEW public.listing_ratings AS
+CREATE OR REPLACE VIEW public.listing_ratings 
+WITH (security_invoker = true) AS
 SELECT 
   listing_id,
   COUNT(*) as review_count,

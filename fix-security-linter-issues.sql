@@ -6,11 +6,12 @@
 -- 1. Fix Security Definer View (listing_ratings)
 -- ============================================================
 
--- Drop the existing view
-DROP VIEW IF EXISTS public.listing_ratings;
+-- Drop the existing view completely to remove SECURITY DEFINER
+DROP VIEW IF EXISTS public.listing_ratings CASCADE;
 
--- Recreate the view WITHOUT security definer (normal INVOKER rights)
-CREATE OR REPLACE VIEW public.listing_ratings AS
+-- Recreate the view with explicit SECURITY INVOKER (default, but we specify it explicitly)
+CREATE VIEW public.listing_ratings 
+WITH (security_invoker = true) AS
 SELECT 
   listing_id,
   COUNT(*) as review_count,

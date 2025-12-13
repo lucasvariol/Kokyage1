@@ -58,7 +58,9 @@ CREATE TRIGGER set_updated_at
   EXECUTE FUNCTION public.handle_updated_at();
 
 -- Create a view for listing ratings summary (only published reviews)
-CREATE OR REPLACE VIEW public.listing_ratings AS
+-- Using SECURITY INVOKER to prevent security warnings
+CREATE OR REPLACE VIEW public.listing_ratings 
+WITH (security_invoker = true) AS
 SELECT 
   listing_id,
   COUNT(*) as review_count,
