@@ -523,6 +523,31 @@ function ConfirmerEtPayerContent() {
       const reservationResult = await reservationResponse.json();
 
       if (!reservationResponse.ok || !reservationResult.success) {
+        // ⚠️ CRITIQUE: Le paiement a réussi mais la réservation a échoué
+        // On doit rembourser immédiatement pour éviter de prendre l'argent sans service
+        console.error('❌ Réservation échouée après paiement réussi - remboursement nécessaire');
+        
+        try {
+          // Tenter un remboursement automatique
+          const refundResponse = await fetch('/api/payment/refund', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              paymentIntentId: paymentResult.transaction.transactionId,
+              reason: 'Échec de création de réservation'
+            })
+          });
+          
+          if (refundResponse.ok) {
+            alert('Le paiement a été annulé et remboursé car la réservation n\'a pas pu être créée. Veuillez réessayer ou contacter le support.');
+          } else {
+            alert('ATTENTION: Le paiement a été effectué mais la réservation a échoué. Contactez immédiatement le support avec ce code: ' + paymentResult.transaction.transactionId);
+          }
+        } catch (refundError) {
+          console.error('Échec du remboursement automatique:', refundError);
+          alert('ATTENTION: Le paiement a été effectué mais la réservation a échoué. Contactez immédiatement le support avec ce code: ' + paymentResult.transaction.transactionId);
+        }
+        
         throw new Error(reservationResult.error || 'Erreur lors de la création de la réservation');
       }
 
