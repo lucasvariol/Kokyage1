@@ -78,11 +78,12 @@ export async function POST(request) {
     let taxRate;
     try {
       // Chercher si le tax_rate existe déjà
-      const existingTaxRates = await stripe.taxRates.list({ limit: 10 });
-      taxRate = existingTaxRates.data.find(rate => 
-        rate.percentage === VAT_RATE && 
-        rate.active && 
-        rate.jurisdiction === 'FR'
+      const existingTaxRates = await stripe.taxRates.list({ limit: 100 });
+      taxRate = existingTaxRates.data.find((rate) =>
+        rate.percentage === VAT_RATE &&
+        rate.active &&
+        rate.inclusive === false &&
+        (rate.jurisdiction === 'FR' || !rate.jurisdiction)
       );
       
       // Si pas trouvé, créer un nouveau tax_rate
@@ -124,9 +125,6 @@ export async function POST(request) {
       auto_advance: false,
       description: `Réservation #${effectiveReservationId.slice(0, 8).toUpperCase()} - Séjour Kokyage du ${reservation?.date_arrivee || reservation?.start_date || ''} au ${reservation?.date_depart || reservation?.end_date || ''}`.trim(),
       footer: process.env.STRIPE_INVOICE_FOOTER || 'KOKYAGE - SAS au capital de 10 000€ - SIRET: XXX XXX XXX - RCS Paris - TVA: FRXX XXX XXX XXX',
-      rendering_options: {
-        amount_tax_display: 'include_inclusive_tax'
-      },
       metadata: {
         reservationId: effectiveReservationId,
         listingId: reservation?.listing_id || listing?.id || '',
