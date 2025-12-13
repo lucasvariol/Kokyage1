@@ -95,57 +95,6 @@ export async function POST(request) {
       );
     }
 
-    // Calculer les nouvelles parts en fonction de ce qui n'est pas remboursé
-    const keptRate = 1 - refundRate; // Ce qui reste après remboursement
-    const newProprietorShare = (reservation.proprietor_share || 0) * keptRate;
-    const newMainTenantShare = (reservation.main_tenant_share || 0) * keptRate;
-    const newPlatformShare = (reservation.platform_share || 0) * keptRate;
-
-    console.log(`💼 Répartition après annulation (${keptRate * 100}% conservé):`);
-    console.log(`   - Propriétaire: ${newProprietorShare.toFixed(2)}€`);
-    console.log(`   - Locataire principal: ${newMainTenantShare.toFixed(2)}€`);
-    console.log(`   - Plateforme: ${newPlatformShare.toFixed(2)}€`);
-
-    // Annuler la réservation et mettre à jour les parts
-    const { error: updateError } = await supabaseAdmin
-      .from('reservations')
-      .update({ 
-        status: 'cancelled',
-        proprietor_share: newProprietorShare,
-        main_tenant_share: newMainTenantShare,
-        platform_share: newPlatformShare
-      })
-      .eq('id', reservationId);
-
-    if (updateError) {
-      return NextResponse.json({ error: updateError.message }, { status: 500 });
-    }
-
-    // Débloquer les dates dans disponibilities
-    try {
-      const startDate = new Date(reservation.date_arrivee);
-      const endDate = new Date(reservation.date_depart);
-      const datesToUnblock = [];
-      let currentDate = new Date(startDate);
-      
-      while (currentDate < endDate) {
-        datesToUnblock.push(currentDate.toISOString().split('T')[0]);
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-
-      for (const dateStr of datesToUnblock) {
-        await supabaseAdmin
-          .from('disponibilities')
-          .update({ booked: 'No' })
-          .eq('listing_id', reservation.listing_id)
-          .eq('date', dateStr);
-      }
-
-      console.log('📅 Dates débloquées après annulation voyageur:', datesToUnblock);
-    } catch (dateError) {
-      console.error('Erreur déblocage dates:', dateError);
-    }
-
     // Calculer le taux de remboursement en fonction de la date d'annulation
     // IMPORTANT: la date limite est incluse (valable jusqu'à la fin de la journée)
     const parseDateOnly = (value) => {
@@ -205,6 +154,57 @@ export async function POST(request) {
     }
 
     console.log(`📊 Taux de remboursement calculé: ${refundRate * 100}%`);
+
+    // Calculer les nouvelles parts en fonction de ce qui n'est pas remboursé
+    const keptRate = 1 - refundRate; // Ce qui reste après remboursement
+    const newProprietorShare = (reservation.proprietor_share || 0) * keptRate;
+    const newMainTenantShare = (reservation.main_tenant_share || 0) * keptRate;
+    const newPlatformShare = (reservation.platform_share || 0) * keptRate;
+
+    console.log(`💼 Répartition après annulation (${keptRate * 100}% conservé):`);
+    console.log(`   - Propriétaire: ${newProprietorShare.toFixed(2)}€`);
+    console.log(`   - Locataire principal: ${newMainTenantShare.toFixed(2)}€`);
+    console.log(`   - Plateforme: ${newPlatformShare.toFixed(2)}€`);
+
+    // Annuler la réservation et mettre à jour les parts
+    const { error: updateError } = await supabaseAdmin
+      .from('reservations')
+      .update({ 
+        status: 'cancelled',
+        proprietor_share: newProprietorShare,
+        main_tenant_share: newMainTenantShare,
+        platform_share: newPlatformShare
+      })
+      .eq('id', reservationId);
+
+    if (updateError) {
+      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
+
+    // Débloquer les dates dans disponibilities
+    try {
+      const startDate = new Date(reservation.date_arrivee);
+      const endDate = new Date(reservation.date_depart);
+      const datesToUnblock = [];
+      let currentDate = new Date(startDate);
+      
+      while (currentDate < endDate) {
+        datesToUnblock.push(currentDate.toISOString().split('T')[0]);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      for (const dateStr of datesToUnblock) {
+        await supabaseAdmin
+          .from('disponibilities')
+          .update({ booked: 'No' })
+          .eq('listing_id', reservation.listing_id)
+          .eq('date', dateStr);
+      }
+
+      console.log('📅 Dates débloquées après annulation voyageur:', datesToUnblock);
+    } catch (dateError) {
+      console.error('Erreur déblocage dates:', dateError);
+    }
 
     // Remboursement Stripe selon le taux calculé
     let refundAmount = 0;
