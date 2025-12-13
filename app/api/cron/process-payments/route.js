@@ -184,9 +184,50 @@ export async function GET(request) {
             if (alreadyRefunded) {
               console.log(`ℹ️ Remboursement déjà existant pour ${transactionId}, on continue.`);
             } else {
-              const refundAmountCents = Math.round(totalPrice * 100 * refundRate);
-              if (refundAmountCents > 0) {
+              // Montant brut théorique selon la politique d'annulation
+              const grossRefundAmountCents = Math.round(totalPrice * 100 * refundRate);
+
+              // Exclure les frais Stripe du remboursement (pro-rata)
+              // Objectif: si refundRate = 100%, rembourser (total - fee). Si 50%, rembourser (50% - 50% fee), etc.
+              let refundAmountCents = grossRefundAmountCents;
+              let stripeFeeCents = 0;
+              let feeWithheldCents = 0;
+              try {
+                const paymentIntent = await stripe.paymentIntents.retrieve(transactionId, { expand: ['latest_charge'] });
+                const latestChargeId = typeof paymentIntent.latest_charge === 'string'
+                  ? paymentIntent.latest_charge
+                  : paymentIntent.latest_charge?.id;
+
+                if (latestChargeId) {
+                  const charge = await stripe.charges.retrieve(latestChargeId, { expand: ['balance_transaction'] });
+                  const chargeAmountCents = Number(charge?.amount || 0);
+                  const balanceTx = charge?.balance_transaction;
+                  stripeFeeCents = typeof balanceTx === 'string' ? 0 : Number(balanceTx?.fee || 0);
+
+                  if (stripeFeeCents > 0 && chargeAmountCents > 0 && grossRefundAmountCents > 0) {
+                    feeWithheldCents = Math.round(stripeFeeCents * (grossRefundAmountCents / chargeAmountCents));
+                    refundAmountCents = Math.max(0, grossRefundAmountCents - feeWithheldCents);
+                  }
+                }
+              } catch (feeErr) {
+                console.warn(
+                  '⚠️ Impossible de récupérer les frais Stripe, remboursement brut appliqué:',
+                  feeErr?.message || feeErr
+                );
+              }
+
+              if (grossRefundAmountCents > 0) {
                 try {
+                  console.log(
+                    `↩️ Calcul remboursement #${reservation.id}: brut ${(grossRefundAmountCents / 100).toFixed(2)}€, ` +
+                    `frais retenus ${(feeWithheldCents / 100).toFixed(2)}€ => net ${(refundAmountCents / 100).toFixed(2)}€`
+                  );
+
+                  if (refundAmountCents <= 0) {
+                    console.log(`ℹ️ Remboursement net à 0€ pour #${reservation.id}, skip.`);
+                    return;
+                  }
+
                   const refund = await stripe.refunds.create({
                     payment_intent: transactionId,
                     amount: refundAmountCents,
@@ -195,6 +236,9 @@ export async function GET(request) {
                       reservation_id: reservation.id,
                       cron: 'process-payments',
                       refund_rate: String(refundRate),
+                      gross_refund_cents: String(grossRefundAmountCents),
+                      stripe_fee_cents: String(stripeFeeCents),
+                      stripe_fee_withheld_cents: String(feeWithheldCents),
                     }
                   });
                   console.log(`✅ Remboursement Stripe créé: ${refund.id} (${refund.amount / 100}€)`);
