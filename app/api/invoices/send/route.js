@@ -73,6 +73,17 @@ export async function POST(request) {
     const fraisHT = Math.round(fraisTTC / (1 + TVA_RATE));
     const fraisTVA = fraisTTC - fraisHT;
 
+    console.log('📊 Calcul facture:', {
+      nights,
+      pricePerNight,
+      hebergementAmount,
+      fraisTTC,
+      fraisHT,
+      fraisTVA,
+      taxAmount,
+      totalAmount
+    });
+
     // Crée une facture en mode "send_invoice" pour envoi par email
     const invoice = await stripe.invoices.create({
       customer: customerId,
@@ -122,19 +133,7 @@ export async function POST(request) {
       }));
     }
 
-    
-    // Ligne 2: Frais de plateforme
-    if (fraisAmount > 0) {
-      lineItemPromises.push(stripe.invoiceItems.create({
-        customer: customerId,
-        invoice: invoice.id,
-        amount: fraisAmount,
-        currency,
-        description: 'Frais de plateforme Kokyage',
-      }));
-    }
-
-    // Ligne 3: Taxes de séjour
+    // Ligne 4: Taxes de séjour
     if (taxAmount > 0) {
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
@@ -145,8 +144,11 @@ export async function POST(request) {
       }));
     }
 
+    console.log('📝 Nombre de lignes de facture:', lineItemPromises.length);
+
     // Si aucun des montants n'est fourni, on crée au moins une ligne équivalente au montant du payment intent
     if (lineItemPromises.length === 0 && totalAmount > 0) {
+      console.log('⚠️ Fallback: création d\'une ligne unique');
       lineItemPromises.push(stripe.invoiceItems.create({
         customer: customerId,
         invoice: invoice.id,
