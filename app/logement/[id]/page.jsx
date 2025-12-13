@@ -1346,24 +1346,29 @@ export default function Page({ params: propsParams }) {
         setImages(imgs);
 
         // Récupérer réservations pour ce logement spécifique
-        const listingId = parseInt(params.id, 10);
-        const { data: resData, error: resError } = !isNaN(listingId) ? await supabase
-          .from('reservations')
-          .select('id, user_id, start_date, end_date, status')
-          .eq('listing_id', listingId)
-          .order('start_date', { ascending: false }) : { data: null, error: { message: 'Invalid listing ID' } };
-        
-        if (resError) {
-          console.error('Error fetching reservations:', resError);
+        const listingId = Number.parseInt(params?.id, 10);
+        if (!Number.isFinite(listingId) || Number.isNaN(listingId)) {
+          setReservations([]);
+        } else {
+          const { data: resData, error: resError } = await supabase
+            .from('reservations')
+            .select('id, user_id, start_date, end_date, status')
+            .eq('listing_id', listingId)
+            .order('start_date', { ascending: false });
+          if (resError) {
+            console.error('Error fetching reservations:', resError);
+          }
+          setReservations(resData || []);
         }
-        setReservations(resData || []);
 
         // Récupérer disponibilités (nuits sélectionnables) - filtrer côté client pour robustesse
         setAvailabilityLoading(true);
-        const { data: dispoData } = await supabase
-          .from('disponibilities')
-          .select('date, booked')
-          .eq('listing_id', params.id);
+        const { data: dispoData } = Number.isFinite(listingId) && !Number.isNaN(listingId)
+          ? await supabase
+              .from('disponibilities')
+              .select('date, booked')
+              .eq('listing_id', listingId)
+          : { data: [] };
 
         const perDateStatus = {};
         (dispoData || []).forEach(d => {
@@ -1394,13 +1399,17 @@ export default function Page({ params: propsParams }) {
 
         // Récupérer statistiques des avis via API (plus robuste)
         try {
-          const res = await fetch(`/api/reviews?listing_id=${params.id}&limit=1&offset=0`, { cache: 'no-store' });
+          if (!Number.isFinite(listingId) || Number.isNaN(listingId)) {
+            setStats({ count: 0, avg: 0 });
+          } else {
+            const res = await fetch(`/api/reviews?listing_id=${listingId}&limit=1&offset=0`, { cache: 'no-store' });
           if (res.ok) {
             const dataJson = await res.json();
             const summary = dataJson?.summary || { review_count: 0, average_rating: 0 };
             setStats({ count: summary.review_count || 0, avg: Number(summary.average_rating || 0) });
           } else {
             setStats({ count: 0, avg: 0 });
+          }
           }
         } catch (e) {
           setStats({ count: 0, avg: 0 });
