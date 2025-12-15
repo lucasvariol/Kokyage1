@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Header from '@/app/_components/Header';
 import Footer from '@/app/_components/Footer';
 
-export default function ReviewPage({ params }) {
+export default function ReviewPage() {
   const router = useRouter();
   const routeParams = useParams();
   const searchParams = useSearchParams();
