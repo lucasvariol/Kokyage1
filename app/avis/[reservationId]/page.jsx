@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Header from '@/app/_components/Header';
 import Footer from '@/app/_components/Footer';
 
 export default function ReviewPage({ params }) {
   const router = useRouter();
-  const { reservationId } = params;
+  const searchParams = useSearchParams();
+  const reservationId = params?.reservationId || searchParams?.get('reservationId');
   
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -35,6 +36,12 @@ export default function ReviewPage({ params }) {
   const loadReservation = async () => {
     try {
       setLoading(true);
+
+      if (!reservationId || String(reservationId) === 'undefined') {
+        setError('Lien d\'avis invalide (réservation manquante)');
+        setLoading(false);
+        return;
+      }
       
       // Récupérer l'utilisateur connecté
       const { data: { user } } = await supabase.auth.getUser();
