@@ -138,9 +138,14 @@ export async function POST(request) {
 
     console.log('📝 Tentative création avis:', { ...reviewData, comment: comment ? '(présent)' : null });
 
+    // Utiliser upsert pour gérer le cas où un avis existe déjà pour ce logement
+    // (en attendant la migration DB qui remplacera la contrainte listing_id,user_id par reservation_id,user_id)
     const { data: newReview, error: createError } = await supabaseAdmin
       .from('reviews')
-      .insert(reviewData)
+      .upsert(reviewData, {
+        onConflict: 'listing_id,user_id',
+        ignoreDuplicates: false
+      })
       .select()
       .single();
 
@@ -152,8 +157,15 @@ export async function POST(request) {
         hint: createError.hint,
         reviewData: { ...reviewData, comment: comment ? '(masqué)' : null }
       });
+      
+      // Message d'erreur plus explicite
+      let errorMessage = 'Erreur lors de la création de l\'avis';
+      if (createError.code === '23505') {
+        errorMessage = 'Un avis existe déjà pour ce logement. Utilisez la modification d\'avis.';
+      }
+      
       return NextResponse.json(
-        { error: 'Erreur lors de la création de l\'avis', details: createError.message },
+        { error: errorMessage, details: createError.message },
         { status: 500 }
       );
     }
