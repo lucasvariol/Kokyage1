@@ -13,9 +13,17 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: userRes, error: userErr } = await supabaseAdmin.auth.getUser(token);
-    if (userErr || !userRes?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // Vérifier si c'est un appel interne avec SERVICE_ROLE_KEY
+    const isServiceRole = token === process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    // Si ce n'est pas un appel de service, vérifier l'authentification utilisateur
+    let userId = null;
+    if (!isServiceRole) {
+      const { data: userRes, error: userErr } = await supabaseAdmin.auth.getUser(token);
+      if (userErr || !userRes?.user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      userId = userRes.user.id;
     }
 
     const { listingId } = await request.json();
@@ -34,10 +42,11 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
     }
 
-    // Vérifier que l'utilisateur est le propriétaire ou le locataire principal
-    const userId = userRes.user.id;
-    if (listing.owner_id !== userId && listing.id_proprietaire !== userId) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // Vérifier les permissions seulement si ce n'est pas un appel de service
+    if (!isServiceRole && userId) {
+      if (listing.owner_id !== userId && listing.id_proprietaire !== userId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     // Récupérer les profils du propriétaire et du locataire
