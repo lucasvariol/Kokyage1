@@ -347,8 +347,7 @@ export default function Page() {
 
   // Rejeter une réservation (hôte)
   const handleHostRejection = async (reservationId) => {
-    const reason = window.prompt('Raison du refus (optionnel):');
-    if (reason === null) return; // Annulé
+    if (!window.confirm('Êtes-vous sûr de vouloir refuser cette réservation ?')) return;
     
     setHostRejectionLoading(reservationId);
     try {
@@ -361,7 +360,7 @@ export default function Page() {
           'Content-Type': 'application/json',
           ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {})
         },
-        body: JSON.stringify({ reservationId, reason: reason || 'Refusé par l\'hôte' })
+        body: JSON.stringify({ reservationId, reason: 'Refusé par l\'hôte' })
       });
 
       const result = await response.json();
