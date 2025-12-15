@@ -114,6 +114,9 @@ export async function POST(request) {
       console.error('Erreur déblocage dates:', dateError);
     }
 
+    // En cas de refus par l'hôte, remboursement intégral
+    const refundAmount = reservation.total_price || 0;
+
     // IMPORTANT: les remboursements Stripe sont gérés uniquement par le CRON.
     // Ici, on libère uniquement la caution si elle existe (autorisation), sans rembourser le paiement principal.
     try {
@@ -201,9 +204,6 @@ export async function POST(request) {
         style: 'currency',
         currency: 'EUR'
       }).format(Number(value || 0));
-
-      // En cas de refus par l'hôte, remboursement intégral
-      const refundAmount = reservation.total_price || 0;
 
       const emailPayload = {
         guestName: guestRawName.trim?.() || 'Voyageur',
