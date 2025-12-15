@@ -1661,16 +1661,13 @@ export default function Page({ params: propsParams }) {
     if (!d || !from) return true;
     // Interdit de choisir une date de départ <= arrivée
     if (d <= from) return true;
-    // Toute date interdite entre from et d rend d non cliquable
+    // Vérifie qu'il n'y a pas de dates interdites entre from et d (sans inclure d)
     let cur = new Date(from);
     cur.setDate(cur.getDate() + 1);
-    // Exception checkout: si d n'est pas dispo mais la veille l'est, on vérifie la contiguïté jusqu'à la veille
-    const dKey = d.getTime();
-    const prev = new Date(d);
-    prev.setDate(prev.getDate() - 1);
-    const allowCheckout = !availSet.has(dKey) && availSet.has(prev.getTime());
-    const endLoop = allowCheckout ? prev : d;
-    while (cur <= endLoop) {
+    const dayBeforeCheckout = new Date(d);
+    dayBeforeCheckout.setDate(dayBeforeCheckout.getDate() - 1);
+    
+    while (cur <= dayBeforeCheckout) {
       if (isForbidden(cur)) return true;
       cur.setDate(cur.getDate() + 1);
     }
