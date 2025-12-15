@@ -137,13 +137,11 @@ export default function ReviewPage() {
     e.preventDefault();
     
     if (rating === 0) {
-      setError('Veuillez sélectionner une note');
       return;
     }
 
     const trimmedComment = (comment || '').trim();
     if (trimmedComment.length < 20) {
-      setError('Votre commentaire est trop court (minimum 20 caractères)');
       return;
     }
 
@@ -391,7 +389,7 @@ export default function ReviewPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting || rating === 0}
+                  disabled={submitting || rating === 0 || (comment || '').trim().length < 20}
                   style={{ width: isMobile ? '100%' : 'auto', padding: isMobile ? '12px 16px' : '12px 28px', borderRadius: 14, fontWeight: 700, color: '#fff', background: 'linear-gradient(90deg, #2563eb, #7c3aed)', border: 'none', boxShadow: '0 10px 24px rgba(99,102,241,0.35)' }}
                 >
                   {submitting ? (
