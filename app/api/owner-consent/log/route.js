@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { generateOwnerConsentPDF } from '@/lib/generateOwnerConsentPDF';
 
 export async function POST(request) {
   try {
@@ -133,19 +134,12 @@ export async function POST(request) {
       // Générer le PDF automatiquement après signature du propriétaire
       try {
         console.log('📄 Génération du PDF pour listing:', listingId);
-        const pdfResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/api/owner-consent/generate-pdf`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-          },
-          body: JSON.stringify({ listingId })
-        });
-
-        if (!pdfResponse.ok) {
-          console.warn('⚠️ Erreur génération PDF (non-bloquant):', await pdfResponse.text());
+        const pdfResult = await generateOwnerConsentPDF(listingId);
+        
+        if (!pdfResult.success) {
+          console.warn('⚠️ Erreur génération PDF (non-bloquant):', pdfResult.error);
         } else {
-          console.log('✅ PDF généré avec succès');
+          console.log('✅ PDF généré et sauvegardé avec succès');
         }
       } catch (pdfError) {
         console.warn('⚠️ Erreur génération PDF (non-bloquant):', pdfError.message);
