@@ -90,6 +90,9 @@ export async function POST(request) {
       console.error('Erreur déblocage dates:', dateError);
     }
 
+    // Remboursement intégral (parts mises à 0 = 100% refund via CRON)
+    const refundAmount = reservation.total_price || 0;
+
     // IMPORTANT: les remboursements Stripe sont gérés uniquement par le CRON.
     // Ici, on libère uniquement la caution si elle existe (autorisation), sans rembourser le paiement principal.
     try {
