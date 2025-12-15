@@ -10,7 +10,9 @@ export async function GET(request, { params }) {
       return NextResponse.json({ valid: false, error: 'Token manquant' }, { status: 400 });
     }
 
-    logger.info('Verifying owner token (masked)', { token });
+    console.log('🔍 Verifying owner token:', token.substring(0, 10) + '...');
+    const now = new Date().toISOString();
+    console.log('📅 Current time:', now);
 
     // Chercher le token dans pending_owner_verification
     const { data: verification, error } = await supabaseAdmin
@@ -26,17 +28,25 @@ export async function GET(request, { params }) {
         )
       `)
       .eq('token', token)
-      .gt('expires_at', new Date().toISOString())
       .single();
 
-    logger.debug('Owner token query finished', {
+    console.log('📊 Token lookup result:', {
       found: Boolean(verification),
-      error: error?.message,
+      error: error?.code,
+      errorMessage: error?.message,
+      expiresAt: verification?.expires_at,
+      isExpired: verification ? new Date(verification.expires_at) < new Date() : null
     });
 
     if (error || !verification) {
-      logger.warn('Owner token invalid or expired', { error: error?.message });
+      console.error('❌ Token invalid or not found:', error?.message);
       return NextResponse.json({ valid: false, error: 'Token invalide ou expiré' }, { status: 404 });
+    }
+
+    // Vérifier manuellement l'expiration
+    if (new Date(verification.expires_at) < new Date()) {
+      console.error('⏰ Token expired:', verification.expires_at);
+      return NextResponse.json({ valid: false, error: 'Token expiré' }, { status: 404 });
     }
 
     logger.info('Owner token valid', { listingId: verification.listing_id });
