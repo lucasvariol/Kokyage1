@@ -70,18 +70,23 @@ export default function VerificationProprietaire() {
 
   async function verifyToken() {
     try {
+      console.log('🔑 Token from URL:', token);
+      console.log('📞 Calling API:', `/api/verify-owner-token/${token}`);
       const res = await fetch(`/api/verify-owner-token/${token}`);
+      console.log('📡 API Response status:', res.status);
       const data = await res.json();
+      console.log('📦 API Response data:', data);
       if (data.valid) {
         setTokenValid(true);
         setListingInfo(data.listing);
         if (data.email) setEmail(data.email);
         if (data.tenant) setTenant(data.tenant);
       } else {
+        console.warn('⚠️ Token invalid:', data.error);
         setTokenValid(false);
       }
     } catch (e) {
-      console.error("Erreur vérification token:", e);
+      console.error("❌ Erreur vérification token:", e);
       setTokenValid(false);
     } finally {
       setLoading(false);
