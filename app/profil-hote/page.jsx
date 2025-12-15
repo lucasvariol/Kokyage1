@@ -229,16 +229,42 @@ export default function Page() {
           const guestIds = [...new Set(reservationsData.map(r => r.user_id).filter(Boolean))];
           
           if (guestIds.length > 0) {
+            // Récupérer les profils des voyageurs avec photo
             const { data: guestsData } = await supabase
               .from('profiles')
-              .select('id, name, email')
+              .select('id, name, email, photo_url')
               .in('id', guestIds);
 
+            // Récupérer les avis reçus par chaque voyageur
+            const { data: reviewsData } = await supabase
+              .from('reviews')
+              .select('reviewee_id, rating')
+              .in('reviewee_id', guestIds);
+
+            // Calculer la note moyenne pour chaque voyageur
+            const guestRatings = {};
+            guestIds.forEach(guestId => {
+              const guestReviews = reviewsData?.filter(r => r.reviewee_id === guestId) || [];
+              const avgRating = guestReviews.length > 0
+                ? guestReviews.reduce((sum, r) => sum + r.rating, 0) / guestReviews.length
+                : 0;
+              guestRatings[guestId] = {
+                averageRating: avgRating,
+                reviewCount: guestReviews.length
+              };
+            });
+
             // Enrichir les réservations avec les infos des guests
-            const enrichedData = reservationsData.map(reservation => ({
-              ...reservation,
-              guest: guestsData?.find(g => g.id === reservation.user_id) || null
-            }));
+            const enrichedData = reservationsData.map(reservation => {
+              const guest = guestsData?.find(g => g.id === reservation.user_id) || null;
+              return {
+                ...reservation,
+                guest: guest ? {
+                  ...guest,
+                  ...guestRatings[guest.id]
+                } : null
+              };
+            });
 
             setHostReservations(enrichedData);
           } else {
@@ -284,15 +310,41 @@ export default function Page() {
         const guestIds = [...new Set(reservationsData.map(r => r.user_id).filter(Boolean))];
         
         if (guestIds.length > 0) {
+          // Récupérer les profils des voyageurs avec photo
           const { data: guestsData } = await supabase
             .from('profiles')
-            .select('id, name, email')
+            .select('id, name, email, photo_url')
             .in('id', guestIds);
 
-          const enrichedData = reservationsData.map(reservation => ({
-            ...reservation,
-            guest: guestsData?.find(g => g.id === reservation.user_id) || null
-          }));
+          // Récupérer les avis reçus par chaque voyageur
+          const { data: reviewsData } = await supabase
+            .from('reviews')
+            .select('reviewee_id, rating')
+            .in('reviewee_id', guestIds);
+
+          // Calculer la note moyenne pour chaque voyageur
+          const guestRatings = {};
+          guestIds.forEach(guestId => {
+            const guestReviews = reviewsData?.filter(r => r.reviewee_id === guestId) || [];
+            const avgRating = guestReviews.length > 0
+              ? guestReviews.reduce((sum, r) => sum + r.rating, 0) / guestReviews.length
+              : 0;
+            guestRatings[guestId] = {
+              averageRating: avgRating,
+              reviewCount: guestReviews.length
+            };
+          });
+
+          const enrichedData = reservationsData.map(reservation => {
+            const guest = guestsData?.find(g => g.id === reservation.user_id) || null;
+            return {
+              ...reservation,
+              guest: guest ? {
+                ...guest,
+                ...guestRatings[guest.id]
+              } : null
+            };
+          });
 
           setHostReservations(enrichedData);
         } else {
@@ -1170,18 +1222,79 @@ export default function Page() {
                             </div>
 
                             {/* Informations voyageur */}
-                            <div style={{ marginBottom: 16, padding: 12, background: '#f8fafc', borderRadius: 12 }}>
-                              <p style={{ fontSize: 13, fontWeight: 700, color: '#64748b', margin: '0 0 6px' }}>
-                                VOYAGEUR
-                              </p>
-                              <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
-                                {guest?.name || guest?.email || 'Voyageur'}
-                              </p>
-                              {guest?.email && (
-                                <p style={{ fontSize: 13, color: '#64748b', margin: '4px 0 0' }}>
-                                  {guest.email}
-                                </p>
-                              )}
+                            <div style={{ marginBottom: 16, padding: 16, background: '#f8fafc', borderRadius: 12 }}>
+                              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                                {/* Photo du voyageur */}
+                                <div style={{
+                                  width: 60,
+                                  height: 60,
+                                  borderRadius: '50%',
+                                  overflow: 'hidden',
+                                  border: '2px solid #e2e8f0',
+                                  flexShrink: 0
+                                }}>
+                                  {guest?.photo_url ? (
+                                    <img
+                                      src={guest.photo_url}
+                                      alt={guest.name || 'Voyageur'}
+                                      style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover'
+                                      }}
+                                    />
+                                  ) : (
+                                    <div style={{
+                                      width: '100%',
+                                      height: '100%',
+                                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      color: '#fff',
+                                      fontSize: 24,
+                                      fontWeight: 700
+                                    }}>
+                                      {(guest?.name || guest?.email || 'V')[0].toUpperCase()}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Infos et note */}
+                                <div style={{ flex: 1 }}>
+                                  <p style={{ fontSize: 13, fontWeight: 700, color: '#64748b', margin: '0 0 6px' }}>
+                                    VOYAGEUR
+                                  </p>
+                                  <p style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', margin: '0 0 4px' }}>
+                                    {guest?.name || guest?.email || 'Voyageur'}
+                                  </p>
+                                  
+                                  {/* Note et avis */}
+                                  {guest?.reviewCount > 0 ? (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                        <span style={{ fontSize: 16 }}>⭐</span>
+                                        <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
+                                          {guest.averageRating.toFixed(1)}
+                                        </span>
+                                      </div>
+                                      <span style={{ fontSize: 13, color: '#64748b' }}>
+                                        ({guest.reviewCount} avis)
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <p style={{ fontSize: 13, color: '#64748b', margin: '6px 0 0', fontStyle: 'italic' }}>
+                                      Aucun avis
+                                    </p>
+                                  )}
+
+                                  {guest?.email && (
+                                    <p style={{ fontSize: 13, color: '#64748b', margin: '4px 0 0' }}>
+                                      {guest.email}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
                             </div>
 
                             {/* Détails du séjour */}
