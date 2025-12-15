@@ -1293,15 +1293,15 @@ export default function Page({ params: propsParams }) {
           hostProfile = { id: profileData.id, prenom: firstName, photo_url: profileData.photo_url };
         }
 
-        // Fallback to public host endpoint when unauthenticated and profile isn't available
-        if (!hostProfile && !currentUser) {
+        // Fallback to public host endpoint when profile isn't available (RLS may block when logged out)
+        if (!hostProfile) {
           try {
             const res = await fetch(`/api/listings/host-public/${params.id}`);
             if (res.ok) {
               const json = await res.json();
               if (json?.host) hostProfile = json.host;
-            } else if (profileError) {
-              console.warn('Host profile fetch blocked; public fallback failed', profileError);
+            } else {
+              console.warn('Public host API failed:', res.status, await res.text().catch(() => ''));
             }
           } catch (e) {
             console.warn('Public host fallback error:', e);

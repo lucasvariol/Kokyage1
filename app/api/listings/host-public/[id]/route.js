@@ -8,20 +8,15 @@ export async function GET(_req, { params }) {
     return NextResponse.json({ error: 'Missing listing id' }, { status: 400 });
   }
   try {
-    // Fetch listing to get owner identifiers & ensure published
+    // Fetch listing to get owner identifiers
     const { data: listing, error: listingError } = await supabaseAdmin
       .from('listings')
-      .select('id, owner_id, id_proprietaire, status')
+      .select('id, owner_id, id_proprietaire')
       .eq('id', listingId)
       .single();
 
     if (listingError || !listing) {
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
-    }
-
-    // Only allow public host exposure if listing is published (validé modérateur)
-    if (listing.status !== 'validé modérateur') {
-      return NextResponse.json({ error: 'Listing not publicly available' }, { status: 403 });
     }
 
     const hostId = listing.owner_id || listing.id_proprietaire;
