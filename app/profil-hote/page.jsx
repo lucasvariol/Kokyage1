@@ -330,8 +330,15 @@ export default function Page() {
       alert('Réservation validée avec succès !');
       
       // Recharger les réservations
-      await reloadHostReservations();
+      try {
+        await reloadHostReservations();
+      } catch (reloadError) {
+        console.error('Erreur rechargement:', reloadError);
+        // Recharger la page en dernier recours
+        window.location.reload();
+      }
     } catch (error) {
+      console.error('Erreur validation réservation:', error);
       alert('Erreur: ' + error.message);
     } finally {
       setHostValidationLoading(null);
@@ -363,8 +370,15 @@ export default function Page() {
       alert('Réservation refusée. Le voyageur sera remboursé.');
       
       // Recharger les réservations
-      await reloadHostReservations();
+      try {
+        await reloadHostReservations();
+      } catch (reloadError) {
+        console.error('Erreur rechargement:', reloadError);
+        // Recharger la page en dernier recours
+        window.location.reload();
+      }
     } catch (error) {
+      console.error('Erreur refus réservation:', error);
       alert('Erreur: ' + error.message);
     } finally {
       setHostRejectionLoading(null);
@@ -398,6 +412,20 @@ export default function Page() {
       alert('Réservation annulée. Le voyageur sera remboursé.');
       
       // Recharger les réservations
+      try {
+        await reloadHostReservations();
+      } catch (reloadError) {
+        console.error('Erreur rechargement:', reloadError);
+        // Recharger la page en dernier recours
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Erreur annulation réservation:', error);
+      alert('Erreur: ' + error.message);
+    } finally {
+      setHostCancellationLoading(null);
+    }
+  };
       await reloadHostReservations();
     } catch (error) {
       alert('Erreur: ' + error.message);
