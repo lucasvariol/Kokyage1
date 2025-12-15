@@ -224,7 +224,9 @@ export async function POST(request) {
     // Finalise la facture
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id, { auto_advance: false });
 
-    // Marque la facture comme payée pour éviter une nouvelle demande de paiement
+    // DÉSACTIVÉ: Ne pas marquer comme payée pour éviter les transactions parasites
+    // Le paiement est déjà géré par le PaymentIntent de la réservation
+    /*
     if ((baseAmount + taxAmount > 0) || totalAmount > 0) {
       try {
         await stripe.invoices.pay(finalizedInvoice.id, { paid_out_of_band: true });
@@ -232,13 +234,17 @@ export async function POST(request) {
         console.warn('⚠️ Impossible de marquer la facture comme payée automatiquement:', payError?.message || payError);
       }
     }
+    */
 
-    // Envoie la facture par email
+    // DÉSACTIVÉ: Ne pas envoyer automatiquement par email
+    // La facture reste disponible en consultation via hosted_invoice_url
+    /*
     try {
       await stripe.invoices.sendInvoice(finalizedInvoice.id);
     } catch (sendError) {
       console.warn('⚠️ Envoi de la facture par email échoué:', sendError?.message || sendError);
     }
+    */
 
     const refreshedInvoice = await stripe.invoices.retrieve(finalizedInvoice.id);
 
