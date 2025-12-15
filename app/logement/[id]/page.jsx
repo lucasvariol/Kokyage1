@@ -854,6 +854,7 @@ export default function Page({ params: propsParams }) {
   const [copied, setCopied] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [reservations, setReservations] = useState([]);
+  const [reservationsCount, setReservationsCount] = useState(0);
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState('');
   // Sélection de dates et prix
@@ -1350,7 +1351,7 @@ export default function Page({ params: propsParams }) {
           : (data.images ? JSON.parse(data.images) : []);
         setImages(imgs);
 
-        // Récupérer réservations pour ce logement spécifique
+        // Récupérer le nombre de réservations pour ce logement (sans afficher la liste)
         // Certains environnements utilisent un id numérique, d'autres une chaîne (uuid).
         // On privilégie l'entier si possible, sinon on fallback sur params.id.
         const listingIdRaw = params?.id;
@@ -1361,16 +1362,38 @@ export default function Page({ params: propsParams }) {
 
         if (!listingIdFilter) {
           setReservations([]);
+          setReservationsCount(0);
         } else {
+          // Count exact (RLS appliquée selon l'utilisateur)
+          const { count: reservationsExactCount, error: reservationsCountError } = await supabase
+            .from('reservations')
+            .select('id', { count: 'exact', head: true })
+            .eq('listing_id', listingIdFilter);
+
+          if (reservationsCountError) {
+            console.error('Error counting reservations:', reservationsCountError);
+            setReservationsCount(0);
+          } else {
+            setReservationsCount(reservationsExactCount || 0);
+          }
+
+          // Garder un dataset minimal pour les règles de dates (support legacy: start_date/end_date OU date_arrivee/date_depart)
           const { data: resData, error: resError } = await supabase
             .from('reservations')
-            .select('id, user_id, start_date, end_date, status')
-            .eq('listing_id', listingIdFilter)
-            .order('start_date', { ascending: false });
+            .select('id, status, start_date, end_date, date_arrivee, date_depart')
+            .eq('listing_id', listingIdFilter);
+
           if (resError) {
             console.error('Error fetching reservations:', resError);
+            setReservations([]);
+          } else {
+            const normalized = (resData || []).map((r) => ({
+              ...r,
+              start_date: r.start_date || r.date_arrivee || null,
+              end_date: r.end_date || r.date_depart || null,
+            }));
+            setReservations(normalized);
           }
-          setReservations(resData || []);
         }
 
         // Récupérer disponibilités (nuits sélectionnables) - filtrer côté client pour robustesse
@@ -2596,7 +2619,7 @@ export default function Page({ params: propsParams }) {
                             </div>
                             <div>
                               <div style={{ fontWeight: 700, fontSize: 17, color: '#111827' }}>
-                                {reservations.length}
+                                {reservationsCount}
                               </div>
                               <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>
                                 réservations
@@ -2787,71 +2810,7 @@ export default function Page({ params: propsParams }) {
                           </div>
                         </div>
                       ) : null}
-                      {/* Card Réservations */}
-                      {reservations.length > 0 && (
-                        <div className="card-reservations" style={{
-                          background: '#fff',
-                          borderRadius: 16,
-                          padding: '24px',
-                          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-                          border: '1px solid #f3f4f6'
-                        }}>
-                          <h2 style={{ 
-                            fontSize: 20, 
-                            fontWeight: 700, 
-                            color: '#111827', 
-                            marginBottom: 16,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8
-                          }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
-                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                              <line x1="16" y1="2" x2="16" y2="6"></line>
-                              <line x1="8" y1="2" x2="8" y2="6"></line>
-                              <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                            Réservations ({reservations.length})
-                          </h2>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                            {reservations.map(r => (
-                              <div key={r.id} className="reservation-item" style={{
-                                background: '#f9fafb',
-                                borderRadius: 10,
-                                padding: '14px 16px',
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                border: '1px solid #e5e7eb',
-                                transition: 'transform 0.2s ease'
-                              }}
-                              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(2px)'}
-                              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}
-                              >
-                                <div>
-                                  <div style={{ fontWeight: 600, color: '#111827', fontSize: 15, marginBottom: 4 }}>
-                                    {r.user?.full_name || "Voyageur"}
-                                  </div>
-                                  <div style={{ color: '#6b7280', fontSize: 13, fontWeight: 500 }}>
-                                    {new Date(r.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} → {new Date(r.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
-                                  </div>
-                                </div>
-                                <span style={{
-                                  background: r.status === "confirmed" ? '#f0fdf4' : '#fef3c7',
-                                  color: r.status === "confirmed" ? "#166534" : "#92400e",
-                                  borderRadius: 6,
-                                  padding: "6px 12px",
-                                  fontWeight: 600,
-                                  fontSize: 11,
-                                  border: `1px solid ${r.status === "confirmed" ? "#bbf7d0" : "#fde68a"}`
-                                }}>
-                                  {r.status === "confirmed" ? "✓ Confirmée" : "⏳ En attente"}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      {/* Rubrique "Réservations" supprimée (privacy) */}
 
                       {/* Card Avis - Nouveau composant interactif */}
                       {item && item.id && <ReviewsSection listingId={item.id} />}
