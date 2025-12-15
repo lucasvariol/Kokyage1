@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 // Public endpoint: returns minimal host profile info for a published listing
 export async function GET(_req, { params }) {
-  const listingId = params.id;
+  const { id: listingId } = await params;
   if (!listingId) {
     return NextResponse.json({ error: 'Missing listing id' }, { status: 400 });
   }

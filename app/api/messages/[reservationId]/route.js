@@ -6,7 +6,7 @@ import { createServerClient } from '@supabase/ssr';
 // Récupère tous les messages d'une conversation
 export async function GET(request, { params }) {
   try {
-    const { reservationId } = params;
+    const { reservationId } = await params;
     const cookieStore = cookies();
 
     const supabase = createServerClient(
@@ -86,7 +86,7 @@ export async function POST(request, { params }) {
   }
 
   try {
-    const { reservationId } = params;
+    const { reservationId } = await params;
     const body = await request.json();
     
     // Validation sécurisée
