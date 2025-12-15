@@ -141,6 +141,12 @@ export default function ReviewPage() {
       return;
     }
 
+    const trimmedComment = (comment || '').trim();
+    if (trimmedComment.length < 20) {
+      setError('Votre commentaire est trop court (minimum 20 caractères)');
+      return;
+    }
+
     try {
       setSubmitting(true);
       setError(null);
@@ -159,7 +165,7 @@ export default function ReviewPage() {
         body: JSON.stringify({
           reservationId,
           rating,
-          comment: comment.trim() || null,
+          comment: trimmedComment,
           reviewerType
         })
       });

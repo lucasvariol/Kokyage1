@@ -2,12 +2,20 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { z } from 'zod';
 import logger from '@/lib/logger';
+import { reservationIdSchema } from '@/lib/validators';
 
 // Schéma spécifique pour cette API (avec reviewerType)
 const createReviewWithTypeSchema = z.object({
-  reservationId: z.number().int().positive(),
-  rating: z.number().int().min(1).max(5),
-  comment: z.string().min(20).max(2000),
+  reservationId: reservationIdSchema,
+  rating: z.coerce.number().int().min(1).max(5),
+  comment: z.preprocess(
+    (val) => {
+      if (val === null || val === undefined) return '';
+      if (typeof val !== 'string') return val;
+      return val.trim();
+    },
+    z.string().min(20).max(2000)
+  ),
   reviewerType: z.enum(['guest', 'host']),
   cleanliness: z.number().int().min(1).max(5).optional(),
   accuracy: z.number().int().min(1).max(5).optional(),
@@ -36,9 +44,10 @@ export async function POST(request) {
     // Validation sécurisée avec Zod
     const result = createReviewWithTypeSchema.safeParse(body);
     if (!result.success) {
-      const errors = result.error.errors.map(err => ({
-        field: err.path.join('.'),
-        message: err.message
+      const issues = result.error.issues || result.error.errors || [];
+      const errors = issues.map((issue) => ({
+        field: Array.isArray(issue.path) ? issue.path.join('.') : 'body',
+        message: issue.message,
       }));
       logger.warn('Invalid review data', { errors });
       return NextResponse.json(
