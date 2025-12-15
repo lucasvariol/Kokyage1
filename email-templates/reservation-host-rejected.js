@@ -69,9 +69,9 @@ export const reservationHostRejectedTemplate = {
               </table>
 
               <div style="padding:20px 22px;background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(22,163,74,0.1));border-left:4px solid #22C55E;border-radius:14px;margin-bottom:30px;color:#1F2937;font-size:15px;line-height:1.6;">
-                <strong style="display:block;margin-bottom:10px;">💰 Remboursement en cours</strong>
+                <strong style="display:block;margin-bottom:10px;">✅ Aucun prélèvement effectué</strong>
                 <p style="margin:0;color:#475569;">
-                  Le montant de <strong style="color:#1F2937;">${refundAmount}</strong> sera remboursé sur votre moyen de paiement sous 5 à 10 jours ouvrés.
+                  Votre carte bancaire n'a pas été débitée. L'autorisation de <strong style="color:#1F2937;">${refundAmount}</strong> sera automatiquement libérée par votre banque sous 1 à 7 jours.
                 </p>
               </div>
 
@@ -134,8 +134,8 @@ Séjour : ${nights} nuit${nights > 1 ? 's' : ''}
 Voyageurs : ${guests}
 Montant : ${totalPrice}
 
-Remboursement en cours :
-Le montant de ${refundAmount} sera remboursé sur votre moyen de paiement sous 5 à 10 jours ouvrés.
+Aucun prélèvement effectué :
+Votre carte bancaire n'a pas été débitée. L'autorisation de ${refundAmount} sera automatiquement libérée par votre banque sous 1 à 7 jours.
 
 Que faire maintenant ?
 N'hésitez pas à rechercher d'autres logements disponibles sur Kokyage pour vos dates de séjour.
