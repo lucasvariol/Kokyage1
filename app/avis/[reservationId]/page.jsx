@@ -23,6 +23,13 @@ export default function ReviewPage({ params }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    if (!reservationId) return;
+    if (String(reservationId) === 'undefined') {
+      setError('Lien d\'avis invalide (réservation manquante)');
+      setLoading(false);
+      return;
+    }
+
     loadReservation();
   }, [reservationId]);
 
@@ -36,12 +43,9 @@ export default function ReviewPage({ params }) {
   const loadReservation = async () => {
     try {
       setLoading(true);
+      setError(null);
 
-      if (!reservationId || String(reservationId) === 'undefined') {
-        setError('Lien d\'avis invalide (réservation manquante)');
-        setLoading(false);
-        return;
-      }
+      if (!reservationId || String(reservationId) === 'undefined') return;
       
       // Récupérer l'utilisateur connecté
       const { data: { user } } = await supabase.auth.getUser();
