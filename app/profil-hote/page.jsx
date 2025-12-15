@@ -1266,7 +1266,7 @@ export default function Page() {
                                     VOYAGEUR
                                   </p>
                                   <p style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', margin: '0 0 4px' }}>
-                                    {guest?.name || guest?.email || 'Voyageur'}
+                                    {(guest?.name || guest?.email || 'Voyageur').split(' ')[0]}
                                   </p>
                                   
                                   {/* Note et avis */}
