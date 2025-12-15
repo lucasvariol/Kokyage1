@@ -1,15 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Header from '@/app/_components/Header';
 import Footer from '@/app/_components/Footer';
 
 export default function ReviewPage({ params }) {
   const router = useRouter();
+  const routeParams = useParams();
   const searchParams = useSearchParams();
-  const reservationId = params?.reservationId || searchParams?.get('reservationId');
+  const routeReservationId = routeParams?.reservationId;
+  const reservationId =
+    (Array.isArray(routeReservationId) ? routeReservationId[0] : routeReservationId) ||
+    searchParams?.get('reservationId');
   
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -41,11 +45,17 @@ export default function ReviewPage({ params }) {
   }, []);
 
   const loadReservation = async () => {
+    const resolvedReservationId =
+      (Array.isArray(reservationId) ? reservationId[0] : reservationId) ?? null;
+
     try {
       setLoading(true);
       setError(null);
 
-      if (!reservationId || String(reservationId) === 'undefined') return;
+      if (!resolvedReservationId || String(resolvedReservationId) === 'undefined') {
+        setError('Lien d\'avis invalide (réservation manquante)');
+        return;
+      }
       
       // Récupérer l'utilisateur connecté
       const { data: { user } } = await supabase.auth.getUser();
@@ -70,7 +80,7 @@ export default function ReviewPage({ params }) {
             city
           )
         `)
-        .eq('id', reservationId)
+        .eq('id', resolvedReservationId)
         .single();
 
       if (resError || !resData) {
@@ -105,7 +115,7 @@ export default function ReviewPage({ params }) {
       const { data: existingReview } = await supabase
         .from('reviews')
         .select('id')
-        .eq('reservation_id', reservationId)
+        .eq('reservation_id', resolvedReservationId)
         .eq('user_id', user.id)
         .single();
 
@@ -115,11 +125,10 @@ export default function ReviewPage({ params }) {
       }
 
       setReservation(resData);
-      setLoading(false);
-
     } catch (err) {
       console.error('Erreur chargement:', err);
       setError('Erreur lors du chargement');
+    } finally {
       setLoading(false);
     }
   };
