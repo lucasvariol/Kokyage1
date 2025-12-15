@@ -3355,9 +3355,14 @@ export default function Page({ params: propsParams }) {
                               <button
                                 type="button"
                                 onClick={() => {
+                                  // Debug logs
+                                  console.log('🔍 Click bouton accord - item.owner_consent_pdf:', item?.owner_consent_pdf ? 'Présent' : 'Absent');
+                                  console.log('📄 Taille PDF:', item?.owner_consent_pdf?.length || 0);
+                                  
                                   // Si PDF disponible, télécharger
                                   if (item?.owner_consent_pdf) {
                                     try {
+                                      console.log('📥 Début téléchargement PDF...');
                                       const byteCharacters = atob(item.owner_consent_pdf);
                                       const byteNumbers = new Array(byteCharacters.length);
                                       for (let i = 0; i < byteCharacters.length; i++) {
@@ -3373,11 +3378,13 @@ export default function Page({ params: propsParams }) {
                                       a.click();
                                       document.body.removeChild(a);
                                       window.URL.revokeObjectURL(url);
+                                      console.log('✅ PDF téléchargé avec succès');
                                     } catch (e) {
-                                      console.error('Erreur téléchargement PDF:', e);
-                                      alert('Erreur lors du téléchargement du PDF');
+                                      console.error('❌ Erreur téléchargement PDF:', e);
+                                      alert('Erreur lors du téléchargement du PDF: ' + e.message);
                                     }
                                   } else {
+                                    console.log('📖 Affichage modal texte (pas de PDF disponible)');
                                     // Sinon, afficher le modal avec le texte
                                     setIsReadOnlyMode(true);
                                     setShowReactivateModal(true);
