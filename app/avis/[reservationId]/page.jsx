@@ -72,8 +72,7 @@ export default function ReviewPage() {
           guest_id,
           host_id,
           user_id,
-          start_date,
-          end_date,
+          date_arrivee,
           date_depart,
           listing_id,
           listings (
@@ -304,7 +303,7 @@ export default function ReviewPage() {
                   📍 {reservation?.listings?.city}
                 </p>
                 <p style={{ color: '#bfdbfe', fontSize: isMobile ? 13 : 15, marginTop: 6 }}>
-                  📅 Du {reservation?.start_date ? new Date(reservation.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''} au {reservation?.end_date ? new Date(reservation.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
+                  📅 Du {reservation?.date_arrivee ? new Date(reservation.date_arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''} au {reservation?.date_depart ? new Date(reservation.date_depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
                 </p>
               </div>
             </div>
