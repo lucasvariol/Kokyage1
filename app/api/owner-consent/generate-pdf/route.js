@@ -65,19 +65,6 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
-      })
-      .eq('id', listingId);
-
-    if (updateError) {
-      console.error('Erreur sauvegarde PDF:', updateError);
-      return NextResponse.json({ error: 'Failed to save PDF' }, { status: 500 });
-    }
-
-    return NextResponse.json({
-      success: true,
-      pdfBase64,
-      message: 'PDF généré et sauvegardé'
-    });
 
   } catch (error) {
     console.error('Error generating PDF:', error);
