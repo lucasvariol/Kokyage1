@@ -154,14 +154,15 @@ export async function POST(request) {
       taxRateId: taxRate?.id
     });
 
-    // Crée une facture en mode "send_invoice" pour envoi par email
+    // Crée une facture en mode "charge_automatically" avec le PaymentIntent existant
+    // pour éviter la création d'un nouveau PaymentIntent
     const invoice = await stripe.invoices.create({
       customer: customerId,
-      collection_method: 'send_invoice',
-      days_until_due: 0,
+      collection_method: 'charge_automatically',
       auto_advance: false,
       description: `Réservation #${effectiveReservationId.slice(0, 8).toUpperCase()} - Séjour Kokyage du ${reservation?.date_arrivee || reservation?.start_date || ''} au ${reservation?.date_depart || reservation?.end_date || ''}`.trim(),
       footer: process.env.STRIPE_INVOICE_FOOTER || 'KOKYAGE - SAS au capital de 10 000€ - SIRET: XXX XXX XXX - RCS Paris - TVA: FRXX XXX XXX XXX',
+      default_payment_method: paymentIntent.payment_method,
       metadata: {
         reservationId: effectiveReservationId,
         listingId: reservation?.listing_id || listing?.id || '',
