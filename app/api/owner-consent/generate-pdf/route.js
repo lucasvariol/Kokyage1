@@ -65,9 +65,3 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
-
-  } catch (error) {
-    console.error('Error generating PDF:', error);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
-  }
-}
