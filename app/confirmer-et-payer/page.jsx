@@ -574,7 +574,9 @@ function ConfirmerEtPayerContent() {
         nights: Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24))
       });
 
-      // 3. Tenter l'envoi automatique d'une facture Stripe (non bloquant en cas d'échec)
+      // DÉSACTIVÉ: L'envoi automatique de facture créait des PaymentIntents parasites
+      // La facture peut maintenant être générée manuellement depuis la page réservation
+      /*
       try {
         await fetch('/api/invoices/send', {
           method: 'POST',
@@ -589,8 +591,9 @@ function ConfirmerEtPayerContent() {
       } catch (invoiceError) {
         console.warn('⚠️ Échec de l\'envoi automatique de la facture:', invoiceError);
       }
+      */
 
-      // 4. Redirection vers une page de confirmation
+      // 3. Redirection vers une page de confirmation
       router.push(`/reservations?success=true&reservationId=${reservationResult.reservation.id}`);
       
     } catch (error) {
