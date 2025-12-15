@@ -14,14 +14,9 @@ CREATE INDEX IF NOT EXISTS idx_pending_owner_verification_token ON pending_owner
 CREATE INDEX IF NOT EXISTS idx_pending_owner_verification_listing ON pending_owner_verification(listing_id);
 CREATE INDEX IF NOT EXISTS idx_pending_owner_verification_expires ON pending_owner_verification(expires_at);
 
--- RLS policies
-ALTER TABLE pending_owner_verification ENABLE ROW LEVEL SECURITY;
-
--- Permettre aux API routes (service role) d'accéder à tout
-CREATE POLICY "Service role has full access"
-ON pending_owner_verification
-FOR ALL
-USING (auth.role() = 'service_role');
+-- Pas de RLS sur cette table : accès uniquement via API routes (service role)
+-- Les utilisateurs ne peuvent pas accéder directement à cette table
+ALTER TABLE pending_owner_verification DISABLE ROW LEVEL SECURITY;
 
 -- Commentaire
-COMMENT ON TABLE pending_owner_verification IS 'Tokens temporaires pour validation propriétaire (24h)';
+COMMENT ON TABLE pending_owner_verification IS 'Tokens temporaires pour validation propriétaire (24h) - Accès API uniquement';
