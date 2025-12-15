@@ -202,6 +202,9 @@ export async function POST(request) {
         currency: 'EUR'
       }).format(Number(value || 0));
 
+      // En cas de refus par l'hôte, remboursement intégral
+      const refundAmount = reservation.total_price || 0;
+
       const emailPayload = {
         guestName: guestRawName.trim?.() || 'Voyageur',
         hostName: hostRawName.trim?.().split(/\s+/)[0] || 'Votre hôte',
