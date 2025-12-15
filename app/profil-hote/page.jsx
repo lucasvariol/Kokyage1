@@ -27,6 +27,8 @@ export default function Page() {
   const [hostCancellationLoading, setHostCancellationLoading] = useState(null);
   const [showPastReservations, setShowPastReservations] = useState(false);
   const [showCancelledReservations, setShowCancelledReservations] = useState(false);
+  const [selectedGuestReviews, setSelectedGuestReviews] = useState(null);
+  const [showReviewsModal, setShowReviewsModal] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -238,8 +240,9 @@ export default function Page() {
             // Récupérer les avis reçus par chaque voyageur
             const { data: reviewsData } = await supabase
               .from('reviews')
-              .select('reviewee_id, rating')
-              .in('reviewee_id', guestIds);
+              .select('reviewee_id, rating, comment, created_at')
+              .in('reviewee_id', guestIds)
+              .order('created_at', { ascending: false });
 
             // Calculer la note moyenne pour chaque voyageur
             const guestRatings = {};
@@ -250,7 +253,8 @@ export default function Page() {
                 : 0;
               guestRatings[guestId] = {
                 averageRating: avgRating,
-                reviewCount: guestReviews.length
+                reviewCount: guestReviews.length,
+                reviews: guestReviews
               };
             });
 
@@ -319,8 +323,9 @@ export default function Page() {
           // Récupérer les avis reçus par chaque voyageur
           const { data: reviewsData } = await supabase
             .from('reviews')
-            .select('reviewee_id, rating')
-            .in('reviewee_id', guestIds);
+            .select('reviewee_id, rating, comment, created_at')
+            .in('reviewee_id', guestIds)
+            .order('created_at', { ascending: false });
 
           // Calculer la note moyenne pour chaque voyageur
           const guestRatings = {};
@@ -331,7 +336,8 @@ export default function Page() {
               : 0;
             guestRatings[guestId] = {
               averageRating: avgRating,
-              reviewCount: guestReviews.length
+              reviewCount: guestReviews.length,
+              reviews: guestReviews
             };
           });
 
@@ -356,6 +362,12 @@ export default function Page() {
     } catch (error) {
       console.error('Erreur rechargement réservations:', error);
     }
+  };
+
+  // Afficher les avis d'un voyageur
+  const handleShowGuestReviews = (guest) => {
+    setSelectedGuestReviews(guest);
+    setShowReviewsModal(true);
   };
 
   // Valider une réservation (hôte)
@@ -1278,9 +1290,21 @@ export default function Page() {
                                           {guest.averageRating.toFixed(1)}
                                         </span>
                                       </div>
-                                      <span style={{ fontSize: 13, color: '#64748b' }}>
+                                      <button
+                                        onClick={() => handleShowGuestReviews(guest)}
+                                        style={{
+                                          fontSize: 13,
+                                          color: '#2563eb',
+                                          background: 'none',
+                                          border: 'none',
+                                          padding: 0,
+                                          cursor: 'pointer',
+                                          textDecoration: 'underline',
+                                          fontWeight: 600
+                                        }}
+                                      >
                                         ({guest.reviewCount} avis)
-                                      </span>
+                                      </button>
                                     </div>
                                   ) : (
                                     <p style={{ fontSize: 13, color: '#64748b', margin: '6px 0 0', fontStyle: 'italic' }}>
@@ -1752,6 +1776,131 @@ export default function Page() {
           .booking-sub { font-size: 13px; color: #64748b; }
         `}</style>
       </main>
+
+      {/* Modale des avis */}
+      {showReviewsModal && selectedGuestReviews && (
+        <div
+          onClick={() => setShowReviewsModal(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: 20
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#fff',
+              borderRadius: 20,
+              maxWidth: 600,
+              width: '100%',
+              maxHeight: '80vh',
+              overflow: 'auto',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+            }}
+          >
+            {/* En-tête modale */}
+            <div style={{
+              padding: '24px',
+              borderBottom: '1px solid #e2e8f0',
+              position: 'sticky',
+              top: 0,
+              background: '#fff',
+              borderRadius: '20px 20px 0 0',
+              zIndex: 1
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 4px' }}>
+                    Avis de {(selectedGuestReviews.name || 'ce voyageur').split(' ')[0]}
+                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 18 }}>⭐</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: '#0f172a' }}>
+                      {selectedGuestReviews.averageRating.toFixed(1)}
+                    </span>
+                    <span style={{ fontSize: 14, color: '#64748b' }}>
+                      ({selectedGuestReviews.reviewCount} avis)
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowReviewsModal(false)}
+                  style={{
+                    background: '#f1f5f9',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: 36,
+                    height: 36,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    fontSize: 20,
+                    color: '#64748b'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Liste des avis */}
+            <div style={{ padding: '24px', display: 'grid', gap: 16 }}>
+              {selectedGuestReviews.reviews?.length > 0 ? (
+                selectedGuestReviews.reviews.map((review, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      padding: 16,
+                      background: '#f8fafc',
+                      borderRadius: 12,
+                      border: '1px solid #e2e8f0'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <div style={{ display: 'flex', gap: 2 }}>
+                        {[1, 2, 3, 4, 5].map(star => (
+                          <span key={star} style={{ fontSize: 16 }}>
+                            {star <= review.rating ? '⭐' : '☆'}
+                          </span>
+                        ))}
+                      </div>
+                      <span style={{ fontSize: 13, color: '#64748b', marginLeft: 'auto' }}>
+                        {new Date(review.created_at).toLocaleDateString('fr-FR')}
+                      </span>
+                    </div>
+                    {review.comment && (
+                      <p style={{
+                        fontSize: 14,
+                        color: '#475569',
+                        margin: 0,
+                        lineHeight: 1.6
+                      }}>
+                        {review.comment}
+                      </p>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p style={{ textAlign: 'center', color: '#64748b', padding: 20 }}>
+                  Aucun commentaire disponible
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );
