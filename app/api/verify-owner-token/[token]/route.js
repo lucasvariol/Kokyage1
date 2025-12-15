@@ -4,7 +4,8 @@ import logger from '@/lib/logger';
 
 export async function GET(request, { params }) {
   try {
-    const { token } = params;
+    // Next.js 15: params est une Promise
+    const { token } = await params;
     
     if (!token) {
       return NextResponse.json({ valid: false, error: 'Token manquant' }, { status: 400 });
