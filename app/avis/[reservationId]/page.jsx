@@ -81,9 +81,6 @@ export default function ReviewPage() {
             title,
             city,
             images
-          ),
-          guest:profiles!reservations_guest_id_fkey (
-            prenom
           )
         `)
         .eq('id', resolvedReservationId)
@@ -93,6 +90,21 @@ export default function ReviewPage() {
         setError('Réservation introuvable');
         return;
       }
+
+      // Récupérer le profil du voyageur séparément
+      const guestId = resData.guest_id || resData.user_id;
+      let guestProfile = null;
+      if (guestId) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('prenom')
+          .eq('id', guestId)
+          .single();
+        guestProfile = profile;
+      }
+
+      // Ajouter le profil au resData
+      resData.guest = guestProfile;
 
       // Vérifier le délai de 14 jours
       const departDate = new Date(resData.date_depart);
