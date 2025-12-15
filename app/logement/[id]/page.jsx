@@ -3354,43 +3354,72 @@ export default function Page({ params: propsParams }) {
                               {/* Bouton pour relire l'accord */}
                               <button
                                 type="button"
-                                onClick={() => {
+                                onClick={async () => {
                                   // Debug logs
                                   console.log('🔍 Click bouton accord - item.owner_consent_pdf:', item?.owner_consent_pdf ? 'Présent' : 'Absent');
-                                  console.log('📄 Taille PDF:', item?.owner_consent_pdf?.length || 0);
                                   
-                                  // Si PDF disponible, télécharger
-                                  if (item?.owner_consent_pdf) {
-                                    try {
-                                      console.log('📥 Début téléchargement PDF...');
-                                      const byteCharacters = atob(item.owner_consent_pdf);
-                                      const byteNumbers = new Array(byteCharacters.length);
-                                      for (let i = 0; i < byteCharacters.length; i++) {
-                                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                                  try {
+                                    let pdfBase64 = item?.owner_consent_pdf;
+                                    
+                                    // Si le PDF n'existe pas encore, le générer
+                                    if (!pdfBase64) {
+                                      console.log('📄 PDF non trouvé, génération en cours...');
+                                      
+                                      const response = await fetch('/api/owner-consent/generate-pdf', {
+                                        method: 'POST',
+                                        headers: {
+                                          'Content-Type': 'application/json',
+                                          'Authorization': `Bearer ${accessToken}`
+                                        },
+                                        body: JSON.stringify({ listingId: item.id })
+                                      });
+                                      
+                                      if (!response.ok) {
+                                        const errorData = await response.json();
+                                        throw new Error(errorData.error || 'Erreur génération PDF');
                                       }
-                                      const byteArray = new Uint8Array(byteNumbers);
-                                      const blob = new Blob([byteArray], { type: 'application/pdf' });
-                                      const url = window.URL.createObjectURL(blob);
-                                      const a = document.createElement('a');
-                                      a.href = url;
-                                      a.download = `Accord-Sous-Location-${item.title.replace(/[^a-z0-9]/gi, '-')}.pdf`;
-                                      document.body.appendChild(a);
-                                      a.click();
-                                      document.body.removeChild(a);
-                                      window.URL.revokeObjectURL(url);
-                                      console.log('✅ PDF téléchargé avec succès');
-                                    } catch (e) {
-                                      console.error('❌ Erreur téléchargement PDF:', e);
-                                      alert('Erreur lors du téléchargement du PDF: ' + e.message);
+                                      
+                                      console.log('✅ PDF généré avec succès');
+                                      
+                                      // Recharger le listing pour obtenir le PDF
+                                      const { data: updatedListing, error } = await supabase
+                                        .from('listings')
+                                        .select('owner_consent_pdf')
+                                        .eq('id', item.id)
+                                        .single();
+                                      
+                                      if (error || !updatedListing?.owner_consent_pdf) {
+                                        throw new Error('Impossible de récupérer le PDF généré');
+                                      }
+                                      
+                                      pdfBase64 = updatedListing.owner_consent_pdf;
+                                      
+                                      // Mettre à jour l'état local
+                                      setItem({ ...item, owner_consent_pdf: pdfBase64 });
                                     }
-                                  } else {
-                                    console.log('📖 Affichage modal texte (pas de PDF disponible)');
-                                    // Sinon, afficher le modal avec le texte
-                                    setIsReadOnlyMode(true);
-                                    setShowReactivateModal(true);
-                                    setReactivateConsentChecked(false);
-                                    setReactivateConsentOpen(true);
-                                    setReactivateError('');
+                                    
+                                    // Télécharger le PDF
+                                    console.log('📥 Téléchargement du PDF...');
+                                    const byteCharacters = atob(pdfBase64);
+                                    const byteNumbers = new Array(byteCharacters.length);
+                                    for (let i = 0; i < byteCharacters.length; i++) {
+                                      byteNumbers[i] = byteCharacters.charCodeAt(i);
+                                    }
+                                    const byteArray = new Uint8Array(byteNumbers);
+                                    const blob = new Blob([byteArray], { type: 'application/pdf' });
+                                    const url = window.URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `Accord-Sous-Location-${item.title.replace(/[^a-z0-9]/gi, '-')}.pdf`;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                    window.URL.revokeObjectURL(url);
+                                    console.log('✅ PDF téléchargé avec succès');
+                                    
+                                  } catch (e) {
+                                    console.error('❌ Erreur:', e);
+                                    alert('Erreur: ' + e.message);
                                   }
                                 }}
                                 style={{
@@ -3419,23 +3448,11 @@ export default function Page({ params: propsParams }) {
                                 }}
                               >
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  {item?.owner_consent_pdf ? (
-                                    <>
-                                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                      <polyline points="7 10 12 15 17 10"></polyline>
-                                      <line x1="12" y1="15" x2="12" y2="3"></line>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                      <polyline points="14 2 14 8 20 8" />
-                                      <line x1="16" y1="13" x2="8" y2="13" />
-                                      <line x1="16" y1="17" x2="8" y2="17" />
-                                      <polyline points="10 9 9 9 8 9" />
-                                    </>
-                                  )}
+                                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                  <polyline points="7 10 12 15 17 10"></polyline>
+                                  <line x1="12" y1="15" x2="12" y2="3"></line>
                                 </svg>
-                                {item?.owner_consent_pdf ? 'Télécharger l\'accord signé (PDF)' : 'Relire l\'accord de consentement propriétaire'}
+                                Télécharger l'accord de consentement (PDF)
                               </button>
                             </>
                           )

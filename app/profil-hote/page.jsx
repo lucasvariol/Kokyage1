@@ -199,16 +199,59 @@ export default function Page() {
   // Alias pour compatibilité avec le code existant
   const startOnboarding = openStripeConnect;
 
-  // Fonction pour télécharger le PDF d'accord propriétaire
-  const downloadOwnerConsentPDF = (listing) => {
-    if (!listing.owner_consent_pdf) {
-      alert('Aucun accord signé disponible pour ce logement.');
-      return;
-    }
-
+  // Fonction pour télécharger le PDF d'accord propriétaire (génération à la demande)
+  const downloadOwnerConsentPDF = async (listing) => {
     try {
-      // Convertir le base64 en blob
-      const byteCharacters = atob(listing.owner_consent_pdf);
+      let pdfBase64 = listing.owner_consent_pdf;
+      
+      // Si le PDF n'existe pas encore, le générer
+      if (!pdfBase64) {
+        console.log('📄 PDF non trouvé, génération en cours...');
+        
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          alert('Vous devez être connecté pour générer le PDF.');
+          return;
+        }
+        
+        const response = await fetch('/api/owner-consent/generate-pdf', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ listingId: listing.id })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erreur génération PDF');
+        }
+        
+        console.log('✅ PDF généré avec succès');
+        
+        // Recharger le listing pour obtenir le PDF
+        const { data: updatedListing, error } = await supabase
+          .from('listings')
+          .select('owner_consent_pdf')
+          .eq('id', listing.id)
+          .single();
+        
+        if (error || !updatedListing?.owner_consent_pdf) {
+          throw new Error('Impossible de récupérer le PDF généré');
+        }
+        
+        pdfBase64 = updatedListing.owner_consent_pdf;
+        
+        // Mettre à jour le listing dans la liste locale
+        setListings(prev => prev.map(l => 
+          l.id === listing.id ? { ...l, owner_consent_pdf: pdfBase64 } : l
+        ));
+      }
+
+      // Convertir le base64 en blob et télécharger
+      console.log('📥 Téléchargement du PDF...');
+      const byteCharacters = atob(pdfBase64);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -225,9 +268,10 @@ export default function Page() {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
+      console.log('✅ PDF téléchargé avec succès');
     } catch (e) {
-      console.error('Erreur lors du téléchargement du PDF:', e);
-      alert('Erreur lors du téléchargement du PDF.');
+      console.error('❌ Erreur:', e);
+      alert('Erreur: ' + e.message);
     }
   };
 
@@ -1099,20 +1143,18 @@ export default function Page() {
                                   <div className="card-actions">
                                     <span className="role owner">Propriétaire</span>
                                     <div className="spacer" />
-                                    {l.owner_consent_pdf && (
-                                      <button
-                                        className="btn secondary"
-                                        onClick={() => downloadOwnerConsentPDF(l)}
-                                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-                                      >
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                          <polyline points="7 10 12 15 17 10"></polyline>
-                                          <line x1="12" y1="15" x2="12" y2="3"></line>
-                                        </svg>
-                                        Accord signé
-                                      </button>
-                                    )}
+                                    <button
+                                      className="btn secondary"
+                                      onClick={() => downloadOwnerConsentPDF(l)}
+                                      style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                                    >
+                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                      </svg>
+                                      Accord signé
+                                    </button>
                                     <a className="btn secondary" href={`/logement/${l.id}`}>Voir la fiche</a>
                                     {/* Pas de gestion de calendrier pour le rôle propriétaire */}
                                   </div>
@@ -1135,20 +1177,18 @@ export default function Page() {
                                   <div className="card-actions">
                                     <span className="role tenant">Locataire</span>
                                     <div className="spacer" />
-                                    {l.owner_consent_pdf && (
-                                      <button
-                                        className="btn secondary"
-                                        onClick={() => downloadOwnerConsentPDF(l)}
-                                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-                                      >
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                          <polyline points="7 10 12 15 17 10"></polyline>
-                                          <line x1="12" y1="15" x2="12" y2="3"></line>
-                                        </svg>
-                                        Accord signé
-                                      </button>
-                                    )}
+                                    <button
+                                      className="btn secondary"
+                                      onClick={() => downloadOwnerConsentPDF(l)}
+                                      style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                                    >
+                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                      </svg>
+                                      Accord signé
+                                    </button>
                                     <a className="btn secondary" href={`/logement/${l.id}`}>Voir la fiche</a>
                                     <a className="btn primary" href={`/calendrier?listingId=${l.id}`}>Gérer le calendrier</a>
                                   </div>

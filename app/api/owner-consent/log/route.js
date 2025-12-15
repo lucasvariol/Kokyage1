@@ -1,5 +1,4 @@
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { generateOwnerConsentPDF } from '@/lib/generateOwnerConsentPDF';
 
 export async function POST(request) {
   try {
@@ -131,19 +130,8 @@ export async function POST(request) {
         );
       }
 
-      // Générer le PDF automatiquement après signature du propriétaire
-      try {
-        console.log('📄 Génération du PDF pour listing:', listingId);
-        const pdfResult = await generateOwnerConsentPDF(listingId);
-        
-        if (!pdfResult.success) {
-          console.warn('⚠️ Erreur génération PDF (non-bloquant):', pdfResult.error);
-        } else {
-          console.log('✅ PDF généré et sauvegardé avec succès');
-        }
-      } catch (pdfError) {
-        console.warn('⚠️ Erreur génération PDF (non-bloquant):', pdfError.message);
-      }
+      // Le PDF sera généré à la demande lors du premier clic sur "Relire l'accord"
+      console.log('✅ Accord signé par le propriétaire. PDF sera généré à la demande.');
 
       return Response.json({
         success: true,
