@@ -117,7 +117,6 @@ export default function ReviewPage() {
       }
 
       // Déterminer si l'utilisateur est guest ou host
-      const guestId = resData.guest_id || resData.user_id;
       const hostId = resData.host_id;
 
       if (user.id === guestId) {
