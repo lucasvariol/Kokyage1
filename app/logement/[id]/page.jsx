@@ -1275,13 +1275,14 @@ export default function Page({ params: propsParams }) {
       
       // Fetch host profile separately since there's no direct FK
       let hostProfile = null;
-      if (data?.owner_id) {
+      const hostId = data?.owner_id || data?.id_proprietaire;
+      if (hostId) {
         // Try to fetch host profile client-side (RLS may block if logged out)
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('id, prenom, photo_url, full_name, name')
-          .eq('id', data.owner_id)
-          .single();
+          .eq('id', hostId)
+          .maybeSingle();
 
         if (profileData) {
           let firstName = 'Hôte';
@@ -1289,13 +1290,17 @@ export default function Page({ params: propsParams }) {
           else if (profileData.full_name) firstName = profileData.full_name.split(' ')[0];
           else if (profileData.name) firstName = profileData.name.split(' ')[0];
           hostProfile = { id: profileData.id, prenom: firstName, photo_url: profileData.photo_url };
-        } else if (profileError && !currentUser) {
-          // Fallback to public host endpoint (service role) when unauthenticated
+        }
+
+        // Fallback to public host endpoint when unauthenticated and profile isn't available
+        if (!hostProfile && !currentUser) {
           try {
             const res = await fetch(`/api/listings/host-public/${params.id}`);
             if (res.ok) {
               const json = await res.json();
               if (json?.host) hostProfile = json.host;
+            } else if (profileError) {
+              console.warn('Host profile fetch blocked; public fallback failed', profileError);
             }
           } catch (e) {
             console.warn('Public host fallback error:', e);
@@ -2571,6 +2576,33 @@ export default function Page({ params: propsParams }) {
                               {stats.count} avis
                             </div>
                           </div>
+                          <div className="stats-divider" style={{ width: 1, background: '#e2e8f0' }} />
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <div style={{ 
+                              background: '#f9fafb',
+                              padding: 8,
+                              borderRadius: 8,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              border: '1px solid #e5e7eb'
+                            }}>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                              </svg>
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: 700, fontSize: 17, color: '#111827' }}>
+                                {reservations.length}
+                              </div>
+                              <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>
+                                réservations
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
                         {/* Actions - Seulement pour le locataire (owner_id) */}
@@ -2683,56 +2715,7 @@ export default function Page({ params: propsParams }) {
                             </button>
                           </div>
                         )}
-                        
-                        {/* Host info box for public visitors */}
-                        {!role && item.host && (
-                          <div style={{
-                            background: 'linear-gradient(135deg, #f9fafb 0%, #ffffff 100%)',
-                            borderRadius: 12,
-                            padding: 16,
-                            marginTop: 16,
-                            border: '1px solid #e5e7eb',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 12
-                          }}>
-                            {/* Host avatar */}
-                            <div style={{
-                              width: 48,
-                              height: 48,
-                              borderRadius: '50%',
-                              overflow: 'hidden',
-                              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0,
-                              border: '2px solid #fff',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                            }}>
-                              {item.host.photo_url ? (
-                                <img 
-                                  src={item.host.photo_url} 
-                                  alt={item.host.prenom}
-                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
-                              ) : (
-                                <span style={{ color: '#fff', fontSize: 20, fontWeight: 700 }}>
-                                  {(item.host.prenom || 'H')[0].toUpperCase()}
-                                </span>
-                              )}
-                            </div>
-                            {/* Host name */}
-                            <div style={{ flex: 1 }}>
-                              <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 500, marginBottom: 2 }}>
-                                Proposé par
-                              </div>
-                              <div style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
-                                {item.host.prenom || 'Hôte'}
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                        {/* Removed owner info box when not tenant, per request */}
                       </div>
 
                       {/* Card Description */}
