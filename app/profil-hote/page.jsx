@@ -425,13 +425,6 @@ export default function Page() {
       setHostCancellationLoading(null);
     }
   };
-      await reloadHostReservations();
-    } catch (error) {
-      alert('Erreur: ' + error.message);
-    } finally {
-      setHostCancellationLoading(null);
-    }
-  };
 
   // Fonction pour déclencher le virement vers l'utilisateur
   const handlePayout = async () => {
