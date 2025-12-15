@@ -72,12 +72,18 @@ export default function ReviewPage() {
           guest_id,
           host_id,
           user_id,
+          start_date,
+          end_date,
           date_depart,
           listing_id,
           listings (
             id,
             title,
-            city
+            city,
+            images
+          ),
+          guest:profiles!reservations_guest_id_fkey (
+            prenom
           )
         `)
         .eq('id', resolvedReservationId)
@@ -268,16 +274,26 @@ export default function ReviewPage() {
         <div style={{ maxWidth: isMobile ? '100%' : 900, margin: '0 auto' }}>
           {/* Header Card */}
           <div style={{ background: 'linear-gradient(90deg, #2563eb, #7c3aed)', borderRadius: isMobile ? 18 : 24, boxShadow: '0 12px 30px rgba(0,0,0,0.08)', padding: isMobile ? 20 : 32, marginBottom: isMobile ? 16 : 24, color: '#fff' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 16, marginBottom: isMobile ? 12 : 16 }}>
-              <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, background: 'rgba(255,255,255,0.2)', borderRadius: 16, backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: isMobile ? 26 : 32 }}>{reviewerType === 'guest' ? '⭐' : '👤'}</span>
-              </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: isMobile ? 12 : 16 }}>
+              {reservation?.listings?.images?.[0] && (
+                <img
+                  src={reservation.listings.images[0]}
+                  alt={reservation.listings.title}
+                  style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius: 16, objectFit: 'cover', border: '2px solid rgba(255,255,255,0.3)' }}
+                />
+              )}
               <div style={{ flex: 1 }}>
-                <h1 style={{ fontSize: isMobile ? 22 : 32, fontWeight: 800, margin: '0 0 6px' }}>
-                  {reviewerType === 'guest' ? 'Votre avis compte !' : 'Évaluez votre voyageur'}
+                <h1 style={{ fontSize: isMobile ? 20 : 28, fontWeight: 800, margin: '0 0 8px' }}>
+                  {reviewerType === 'guest' ? 'Votre avis compte !' : `Évaluez ${reservation?.guest?.prenom || 'votre voyageur'}`}
                 </h1>
-                <p style={{ color: '#dbeafe', fontSize: isMobile ? 14 : 18 }}>
-                  {reservation?.listings?.title} · {reservation?.listings?.city}
+                <p style={{ color: '#dbeafe', fontSize: isMobile ? 15 : 17, marginBottom: 8, fontWeight: 600 }}>
+                  {reservation?.listings?.title}
+                </p>
+                <p style={{ color: '#bfdbfe', fontSize: isMobile ? 13 : 15 }}>
+                  📍 {reservation?.listings?.city}
+                </p>
+                <p style={{ color: '#bfdbfe', fontSize: isMobile ? 13 : 15, marginTop: 6 }}>
+                  📅 Du {reservation?.start_date ? new Date(reservation.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''} au {reservation?.end_date ? new Date(reservation.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
                 </p>
               </div>
             </div>
