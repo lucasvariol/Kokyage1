@@ -360,6 +360,14 @@ export default function ReviewPage() {
                   }
                   style={{ width: '100%', padding: isMobile ? '12px 14px' : '16px 20px', border: '2px solid #e5e7eb', borderRadius: 16, resize: 'none', fontSize: isMobile ? 15 : 16, outline: 'none' }}
                 />
+                <div style={{ marginTop: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p style={{ fontSize: isMobile ? 12 : 13, color: comment.trim().length >= 20 ? '#10b981' : '#ef4444', fontWeight: 600 }}>
+                    {comment.trim().length >= 20 
+                      ? `✓ ${comment.trim().length} caractères` 
+                      : `${comment.trim().length}/20 caractères minimum`
+                    }
+                  </p>
+                </div>
               </div>
 
               {/* Notice */}
