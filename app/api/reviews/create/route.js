@@ -115,27 +115,45 @@ export async function POST(request) {
       );
     }
 
+    // Validation finale avant insert
+    if (!reservationId || !listingId || !reviewerId || !revieweeId) {
+      console.error('❌ Champs manquants:', { reservationId, listingId, reviewerId, revieweeId });
+      return NextResponse.json(
+        { error: 'Données incomplètes pour créer l\'avis' },
+        { status: 400 }
+      );
+    }
+
     // Créer l'avis (non publié par défaut)
+    const reviewData = {
+      reservation_id: reservationId,
+      listing_id: listingId,
+      user_id: reviewerId,
+      reviewee_id: revieweeId,
+      reviewer_type: reviewerType,
+      rating,
+      comment: comment || null,
+      is_published: false
+    };
+
+    console.log('📝 Tentative création avis:', { ...reviewData, comment: comment ? '(présent)' : null });
+
     const { data: newReview, error: createError } = await supabaseAdmin
       .from('reviews')
-      .insert({
-        reservation_id: reservationId,
-        listing_id: listingId,
-        user_id: reviewerId,
-        reviewee_id: revieweeId,
-        reviewer_type: reviewerType,
-        rating,
-        comment: comment || null,
-        is_published: false,
-        created_at: new Date().toISOString()
-      })
+      .insert(reviewData)
       .select()
       .single();
 
     if (createError) {
-      console.error('❌ Erreur création avis:', createError);
+      console.error('❌ Erreur création avis (Supabase):', {
+        code: createError.code,
+        message: createError.message,
+        details: createError.details,
+        hint: createError.hint,
+        reviewData: { ...reviewData, comment: comment ? '(masqué)' : null }
+      });
       return NextResponse.json(
-        { error: 'Erreur lors de la création de l\'avis' },
+        { error: 'Erreur lors de la création de l\'avis', details: createError.message },
         { status: 500 }
       );
     }
