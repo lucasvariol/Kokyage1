@@ -2571,33 +2571,6 @@ export default function Page({ params: propsParams }) {
                               {stats.count} avis
                             </div>
                           </div>
-                          <div className="stats-divider" style={{ width: 1, background: '#e2e8f0' }} />
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <div style={{ 
-                              background: '#f9fafb',
-                              padding: 8,
-                              borderRadius: 8,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              border: '1px solid #e5e7eb'
-                            }}>
-                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                              </svg>
-                            </div>
-                            <div>
-                              <div style={{ fontWeight: 700, fontSize: 17, color: '#111827' }}>
-                                {reservations.length}
-                              </div>
-                              <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 500 }}>
-                                réservations
-                              </div>
-                            </div>
-                          </div>
                         </div>
 
                         {/* Actions - Seulement pour le locataire (owner_id) */}
