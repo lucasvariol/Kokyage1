@@ -2710,7 +2710,56 @@ export default function Page({ params: propsParams }) {
                             </button>
                           </div>
                         )}
-                        {/* Removed owner info box when not tenant, per request */}
+                        
+                        {/* Host info box for public visitors */}
+                        {!role && item.host && (
+                          <div style={{
+                            background: 'linear-gradient(135deg, #f9fafb 0%, #ffffff 100%)',
+                            borderRadius: 12,
+                            padding: 16,
+                            marginTop: 16,
+                            border: '1px solid #e5e7eb',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 12
+                          }}>
+                            {/* Host avatar */}
+                            <div style={{
+                              width: 48,
+                              height: 48,
+                              borderRadius: '50%',
+                              overflow: 'hidden',
+                              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                              border: '2px solid #fff',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                            }}>
+                              {item.host.photo_url ? (
+                                <img 
+                                  src={item.host.photo_url} 
+                                  alt={item.host.prenom}
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                              ) : (
+                                <span style={{ color: '#fff', fontSize: 20, fontWeight: 700 }}>
+                                  {(item.host.prenom || 'H')[0].toUpperCase()}
+                                </span>
+                              )}
+                            </div>
+                            {/* Host name */}
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 500, marginBottom: 2 }}>
+                                Proposé par
+                              </div>
+                              <div style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
+                                {item.host.prenom || 'Hôte'}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Card Description */}
