@@ -273,35 +273,6 @@ export default function ReviewsSection({ listingId }) {
           </button>
         )}
 
-        {user && !canReview && !checkingEligibility && (
-          <div style={{
-            padding: '14px 16px',
-            background: '#fef3c7',
-            borderRadius: 10,
-            border: '1px solid #fde68a',
-            textAlign: 'center',
-            fontSize: 13,
-            color: '#92400e',
-            fontWeight: 500
-          }}>
-            Vous devez avoir séjourné dans ce logement pour laisser un avis
-          </div>
-        )}
-
-        {!user && (
-          <div style={{
-            padding: '14px 16px',
-            background: '#f9fafb',
-            borderRadius: 10,
-            border: '1px solid #e5e7eb',
-            textAlign: 'center',
-            fontSize: 13,
-            color: '#6b7280',
-            fontWeight: 500
-          }}>
-            Connectez-vous pour laisser un avis
-          </div>
-        )}
       </div>
 
       {/* Review form */}
