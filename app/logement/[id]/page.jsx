@@ -2884,7 +2884,7 @@ export default function Page({ params: propsParams }) {
                               showOutsideDays
                               month={currentMonth}
                               onMonthChange={setCurrentMonth}
-                              disabled={!range?.from ? [...disabledDays, disableFromAfterTo] : [disableFromAfterTo]}
+                              disabled={!range?.from ? [...disabledDays, disableFromAfterTo] : [...disabledDays, disableToNonContiguous, disableFromAfterTo]}
                               fromDate={new Date()}
                               modifiersClassNames={{
                                 selected: 'selected-night',
