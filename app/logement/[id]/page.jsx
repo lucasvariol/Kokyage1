@@ -1294,12 +1294,14 @@ export default function Page({ params: propsParams }) {
         }
 
         // Fallback to public host endpoint when profile isn't available (RLS may block when logged out)
+        let publicReservationsCount = null;
         if (!hostProfile) {
           try {
             const res = await fetch(`/api/listings/host-public/${params.id}`);
             if (res.ok) {
               const json = await res.json();
               if (json?.host) hostProfile = json.host;
+              if (typeof json?.reservationsCount === 'number') publicReservationsCount = json.reservationsCount;
             } else {
               console.warn('Public host API failed:', res.status, await res.text().catch(() => ''));
             }
@@ -1372,7 +1374,8 @@ export default function Page({ params: propsParams }) {
 
           if (reservationsCountError) {
             console.error('Error counting reservations:', reservationsCountError);
-            setReservationsCount(0);
+            // Fallback to public API count if available (when RLS blocks)
+            setReservationsCount(publicReservationsCount ?? 0);
           } else {
             setReservationsCount(reservationsExactCount || 0);
           }

@@ -40,13 +40,22 @@ export async function GET(_req, { params }) {
     else if (profile.full_name) firstName = profile.full_name.split(' ')[0];
     else if (profile.name) firstName = profile.name.split(' ')[0];
 
+    // Get reservations count for this listing
+    const { count: reservationsCount } = await supabaseAdmin
+      .from('reservations')
+      .select('id', { count: 'exact', head: true })
+      .eq('listing_id', listingId);
+
     const host = {
       id: profile.id,
       prenom: firstName,
       photo_url: profile.photo_url || null
     };
 
-    return NextResponse.json({ host }, { status: 200 });
+    return NextResponse.json({ 
+      host, 
+      reservationsCount: reservationsCount || 0 
+    }, { status: 200 });
   } catch (e) {
     console.error('Public host fetch error:', e);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
