@@ -50,11 +50,14 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Cannot cancel: reservation not validated yet. Use reject instead.' }, { status: 400 });
     }
 
-    // Annuler la réservation
+    // Annuler la réservation avec remboursement intégral (100%)
     const { error: updateError } = await supabaseAdmin
       .from('reservations')
       .update({ 
-        status: 'cancelled'
+        status: 'cancelled',
+        refund_percentage: 100,
+        cancelled_by: 'host',
+        cancelled_at: new Date().toISOString()
       })
       .eq('id', reservationId);
 
