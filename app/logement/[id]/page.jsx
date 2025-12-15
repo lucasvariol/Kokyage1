@@ -1545,6 +1545,7 @@ export default function Page({ params: propsParams }) {
   const basePlusFeesTotal = useMemo(() => baseTotal + feeTotal, [baseTotal, feeTotal]);
   // Month control for DayPicker to avoid month jumping on selection
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [calendarResetKey, setCalendarResetKey] = useState(0);
 
   // Charger la taxe de séjour dynamique via API selon la ville, le nombre de voyageurs et le prix
   useEffect(() => {
@@ -2850,6 +2851,7 @@ export default function Page({ params: propsParams }) {
                                     // Réinitialise complètement la sélection pour repartir sur une nouvelle arrivée
                                     setActiveField('from');
                                     setRange({ from: undefined, to: undefined });
+                                    setCalendarResetKey(prev => prev + 1); // Force le rafraîchissement du calendrier
                                   }}
                                   value={range.from ? range.from.toLocaleDateString('fr-FR') : ''}
                                   placeholder="jj/mm/aaaa"
@@ -2872,6 +2874,7 @@ export default function Page({ params: propsParams }) {
                           </div>
                           <div style={{ border: '1px solid #e2e8f0', borderRadius: 12, padding: 8, background: '#fff' }}>
                             <DayPicker
+                              key={calendarResetKey}
                               mode="range"
                               selected={range}
                               onDayClick={handleDayClick}
