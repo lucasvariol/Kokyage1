@@ -162,21 +162,10 @@ export async function GET(request) {
           const basePrice = Number(reservation.base_price || 0);
           const keptBaseAmount = proprietorAmount + mainTenantAmount + platformAmount;
 
-          // Déterminer le taux de remboursement
+          // Calculer le taux de remboursement en fonction des parts conservées
+          // Si toutes les parts sont à 0 (annulation hôte ou voyageur avec remboursement intégral) => refundRate = 1
           let refundRate = 0;
-          
-          // Si refund_percentage est explicitement défini (ex: annulation hôte = 100%), l'utiliser
-          if (reservation.refund_percentage !== null && reservation.refund_percentage !== undefined) {
-            refundRate = Math.max(0, Math.min(1, Number(reservation.refund_percentage) / 100));
-            console.log(`📊 Taux de remboursement explicite: ${reservation.refund_percentage}%`);
-          }
-          // Sinon, si cancelled_by === 'host', remboursement intégral
-          else if (reservation.cancelled_by === 'host') {
-            refundRate = 1;
-            console.log(`📊 Annulation par l'hôte: remboursement intégral (100%)`);
-          }
-          // Sinon calculer via les parts conservées
-          else if (basePrice > 0) {
+          if (basePrice > 0) {
             const keptRate = Math.max(0, Math.min(1, keptBaseAmount / basePrice));
             refundRate = Math.max(0, Math.min(1, 1 - keptRate));
           } else {
