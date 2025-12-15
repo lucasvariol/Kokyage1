@@ -237,11 +237,12 @@ export default function Page() {
               .select('id, name, email, photo_url')
               .in('id', guestIds);
 
-            // Récupérer les avis reçus par chaque voyageur
+            // Récupérer les avis reçus par chaque voyageur (publiés uniquement)
             const { data: reviewsData } = await supabase
               .from('reviews')
               .select('reviewee_id, rating, comment, created_at')
               .in('reviewee_id', guestIds)
+              .eq('is_published', true)
               .order('created_at', { ascending: false });
 
             // Calculer la note moyenne pour chaque voyageur
@@ -320,11 +321,12 @@ export default function Page() {
             .select('id, name, email, photo_url')
             .in('id', guestIds);
 
-          // Récupérer les avis reçus par chaque voyageur
+          // Récupérer les avis reçus par chaque voyageur (publiés uniquement)
           const { data: reviewsData } = await supabase
             .from('reviews')
             .select('reviewee_id, rating, comment, created_at')
             .in('reviewee_id', guestIds)
+            .eq('is_published', true)
             .order('created_at', { ascending: false });
 
           // Calculer la note moyenne pour chaque voyageur
