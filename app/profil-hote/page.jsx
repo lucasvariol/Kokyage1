@@ -49,7 +49,7 @@ export default function Page() {
       const [listingsRes, bookingsRes] = await Promise.all([
         supabase
           .from('listings')
-          .select('id, title, city, status, created_at, owner_id, id_proprietaire')
+          .select('id, title, city, status, created_at, owner_id, id_proprietaire, owner_consent_pdf')
           .or(`owner_id.eq.${currentUser.id},id_proprietaire.eq.${currentUser.id}`),
         supabase
           .from('reservations')
@@ -198,6 +198,38 @@ export default function Page() {
 
   // Alias pour compatibilité avec le code existant
   const startOnboarding = openStripeConnect;
+
+  // Fonction pour télécharger le PDF d'accord propriétaire
+  const downloadOwnerConsentPDF = (listing) => {
+    if (!listing.owner_consent_pdf) {
+      alert('Aucun accord signé disponible pour ce logement.');
+      return;
+    }
+
+    try {
+      // Convertir le base64 en blob
+      const byteCharacters = atob(listing.owner_consent_pdf);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+      // Créer un lien de téléchargement
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Accord-Sous-Location-${listing.title.replace(/[^a-z0-9]/gi, '-')}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Erreur lors du téléchargement du PDF:', e);
+      alert('Erreur lors du téléchargement du PDF.');
+    }
+  };
 
   // Charger les réservations où l'utilisateur est hôte
   useEffect(() => {
@@ -1067,6 +1099,20 @@ export default function Page() {
                                   <div className="card-actions">
                                     <span className="role owner">Propriétaire</span>
                                     <div className="spacer" />
+                                    {l.owner_consent_pdf && (
+                                      <button
+                                        className="btn secondary"
+                                        onClick={() => downloadOwnerConsentPDF(l)}
+                                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                                      >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                          <polyline points="7 10 12 15 17 10"></polyline>
+                                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        </svg>
+                                        Accord signé
+                                      </button>
+                                    )}
                                     <a className="btn secondary" href={`/logement/${l.id}`}>Voir la fiche</a>
                                     {/* Pas de gestion de calendrier pour le rôle propriétaire */}
                                   </div>
@@ -1089,6 +1135,20 @@ export default function Page() {
                                   <div className="card-actions">
                                     <span className="role tenant">Locataire</span>
                                     <div className="spacer" />
+                                    {l.owner_consent_pdf && (
+                                      <button
+                                        className="btn secondary"
+                                        onClick={() => downloadOwnerConsentPDF(l)}
+                                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                                      >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                          <polyline points="7 10 12 15 17 10"></polyline>
+                                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        </svg>
+                                        Accord signé
+                                      </button>
+                                    )}
                                     <a className="btn secondary" href={`/logement/${l.id}`}>Voir la fiche</a>
                                     <a className="btn primary" href={`/calendrier?listingId=${l.id}`}>Gérer le calendrier</a>
                                   </div>

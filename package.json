@@ -23,6 +23,7 @@
     "dotenv": "^17.2.3",
     "fast-xml-parser": "^5.3.3",
     "gray-matter": "^4.0.3",
+    "jspdf": "^3.0.4",
     "leaflet": "^1.9.4",
     "mangopay2-nodejs-sdk": "^1.61.0",
     "mapbox-gl": "^3.14.0",

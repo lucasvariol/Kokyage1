@@ -40,22 +40,11 @@ export async function GET(req) {
       return Response.json({ error: 'Erreur lors de la récupération des avis' }, { status: 500 });
     }
 
-    console.log(`📊 Reviews API - listing_id: ${listing_id}, total fetched: ${reviews?.length || 0}`);
-    if (reviews && reviews.length > 0) {
-      console.log('First review sample:', { 
-        id: reviews[0].id, 
-        reviewer_type: reviews[0].reviewer_type,
-        is_published: reviews[0].is_published 
-      });
-    }
-
     // Filter to show only guest reviews (or legacy reviews without reviewer_type)
     // This prevents host-to-guest reviews from appearing on listing pages
     const guestReviews = (reviews || []).filter(r => 
       !r.reviewer_type || r.reviewer_type === 'guest'
     );
-
-    console.log(`📊 After guest filter: ${guestReviews.length} reviews`);
 
     // Enrich with author's first name from auth metadata (best-effort)
     let enrichedReviews = guestReviews;
@@ -83,16 +72,15 @@ export async function GET(req) {
       }));
     }
 
-    // Rating summary (calculated from guest reviews to match what we display)
-    const totalRating = guestReviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+    // Rating summary (calculated from returned reviews to stay consistent with filters)
+    const safeReviews = reviews || [];
+    const totalRating = safeReviews.reduce((sum, r) => sum + (r.rating || 0), 0);
     const summaryData = {
-      review_count: guestReviews.length,
-      average_rating: guestReviews.length > 0
-        ? Math.round((totalRating / guestReviews.length) * 10) / 10
+      review_count: safeReviews.length,
+      average_rating: safeReviews.length > 0
+        ? Math.round((totalRating / safeReviews.length) * 10) / 10
         : 0
     };
-
-    console.log(`✅ Returning: ${enrichedReviews.length} reviews, avg: ${summaryData.average_rating}`);
 
     return Response.json({
       reviews: enrichedReviews,
