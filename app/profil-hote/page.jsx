@@ -25,6 +25,8 @@ export default function Page() {
   const [hostValidationLoading, setHostValidationLoading] = useState(null);
   const [hostRejectionLoading, setHostRejectionLoading] = useState(null);
   const [hostCancellationLoading, setHostCancellationLoading] = useState(null);
+  const [showPastReservations, setShowPastReservations] = useState(false);
+  const [showCancelledReservations, setShowCancelledReservations] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -1087,7 +1089,15 @@ export default function Page() {
                     </div>
                   ) : (
                     <div style={{ display: 'grid', gap: 20 }}>
-                      {hostReservations.map(reservation => {
+                      {/* Réservations actives (en attente ou confirmées à venir) */}
+                      {hostReservations.filter(r => {
+                        if (r.status === 'cancelled' || r.status === 'canceled' || r.status === 'rejected') return false;
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const checkoutDate = new Date(r.date_depart || r.end_date);
+                        checkoutDate.setHours(0, 0, 0, 0);
+                        return checkoutDate >= today;
+                      }).map(reservation => {
                         const listing = reservation.listings;
                         const guest = reservation.guest;
                         const statusColors = {
@@ -1299,6 +1309,277 @@ export default function Page() {
                           </div>
                         );
                       })}
+
+                      {/* Réservations passées - Menu déroulant */}
+                      {hostReservations.filter(r => {
+                        if (r.status === 'cancelled' || r.status === 'canceled' || r.status === 'rejected') return false;
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const checkoutDate = new Date(r.date_depart || r.end_date);
+                        checkoutDate.setHours(0, 0, 0, 0);
+                        return checkoutDate < today;
+                      }).length > 0 && (
+                        <div style={{
+                          background: '#fff',
+                          borderRadius: 20,
+                          padding: 20,
+                          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+                          border: '1px solid #e2e8f0',
+                          marginTop: 12
+                        }}>
+                          <button
+                            onClick={() => setShowPastReservations(!showPastReservations)}
+                            style={{
+                              width: '100%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              background: 'transparent',
+                              border: 'none',
+                              padding: 0,
+                              cursor: 'pointer',
+                              fontWeight: 800,
+                              fontSize: 16,
+                              color: '#0f172a'
+                            }}
+                          >
+                            <span>📅 Réservations passées ({hostReservations.filter(r => {
+                              if (r.status === 'cancelled' || r.status === 'canceled' || r.status === 'rejected') return false;
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              const checkoutDate = new Date(r.date_depart || r.end_date);
+                              checkoutDate.setHours(0, 0, 0, 0);
+                              return checkoutDate < today;
+                            }).length})</span>
+                            <span style={{ fontSize: 20, transition: 'transform 0.2s', transform: showPastReservations ? 'rotate(180deg)' : 'rotate(0)' }}>▼</span>
+                          </button>
+                          
+                          {showPastReservations && (
+                            <div style={{ marginTop: 20, display: 'grid', gap: 16 }}>
+                              {hostReservations.filter(r => {
+                                if (r.status === 'cancelled' || r.status === 'canceled' || r.status === 'rejected') return false;
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+                                const checkoutDate = new Date(r.date_depart || r.end_date);
+                                checkoutDate.setHours(0, 0, 0, 0);
+                                return checkoutDate < today;
+                              }).map((reservation) => {
+                                const listing = reservation.listings;
+                                const guest = reservation.guest;
+                                
+                                return (
+                                  <div
+                                    key={reservation.id}
+                                    style={{
+                                      padding: 24,
+                                      background: '#f8fafc',
+                                      borderRadius: 16,
+                                      border: '1px solid #e2e8f0',
+                                      opacity: 0.8
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                                      <div style={{ flex: 1 }}>
+                                        <h3 style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', margin: '0 0 4px' }}>
+                                          {listing?.title || 'Logement'}
+                                        </h3>
+                                        <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
+                                          {listing?.city} • Réservation #{reservation.id.slice(0, 8).toUpperCase()}
+                                        </p>
+                                      </div>
+                                      <span style={{
+                                        padding: '6px 12px',
+                                        borderRadius: 999,
+                                        fontSize: 13,
+                                        fontWeight: 700,
+                                        background: '#e0f2fe',
+                                        color: '#075985',
+                                        border: '1px solid #bae6fd'
+                                      }}>
+                                        ✓ Terminée
+                                      </span>
+                                    </div>
+
+                                    <div style={{ marginBottom: 16, padding: 12, background: '#fff', borderRadius: 12 }}>
+                                      <p style={{ fontSize: 13, fontWeight: 700, color: '#64748b', margin: '0 0 6px' }}>
+                                        VOYAGEUR
+                                      </p>
+                                      <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                        {guest?.name || guest?.email || 'Voyageur'}
+                                      </p>
+                                    </div>
+
+                                    <div style={{
+                                      display: 'grid',
+                                      gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                                      gap: 16
+                                    }}>
+                                      <div>
+                                        <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                          ARRIVÉE
+                                        </p>
+                                        <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                          {new Date(reservation.date_arrivee || reservation.start_date).toLocaleDateString('fr-FR')}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                          DÉPART
+                                        </p>
+                                        <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                          {new Date(reservation.date_depart || reservation.end_date).toLocaleDateString('fr-FR')}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                          MONTANT TOTAL
+                                        </p>
+                                        <p style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.total_price || 0)}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Réservations annulées - Menu déroulant */}
+                      {hostReservations.filter(r => r.status === 'cancelled' || r.status === 'canceled' || r.status === 'rejected').length > 0 && (
+                        <div style={{
+                          background: '#fff',
+                          borderRadius: 20,
+                          padding: 20,
+                          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+                          border: '1px solid #e2e8f0',
+                          marginTop: 12
+                        }}>
+                          <button
+                            onClick={() => setShowCancelledReservations(!showCancelledReservations)}
+                            style={{
+                              width: '100%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              background: 'transparent',
+                              border: 'none',
+                              padding: 0,
+                              cursor: 'pointer',
+                              fontWeight: 800,
+                              fontSize: 16,
+                              color: '#0f172a'
+                            }}
+                          >
+                            <span>❌ Réservations annulées ({hostReservations.filter(r => r.status === 'cancelled' || r.status === 'canceled' || r.status === 'rejected').length})</span>
+                            <span style={{ fontSize: 20, transition: 'transform 0.2s', transform: showCancelledReservations ? 'rotate(180deg)' : 'rotate(0)' }}>▼</span>
+                          </button>
+                          
+                          {showCancelledReservations && (
+                            <div style={{ marginTop: 20, display: 'grid', gap: 16 }}>
+                              {hostReservations.filter(r => r.status === 'cancelled' || r.status === 'canceled' || r.status === 'rejected').map((reservation) => {
+                                const listing = reservation.listings;
+                                const guest = reservation.guest;
+                                const isRejected = reservation.status === 'rejected';
+                                
+                                return (
+                                  <div
+                                    key={reservation.id}
+                                    style={{
+                                      padding: 24,
+                                      background: '#fef2f2',
+                                      borderRadius: 16,
+                                      border: '1px solid #fecaca',
+                                      opacity: 0.9
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                                      <div style={{ flex: 1 }}>
+                                        <h3 style={{ fontSize: 18, fontWeight: 800, color: '#991b1b', margin: '0 0 4px' }}>
+                                          {listing?.title || 'Logement'}
+                                        </h3>
+                                        <p style={{ color: '#7f1d1d', fontSize: 14, margin: 0 }}>
+                                          {listing?.city} • Réservation #{reservation.id.slice(0, 8).toUpperCase()}
+                                        </p>
+                                      </div>
+                                      <span style={{
+                                        padding: '6px 12px',
+                                        borderRadius: 999,
+                                        fontSize: 13,
+                                        fontWeight: 700,
+                                        background: '#fee2e2',
+                                        color: '#991b1b',
+                                        border: '1px solid #fca5a5'
+                                      }}>
+                                        {isRejected ? '✗ Refusée' : '✗ Annulée'}
+                                      </span>
+                                    </div>
+
+                                    <div style={{ marginBottom: 16, padding: 12, background: '#fff', borderRadius: 12 }}>
+                                      <p style={{ fontSize: 13, fontWeight: 700, color: '#64748b', margin: '0 0 6px' }}>
+                                        VOYAGEUR
+                                      </p>
+                                      <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                        {guest?.name || guest?.email || 'Voyageur'}
+                                      </p>
+                                    </div>
+
+                                    <div style={{
+                                      display: 'grid',
+                                      gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                                      gap: 16,
+                                      marginBottom: reservation.cancellation_reason ? 16 : 0
+                                    }}>
+                                      <div>
+                                        <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                          ARRIVÉE
+                                        </p>
+                                        <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                          {new Date(reservation.date_arrivee || reservation.start_date).toLocaleDateString('fr-FR')}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                          DÉPART
+                                        </p>
+                                        <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>
+                                          {new Date(reservation.date_depart || reservation.end_date).toLocaleDateString('fr-FR')}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p style={{ fontSize: 12, fontWeight: 700, color: '#64748b', margin: '0 0 4px' }}>
+                                          MONTANT
+                                        </p>
+                                        <p style={{ fontSize: 15, fontWeight: 700, color: '#991b1b', margin: 0, textDecoration: 'line-through' }}>
+                                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.total_price || 0)}
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    {reservation.cancellation_reason && (
+                                      <div style={{
+                                        padding: 12,
+                                        background: '#fff',
+                                        borderRadius: 12,
+                                        border: '1px solid #fecaca'
+                                      }}>
+                                        <p style={{ fontSize: 12, fontWeight: 700, color: '#991b1b', margin: '0 0 4px' }}>
+                                          RAISON
+                                        </p>
+                                        <p style={{ fontSize: 14, color: '#7f1d1d', margin: 0 }}>
+                                          {reservation.cancellation_reason}
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
