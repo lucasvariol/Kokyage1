@@ -424,7 +424,27 @@ export default function ReviewPage() {
                 <button
                   type="submit"
                   disabled={submitting || rating === 0 || (comment || '').trim().length < 20}
-                  style={{ width: isMobile ? '100%' : 'auto', padding: isMobile ? '12px 16px' : '12px 28px', borderRadius: 14, fontWeight: 700, color: '#fff', background: 'linear-gradient(90deg, #2563eb, #7c3aed)', border: 'none', boxShadow: '0 10px 24px rgba(99,102,241,0.35)' }}
+                  style={{ 
+                    width: isMobile ? '100%' : 'auto', 
+                    padding: isMobile ? '12px 16px' : '12px 28px', 
+                    borderRadius: 14, 
+                    fontWeight: 700, 
+                    color: '#fff', 
+                    background: (submitting || rating === 0 || (comment || '').trim().length < 20) 
+                      ? '#9ca3af' 
+                      : 'linear-gradient(90deg, #2563eb, #7c3aed)', 
+                    border: 'none', 
+                    boxShadow: (submitting || rating === 0 || (comment || '').trim().length < 20) 
+                      ? 'none' 
+                      : '0 10px 24px rgba(99,102,241,0.35)',
+                    cursor: (submitting || rating === 0 || (comment || '').trim().length < 20) 
+                      ? 'not-allowed' 
+                      : 'pointer',
+                    opacity: (submitting || rating === 0 || (comment || '').trim().length < 20) 
+                      ? 0.6 
+                      : 1,
+                    transition: 'all 0.2s ease'
+                  }}
                 >
                   {submitting ? (
                     <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: isMobile ? 6 : 8 }}>
