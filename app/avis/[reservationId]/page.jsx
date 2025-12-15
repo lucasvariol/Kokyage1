@@ -117,7 +117,7 @@ export default function ReviewPage() {
         .select('id')
         .eq('reservation_id', resolvedReservationId)
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (existingReview) {
         setError('Vous avez déjà laissé un avis pour cette réservation');

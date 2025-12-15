@@ -86,15 +86,16 @@ export async function POST(request) {
     }
 
     // Déterminer le reviewer et le reviewee
-    let reviewerId, revieweeId, listingId = null;
+    let reviewerId, revieweeId;
+    // Toujours associer l'avis à un logement (utile si la colonne est NOT NULL)
+    const listingId = reservation.listing_id;
 
     if (reviewerType === 'guest') {
       // Le voyageur note l'hôte et le logement
       reviewerId = reservation.guest_id || reservation.user_id;
       revieweeId = reservation.host_id;
-      listingId = reservation.listing_id;
     } else {
-      // L'hôte note le voyageur (pas de listing_id)
+      // L'hôte note le voyageur (on garde listing_id mais on filtrera côté public)
       reviewerId = reservation.host_id;
       revieweeId = reservation.guest_id || reservation.user_id;
     }

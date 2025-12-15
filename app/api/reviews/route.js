@@ -30,6 +30,7 @@ export async function GET(req) {
         user_id
       `)
       .eq('listing_id', listing_id)
+      .or('reviewer_type.eq.guest,reviewer_type.is.null')
       .eq('is_published', true)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
@@ -65,23 +66,15 @@ export async function GET(req) {
       }));
     }
 
-    // Fetch rating summary
-    const { data: summary, error: summaryError } = await supabase
-      .from('listing_ratings')
-      .select('*')
-      .eq('listing_id', listing_id)
-      .maybeSingle(); // Use maybeSingle instead of single to avoid error if no rows
-
-    // If view doesn't exist or no reviews, calculate manually
-    let summaryData = summary || { review_count: 0, average_rating: 0 };
-    
-    if (!summary && reviews && reviews.length > 0) {
-      const totalRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
-      summaryData = {
-        review_count: reviews.length,
-        average_rating: Math.round((totalRating / reviews.length) * 10) / 10
-      };
-    }
+    // Rating summary (calculated from returned reviews to stay consistent with filters)
+    const safeReviews = reviews || [];
+    const totalRating = safeReviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+    const summaryData = {
+      review_count: safeReviews.length,
+      average_rating: safeReviews.length > 0
+        ? Math.round((totalRating / safeReviews.length) * 10) / 10
+        : 0
+    };
 
     return Response.json({
       reviews: enrichedReviews,
