@@ -2847,9 +2847,9 @@ export default function Page({ params: propsParams }) {
                                 <input
                                   readOnly
                                   onClick={() => {
-                                    // Permet de re-sélectionner une arrivée et efface la date de départ
+                                    // Réinitialise complètement la sélection pour repartir sur une nouvelle arrivée
                                     setActiveField('from');
-                                    setRange(r => ({ from: r.from, to: undefined }));
+                                    setRange({ from: undefined, to: undefined });
                                   }}
                                   value={range.from ? range.from.toLocaleDateString('fr-FR') : ''}
                                   placeholder="jj/mm/aaaa"
