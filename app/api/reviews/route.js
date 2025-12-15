@@ -27,10 +27,10 @@ export async function GET(req) {
         comment,
         created_at,
         updated_at,
-        user_id
+        user_id,
+        reviewer_type
       `)
       .eq('listing_id', listing_id)
-      .or('reviewer_type.eq.guest,reviewer_type.is.null')
       .eq('is_published', true)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
@@ -40,8 +40,14 @@ export async function GET(req) {
       return Response.json({ error: 'Erreur lors de la récupération des avis' }, { status: 500 });
     }
 
+    // Filter to show only guest reviews (or legacy reviews without reviewer_type)
+    // This prevents host-to-guest reviews from appearing on listing pages
+    const guestReviews = (reviews || []).filter(r => 
+      !r.reviewer_type || r.reviewer_type === 'guest'
+    );
+
     // Enrich with author's first name from auth metadata (best-effort)
-    let enrichedReviews = reviews || [];
+    let enrichedReviews = guestReviews;
     if (enrichedReviews.length > 0) {
       const uniqueUserIds = [...new Set(enrichedReviews.map(r => r.user_id).filter(Boolean))];
       const nameMap = new Map();
