@@ -1731,6 +1731,7 @@ export default function Page({ params: propsParams }) {
     if (range.from && range.to && activeField !== 'to') {
       setRange({ from: d, to: undefined });
       setActiveField('to'); // le prochain clic définira le départ
+      setCalendarResetKey(prev => prev + 1); // Force le rafraîchissement du calendrier
       return;
     }
 
@@ -2883,7 +2884,7 @@ export default function Page({ params: propsParams }) {
                               showOutsideDays
                               month={currentMonth}
                               onMonthChange={setCurrentMonth}
-                              disabled={[...disabledDays, disableToNonContiguous, disableFromAfterTo]}
+                              disabled={range?.from ? [...disabledDays, disableToNonContiguous, disableFromAfterTo] : [disableFromAfterTo]}
                               fromDate={new Date()}
                               modifiersClassNames={{
                                 selected: 'selected-night',
