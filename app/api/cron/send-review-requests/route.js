@@ -311,15 +311,15 @@ export async function GET(request) {
           to: hostUser.email,
           subject: reviewRequestHostTemplate.subject,
           html: reviewRequestHostTemplate.getHtml({
-            hostName,
-            guestName,
+            hostName: hostFirstName,
+            guestName: guestFirstName,
             listingTitle,
             reviewUrl,
             reservationId: reservation.id
           }),
           text: reviewRequestHostTemplate.getText({
-            hostName,
-            guestName,
+            hostName: hostFirstName,
+            guestName: guestFirstName,
             listingTitle,
             reviewUrl
           })
