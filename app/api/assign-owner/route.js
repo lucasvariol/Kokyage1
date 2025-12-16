@@ -1,10 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function POST(req) {
   try {
@@ -21,7 +16,7 @@ export async function POST(req) {
     }
 
     // Récupérer les informations du token
-    const { data: verification, error: tokenError } = await supabase
+    const { data: verification, error: tokenError } = await supabaseAdmin
       .from('pending_owner_verification')
       .select('*')
       .eq('token', token)
@@ -40,7 +35,7 @@ export async function POST(req) {
     console.log('📝 Updating listing:', listingId, 'with real owner:', userId);
 
     // Récupérer d'abord le listing pour garder l'owner_id original (le locataire principal)
-    const { data: existingListing, error: fetchError } = await supabase
+    const { data: existingListing, error: fetchError } = await supabaseAdmin
       .from('listings')
       .select('owner_id')
       .eq('id', listingId)
@@ -67,7 +62,7 @@ export async function POST(req) {
     }
 
     // Mettre à jour seulement le id_proprietaire (on garde owner_id = locataire principal)
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('listings')
       .update({ 
         id_proprietaire: userId,
@@ -85,7 +80,7 @@ export async function POST(req) {
     }
 
     // Supprimer le token utilisé (pour éviter réutilisation)
-    const { error: deleteError } = await supabase
+    const { error: deleteError } = await supabaseAdmin
       .from('pending_owner_verification')
       .delete()
       .eq('token', token);
