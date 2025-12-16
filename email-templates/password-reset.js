@@ -62,9 +62,6 @@ export const passwordResetTemplate = {
               </p>
 
               <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #E8E3DC;">
-                <p style="margin: 0 0 15px; font-size: 15px; line-height: 1.6; color: #2D3748; font-weight: 600;">
-                  ⚠️ Important
-                </p>
                 <ul style="margin: 0; padding-left: 20px; color: #4A5568; font-size: 14px; line-height: 1.8;">
                   <li>Ce lien est <strong>valable pendant 1 heure</strong></li>
                   <li>Si vous n'avez pas demandé cette réinitialisation, ignorez cet email</li>
@@ -77,14 +74,8 @@ export const passwordResetTemplate = {
           <!-- Footer -->
           <tr>
             <td style="background-color: #F5F1ED; padding: 30px; text-align: center;">
-              <p style="margin: 0 0 10px; font-size: 13px; color: #718096;">
-                Ce lien expire dans 1 heure pour des raisons de sécurité.
-              </p>
-              <p style="margin: 0 0 15px; font-size: 13px; color: #718096;">
-                Si vous n'avez pas demandé de réinitialisation, vous pouvez ignorer cet email en toute sécurité.
-              </p>
               <p style="margin: 0; font-size: 12px; color: #A0AEC0;">
-                © 2025 Kokyage. Tous droits réservés.
+                © 2026 Kokyage
               </p>
             </td>
           </tr>
