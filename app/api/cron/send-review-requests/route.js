@@ -54,7 +54,7 @@ export async function GET(request) {
           city
         )
       `)
-      .eq('status', 'pending')
+      .eq('status', 'confirmed')
       .eq('host_validation_ok', false)
       .lt('created_at', fortyEightHoursAgo.toISOString());
 
