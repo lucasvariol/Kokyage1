@@ -91,5 +91,24 @@ export const ownerVerificationConfirmedTemplate = {
   </table>
 </body>
 </html>
+  `,
+
+  getText: ({ ownerName, listingTitle, listingCity, proprietaireName, verificationDate }) => `
+Logement vérifié avec succès !
+
+Bonjour ${ownerName},
+
+Excellente nouvelle ! Le propriétaire de votre logement a confirmé son accord pour la mise en location sur Kokyage.
+
+PROCHAINES ÉTAPES
+- Nos modérateurs valideront votre logement sous 48 heures
+- Ajoutez des disponibilités dès maintenant depuis votre espace hôte
+- Enregistrez vos coordonnées bancaires pour recevoir vos premiers virements
+
+Voir mon espace hôte : ${process.env.NEXT_PUBLIC_APP_URL || 'https://kokyage.com'}/profil-hote
+
+Besoin d'aide ? Contactez-nous à contact@kokyage.com
+
+© 2026 Kokyage
   `
 };
