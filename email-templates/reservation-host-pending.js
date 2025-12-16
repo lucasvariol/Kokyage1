@@ -1,8 +1,8 @@
 /**
- * Email envoyé au locataire principal (owner_id) lorsqu'un paiement de réservation est confirmé.
+ * Email envoyé à l'hôte (owner_id) lorsqu'une nouvelle réservation est créée et nécessite sa validation.
  */
 
-export const reservationPaymentConfirmedTemplate = {
+export const reservationHostPendingTemplate = {
   subject: 'Une nouvelle réservation doit être validée',
 
   getHtml: ({
@@ -22,7 +22,7 @@ export const reservationPaymentConfirmedTemplate = {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Paiement de réservation confirmé</title>
+  <title>Nouvelle réservation à valider</title>
 </head>
 <body style="margin:0;padding:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:#F5F1ED;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F5F1ED;padding:40px 20px;">
@@ -35,7 +35,7 @@ export const reservationPaymentConfirmedTemplate = {
                 <span style="font-size:42px;">💳</span>
               </div>
               <h1 style="color:#ffffff;margin:0;font-size:26px;font-weight:800;letter-spacing:-0.02em;">
-                Nouveau paiement confirmé
+                Nouvelle réservation reçue
               </h1>
             </td>
           </tr>
@@ -45,7 +45,7 @@ export const reservationPaymentConfirmedTemplate = {
                 Bonjour <strong>${tenantName}</strong>,
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 26px;">
-                Le paiement de la réservation effectuée par <strong>${guestName}</strong> vient d'être confirmé.
+                Une nouvelle réservation a été effectuée par <strong>${guestName}</strong>.
                 Vous avez <strong style="color:#1F2937;">48 heures</strong> pour valider ou refuser cette réservation depuis votre espace hôte.
               </p>
 
@@ -120,11 +120,11 @@ export const reservationPaymentConfirmedTemplate = {
     totalPrice,
     reservationUrl
   }) => `
-Paiement confirmé pour votre logement
+Nouvelle réservation à valider
 
 Bonjour ${tenantName},
 
-Le paiement de la réservation réalisée par ${guestName} vient d'être confirmé.
+Une nouvelle réservation a été effectuée par ${guestName}.
 Vous avez 48 heures pour valider ou refuser cette réservation depuis votre espace hôte.
 
 Logement : ${listingTitle}

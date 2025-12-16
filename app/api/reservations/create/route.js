@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { Resend } from 'resend';
-import { reservationPaymentConfirmedTemplate } from '@/email-templates/reservation-payment-confirmed';
+import { reservationHostPendingTemplate } from '@/email-templates/reservation-host-pending';
 import { reservationGuestPendingTemplate } from '@/email-templates/reservation-guest-pending';
 import { calculateShares } from '@/lib/commissions';
 import { createReservationSchema, validateOrError } from '@/lib/validators';
@@ -206,13 +206,9 @@ export async function POST(request) {
       // Continuer sans les détails
     }
 
-    // NOTE: le paiement est seulement autorisé (capture manuelle) au moment de la réservation.
-    // Le débit (capture) est déclenché à l'acceptation hôte.
-    // Envoi de 2 emails: un à l'hôte (validation requise) et un au voyageur (confirmation + délai 48h).
+    // Envoi de 2 emails systématiques: un à l'hôte (validation requise) et un au voyageur (confirmation + délai 48h).
     try {
-      if (reservation?.payment_status !== 'paid') {
-        console.log('ℹ️ Emails non envoyés: paiement non capturé', { payment_status: reservation?.payment_status });
-      } else if (listing?.owner_id) {
+      if (listing?.owner_id) {
         const { data: hostUserData, error: hostUserError } = await supabaseAdmin.auth.admin.getUserById(listing.owner_id);
         if (hostUserError) throw hostUserError;
 
@@ -282,9 +278,9 @@ export async function POST(request) {
           await resend.emails.send({
             from: process.env.MAIL_FROM || 'Kokyage <contact@kokyage.com>',
             to: hostUser.email,
-            subject: reservationPaymentConfirmedTemplate.subject,
-            html: reservationPaymentConfirmedTemplate.getHtml(emailPayload),
-            text: reservationPaymentConfirmedTemplate.getText(emailPayload)
+            subject: reservationHostPendingTemplate.subject,
+            html: reservationHostPendingTemplate.getHtml(emailPayload),
+            text: reservationHostPendingTemplate.getText(emailPayload)
           });
 
           console.log('📧 Email envoyé à l\'hôte (validation requise)');
