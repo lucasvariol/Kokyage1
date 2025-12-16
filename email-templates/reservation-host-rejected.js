@@ -98,7 +98,7 @@ export const reservationHostRejectedTemplate = {
               <p style="margin:0 0 8px;color:#64748B;font-size:13px;">
                 Une question ? Écrivez-nous à <a href="mailto:contact@kokyage.com" style="color:#2563EB;text-decoration:none;font-weight:600;">contact@kokyage.com</a>
               </p>
-              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2025 Kokyage</p>
+              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage</p>
             </td>
           </tr>
         </table>
