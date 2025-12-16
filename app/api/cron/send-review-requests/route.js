@@ -72,8 +72,7 @@ export async function GET(request) {
             .from('reservations')
             .update({ 
               status: 'cancelled',
-              host_validation_ok: false,
-              cancellation_reason: 'Refus automatique: pas de réponse de l\'hôte sous 48h'
+              host_validation_ok: false
             })
             .eq('id', reservation.id);
 
