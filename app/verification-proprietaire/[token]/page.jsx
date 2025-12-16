@@ -224,11 +224,21 @@ export default function VerificationProprietaire() {
         const ownerFullName = `${user.user_metadata?.prenom || user.user_metadata?.first_name || ''} ${user.user_metadata?.nom || user.user_metadata?.last_name || ''}`.trim();
         
         // Générer le texte de l'accord avec les vraies informations
-        const tenantFullName = tenant?.full_name || tenant?.prenom + ' ' + tenant?.nom || 'Locataire';
+        const tenantFullName = tenant?.name || `${tenant?.prenom || ''} ${tenant?.nom || ''}`.trim() || 'Locataire';
+        const listingAddress = `${listingInfo?.address || ''}, ${listingInfo?.city || ''}`.trim();
+        
         const agreementText = generateOwnerConsentText({
           ownerName: user.email,
           tenantName: tenantFullName,
-          fullAddress: listingInfo?.street || ''
+          fullAddress: listingAddress
+        });
+        
+        console.log('📝 Envoi signature propriétaire:', {
+          listingId,
+          ownerEmail: user.email,
+          ownerFullName: ownerFullName || user.email,
+          hasAgreementText: Boolean(agreementText),
+          agreementTextLength: agreementText?.length || 0
         });
         
         const consentResp = await fetch("/api/owner-consent/log", {
@@ -238,7 +248,7 @@ export default function VerificationProprietaire() {
             listingId,
             ownerEmail: user.email,
             ownerFullName: ownerFullName || user.email,
-            listingAddress: listingInfo?.street || '',
+            listingAddress: listingAddress,
             agreementText,
             signatureType: 'owner'
           }),
