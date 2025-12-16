@@ -260,11 +260,16 @@ export default function VerificationProprietaire() {
             console.log("🎉 Accord complètement signé (tenant + owner)");
           }
         } else {
-          console.error("⚠️ Erreur signature owner:", consentJson.error);
+          console.error("❌ Erreur signature owner:", consentJson.error);
+          setError(`Impossible d'enregistrer votre signature: ${consentJson.error}`);
+          setLoading(false);
+          return;
         }
       } catch (consentError) {
         console.error("❌ Erreur log signature owner:", consentError);
-        // On ne bloque pas le processus
+        setError("Erreur lors de l'enregistrement de votre signature. Veuillez réessayer.");
+        setLoading(false);
+        return;
       }
       
       // Envoyer l'email de confirmation au propriétaire du logement (owner_id)
