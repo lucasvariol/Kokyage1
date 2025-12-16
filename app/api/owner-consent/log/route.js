@@ -5,16 +5,10 @@ export async function POST(request) {
     const body = await request.json();
     const {
       listingId,
-      tenantId,
-      tenantFullName,
-      tenantEmail,
       ownerEmail,
       ownerFullName,
       listingAddress,
-      infoAccuracyAccepted,
-      ownerConsentAccepted,
-      agreementText,
-      signatureType = 'tenant' // 'tenant' ou 'owner'
+      agreementText
     } = body;
 
     // Validation listingId obligatoire
@@ -31,165 +25,42 @@ export async function POST(request) {
                'unknown';
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
-    // SIGNATURE DU TENANT (création de l'annonce)
-    if (signatureType === 'tenant') {
-      if (!tenantId || !tenantFullName || !tenantEmail || !ownerEmail || !listingAddress) {
-        return Response.json(
-          { success: false, error: 'Données tenant manquantes' },
-          { status: 400 }
-        );
-      }
-
-      if (!infoAccuracyAccepted || !ownerConsentAccepted) {
-        return Response.json(
-          { success: false, error: 'Les accords doivent être acceptés' },
-          { status: 400 }
-        );
-      }
-
-      // Créer l'enregistrement avec la signature du tenant
-      const { data, error } = await supabaseAdmin
-        .from('owner_consent_logs')
-        .insert({
-          listing_id: listingId,
-          tenant_id: tenantId,
-          tenant_full_name: tenantFullName,
-          tenant_email: tenantEmail,
-          tenant_signed_at: new Date().toISOString(),
-          tenant_ip_address: ip,
-          tenant_user_agent: userAgent,
-          owner_email: ownerEmail,
-          listing_address: listingAddress,
-          info_accuracy_accepted: infoAccuracyAccepted,
-          owner_consent_accepted: ownerConsentAccepted,
-          agreement_text: agreementText,
-          consent_version: 'v1.0'
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Erreur signature tenant:', error);
-        return Response.json(
-          { success: false, error: error.message },
-          { status: 500 }
-        );
-      }
-
-      return Response.json({
-        success: true,
-        data: {
-          id: data.id,
-          tenantSignedAt: data.tenant_signed_at,
-          fullySigned: data.fully_signed
-        }
-      });
-    }
-
     // SIGNATURE DU OWNER (validation propriétaire)
-    if (signatureType === 'owner') {
-      // Vérifier si un enregistrement existe déjà
-      const { data: existingLog } = await supabaseAdmin
-        .from('owner_consent_logs')
-        .select('*')
-        .eq('listing_id', listingId)
-        .single();
-      
-      if (existingLog) {
-        // Mettre à jour l'enregistrement existant avec la signature du owner
-        const updateData = {
-          owner_full_name: ownerFullName,
-          owner_signed_at: new Date().toISOString(),
-          owner_ip_address: ip,
-          owner_user_agent: userAgent
-        };
-        
-        // Mettre à jour le texte de l'accord si fourni
-        if (agreementText) {
-          updateData.agreement_text = agreementText;
-          console.log('📝 Agreement text fourni, longueur:', agreementText.length);
-        }
-        
-        console.log('🔄 Mise à jour owner pour listing:', listingId);
-        
-        const { data, error } = await supabaseAdmin
-          .from('owner_consent_logs')
-          .update(updateData)
-          .eq('listing_id', listingId)
-          .is('owner_signed_at', null)
-          .select()
-          .single();
+    console.log('📝 Création enregistrement owner_consent_logs');
+    
+    const { data, error } = await supabaseAdmin
+      .from('owner_consent_logs')
+      .insert({
+        listing_id: listingId,
+        owner_email: ownerEmail,
+        owner_full_name: ownerFullName,
+        owner_signed_at: new Date().toISOString(),
+        owner_ip_address: ip,
+        owner_user_agent: userAgent,
+        listing_address: listingAddress,
+        agreement_text: agreementText,
+        consent_version: 'v1.0'
+      })
+      .select()
+      .single();
 
-        if (error) {
-          console.error('Erreur signature owner:', error);
-          return Response.json(
-            { success: false, error: error.message },
-            { status: 500 }
-          );
-        }
-
-        if (!data) {
-          return Response.json(
-            { success: false, error: 'Aucun accord à signer ou déjà signé' },
-            { status: 404 }
-          );
-        }
-
-        // Le PDF sera généré à la demande lors du premier clic sur "Relire l'accord"
-        console.log('✅ Accord signé par le propriétaire. PDF sera généré à la demande.');
-
-        return Response.json({
-          success: true,
-          data: {
-            id: data.id,
-            ownerSignedAt: data.owner_signed_at,
-            fullySigned: data.fully_signed
-          }
-        });
-      } else {
-        // Créer un nouvel enregistrement (cas où le tenant n'a pas signé)
-        console.log('📝 Création nouvel enregistrement owner_consent_logs');
-        
-        const { data, error } = await supabaseAdmin
-          .from('owner_consent_logs')
-          .insert({
-            listing_id: listingId,
-            owner_email: ownerEmail,
-            owner_full_name: ownerFullName,
-            owner_signed_at: new Date().toISOString(),
-            owner_ip_address: ip,
-            owner_user_agent: userAgent,
-            listing_address: listingAddress,
-            agreement_text: agreementText
-          })
-          .select()
-          .single();
-
-        if (error) {
-          console.error('Erreur création signature owner:', error);
-          return Response.json(
-            { success: false, error: error.message },
-            { status: 500 }
-          );
-        }
-
-        console.log('✅ Accord créé et signé par le propriétaire. PDF sera généré à la demande.');
-
-        return Response.json({
-          success: true,
-          data: {
-            id: data.id,
-            ownerSignedAt: data.owner_signed_at,
-            fullySigned: false // Tenant n'a pas signé
-          }
-        });
-      }
+    if (error) {
+      console.error('Erreur création signature owner:', error);
+      return Response.json(
+        { success: false, error: error.message },
+        { status: 500 }
+      );
     }
 
-    return Response.json(
-      { success: false, error: 'Type de signature invalide' },
-      { status: 400 }
-    );
+    console.log('✅ Accord créé et signé par le propriétaire. PDF sera généré à la demande.');
+
+    return Response.json({
+      success: true,
+      data: {
+        id: data.id,
+        ownerSignedAt: data.owner_signed_at
+      }
+    });
 
   } catch (error) {
     console.error('Erreur API owner-consent:', error);
