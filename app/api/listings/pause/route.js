@@ -36,6 +36,76 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    // Cancel upcoming reservations (>14 days) and zero-out shares
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() + 14);
+    const cutoffDateStr = cutoff.toISOString().split('T')[0]; // YYYY-MM-DD
+
+    const { data: candidateReservations, error: reservationsError } = await supabaseAdmin
+      .from('reservations')
+      .select('id, listing_id, status, date_arrivee, date_depart')
+      .eq('listing_id', listingId)
+      .neq('status', 'cancelled');
+
+    if (reservationsError) {
+      return NextResponse.json({ error: reservationsError.message }, { status: 500 });
+    }
+    const reservationIdsToCancel = (candidateReservations || [])
+      .filter((r) => {
+        const start = r.date_arrivee;
+        if (!start) return false;
+        const startDateStr = String(start).slice(0, 10); // tolerate timestamp
+        return startDateStr > cutoffDateStr;
+      })
+      .map((r) => r.id);
+
+    if (reservationIdsToCancel.length > 0) {
+      const { error: cancelError } = await supabaseAdmin
+        .from('reservations')
+        .update({
+          status: 'cancelled',
+          proprietor_share: 0,
+          main_tenant_share: 0,
+          platform_share: 0,
+        })
+        .in('id', reservationIdsToCancel);
+
+      if (cancelError) {
+        return NextResponse.json({ error: cancelError.message }, { status: 500 });
+      }
+
+      // Best-effort: unblock dates in disponibilities for cancelled reservations
+      try {
+        const reservationsToUnblock = (candidateReservations || []).filter((r) => reservationIdsToCancel.includes(r.id));
+        for (const r of reservationsToUnblock) {
+          const start = r.date_arrivee;
+          const end = r.date_depart;
+          if (!start || !end) continue;
+
+          const startDate = new Date(start);
+          const endDate = new Date(end);
+          if (!Number.isFinite(startDate.getTime()) || !Number.isFinite(endDate.getTime())) continue;
+
+          const datesToUnblock = [];
+          const currentDate = new Date(startDate);
+          while (currentDate < endDate) {
+            datesToUnblock.push(currentDate.toISOString().split('T')[0]);
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+
+          for (const dateStr of datesToUnblock) {
+            await supabaseAdmin
+              .from('disponibilities')
+              .update({ booked: 'No' })
+              .eq('listing_id', listingId)
+              .eq('date', dateStr);
+          }
+        }
+      } catch (unblockErr) {
+        console.error('pause route: failed to unblock disponibilities (non-blocking)', unblockErr);
+      }
+    }
+
     // Update listing status only (no reservation cancellation for now)
     const newStatus = 'Accord propriétaire en pause';
     const { error: updErr } = await supabaseAdmin
@@ -98,7 +168,13 @@ export async function POST(req) {
       }
     }
 
-    return NextResponse.json({ ok: true, status: newStatus, emailSent });
+    return NextResponse.json({
+      ok: true,
+      status: newStatus,
+      emailSent,
+      cancelledReservationsCount: reservationIdsToCancel.length,
+      cancelledReservationsCutoffDate: cutoffDateStr,
+    });
   } catch (e) {
     console.error('pause route error:', e);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
