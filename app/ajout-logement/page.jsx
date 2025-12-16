@@ -549,7 +549,7 @@ export default function Page() {
 
       // Tracker l'ajout de logement
       trackEvent('listing_created', {
-        listing_id: listingData.id,
+        listing_id: listingId,
         city: city,
         price: parseFloat(price),
         bedrooms: parseInt(bedrooms) || 0
