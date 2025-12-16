@@ -557,10 +557,8 @@ export default function Page() {
 
       setLoading(false);
       router.push("/calendrier");
-    } else {
-      setLoading(false);
     }
-  };
+    setLoading(false);
   };
 
   return (
