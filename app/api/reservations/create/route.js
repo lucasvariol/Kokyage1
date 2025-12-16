@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { Resend } from 'resend';
 import { reservationPaymentConfirmedTemplate } from '@/email-templates/reservation-payment-confirmed';
+import { reservationGuestPendingTemplate } from '@/email-templates/reservation-guest-pending';
 import { calculateShares } from '@/lib/commissions';
 import { createReservationSchema, validateOrError } from '@/lib/validators';
 import logger from '@/lib/logger';
@@ -207,10 +208,10 @@ export async function POST(request) {
 
     // NOTE: le paiement est seulement autorisé (capture manuelle) au moment de la réservation.
     // Le débit (capture) est déclenché à l'acceptation hôte.
-    // Donc on n'envoie pas l'email « paiement confirmé » ici (sauf si le paiement est déjà capturé).
+    // Envoi de 2 emails: un à l'hôte (validation requise) et un au voyageur (confirmation + délai 48h).
     try {
       if (reservation?.payment_status !== 'paid') {
-        console.log('ℹ️ Email paiement confirmé non envoyé: paiement non capturé', { payment_status: reservation?.payment_status });
+        console.log('ℹ️ Emails non envoyés: paiement non capturé', { payment_status: reservation?.payment_status });
       } else if (listing?.owner_id) {
         const { data: hostUserData, error: hostUserError } = await supabaseAdmin.auth.admin.getUserById(listing.owner_id);
         if (hostUserError) throw hostUserError;
@@ -277,6 +278,7 @@ export async function POST(request) {
             reservationUrl
           };
 
+          // Envoi email à l'hôte (notification nouvelle réservation à valider)
           await resend.emails.send({
             from: process.env.MAIL_FROM || 'Kokyage <contact@kokyage.com>',
             to: hostUser.email,
@@ -285,13 +287,39 @@ export async function POST(request) {
             text: reservationPaymentConfirmedTemplate.getText(emailPayload)
           });
 
-          console.log('📧 Email paiement confirmé envoyé au locataire principal');
+          console.log('📧 Email envoyé à l\'hôte (validation requise)');
+
+          // Envoi email au voyageur (confirmation + info délai 48h)
+          if (guestUser?.email) {
+            const guestEmailPayload = {
+              guestName,
+              listingTitle: listing.title || 'Votre logement',
+              listingCity: listing.city || 'Localisation non renseignée',
+              startDate: formatDate(startDate),
+              endDate: formatDate(endDate),
+              nights,
+              guests: parseInt(guests, 10) || 1,
+              totalPrice: formatCurrency(totalPrice)
+            };
+
+            await resend.emails.send({
+              from: process.env.MAIL_FROM || 'Kokyage <contact@kokyage.com>',
+              to: guestUser.email,
+              subject: reservationGuestPendingTemplate.subject,
+              html: reservationGuestPendingTemplate.getHtml(guestEmailPayload),
+              text: reservationGuestPendingTemplate.getText(guestEmailPayload)
+            });
+
+            console.log('📧 Email envoyé au voyageur (confirmation + délai 48h)');
+          } else {
+            console.warn('⚠️ Impossible d\'envoyer l\'email au voyageur : adresse email manquante');
+          }
         } else {
-          console.warn('⚠️ Impossible d\'envoyer l\'email : adresse du locataire principal manquante');
+          console.warn('⚠️ Impossible d\'envoyer l\'email : adresse de l\'hôte manquante');
         }
       }
     } catch (emailError) {
-      console.error('❌ Échec envoi email paiement confirmé:', emailError);
+      console.error('❌ Échec envoi emails:', emailError);
     }
 
     return NextResponse.json({

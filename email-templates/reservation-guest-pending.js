@@ -1,12 +1,12 @@
 /**
- * Email envoyé au locataire principal (owner_id) lorsqu'un paiement de réservation est confirmé.
+ * Email envoyé au voyageur après son paiement pour l'informer que sa réservation
+ * est en attente de validation par l'hôte (délai de 48h).
  */
 
-export const reservationPaymentConfirmedTemplate = {
-  subject: 'Une nouvelle réservation doit être validée',
+export const reservationGuestPendingTemplate = {
+  subject: 'Votre réservation est en attente de validation',
 
   getHtml: ({
-    tenantName,
     guestName,
     listingTitle,
     listingCity,
@@ -14,15 +14,14 @@ export const reservationPaymentConfirmedTemplate = {
     endDate,
     nights,
     guests,
-    totalPrice,
-    reservationUrl
+    totalPrice
   }) => `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Paiement de réservation confirmé</title>
+  <title>Réservation en attente de validation</title>
 </head>
 <body style="margin:0;padding:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background-color:#F5F1ED;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F5F1ED;padding:40px 20px;">
@@ -32,21 +31,20 @@ export const reservationPaymentConfirmedTemplate = {
           <tr>
             <td style="background:linear-gradient(135deg,#4ECDC4 0%,#3B82F6 100%);padding:36px 30px;text-align:center;">
               <div style="display:inline-block;background:rgba(255,255,255,0.2);border-radius:999px;padding:14px;margin-bottom:16px;">
-                <span style="font-size:42px;">💳</span>
+                <span style="font-size:42px;">⏳</span>
               </div>
               <h1 style="color:#ffffff;margin:0;font-size:26px;font-weight:800;letter-spacing:-0.02em;">
-                Nouveau paiement confirmé
+                Réservation en attente
               </h1>
             </td>
           </tr>
           <tr>
             <td style="padding:40px 30px;">
               <p style="font-size:16px;line-height:1.7;color:#1F2937;margin:0 0 18px;">
-                Bonjour <strong>${tenantName}</strong>,
+                Bonjour <strong>${guestName}</strong>,
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 26px;">
-                Le paiement de la réservation effectuée par <strong>${guestName}</strong> vient d'être confirmé.
-                Vous avez <strong style="color:#1F2937;">48 heures</strong> pour valider ou refuser cette réservation depuis votre espace hôte.
+                Votre paiement a bien été confirmé et l'hôte a reçu une notification pour valider votre réservation.
               </p>
 
               <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,rgba(78,205,196,0.1),rgba(59,130,246,0.08));border-left:4px solid #4ECDC4;border-radius:12px;margin:0 0 26px;">
@@ -72,24 +70,23 @@ export const reservationPaymentConfirmedTemplate = {
                 </tr>
               </table>
 
-              <div style="padding:18px 20px;background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(37,99,235,0.06));border-left:4px solid #3B82F6;border-radius:12px;margin-bottom:28px;color:#1F2937;font-size:15px;line-height:1.6;">
-                <strong style="display:block;margin-bottom:8px;">⏱️ Vous avez 48 heures pour répondre :</strong>
-                <ul style="padding-left:18px;margin:0;color:#475569;">
-                  <li>Connectez-vous à votre espace hôte</li>
-                  <li>Consultez la réservation et vérifiez les informations</li>
-                  <li>Validez ou refusez la réservation</li>
-                </ul>
+              <div style="padding:18px 20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.08));border-left:4px solid #F59E0B;border-radius:12px;margin-bottom:28px;color:#1F2937;font-size:15px;line-height:1.6;">
+                <strong style="display:block;margin-bottom:8px;">⏱️ Validation en cours</strong>
+                <p style="margin:0;color:#475569;">
+                  L'hôte dispose de <strong style="color:#1F2937;">48 heures</strong> pour accepter ou refuser votre demande de réservation.
+                  Vous recevrez un email dès qu'une décision aura été prise.
+                </p>
               </div>
 
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center">
-                    <a href="${reservationUrl}" style="display:inline-block;background:linear-gradient(135deg,#3B82F6 0%,#2563EB 100%);color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:12px;font-weight:700;font-size:15px;box-shadow:0 12px 26px rgba(37,99,235,0.25);">
-                      Valider la réservation
-                    </a>
-                  </td>
-                </tr>
-              </table>
+              <div style="padding:18px 20px;background:#F0F9FF;border-left:4px solid #3B82F6;border-radius:12px;margin-bottom:28px;color:#1F2937;font-size:14px;line-height:1.6;">
+                <p style="margin:0;color:#475569;">
+                  <strong style="color:#1F2937;">En cas de refus :</strong> Votre paiement sera intégralement remboursé sous 5 à 7 jours ouvrés.
+                </p>
+              </div>
+
+              <p style="font-size:15px;line-height:1.7;color:#64748B;margin:0;text-align:center;">
+                Merci de votre confiance et à bientôt !
+              </p>
             </td>
           </tr>
           <tr>
@@ -97,7 +94,7 @@ export const reservationPaymentConfirmedTemplate = {
               <p style="margin:0 0 8px;color:#64748B;font-size:13px;">
                 Besoin d'aide ? Contactez-nous à <a href="mailto:contact@kokyage.com" style="color:#4ECDC4;text-decoration:none;font-weight:600;">contact@kokyage.com</a>
               </p>
-              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2025 Kokyage - Plateforme de co-gestion locative</p>
+              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage - Plateforme de co-gestion locative</p>
             </td>
           </tr>
         </table>
@@ -109,7 +106,6 @@ export const reservationPaymentConfirmedTemplate = {
   `,
 
   getText: ({
-    tenantName,
     guestName,
     listingTitle,
     listingCity,
@@ -117,15 +113,13 @@ export const reservationPaymentConfirmedTemplate = {
     endDate,
     nights,
     guests,
-    totalPrice,
-    reservationUrl
+    totalPrice
   }) => `
-Paiement confirmé pour votre logement
+Réservation en attente de validation
 
-Bonjour ${tenantName},
+Bonjour ${guestName},
 
-Le paiement de la réservation réalisée par ${guestName} vient d'être confirmé.
-Vous avez 48 heures pour valider ou refuser cette réservation depuis votre espace hôte.
+Votre paiement a bien été confirmé et l'hôte a reçu une notification pour valider votre réservation.
 
 Logement : ${listingTitle}
 Ville : ${listingCity}
@@ -134,10 +128,16 @@ Séjour : ${nights} nuit${nights > 1 ? 's' : ''}
 Voyageurs : ${guests}
 Montant payé : ${totalPrice}
 
-Valider la réservation : ${reservationUrl}
+⏱️ VALIDATION EN COURS
+L'hôte dispose de 48 heures pour accepter ou refuser votre demande de réservation.
+Vous recevrez un email dès qu'une décision aura été prise.
+
+En cas de refus : Votre paiement sera intégralement remboursé sous 5 à 7 jours ouvrés.
+
+Merci de votre confiance et à bientôt !
 
 Besoin d'aide ? contact@kokyage.com
 
-© 2025 Kokyage
+© 2026 Kokyage
   `
 };
