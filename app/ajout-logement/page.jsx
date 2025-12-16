@@ -542,7 +542,7 @@ export default function Page() {
         }
       } catch (e) {
         console.error('💥 Erreur envoi email propriétaire:', e);
-        setError("Logement créé mais erreur lors de l'envoi de l'email au propriétaire.");
+        setError("Impossible d'envoyer l'email au propriétaire. Veuillez réessayer.");
         setLoading(false);
         return;
       }
@@ -555,9 +555,12 @@ export default function Page() {
         bedrooms: parseInt(bedrooms) || 0
       });
 
-  router.push("/calendrier");
+      setLoading(false);
+      router.push("/calendrier");
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
+  };
   };
 
   return (
