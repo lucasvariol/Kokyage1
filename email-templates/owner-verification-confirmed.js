@@ -44,51 +44,16 @@ export const ownerVerificationConfirmedTemplate = {
                 Excellente nouvelle ! Le propriétaire de votre logement a confirmé son accord pour la mise en location sur Kokyage.
               </p>
 
-              <!-- Box logement -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, rgba(78,205,196,0.08), rgba(68,181,168,0.05)); border-left: 4px solid #4ECDC4; border-radius: 12px; margin: 25px 0;">
-                <tr>
-                  <td style="padding: 20px;">
-                    <p style="margin: 0 0 8px; font-size: 14px; color: #6B7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                      🏠 Logement vérifié
-                    </p>
-                    <p style="margin: 0 0 4px; font-size: 18px; color: #1F2937; font-weight: 700;">
-                      ${listingTitle}
-                    </p>
-                    <p style="margin: 0; font-size: 15px; color: #6B7280;">
-                      📍 ${listingCity}
-                    </p>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Détails vérification -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="background: #F9FAFB; border-radius: 12px; margin: 25px 0;">
-                <tr>
-                  <td style="padding: 20px;">
-                    <p style="margin: 0 0 10px; font-size: 14px; color: #6B7280;">
-                      <strong style="color: #374151;">Propriétaire :</strong> ${proprietaireName}
-                    </p>
-                    <p style="margin: 0; font-size: 14px; color: #6B7280;">
-                      <strong style="color: #374151;">Date de vérification :</strong> ${verificationDate}
-                    </p>
-                  </td>
-                </tr>
-              </table>
-
               <div style="background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(99,102,241,0.05)); border-left: 4px solid #8B5CF6; border-radius: 12px; padding: 20px; margin: 25px 0;">
                 <p style="margin: 0 0 12px; font-size: 15px; color: #1F2937; font-weight: 700;">
                   🎉 Prochaines étapes
                 </p>
                 <ul style="margin: 0; padding-left: 20px; color: #4B5563; font-size: 15px; line-height: 1.8;">
-                  <li>Votre logement peut maintenant recevoir des réservations</li>
-                  <li>Vous pouvez gérer vos disponibilités depuis votre espace hôte</li>
-                  <li>Les voyageurs peuvent désormais découvrir votre logement</li>
+                  <li>Nos modérateurs valideront votre logement sous 48 heures</li>
+                  <li>Ajoutez des disponibilités dès maintenant depuis votre espace hôte</li>
+                  <li>Enregistrez vos coordonnées bancaires pour recevoir vos premiers virements</li>
                 </ul>
               </div>
-
-              <p style="color: #4B5563; font-size: 15px; line-height: 1.8; margin: 25px 0 0;">
-                Merci d'avoir complété la vérification de votre logement. Cette étape garantit la confiance et la sécurité pour tous les utilisateurs de Kokyage.
-              </p>
             </td>
           </tr>
 
@@ -115,7 +80,7 @@ export const ownerVerificationConfirmedTemplate = {
                 Besoin d'aide ? Contactez-nous à <a href="mailto:contact@kokyage.com" style="color: #4ECDC4; text-decoration: none; font-weight: 600;">contact@kokyage.com</a>
               </p>
               <p style="margin: 0; color: #9CA3AF; font-size: 13px;">
-                © 2025 Kokyage - Plateforme de co-gestion locative
+                © 2026 Kokyage
               </p>
             </td>
           </tr>
@@ -126,34 +91,5 @@ export const ownerVerificationConfirmedTemplate = {
   </table>
 </body>
 </html>
-  `,
-
-  getText: ({ ownerName, listingTitle, listingCity, proprietaireName, verificationDate }) => `
-Logement vérifié avec succès !
-
-Bonjour ${ownerName},
-
-Excellente nouvelle ! Le propriétaire réel de votre logement a confirmé son accord pour la mise en location sur Kokyage.
-
-LOGEMENT VÉRIFIÉ
-${listingTitle}
-${listingCity}
-
-DÉTAILS DE LA VÉRIFICATION
-Propriétaire : ${proprietaireName}
-Date de vérification : ${verificationDate}
-
-PROCHAINES ÉTAPES
-- Votre logement peut maintenant recevoir des réservations
-- Vous pouvez gérer vos disponibilités depuis votre espace hôte
-- Les voyageurs peuvent désormais découvrir votre logement
-
-Merci d'avoir complété la vérification de votre logement. Cette étape garantit la confiance et la sécurité pour tous les utilisateurs de Kokyage.
-
-Voir mon espace hôte : ${process.env.NEXT_PUBLIC_APP_URL || 'https://kokyage.com'}/profil-hote
-
-Besoin d'aide ? Contactez-nous à contact@kokyage.com
-
-© 2025 Kokyage - Plateforme de co-gestion locative
   `
 };
