@@ -74,7 +74,7 @@ export const emailVerificationTemplate = {
                 Si vous n'avez pas créé de compte sur Kokyage, vous pouvez ignorer cet email.
               </p>
               <p style="margin: 0; font-size: 12px; color: #A0AEC0;">
-                © 2025 Kokyage. Tous droits réservés.
+                © 2026 Kokyage
               </p>
             </td>
           </tr>
