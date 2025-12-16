@@ -6,8 +6,18 @@
 DROP POLICY IF EXISTS "Service role has full access" ON pending_owner_verification;
 DROP POLICY IF EXISTS "System only access" ON pending_owner_verification;
 
--- Désactiver complètement RLS (table accessible uniquement en backend)
-ALTER TABLE pending_owner_verification DISABLE ROW LEVEL SECURITY;
+-- Activer RLS (requis par Supabase pour tables dans le schéma public)
+ALTER TABLE pending_owner_verification ENABLE ROW LEVEL SECURITY;
+
+-- Créer une policy qui bloque TOUT accès utilisateur (seul service role peut accéder)
+-- Aucune policy pour les utilisateurs = accès bloqué
+-- Le service role bypass RLS donc il peut toujours accéder
+CREATE POLICY "No user access - API only"
+ON pending_owner_verification
+FOR ALL
+TO authenticated, anon
+USING (false)
+WITH CHECK (false);
 
 -- Vérification
 SELECT 
