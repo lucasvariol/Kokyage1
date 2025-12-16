@@ -18,6 +18,17 @@ En cas de résiliation, toute réservation dont la date de fin excède le délai
 À défaut de résiliation, le présent accord demeure en vigueur tant que le Locataire principal reste titulaire du bail du logement.
 `;
 
+/**
+ * Génère le texte brut de l'accord pour sauvegarde en DB
+ */
+export function getOwnerConsentText({ ownerName = 'Le Propriétaire', tenantName = 'Nom du locataire principal', fullAddress = '' }) {
+  return OWNER_CONSENT_MD
+    .replace('{ownerName}', ownerName)
+    .replace('{tenantName}', tenantName)
+    .replace('{fullAddress}', fullAddress)
+    .trim();
+}
+
 const customComponents = {
   h1: ({node, ...props}) => (
     <>
@@ -31,10 +42,7 @@ const customComponents = {
 };
 
 export function OwnerConsentAgreement({ ownerName = 'Le Propriétaire', tenantName = 'Nom du locataire principal', fullAddress = '' }) {
-  const content = OWNER_CONSENT_MD
-    .replace('{ownerName}', ownerName)
-    .replace('{tenantName}', tenantName)
-    .replace('{fullAddress}', fullAddress);
+  const content = getOwnerConsentText({ ownerName, tenantName, fullAddress });
 
   return (
     <div style={{ color: '#334155', lineHeight: '1.6' }}>

@@ -5,8 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Header from "../../_components/Header";
 import Footer from "../../_components/Footer";
-import { OwnerConsentAgreement } from "@/owner-consent";
-import { generateOwnerConsentText } from "@/lib/generateOwnerConsentText";
+import { OwnerConsentAgreement, getOwnerConsentText } from "@/owner-consent";
 
 export default function VerificationProprietaire() {
   const { token } = useParams();
@@ -227,7 +226,7 @@ export default function VerificationProprietaire() {
         const tenantFullName = tenant?.name || `${tenant?.prenom || ''} ${tenant?.nom || ''}`.trim() || 'Locataire';
         const listingAddress = `${listingInfo?.address || ''}, ${listingInfo?.city || ''}`.trim();
         
-        const agreementText = generateOwnerConsentText({
+        const agreementText = getOwnerConsentText({
           ownerName: user.email,
           tenantName: tenantFullName,
           fullAddress: listingAddress
