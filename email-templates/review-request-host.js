@@ -3,7 +3,7 @@
  */
 
 export const reviewRequestHostTemplate = {
-  subject: 'Comment s\'est passé le séjour de votre voyageur ?',
+  subject: 'Evaluez votre voyageur',
 
   getHtml: ({
     hostName,

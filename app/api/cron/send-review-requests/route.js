@@ -274,6 +274,10 @@ export async function GET(request) {
 
         const guestName = guestProfile?.full_name || guestProfile?.prenom || guestProfile?.name || guestUser.email;
         const hostName = hostProfile?.full_name || hostProfile?.prenom || hostProfile?.name || hostUser.email;
+        
+        // Extraire seulement le prénom
+        const guestFirstName = guestName.trim?.().split(/\s+/)[0] || guestName;
+        const hostFirstName = hostName.trim?.().split(/\s+/)[0] || hostName;
 
         const reviewUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/avis/${reservation.id}`;
 
@@ -284,18 +288,18 @@ export async function GET(request) {
           to: guestUser.email,
           subject: reviewRequestGuestTemplate.subject,
           html: reviewRequestGuestTemplate.getHtml({
-            guestName,
+            guestName: guestFirstName,
             listingTitle,
             listingCity,
-            hostName,
+            hostName: hostFirstName,
             reviewUrl,
             reservationId: reservation.id
           }),
           text: reviewRequestGuestTemplate.getText({
-            guestName,
+            guestName: guestFirstName,
             listingTitle,
             listingCity,
-            hostName,
+            hostName: hostFirstName,
             reviewUrl
           })
         });

@@ -41,23 +41,12 @@ export const reviewRequestGuestTemplate = {
                 Bonjour <strong>${guestName}</strong>,
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 26px;">
-                Nous espérons que votre séjour à <strong>${listingTitle}</strong> à ${listingCity} s'est bien passé !
+                Nous espérons que votre séjour à ${listingCity} s'est bien passé !
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 26px;">
                 Votre avis est précieux pour aider la communauté Kokyage et améliorer l'expérience de tous.
-                Prenez quelques instants pour partager votre expérience avec ${hostName}.
+                Prenez quelques instants pour partager votre expérience.
               </p>
-              
-              <div style="background:#F8FAFC;border-radius:12px;padding:24px;margin:30px 0;">
-                <p style="font-size:14px;color:#64748B;margin:0 0 12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-                  📝 Votre avis
-                </p>
-                <ul style="margin:0;padding:0;list-style:none;">
-                  <li style="padding:8px 0;color:#475569;font-size:15px;">✓ Notez le logement et votre hôte</li>
-                  <li style="padding:8px 0;color:#475569;font-size:15px;">✓ Partagez votre expérience</li>
-                  <li style="padding:8px 0;color:#475569;font-size:15px;">✓ Aidez les futurs voyageurs</li>
-                </ul>
-              </div>
 
               <div style="text-align:center;margin:30px 0;">
                 <a href="${reviewUrl}" 
@@ -66,14 +55,8 @@ export const reviewRequestGuestTemplate = {
                 </a>
               </div>
 
-              <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:16px 20px;border-radius:8px;margin:30px 0;">
-                <p style="font-size:14px;color:#92400E;margin:0;line-height:1.6;">
-                  ⏰ <strong>Vous avez 14 jours</strong> pour laisser votre avis. Après ce délai, il ne sera plus possible de noter ce séjour.
-                </p>
-              </div>
-
               <p style="font-size:14px;line-height:1.7;color:#64748B;margin:30px 0 0;font-style:italic;">
-                Votre avis sera publié une fois que ${hostName} aura également laissé son avis, ou automatiquement après 14 jours.
+                Votre avis sera publié une fois que l'hôte aura également laissé son avis, ou automatiquement après 14 jours.
                 Cela garantit des évaluations honnêtes et impartiales.
               </p>
             </td>
@@ -81,11 +64,9 @@ export const reviewRequestGuestTemplate = {
           <tr>
             <td style="background:#F8FAFC;padding:30px;text-align:center;border-top:1px solid #E2E8F0;">
               <p style="font-size:13px;color:#94A3B8;margin:0 0 8px;">
-                Merci de faire partie de la communauté Kokyage
+                © 2026 Kokyage
               </p>
-              <p style="font-size:13px;color:#94A3B8;margin:0;">
-                <a href="https://kokyage.com" style="color:#3B82F6;text-decoration:none;">kokyage.com</a>
-              </p>
+
             </td>
           </tr>
         </table>
