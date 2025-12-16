@@ -3501,7 +3501,8 @@ export default function Page({ params: propsParams }) {
                       </div>
                       <p style={{ color: '#334155', lineHeight: 1.6, marginTop: 0 }}>
                         Êtes-vous certain de vouloir mettre en pause votre accord propriétaire ?
-                        Cette action suspendra temporairement la disponibilité de votre logement.
+                        Cette action annulera toute réservation dont la date de début se trouve dans plus de 14 jours, et suspendra la disponibilité du logement.
+                        Il est fortement recommandé de prévenir votre locataire avant de procéder.
                       </p>
                       <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginTop: 12, color: '#334155', fontWeight: 600 }}>
                         <input
