@@ -146,6 +146,7 @@ export async function GET(request) {
                 .single();
 
               const guestName = guestProfile?.full_name || guestProfile?.prenom || guestProfile?.name || guestUser.email;
+              const guestFirstName = guestName.trim?.().split(/\s+/)[0] || guestName;
               const listingTitle = reservation.listings?.title || 'le logement';
               const listingCity = reservation.listings?.city || '';
 
@@ -165,7 +166,7 @@ export async function GET(request) {
                 to: guestUser.email,
                 subject: reservationAutoRejectedTemplate.subject,
                 html: reservationAutoRejectedTemplate.getHtml({
-                  guestName,
+                  guestName: guestFirstName,
                   listingTitle,
                   listingCity,
                   startDate: formatDate(reservation.date_arrivee),
@@ -173,7 +174,7 @@ export async function GET(request) {
                   totalPrice: formatCurrency(reservation.total_price)
                 }),
                 text: reservationAutoRejectedTemplate.getText({
-                  guestName,
+                  guestName: guestFirstName,
                   listingTitle,
                   listingCity,
                   startDate: formatDate(reservation.date_arrivee),

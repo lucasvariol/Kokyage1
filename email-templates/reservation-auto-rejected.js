@@ -22,8 +22,7 @@ export const reservationAutoRejectedTemplate = {
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">Kokyage</h1>
-              <p style="margin: 10px 0 0; color: #ffffff; font-size: 16px; opacity: 0.9;">Réservation expirée</p>
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">Reservation annulée</h1>
             </td>
           </tr>
 
@@ -35,21 +34,21 @@ export const reservationAutoRejectedTemplate = {
               </p>
 
               <p style="margin: 0 0 20px; color: #374151; font-size: 16px; line-height: 1.6;">
-                Nous vous informons que votre demande de réservation n'a pas été acceptée dans les délais impartis (48 heures).
+                Nous avons le regret de vous informer que votre demande de réservation n'a pas été acceptée par l'hôte dans les délais impartis (48 heures).
               </p>
 
               <!-- Détails réservation -->
-              <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 20px; margin: 30px 0; border-radius: 8px;">
-                <h2 style="margin: 0 0 15px; color: #991b1b; font-size: 18px; font-weight: 700;">
+              <div style="background-color: #c2c2c2ff; border-left: 4px solid #000000ff; padding: 20px; margin: 30px 0; border-radius: 8px;">
+                <h2 style="margin: 0 0 15px; color: #353434ff; font-size: 18px; font-weight: 700;">
                   ${listingTitle}
                 </h2>
-                <p style="margin: 0 0 10px; color: #7f1d1d; font-size: 14px;">
+                <p style="margin: 0 0 10px; color: #353434ff; font-size: 14px;">
                   📍 ${listingCity}
                 </p>
-                <p style="margin: 0 0 10px; color: #7f1d1d; font-size: 14px;">
+                <p style="margin: 0 0 10px; color: #353434ff; font-size: 14px;">
                   📅 Du ${startDate} au ${endDate}
                 </p>
-                <p style="margin: 0; color: #7f1d1d; font-size: 16px; font-weight: 700;">
+                <p style="margin: 0; color: #353434ff; font-size: 16px; font-weight: 700;">
                   💰 Montant : ${totalPrice}
                 </p>
               </div>
@@ -75,10 +74,6 @@ export const reservationAutoRejectedTemplate = {
                 </a>
               </div>
 
-              <p style="margin: 30px 0 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
-                Cordialement,<br>
-                <strong>L'équipe Kokyage</strong>
-              </p>
             </td>
           </tr>
 
@@ -89,7 +84,7 @@ export const reservationAutoRejectedTemplate = {
                 Des questions ? Contactez-nous à <a href="mailto:contact@kokyage.com" style="color: #667eea; text-decoration: none;">contact@kokyage.com</a>
               </p>
               <p style="margin: 0; color: #9ca3af; font-size: 12px;">
-                © ${new Date().getFullYear()} Kokyage. Tous droits réservés.
+                © ${new Date().getFullYear()} Kokyage.
               </p>
             </td>
           </tr>
