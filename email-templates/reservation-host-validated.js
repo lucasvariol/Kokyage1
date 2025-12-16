@@ -72,8 +72,8 @@ export const reservationHostValidatedTemplate = {
                 <strong style="display:block;margin-bottom:10px;">Et maintenant ?</strong>
                 <ul style="padding-left:18px;margin:0;color:#475569;">
                   <li>Retrouvez tous les détails de votre séjour dans votre espace voyageur</li>
-                  <li>Commencez à préparer votre arrivée et contactez l'hôte si besoin</li>
-                  <li>Conservez ce message comme confirmation officielle</li>
+                  <li>Commencez à préparer votre arrivée et contactez l'hôte via le chat</li>
+                  <li>Profitez de votre séjour !</li>
                 </ul>
               </div>
 
@@ -93,7 +93,7 @@ export const reservationHostValidatedTemplate = {
               <p style="margin:0 0 8px;color:#64748B;font-size:13px;">
                 Une question ? Écrivez-nous à <a href="mailto:contact@kokyage.com" style="color:#2563EB;text-decoration:none;font-weight:600;">contact@kokyage.com</a>
               </p>
-              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2025 Kokyage - Merci pour votre confiance.</p>
+              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage</p>
             </td>
           </tr>
         </table>

@@ -161,7 +161,7 @@ export async function POST(request) {
         const reservationUrl = `${baseUrl}/reservations?reservationId=${reservationId}`;
 
         const emailPayload = {
-          guestName: guestRawName.trim?.() || 'Voyageur',
+          guestName: guestRawName.trim?.().split(/\s+/)[0] || 'Voyageur',
           hostName: hostRawName.trim?.().split(/\s+/)[0] || 'Votre hôte',
           listingTitle: listing?.title || 'Votre logement',
           listingCity: listing?.city || 'Localisation à venir',
