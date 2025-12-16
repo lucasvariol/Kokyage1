@@ -45,19 +45,9 @@ export const reservationHostPendingTemplate = {
                 Bonjour <strong>${tenantName}</strong>,
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 26px;">
-                Une nouvelle réservation a été effectuée par <strong>${guestName}</strong>.
+                Une nouvelle réservation a été effectuée.
                 Vous avez <strong style="color:#1F2937;">48 heures</strong> pour valider ou refuser cette réservation depuis votre espace hôte.
               </p>
-
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,rgba(78,205,196,0.1),rgba(59,130,246,0.08));border-left:4px solid #4ECDC4;border-radius:12px;margin:0 0 26px;">
-                <tr>
-                  <td style="padding:18px 20px;">
-                    <p style="margin:0 0 6px;font-size:13px;color:#0F172A;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">🏠 Logement</p>
-                    <p style="margin:0;font-size:18px;font-weight:700;color:#1F2937;">${listingTitle}</p>
-                    <p style="margin:4px 0 0;font-size:14px;color:#64748B;">📍 ${listingCity}</p>
-                  </td>
-                </tr>
-              </table>
 
               <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;border:1px solid #E2E8F0;margin-bottom:26px;">
                 <tr>
@@ -71,15 +61,6 @@ export const reservationHostPendingTemplate = {
                   </td>
                 </tr>
               </table>
-
-              <div style="padding:18px 20px;background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(37,99,235,0.06));border-left:4px solid #3B82F6;border-radius:12px;margin-bottom:28px;color:#1F2937;font-size:15px;line-height:1.6;">
-                <strong style="display:block;margin-bottom:8px;">⏱️ Vous avez 48 heures pour répondre :</strong>
-                <ul style="padding-left:18px;margin:0;color:#475569;">
-                  <li>Connectez-vous à votre espace hôte</li>
-                  <li>Consultez la réservation et vérifiez les informations</li>
-                  <li>Validez ou refusez la réservation</li>
-                </ul>
-              </div>
 
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
@@ -97,7 +78,7 @@ export const reservationHostPendingTemplate = {
               <p style="margin:0 0 8px;color:#64748B;font-size:13px;">
                 Besoin d'aide ? Contactez-nous à <a href="mailto:contact@kokyage.com" style="color:#4ECDC4;text-decoration:none;font-weight:600;">contact@kokyage.com</a>
               </p>
-              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2025 Kokyage - Plateforme de co-gestion locative</p>
+              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage</p>
             </td>
           </tr>
         </table>
@@ -123,7 +104,7 @@ export const reservationHostPendingTemplate = {
 Nouvelle réservation à valider
 
 Bonjour ${tenantName},
-
+mar
 Une nouvelle réservation a été effectuée par ${guestName}.
 Vous avez 48 heures pour valider ou refuser cette réservation depuis votre espace hôte.
 

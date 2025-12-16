@@ -34,7 +34,7 @@ export const reservationGuestPendingTemplate = {
                 <span style="font-size:42px;">⏳</span>
               </div>
               <h1 style="color:#ffffff;margin:0;font-size:26px;font-weight:800;letter-spacing:-0.02em;">
-                Réservation en attente
+                Réservation en attente de validation
               </h1>
             </td>
           </tr>
@@ -44,7 +44,7 @@ export const reservationGuestPendingTemplate = {
                 Bonjour <strong>${guestName}</strong>,
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 26px;">
-                Votre paiement a bien été confirmé et l'hôte a reçu une notification pour valider votre réservation.
+                Votre paiement a bien été confirmé et l'hôte a reçu une notification pour valider votre réservation. Il dispose de <strong style="color:#1F2937;">48 heures</strong> pour accepter ou refuser votre demande. Vous recevrez un email dès que l'hôte aura accepté votre réservation.
               </p>
 
               <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,rgba(78,205,196,0.1),rgba(59,130,246,0.08));border-left:4px solid #4ECDC4;border-radius:12px;margin:0 0 26px;">
@@ -70,23 +70,12 @@ export const reservationGuestPendingTemplate = {
                 </tr>
               </table>
 
-              <div style="padding:18px 20px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(245,158,11,0.08));border-left:4px solid #F59E0B;border-radius:12px;margin-bottom:28px;color:#1F2937;font-size:15px;line-height:1.6;">
-                <strong style="display:block;margin-bottom:8px;">⏱️ Validation en cours</strong>
-                <p style="margin:0;color:#475569;">
-                  L'hôte dispose de <strong style="color:#1F2937;">48 heures</strong> pour accepter ou refuser votre demande de réservation.
-                  Vous recevrez un email dès qu'une décision aura été prise.
-                </p>
-              </div>
 
               <div style="padding:18px 20px;background:#F0F9FF;border-left:4px solid #3B82F6;border-radius:12px;margin-bottom:28px;color:#1F2937;font-size:14px;line-height:1.6;">
                 <p style="margin:0;color:#475569;">
                   <strong style="color:#1F2937;">En cas de refus :</strong> Votre paiement sera intégralement remboursé sous 5 à 7 jours ouvrés.
                 </p>
               </div>
-
-              <p style="font-size:15px;line-height:1.7;color:#64748B;margin:0;text-align:center;">
-                Merci de votre confiance et à bientôt !
-              </p>
             </td>
           </tr>
           <tr>
@@ -94,7 +83,7 @@ export const reservationGuestPendingTemplate = {
               <p style="margin:0 0 8px;color:#64748B;font-size:13px;">
                 Besoin d'aide ? Contactez-nous à <a href="mailto:contact@kokyage.com" style="color:#4ECDC4;text-decoration:none;font-weight:600;">contact@kokyage.com</a>
               </p>
-              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage - Plateforme de co-gestion locative</p>
+              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage</p>
             </td>
           </tr>
         </table>
