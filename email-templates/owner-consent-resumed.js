@@ -32,11 +32,11 @@ export const ownerConsentResumedTemplate = {
           <tr>
             <td style="padding:40px 30px;">
               <p style="font-size:16px;line-height:1.7;color:#1F2937;margin:0 0 16px;">
-                Bonjour <strong>${tenantName}</strong>,
+                Bonjour ${tenantName},
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 24px;">
-                Le propriétaire <strong>${proprietaireName}</strong> vient de réactiver son accord pour votre logement.
-                Vous pouvez à nouveau proposer des réservations aux voyageurs.
+                Votre propriétaire vient de réactiver son accord de sous-location Kokyage pour votre logement.
+                Le logement est de nouveau visible par les voyageurs.
               </p>
               <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,rgba(78,205,196,0.08),rgba(68,181,168,0.05));border-left:4px solid #4ECDC4;border-radius:12px;margin:0 0 24px;">
                 <tr>
@@ -47,26 +47,6 @@ export const ownerConsentResumedTemplate = {
                   </td>
                 </tr>
               </table>
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;border-radius:12px;margin-bottom:24px;">
-                <tr>
-                  <td style="padding:18px 20px;">
-                    <p style="margin:0;font-size:14px;color:#475569;">
-                      Date de réactivation : <strong style="color:#1F2937;">${resumedAt}</strong>
-                    </p>
-                  </td>
-                </tr>
-              </table>
-              <div style="padding:18px 20px;background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(37,99,235,0.05));border-left:4px solid #3B82F6;border-radius:12px;margin-bottom:28px;color:#1F2937;font-size:15px;line-height:1.6;">
-                <strong style="display:block;margin-bottom:8px;">Prochaines étapes :</strong>
-                <ul style="padding-left:18px;margin:0;color:#475569;">
-                  <li>Vérifiez vos disponibilités et tarifs</li>
-                  <li>Informez vos voyageurs que le logement est à nouveau disponible</li>
-                  <li>Assurez-vous que les informations du logement sont à jour</li>
-                </ul>
-              </div>
-              <p style="font-size:15px;color:#475569;line-height:1.7;margin:0 0 28px;">
-                Merci pour votre collaboration. Cette étape garantit un suivi transparent entre vous et le propriétaire du logement.
-              </p>
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
@@ -83,7 +63,7 @@ export const ownerConsentResumedTemplate = {
               <p style="margin:0 0 8px;color:#64748B;font-size:13px;">
                 Besoin d'aide ? Contactez-nous à <a href="mailto:contact@kokyage.com" style="color:#4ECDC4;text-decoration:none;font-weight:600;">contact@kokyage.com</a>
               </p>
-              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2025 Kokyage - Plateforme de co-gestion locative</p>
+              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage</p>
             </td>
           </tr>
         </table>
@@ -99,24 +79,17 @@ Accord propriétaire réactivé
 
 Bonjour ${tenantName},
 
-Le propriétaire ${proprietaireName} vient de réactiver son accord pour votre logement.
-Vous pouvez à nouveau proposer des réservations aux voyageurs.
+Votre propriétaire vient de réactiver son accord de sous-location Kokyage pour votre logement.
+Le logement est de nouveau visible par les voyageurs.
 
 Logement concerné :
 ${listingTitle}
 ${listingCity}
 
-Date de réactivation : ${resumedAt}
-
-Prochaines étapes :
-- Vérifiez vos disponibilités et tarifs
-- Informez vos voyageurs que le logement est à nouveau disponible
-- Assurez-vous que les informations du logement sont à jour
-
 Accéder à mon espace hôte : ${process.env.NEXT_PUBLIC_APP_URL || 'https://kokyage.com'}/profil-hote
 
 Besoin d'aide ? contact@kokyage.com
 
-© 2025 Kokyage
+© 2026 Kokyage
   `
 };
