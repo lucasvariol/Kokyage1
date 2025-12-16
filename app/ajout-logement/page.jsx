@@ -9,8 +9,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { getFeeMultiplier, getPlatformPercent } from '@/lib/commissions';
-import { OwnerConsentAgreement } from '@/owner-consent';
-import { generateOwnerConsentText } from '@/lib/generateOwnerConsentText';
+import { OwnerConsentAgreement, getOwnerConsentText } from '@/owner-consent';
 import { trackEvent } from '../_components/GoogleAnalytics';
 
 const MapPreview = dynamic(() => import('../_components/MapPreview'), { ssr: false });
@@ -550,7 +549,7 @@ export default function Page() {
 
       // Enregistrer l'accord de consentement pour valeur juridique
       try {
-        const agreementText = generateOwnerConsentText({
+        const agreementText = getOwnerConsentText({
           ownerName: ownerEmail,
           tenantName: userFullName || user.email,
           fullAddress: street
