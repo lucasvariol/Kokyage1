@@ -6,7 +6,7 @@
 export const ownerVerificationTemplate = {
   subject: "Validation de votre logement — Kokyage",
   
-  getHtml: ({ ownerEmail, title, address, city, verifyUrl, isDevelopment }) => `
+  getHtml: ({ ownerEmail, title, address, city, verifyUrl, isDevelopment, tenantFullName }) => `
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,26 +19,12 @@ export const ownerVerificationTemplate = {
     <tr>
       <td align="center">
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
-          
-          ${isDevelopment ? `
-          <!-- Banner de test -->
-          <tr>
-            <td style="background-color: #FEF3C7; padding: 20px 30px; border-bottom: 2px solid #F59E0B;">
-              <p style="margin: 0; font-size: 14px; color: #92400E; font-weight: 600;">
-                🧪 MODE TEST
-              </p>
-              <p style="margin: 8px 0 0; font-size: 13px; color: #92400E;">
-                Destinataire original : <strong>${ownerEmail}</strong>
-              </p>
-            </td>
-          </tr>
-          ` : ''}
 
           <!-- Header avec gradient -->
           <tr>
             <td style="background: linear-gradient(135deg, #D79077 0%, #C96745 100%); padding: 40px 30px; text-align: center;">
               <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">
-                Votre accord est nécessaire 🏠
+                Validez votre logement Kokyage 🏠
               </h1>
             </td>
           </tr>
@@ -51,7 +37,11 @@ export const ownerVerificationTemplate = {
               </p>
               
               <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #2D3748;">
-                Un locataire a référencé un logement sur <strong style="color: #C96745;">Kokyage</strong> et vous a désigné comme propriétaire de ce bien.
+                Votre locataire ${tenantFullName || 'votre locataire'} a référencé un logement sur <strong style="color: #C96745;">Kokyage.com</strong> et vous a désigné comme propriétaire de ce bien.
+              </p>
+
+              <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #2D3748;">
+                Pour que ce logement puisse être mis en location sur notre plateforme, nous avons besoin de votre accord. Cliquez sur le bouton ci-dessous pour lire le détail de l'accord et confirmer votre acceptation. 
               </p>
 
               <!-- Encadré explication du concept -->
@@ -61,30 +51,22 @@ export const ownerVerificationTemplate = {
                     <p style="margin: 0 0 10px; font-size: 14px; font-weight: 700; color: #2D3748;">
                       💡 Comment fonctionne Kokyage ?
                     </p>
-                    <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #4A5568;">
-                      <strong style="color: #C96745;">Kokyage</strong> est une plateforme qui permet à vos locataires de sous-louer leur logement de manière légale et sécurisée, avec votre autorisation préalable. Vous gardez le contrôle total, et obtenez 40% des revenus générés par la sous-location.
-                    </p>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Encadré avec les informations du logement -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F5F1ED; border-radius: 12px; margin: 25px 0;">
-                <tr>
-                  <td style="padding: 20px 25px;">
-                    <p style="margin: 0 0 12px; font-size: 14px; font-weight: 700; color: #C96745; text-transform: uppercase; letter-spacing: 0.5px;">
-                      📍 Logement concerné
-                    </p>
-                    ${title ? `
-                    <p style="margin: 0 0 8px; font-size: 15px; color: #2D3748;">
-                      <strong>Titre :</strong> ${title}
-                    </p>
-                    ` : ''}
-                    ${address ? `
-                    <p style="margin: 0; font-size: 15px; color: #2D3748;">
-                      <strong>Adresse :</strong> ${address}${city ? `, ${city}` : ''}
-                    </p>
-                    ` : ''}
+                    <ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; color: #4A5568;">
+                      <li style="margin: 0 0 8px;">
+                        <strong style="color: #C96745;">Vous gardez le contrôle</strong> : vous pouvez annuler à tout moment (avec un préavis de 14 jours).
+                      </li>
+                      <li style="margin: 0 0 8px;">
+                        <strong style="color: #C96745;">Vous augmentez vos revenus</strong> : vous obtenez 40% des revenus générés, en plus de votre loyer.
+                      </li>
+                      <li style="margin: 0;">
+                        <strong style="color: #C96745;">Vous limitez les risques</strong> : enregistrement d'une caution de 300€ au moment de la réservation.
+                      </li>
+                    </ul>
+                    <div style="margin-top: 14px;">
+                      <a href="${(process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com')}/fonctionnement" style="display: inline-block; background: #60A29D; color: #ffffff; text-decoration: none; padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 14px;">
+                        En savoir plus sur Kokyage
+                      </a>
+                    </div>
                   </td>
                 </tr>
               </table>
@@ -109,6 +91,28 @@ export const ownerVerificationTemplate = {
             </td>
           </tr>
 
+
+          <!-- Encadré avec les informations du logement -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F5F1ED; border-radius: 12px; margin: 25px 0;">
+                <tr>
+                  <td style="padding: 20px 25px;">
+                    <p style="margin: 0 0 12px; font-size: 14px; font-weight: 700; color: #C96745; text-transform: uppercase; letter-spacing: 0.5px;">
+                      📍 Logement concerné
+                    </p>
+                    ${title ? `
+                    <p style="margin: 0 0 8px; font-size: 15px; color: #2D3748;">
+                      <strong>Titre :</strong> ${title}
+                    </p>
+                    ` : ''}
+                    ${address ? `
+                    <p style="margin: 0; font-size: 15px; color: #2D3748;">
+                      <strong>Adresse :</strong> ${address}${city ? `, ${city}` : ''}
+                    </p>
+                    ` : ''}
+                  </td>
+                </tr>
+              </table> 
+
           <!-- Footer -->
           <tr>
             <td style="background-color: #F5F1ED; padding: 30px; text-align: center;">
@@ -116,10 +120,10 @@ export const ownerVerificationTemplate = {
                 ⏱ Ce lien est valable pendant 24 heures.
               </p>
               <p style="margin: 0 0 15px; font-size: 13px; color: #718096;">
-                Si vous n'êtes pas propriétaire de ce logement ou si vous n'avez pas autorisé cette annonce, vous pouvez ignorer cet email en toute sécurité.
+                Si vous n'êtes pas propriétaire de ce logement ou si vous n'avez pas autorisé cette annonce, vous pouvez ignorer cet email.
               </p>
               <p style="margin: 0; font-size: 12px; color: #A0AEC0;">
-                © 2025 Kokyage. Tous droits réservés.
+                © 2026 Kokyage
               </p>
             </td>
           </tr>

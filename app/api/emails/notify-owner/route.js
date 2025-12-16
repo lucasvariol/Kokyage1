@@ -87,6 +87,42 @@ export async function POST(req) {
     const appUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com';
     const verifyUrl = `${appUrl}/verification-proprietaire/${token}`;
 
+    // Get tenant full name (prénom nom) to personalize the email
+    let tenantFullName = null;
+    try {
+      const { data: listing, error: listingErr } = await supabaseAdmin
+        .from('listings')
+        .select('owner_id')
+        .eq('id', listingId)
+        .maybeSingle();
+
+      if (listingErr) throw listingErr;
+
+      const tenantId = listing?.owner_id;
+      if (tenantId) {
+        const { data: tenantProfile, error: tenantProfileErr } = await supabaseAdmin
+          .from('profiles')
+          .select('name')
+          .eq('id', tenantId)
+          .maybeSingle();
+        if (tenantProfileErr) throw tenantProfileErr;
+
+        tenantFullName = tenantProfile?.name?.trim?.() || null;
+
+        if (!tenantFullName) {
+          const { data: tenantUserData, error: tenantUserError } = await supabaseAdmin.auth.admin.getUserById(tenantId);
+          if (tenantUserError) throw tenantUserError;
+          const tenantUser = tenantUserData?.user;
+          tenantFullName = tenantUser?.user_metadata?.full_name
+            || tenantUser?.user_metadata?.name
+            || null;
+          tenantFullName = tenantFullName?.trim?.() || null;
+        }
+      }
+    } catch (nameErr) {
+      console.warn('⚠️ Could not resolve tenantFullName for owner verification email', nameErr?.message || nameErr);
+    }
+
     const subject = ownerVerificationTemplate.subject;
     const html = ownerVerificationTemplate.getHtml({
       ownerEmail,
@@ -94,7 +130,8 @@ export async function POST(req) {
       address,
       city,
       verifyUrl,
-      isDevelopment
+      isDevelopment,
+      tenantFullName
     });
 
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
