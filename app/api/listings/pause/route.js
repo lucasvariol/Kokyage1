@@ -145,6 +145,11 @@ export async function POST(req) {
             listingTitle: listing.title || 'Votre logement',
             listingCity: listing.city || 'Localisation non renseignée',
             proprietaireName,
+            cutoffDate: new Date(cutoffDateStr).toLocaleDateString('fr-FR', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            }),
             pausedAt: new Date().toLocaleDateString('fr-FR', {
               day: 'numeric',
               month: 'long',

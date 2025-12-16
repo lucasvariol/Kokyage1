@@ -6,7 +6,7 @@
 export const ownerConsentPausedTemplate = {
   subject: '⏸️ Accord propriétaire mis en pause',
 
-  getHtml: ({ tenantName, listingTitle, listingCity, proprietaireName, pausedAt }) => `
+  getHtml: ({ tenantName, listingTitle, listingCity, proprietaireName, pausedAt, cutoffDate }) => `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -32,11 +32,12 @@ export const ownerConsentPausedTemplate = {
           <tr>
             <td style="padding:40px 30px;">
               <p style="font-size:16px;line-height:1.7;color:#1F2937;margin:0 0 16px;">
-                Bonjour <strong>${tenantName}</strong>,
+                Bonjour ${tenantName},
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 24px;">
-                Le propriétaire <strong>${proprietaireName}</strong> a mis en pause son accord pour votre logement.
-                Le logement est temporairement indisponible à la réservation jusqu'à nouvelle confirmation de sa part.
+                Votre propriétaire a mis en pause son accord pour votre logement.
+                Le logement est désormais indisponible à la réservation jusqu'à réactivation de sa part.
+                Toutes les réservations dont le début est postérieur au ${cutoffDate || 'J+14'} sont annulées. Les réservations démarrant avant cette date restent inchangées.
               </p>
               <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,rgba(249,115,22,0.08),rgba(234,88,12,0.05));border-left:4px solid #F97316;border-radius:12px;margin:0 0 24px;">
                 <tr>
@@ -47,26 +48,6 @@ export const ownerConsentPausedTemplate = {
                   </td>
                 </tr>
               </table>
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#FEF3C7;border-radius:12px;margin-bottom:24px;border:1px solid #FDE68A;">
-                <tr>
-                  <td style="padding:18px 20px;">
-                    <p style="margin:0;font-size:14px;color:#92400E;">
-                      Date de mise en pause : <strong>${pausedAt}</strong>
-                    </p>
-                  </td>
-                </tr>
-              </table>
-              <div style="padding:18px 20px;background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(248,113,113,0.05));border-left:4px solid #EF4444;border-radius:12px;margin-bottom:28px;color:#1F2937;font-size:15px;line-height:1.6;">
-                <strong style="display:block;margin-bottom:8px;">À faire :</strong>
-                <ul style="padding-left:18px;margin:0;color:#475569;">
-                  <li>Mettre à jour vos voyageurs si des séjours étaient prévus</li>
-                  <li>Mettre en pause d'éventuelles campagnes marketing</li>
-                  <li>Attendre la nouvelle validation du propriétaire avant toute nouvelle réservation</li>
-                </ul>
-              </div>
-              <p style="font-size:15px;color:#475569;line-height:1.7;margin:0 0 28px;">
-                Nous vous informerons dès que le propriétaire réactivera son accord. Merci pour votre vigilance.
-              </p>
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
@@ -83,7 +64,7 @@ export const ownerConsentPausedTemplate = {
               <p style="margin:0 0 8px;color:#64748B;font-size:13px;">
                 Besoin d'aide ? Contactez-nous à <a href="mailto:contact@kokyage.com" style="color:#4ECDC4;text-decoration:none;font-weight:600;">contact@kokyage.com</a>
               </p>
-              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2025 Kokyage - Plateforme de co-gestion locative</p>
+              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage</p>
             </td>
           </tr>
         </table>
@@ -94,13 +75,15 @@ export const ownerConsentPausedTemplate = {
 </html>
   `,
 
-  getText: ({ tenantName, listingTitle, listingCity, proprietaireName, pausedAt }) => `
+  getText: ({ tenantName, listingTitle, listingCity, proprietaireName, pausedAt, cutoffDate }) => `
 Accord propriétaire en pause
 
 Bonjour ${tenantName},
 
 Le propriétaire ${proprietaireName} a mis en pause son accord pour votre logement.
 Le logement est temporairement indisponible à la réservation.
+
+Toutes les réservations dont la date de début est postérieure au ${cutoffDate || 'J+14'} sont annulées. Les réservations démarrant avant cette date restent inchangées.
 
 Logement concerné :
 ${listingTitle}
