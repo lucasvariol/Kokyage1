@@ -1276,6 +1276,7 @@ export default function Page({ params: propsParams }) {
       
       // Fetch host profile separately since there's no direct FK
       let hostProfile = null;
+      let publicReservationsCount = null;
       const hostId = data?.owner_id || data?.id_proprietaire;
       if (hostId) {
         // Try to fetch host profile client-side (RLS may block if logged out)
@@ -1294,7 +1295,6 @@ export default function Page({ params: propsParams }) {
         }
 
         // Fallback to public host endpoint when profile isn't available (RLS may block when logged out)
-        let publicReservationsCount = null;
         if (!hostProfile) {
           try {
             const res = await fetch(`/api/listings/host-public/${params.id}`);
