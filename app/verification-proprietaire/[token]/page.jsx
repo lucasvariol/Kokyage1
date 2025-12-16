@@ -227,7 +227,7 @@ export default function VerificationProprietaire() {
         const listingAddress = `${listingInfo?.address || ''}, ${listingInfo?.city || ''}`.trim();
         
         const agreementText = getOwnerConsentText({
-          ownerName: user.email,
+          ownerName: ownerFullName || user.email,
           tenantName: tenantFullName,
           fullAddress: listingAddress
         });
