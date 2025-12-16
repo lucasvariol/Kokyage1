@@ -259,7 +259,7 @@ export async function POST(request) {
           }).format(Number(value || 0));
 
           const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com';
-          const reservationUrl = `${baseUrl}/reservations?view=host&reservationId=${reservationId}`;
+          const reservationUrl = `${baseUrl}/profil-hote`;
 
           const emailPayload = {
             tenantName: hostName,
