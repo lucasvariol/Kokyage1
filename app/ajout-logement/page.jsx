@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { getFeeMultiplier, getPlatformPercent } from '@/lib/commissions';
-import { OwnerConsentAgreement, getOwnerConsentText } from '@/owner-consent';
+import { OwnerConsentAgreement } from '@/owner-consent';
 import { trackEvent } from '../_components/GoogleAnalytics';
 
 const MapPreview = dynamic(() => import('../_components/MapPreview'), { ssr: false });
@@ -545,41 +545,6 @@ export default function Page() {
         setError("Logement créé mais erreur lors de l'envoi de l'email au propriétaire.");
         setLoading(false);
         return;
-      }
-
-      // Enregistrer l'accord de consentement pour valeur juridique
-      try {
-        const agreementText = getOwnerConsentText({
-          ownerName: ownerEmail,
-          tenantName: userFullName || user.email,
-          fullAddress: street
-        });
-
-        const consentRes = await fetch('/api/owner-consent/log', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            listingId,
-            tenantId: user.id,
-            tenantEmail: user.email,
-            ownerEmail,
-            listingAddress: street,
-            infoAccuracyAccepted: infoAccuracyChecked,
-            agreementText,
-            signatureType: 'tenant' // Signature du locataire
-          })
-        });
-
-        const consentData = await consentRes.json();
-        if (!consentData.success) {
-          console.error('⚠️ Erreur lors de l\'enregistrement de l\'accord:', consentData.error);
-          // On ne bloque pas la création de l'annonce si le log échoue
-        } else {
-          console.log('✅ Accord de consentement signé par le tenant:', consentData.data.id);
-        }
-      } catch (consentError) {
-        console.error('💥 Erreur log accord consentement:', consentError);
-        // On ne bloque pas la création de l'annonce
       }
 
       // Tracker l'ajout de logement
