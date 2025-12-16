@@ -35,7 +35,7 @@ export const ownerConsentResumedTemplate = {
                 Bonjour ${tenantName},
               </p>
               <p style="font-size:16px;line-height:1.7;color:#475569;margin:0 0 24px;">
-                Votre propriétaire vient de réactiver son accord de sous-location Kokyage pour votre logement.
+                Votre propriétaire vient de réactiver son accord de sous-location Kokyage.
                 Le logement est de nouveau visible par les voyageurs.
               </p>
               <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,rgba(78,205,196,0.08),rgba(68,181,168,0.05));border-left:4px solid #4ECDC4;border-radius:12px;margin:0 0 24px;">
