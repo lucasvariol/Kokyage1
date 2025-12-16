@@ -65,7 +65,7 @@ export const ownerVerificationConfirmedTemplate = {
                   <td align="center">
                     <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://kokyage.com'}/profil-hote" 
                        style="display: inline-block; background: linear-gradient(135deg, #4ECDC4 0%, #44B5AC 100%); color: white; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(78,205,196,0.3);">
-                      Voir mon espace hôte
+                      Voir mon espace hôte 
                     </a>
                   </td>
                 </tr>
