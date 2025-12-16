@@ -45,8 +45,7 @@ export const ownerVerificationTemplate = {
               </p>
 
               <!-- Bouton CTA -->
-            
-            <table width="100%" cellpadding="0" cellspacing="0">
+              <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="padding: 20px 0;">
                     <a href="${verifyUrl}" style="display: inline-block; background: linear-gradient(135deg, #D79077 0%, #C96745 100%); color: white; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(201, 103, 69, 0.3);">
@@ -62,6 +61,9 @@ export const ownerVerificationTemplate = {
                   <td style="padding: 18px 22px;">
                     <p style="margin: 0 0 10px; font-size: 14px; font-weight: 700; color: #2D3748;">
                       💡 Comment fonctionne Kokyage ?
+                    </p>
+                    <p style="margin: 0 0 12px; font-size: 14px; line-height: 1.6; color: #4A5568;">
+                      Kokyage est la première plateforme de sous-location permettant le partage des revenus entre locataires et propriétaires :
                     </p>
                     <ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; color: #4A5568;">
                       <li style="margin: 0 0 8px;">
