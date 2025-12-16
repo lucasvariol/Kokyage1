@@ -182,7 +182,7 @@ export async function POST(request) {
       }).format(Number(value || 0));
 
       const emailPayload = {
-        guestName: guestRawName.trim?.() || 'Voyageur',
+        guestName: guestRawName.trim?.().split(/\s+/)[0] || 'Voyageur',
         hostName: hostRawName.trim?.().split(/\s+/)[0] || 'Votre hôte',
         listingTitle: listing?.title || 'Logement',
         listingCity: listing?.city || 'Localisation',

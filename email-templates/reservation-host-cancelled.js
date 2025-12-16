@@ -3,7 +3,7 @@
  */
 
 export const reservationHostCancelledTemplate = {
-  subject: '🚫 Votre réservation a été annulée par l\'hôte',
+  subject: 'Votre réservation a été annulée par l\'hôte',
 
   getHtml: ({
     guestName,
@@ -30,9 +30,9 @@ export const reservationHostCancelledTemplate = {
       <td align="center">
         <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 16px 44px rgba(15,23,42,0.12);">
           <tr>
-            <td style="background:linear-gradient(135deg,#F59E0B 0%,#EF4444 100%);padding:38px 32px;text-align:center;">
+            <td style="background:linear-gradient(135deg,#4B5563 0%,#374151 100%);padding:38px 32px;text-align:center;">
               <div style="display:inline-block;background:rgba(255,255,255,0.18);border-radius:999px;padding:14px;margin-bottom:18px;">
-                <span style="font-size:42px;">🚫</span>
+                <span style="font-size:42px;">😔</span>
               </div>
               <h1 style="color:#ffffff;margin:0;font-size:26px;font-weight:800;letter-spacing:-0.01em;">
                 Réservation annulée
@@ -75,13 +75,6 @@ export const reservationHostCancelledTemplate = {
                 </p>
               </div>
 
-              <div style="padding:18px 22px;background:#FEF3C7;border-left:4px solid #F59E0B;border-radius:14px;margin-bottom:28px;color:#1F2937;font-size:14px;line-height:1.6;">
-                <p style="margin:0;color:#92400E;">
-                  <strong>Suite à donner :</strong><br />
-                  Nous vous invitons à rechercher un autre logement sur Kokyage pour vos dates de séjour. Notre équipe reste à votre disposition pour tout besoin d'assistance.
-                </p>
-              </div>
-
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
@@ -98,7 +91,7 @@ export const reservationHostCancelledTemplate = {
               <p style="margin:0 0 8px;color:#64748B;font-size:13px;">
                 Besoin d'aide ? Contactez-nous à <a href="mailto:contact@kokyage.com" style="color:#2563EB;text-decoration:none;font-weight:600;">contact@kokyage.com</a>
               </p>
-              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2025 Kokyage - Nous restons à votre écoute.</p>
+              <p style="margin:0;color:#94A3B8;font-size:12px;">© 2026 Kokyage</p>
             </td>
           </tr>
         </table>
