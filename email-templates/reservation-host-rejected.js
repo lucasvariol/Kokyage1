@@ -3,7 +3,7 @@
  */
 
 export const reservationHostRejectedTemplate = {
-  subject: '❌ Votre réservation a été refusée',
+  subject: 'Votre réservation a été refusée',
 
   getHtml: ({
     guestName,
@@ -30,9 +30,9 @@ export const reservationHostRejectedTemplate = {
       <td align="center">
         <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 16px 44px rgba(15,23,42,0.12);">
           <tr>
-            <td style="background:linear-gradient(135deg,#EF4444 0%,#DC2626 100%);padding:38px 32px;text-align:center;">
+            <td style="background:linear-gradient(135deg,#4B5563 0%,#374151 100%);padding:38px 32px;text-align:center;">
               <div style="display:inline-block;background:rgba(255,255,255,0.18);border-radius:999px;padding:14px;margin-bottom:18px;">
-                <span style="font-size:42px;">❌</span>
+                <span style="font-size:42px;">😔</span>
               </div>
               <h1 style="color:#ffffff;margin:0;font-size:26px;font-weight:800;letter-spacing:-0.01em;">
                 Réservation refusée
@@ -75,8 +75,8 @@ export const reservationHostRejectedTemplate = {
                 </p>
               </div>
 
-              <div style="padding:18px 22px;background:#FEF2F2;border-left:4px solid #F87171;border-radius:14px;margin-bottom:28px;color:#1F2937;font-size:14px;line-height:1.6;">
-                <p style="margin:0;color:#991B1B;">
+              <div style="padding:18px 22px;background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(109,40,217,0.06));border-left:4px solid #7C3AED;border-radius:14px;margin-bottom:28px;color:#1F2937;font-size:14px;line-height:1.6;">
+                <p style="margin:0;color:#6D28D9;">
                   <strong>Que faire maintenant ?</strong><br />
                   N'hésitez pas à rechercher d'autres logements disponibles sur Kokyage pour vos dates de séjour.
                 </p>
