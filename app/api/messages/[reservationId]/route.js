@@ -34,7 +34,7 @@ export async function GET(request, { params }) {
     // Vérifier que l'utilisateur a accès à cette réservation
     const { data: reservation, error: resError } = await supabase
       .from('reservations')
-      .select('user_id, guest_id, host_id')
+      .select('user_id, host_id, listings:listing_id(owner_id)')
       .eq('id', reservationId)
       .single();
 
@@ -42,9 +42,9 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Réservation introuvable' }, { status: 404 });
     }
 
-    const guestId = reservation.guest_id || reservation.user_id;
+    const hostId = reservation.host_id || reservation.listings?.owner_id || null;
 
-    if (guestId !== user.id && reservation.host_id !== user.id) {
+    if (reservation.user_id !== user.id && hostId !== user.id) {
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
@@ -129,7 +129,7 @@ export async function POST(request, { params }) {
     // Vérifier que l'utilisateur a accès à cette réservation et déterminer le receiver
     const { data: reservation, error: resError } = await supabase
       .from('reservations')
-      .select('user_id, guest_id, host_id')
+      .select('user_id, host_id, listings:listing_id(owner_id)')
       .eq('id', reservationId)
       .single();
 
@@ -137,13 +137,13 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Réservation introuvable' }, { status: 404 });
     }
 
-    const guestId = reservation.guest_id || reservation.user_id;
+    const hostId = reservation.host_id || reservation.listings?.owner_id || null;
 
-    if (guestId !== user.id && reservation.host_id !== user.id) {
+    if (reservation.user_id !== user.id && hostId !== user.id) {
       return NextResponse.json({ error: 'Accès non autorisé' }, { status: 403 });
     }
 
-    const receiverId = reservation.host_id === user.id ? guestId : reservation.host_id;
+    const receiverId = hostId === user.id ? reservation.user_id : hostId;
 
     if (!receiverId) {
       return NextResponse.json({ error: 'Impossible de déterminer le destinataire' }, { status: 400 });
