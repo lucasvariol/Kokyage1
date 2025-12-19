@@ -908,19 +908,40 @@ export default function Page() {
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                           {text ? <div style={{ whiteSpace: 'pre-wrap' }}>{text}</div> : null}
                                           {attachment?.url ? (
-                                            <a
-                                              href={attachment.url}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                              style={{
-                                                color: isMine ? 'white' : '#0F172A',
-                                                textDecoration: 'underline',
-                                                fontWeight: 700,
-                                                wordBreak: 'break-word'
-                                              }}
-                                            >
-                                              📎 {attachment.name || 'Fichier'}
-                                            </a>
+                                            attachment.type?.startsWith('image/') ? (
+                                              <a
+                                                href={attachment.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                style={{ display: 'block', maxWidth: '300px' }}
+                                              >
+                                                <img
+                                                  src={attachment.url}
+                                                  alt={attachment.name || 'Image'}
+                                                  style={{
+                                                    maxWidth: '100%',
+                                                    borderRadius: '12px',
+                                                    cursor: 'pointer',
+                                                    display: 'block',
+                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                                                  }}
+                                                />
+                                              </a>
+                                            ) : (
+                                              <a
+                                                href={attachment.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                style={{
+                                                  color: isMine ? 'white' : '#0F172A',
+                                                  textDecoration: 'underline',
+                                                  fontWeight: 700,
+                                                  wordBreak: 'break-word'
+                                                }}
+                                              >
+                                                📎 {attachment.name || 'Fichier'}
+                                              </a>
+                                            )
                                           ) : null}
                                         </div>
                                       );
