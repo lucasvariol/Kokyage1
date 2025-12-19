@@ -31,32 +31,72 @@ export async function GET(request) {
     }
 
     // Récupérer toutes les réservations où l'utilisateur est soit hôte soit voyageur.
-    // NB: dans le schéma actuel, le voyageur = reservations.user_id.
+    // NB: le voyageur = reservations.user_id.
     // L'hôte peut être reservations.host_id (si rempli) ou listings.owner_id.
-    const { data: reservations, error: resError } = await supabase
+    // IMPORTANT: PostgREST ne supporte pas les filtres OR sur des colonnes d'une ressource embarquée
+    // (ex: listings.owner_id) => on fait 2 requêtes et on fusionne.
+
+    const reservationSelect = `
+      id,
+      listing_id,
+      user_id,
+      host_id,
+      date_arrivee,
+      date_depart,
+      status,
+      listings:listing_id (
+        owner_id,
+        title,
+        city,
+        images
+      )
+    `;
+
+    const { data: directReservations, error: directResError } = await supabase
       .from('reservations')
-      .select(`
-        id,
-        listing_id,
-        user_id,
-        host_id,
-        date_arrivee,
-        date_depart,
-        status,
-        listings:listing_id (
-          owner_id,
-          title,
-          city,
-          images
-        )
-      `)
-      .or(`user_id.eq.${user.id},host_id.eq.${user.id},listings.owner_id.eq.${user.id}`)
+      .select(reservationSelect)
+      .or(`user_id.eq.${user.id},host_id.eq.${user.id}`)
       .order('created_at', { ascending: false });
 
-    if (resError) {
-      console.error('Error fetching reservations:', resError);
+    if (directResError) {
+      console.error('Error fetching direct reservations:', directResError);
       return NextResponse.json({ error: 'Erreur lors de la récupération des conversations' }, { status: 500 });
     }
+
+    const { data: ownedListings, error: ownedListingsError } = await supabase
+      .from('listings')
+      .select('id')
+      .eq('owner_id', user.id);
+
+    if (ownedListingsError) {
+      console.error('Error fetching owned listings:', ownedListingsError);
+      return NextResponse.json({ error: 'Erreur lors de la récupération des conversations' }, { status: 500 });
+    }
+
+    const ownedListingIds = (ownedListings || []).map((l) => l.id).filter(Boolean);
+
+    let ownerReservations = [];
+    if (ownedListingIds.length > 0) {
+      const { data: ownerRes, error: ownerResError } = await supabase
+        .from('reservations')
+        .select(reservationSelect)
+        .in('listing_id', ownedListingIds)
+        .order('created_at', { ascending: false });
+
+      if (ownerResError) {
+        console.error('Error fetching owner reservations:', ownerResError);
+        return NextResponse.json({ error: 'Erreur lors de la récupération des conversations' }, { status: 500 });
+      }
+
+      ownerReservations = ownerRes || [];
+    }
+
+    // Fusion + déduplication
+    const byId = new Map();
+    for (const r of [...(directReservations || []), ...ownerReservations]) {
+      if (r?.id) byId.set(r.id, r);
+    }
+    const reservations = Array.from(byId.values());
 
     // Pour chaque réservation, récupérer le dernier message et les infos de l'autre personne
     const conversationsPromises = (reservations || []).map(async (reservation) => {
