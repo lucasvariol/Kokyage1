@@ -6,7 +6,7 @@ import { createServerClient } from '@supabase/ssr';
 // Récupère la liste des conversations (groupées par réservation) pour l'utilisateur connecté
 export async function GET(request) {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
 
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
