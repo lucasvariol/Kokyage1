@@ -783,16 +783,6 @@ export default function Page() {
                         }}>
                           {selectedConversation.listingTitle} · {selectedConversation.listingCity}
                         </div>
-                        {otherTyping && (
-                          <div style={{
-                            fontSize: '0.8rem',
-                            color: '#4ECDC4',
-                            fontWeight: 700,
-                            marginTop: '6px'
-                          }}>
-                            {selectedConversation.otherUserName} écrit...
-                          </div>
-                        )}
                         <div style={{
                           fontSize: '0.8rem',
                           color: '#94A3B8',
@@ -937,6 +927,46 @@ export default function Page() {
                             </div>
                           );
                         })}
+                        {otherTyping && (
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '12px 18px',
+                            marginBottom: '12px'
+                          }}>
+                            <div style={{
+                              padding: '12px 18px',
+                              borderRadius: '18px',
+                              background: '#F1F5F9',
+                              display: 'flex',
+                              gap: '4px',
+                              alignItems: 'center'
+                            }}>
+                              <div className="typing-dot" style={{
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                background: '#94A3B8',
+                                animation: 'typingBounce 1.4s infinite ease-in-out'
+                              }}></div>
+                              <div className="typing-dot" style={{
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                background: '#94A3B8',
+                                animation: 'typingBounce 1.4s infinite ease-in-out 0.2s'
+                              }}></div>
+                              <div className="typing-dot" style={{
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                background: '#94A3B8',
+                                animation: 'typingBounce 1.4s infinite ease-in-out 0.4s'
+                              }}></div>
+                            </div>
+                          </div>
+                        )}
                         <div ref={messagesEndRef} />
                       </>
                     )}
@@ -955,29 +985,6 @@ export default function Page() {
                         disabled={sending}
                         style={{ display: 'none' }}
                       />
-                      <button
-                        type="button"
-                        disabled={sending}
-                        onClick={() => fileInputRef.current?.click()}
-                        style={{
-                          padding: '14px 16px',
-                          background: '#F8FAFC',
-                          color: '#334155',
-                          border: '2px solid #E2E8F0',
-                          borderRadius: '16px',
-                          fontSize: '1rem',
-                          fontWeight: 700,
-                          cursor: sending ? 'not-allowed' : 'pointer',
-                          transition: 'all 0.2s',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minWidth: '52px'
-                        }}
-                        title={selectedFile ? selectedFile.name : 'Joindre un fichier'}
-                      >
-                        📎
-                      </button>
                       <textarea
                         value={newMessage}
                         onChange={(e) => {
@@ -1081,6 +1088,29 @@ export default function Page() {
                           </>
                         )}
                       </button>
+                      <button
+                        type="button"
+                        disabled={sending}
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{
+                          padding: '14px 16px',
+                          background: '#F8FAFC',
+                          color: '#334155',
+                          border: '2px solid #E2E8F0',
+                          borderRadius: '16px',
+                          fontSize: '1rem',
+                          fontWeight: 700,
+                          cursor: sending ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          minWidth: '52px'
+                        }}
+                        title={selectedFile ? selectedFile.name : 'Joindre un fichier'}
+                      >
+                        📎
+                      </button>
                     </form>
                   </div>
                 </>
@@ -1119,6 +1149,15 @@ export default function Page() {
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+
+        @keyframes typingBounce {
+          0%, 60%, 100% {
+            transform: translateY(0);
+          }
+          30% {
+            transform: translateY(-8px);
+          }
         }
 
         /* Mobile responsive */
