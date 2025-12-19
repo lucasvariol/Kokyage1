@@ -988,14 +988,7 @@ export default function Page() {
                         onBlur={(e) => {
                           e.target.style.borderColor = '#E2E8F0';
                           e.target.style.background = '#F8FAFC';
-                        }}
-                        onKeyDown={(e) => {
-                          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                            e.preventDefault();
-                            handleSendMessage(e);
-                          }
-                        }}
-                        onBlur={() => {
+
                           if (typingTimeoutRef.current) {
                             clearTimeout(typingTimeoutRef.current);
                             typingTimeoutRef.current = null;
@@ -1006,6 +999,12 @@ export default function Page() {
                               event: 'typing',
                               payload: { userId: user.id, isTyping: false },
                             });
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                            e.preventDefault();
+                            handleSendMessage(e);
                           }
                         }}
                       />
