@@ -182,10 +182,8 @@ export default function Page() {
     try {
       const res = await fetch('/api/messages/conversations');
       const data = await res.json();
-      console.log('Conversations API response:', data);
       if (res.ok) {
         setConversations(data.conversations || []);
-        console.log('Conversations loaded:', data.conversations?.length || 0);
       } else {
         console.error('API error:', data.error);
       }
@@ -202,7 +200,6 @@ export default function Page() {
       const data = await res.json();
       if (res.ok) {
         setMessages(data.messages || []);
-        loadConversations();
       }
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -295,17 +292,24 @@ export default function Page() {
     const ok = window.confirm('Supprimer ce message ?');
     if (!ok) return;
 
+    // Optimistic UI: remove immediately to avoid waiting on network
+    const previousMessages = messages;
+    setMessages((prev) => prev.filter((m) => String(m.id) !== String(messageId)));
+
     try {
       const res = await fetch(`/api/messages/message/${messageId}`, { method: 'DELETE' });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         console.error('Delete message error:', data?.error);
+        alert(data?.error || 'Erreur lors de la suppression');
+        setMessages(previousMessages);
         return;
       }
-      setMessages((prev) => prev.filter((m) => String(m.id) !== String(messageId)));
       loadConversations();
     } catch (error) {
       console.error('Error deleting message:', error);
+      alert('Erreur lors de la suppression');
+      setMessages(previousMessages);
     }
   }
 
