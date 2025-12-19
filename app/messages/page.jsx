@@ -29,7 +29,7 @@ export default function Page() {
 
   useEffect(() => {
     if (selectedConversation) {
-      loadMessages(selectedConversation.reservationId);
+      loadMessages(selectedConversation.threadId);
     }
   }, [selectedConversation]);
 
@@ -68,9 +68,9 @@ export default function Page() {
     }
   }
 
-  async function loadMessages(reservationId) {
+  async function loadMessages(threadId) {
     try {
-      const res = await fetch(`/api/messages/${reservationId}`);
+      const res = await fetch(`/api/messages/thread/${threadId}`);
       const data = await res.json();
       if (res.ok) {
         setMessages(data.messages || []);
@@ -87,7 +87,7 @@ export default function Page() {
 
     setSending(true);
     try {
-      const res = await fetch(`/api/messages/${selectedConversation.reservationId}`, {
+      const res = await fetch(`/api/messages/thread/${selectedConversation.threadId}` , {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: newMessage })
@@ -95,7 +95,7 @@ export default function Page() {
 
       if (res.ok) {
         setNewMessage('');
-        loadMessages(selectedConversation.reservationId);
+        loadMessages(selectedConversation.threadId);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -373,30 +373,30 @@ export default function Page() {
                 ) : (
                   conversations.map((conv) => (
                     <div
-                      key={conv.reservationId}
+                      key={conv.threadId}
                       onClick={() => setSelectedConversation(conv)}
                       style={{
                         padding: '16px',
                         borderRadius: '16px',
                         marginBottom: '8px',
                         cursor: 'pointer',
-                        background: selectedConversation?.reservationId === conv.reservationId 
+                        background: selectedConversation?.threadId === conv.threadId 
                           ? 'linear-gradient(135deg, rgba(78,205,196,0.15), rgba(68,181,168,0.1))' 
                           : 'white',
-                        border: selectedConversation?.reservationId === conv.reservationId 
+                        border: selectedConversation?.threadId === conv.threadId 
                           ? '2px solid #4ECDC4' 
                           : '2px solid transparent',
                         transition: 'all 0.2s ease',
                         position: 'relative'
                       }}
                       onMouseEnter={(e) => {
-                        if (selectedConversation?.reservationId !== conv.reservationId) {
+                        if (selectedConversation?.threadId !== conv.threadId) {
                           e.currentTarget.style.background = '#F1F5F9';
                           e.currentTarget.style.transform = 'translateX(4px)';
                         }
                       }}
                       onMouseLeave={(e) => {
-                        if (selectedConversation?.reservationId !== conv.reservationId) {
+                        if (selectedConversation?.threadId !== conv.threadId) {
                           e.currentTarget.style.background = 'white';
                           e.currentTarget.style.transform = 'translateX(0)';
                         }

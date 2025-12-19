@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 
 // GET /api/messages/conversations
-// Récupère la liste des conversations (groupées par réservation) pour l'utilisateur connecté
+// Récupère la liste des conversations (groupées par interlocuteur) pour l'utilisateur connecté
 export async function GET(request) {
   try {
     const cookieStore = await cookies();
@@ -41,6 +41,7 @@ export async function GET(request) {
       listing_id,
       user_id,
       host_id,
+      created_at,
       date_arrivee,
       date_depart,
       status,
@@ -98,66 +99,144 @@ export async function GET(request) {
     }
     const reservations = Array.from(byId.values());
 
-    // Pour chaque réservation, récupérer le dernier message et les infos de l'autre personne
-    const conversationsPromises = (reservations || []).map(async (reservation) => {
+    // Grouper par interlocuteur (otherUserId)
+    const conversationMap = new Map();
+    const reservationToOtherUser = new Map();
+
+    for (const reservation of reservations || []) {
       const hostId = reservation.host_id || reservation.listings?.owner_id || null;
       const isHost = hostId === user.id;
       const otherUserId = isHost ? reservation.user_id : hostId;
+      if (!otherUserId) continue;
 
-      // Normalize start/end dates
-      const normalizedStart = reservation.date_arrivee || null;
-      const normalizedEnd = reservation.date_depart || null;
+      reservationToOtherUser.set(reservation.id, otherUserId);
 
-      if (!otherUserId) {
-        return null;
+      const existing = conversationMap.get(otherUserId);
+      const reservationCreatedAt = reservation.created_at ? new Date(reservation.created_at).getTime() : 0;
+
+      if (!existing) {
+        conversationMap.set(otherUserId, {
+          otherUserId,
+          role: isHost ? 'host' : 'guest',
+          reservationIds: [reservation.id],
+          displayReservation: reservation,
+          displayReservationCreatedAt: reservationCreatedAt,
+        });
+      } else {
+        existing.reservationIds.push(reservation.id);
+
+        // Conserver une réservation représentative (la plus récente) pour l'affichage
+        if (reservationCreatedAt >= existing.displayReservationCreatedAt) {
+          existing.displayReservation = reservation;
+          existing.displayReservationCreatedAt = reservationCreatedAt;
+          existing.role = isHost ? 'host' : 'guest';
+        }
+      }
+    }
+
+    const otherUserIds = Array.from(conversationMap.keys());
+    const allReservationIds = Array.from(new Set(
+      Array.from(conversationMap.values()).flatMap((c) => c.reservationIds)
+    ));
+
+    // Charger les profils en une requête
+    const profilesById = new Map();
+    if (otherUserIds.length > 0) {
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', otherUserIds);
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+        return NextResponse.json({ error: 'Erreur lors de la récupération des conversations' }, { status: 500 });
       }
 
-      // Récupérer le profil de l'autre personne
-      const { data: otherProfile } = await supabase
-        .from('profiles')
-        .select('name')
-        .eq('id', otherUserId)
-        .single();
+      for (const p of profiles || []) profilesById.set(p.id, p);
+    }
 
-      // Récupérer le dernier message de cette conversation
-      const { data: lastMessage } = await supabase
+    // Dernier message par interlocuteur (sur toutes les réservations)
+    const lastMessageByOtherUser = new Map();
+    if (allReservationIds.length > 0) {
+      const { data: recentMessages, error: recentMessagesError } = await supabase
         .from('messages')
-        .select('message, created_at, sender_id, read')
-        .eq('reservation_id', reservation.id)
+        .select('reservation_id, message, created_at, sender_id, receiver_id, read')
+        .in('reservation_id', allReservationIds)
         .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1000);
 
-      // Compter les messages non lus
-      const { count: unreadCount } = await supabase
+      if (recentMessagesError) {
+        console.error('Error fetching recent messages:', recentMessagesError);
+        return NextResponse.json({ error: 'Erreur lors de la récupération des conversations' }, { status: 500 });
+      }
+
+      for (const m of recentMessages || []) {
+        const otherUserId = reservationToOtherUser.get(m.reservation_id);
+        if (!otherUserId) continue;
+        if (!lastMessageByOtherUser.has(otherUserId)) {
+          lastMessageByOtherUser.set(otherUserId, m);
+        }
+      }
+    }
+
+    // Messages non lus par interlocuteur (agrégation côté code)
+    const unreadCountByOtherUser = new Map();
+    if (allReservationIds.length > 0) {
+      const { data: unreadRows, error: unreadError } = await supabase
         .from('messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('reservation_id', reservation.id)
+        .select('id, reservation_id')
+        .in('reservation_id', allReservationIds)
         .eq('receiver_id', user.id)
-        .eq('read', false);
+        .eq('read', false)
+        .limit(5000);
 
-      // Extract first name if available
-      const fullName = otherProfile?.name?.trim() || '';
+      if (unreadError) {
+        console.error('Error fetching unread messages:', unreadError);
+        return NextResponse.json({ error: 'Erreur lors de la récupération des conversations' }, { status: 500 });
+      }
+
+      for (const row of unreadRows || []) {
+        const otherUserId = reservationToOtherUser.get(row.reservation_id);
+        if (!otherUserId) continue;
+        unreadCountByOtherUser.set(otherUserId, (unreadCountByOtherUser.get(otherUserId) || 0) + 1);
+      }
+    }
+
+    const conversations = otherUserIds.map((otherUserId) => {
+      const c = conversationMap.get(otherUserId);
+      const reservation = c?.displayReservation;
+      const last = lastMessageByOtherUser.get(otherUserId);
+
+      const fullName = profilesById.get(otherUserId)?.name?.trim() || '';
       const firstName = fullName ? fullName.split(/\s+/)[0] : null;
 
+      const normalizedStart = reservation?.date_arrivee || null;
+      const normalizedEnd = reservation?.date_depart || null;
+
       return {
-        reservationId: reservation.id,
-        listingTitle: reservation.listings?.title || 'Logement',
-        listingCity: reservation.listings?.city || '',
-        listingImage: reservation.listings?.images?.[0] || null,
-        otherUserName: firstName || (isHost ? 'Voyageur' : 'Hôte'),
-        otherUserId: otherUserId,
-        role: isHost ? 'host' : 'guest',
-        lastMessage: lastMessage?.message || null,
-        lastMessageDate: lastMessage?.created_at || normalizedStart,
-        unreadCount: unreadCount || 0,
+        // Identifiant du thread = interlocuteur
+        threadId: otherUserId,
+
+        // Contexte (affichage)
+        reservationIds: c?.reservationIds || [],
+        listingTitle: reservation?.listings?.title || 'Logement',
+        listingCity: reservation?.listings?.city || '',
+        listingImage: reservation?.listings?.images?.[0] || null,
         startDate: normalizedStart,
         endDate: normalizedEnd,
-        status: reservation.status
+        status: reservation?.status,
+
+        // Interlocuteur
+        otherUserId,
+        otherUserName: firstName || (c?.role === 'host' ? 'Voyageur' : 'Hôte'),
+        role: c?.role || 'guest',
+
+        // Dernier message
+        lastMessage: last?.message || null,
+        lastMessageDate: last?.created_at || normalizedStart,
+        unreadCount: unreadCountByOtherUser.get(otherUserId) || 0,
       };
     });
-
-    const conversations = (await Promise.all(conversationsPromises)).filter(Boolean);
 
     // Trier par date du dernier message
     conversations.sort((a, b) => new Date(b.lastMessageDate) - new Date(a.lastMessageDate));
