@@ -5,6 +5,7 @@ import Header from '../_components/Header';
 import Footer from '../_components/Footer';
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { getPlatformPercent, getHostCommission, getProprietorShare, getMainTenantShare } from '@/lib/commissions';
 
 export default function Page() {
   const [user, setUser] = useState(null);
@@ -28,6 +29,12 @@ export default function Page() {
   const [showPastReservations, setShowPastReservations] = useState(false);
   const [showCancelledReservations, setShowCancelledReservations] = useState(false);
   const [expandedReservationId, setExpandedReservationId] = useState(null); // Pour afficher les détails financiers
+  
+  // Récupérer les taux de commission depuis les variables d'environnement
+  const platformPercent = getPlatformPercent();
+  const hostCommission = getHostCommission();
+  const proprietorShare = getProprietorShare();
+  const mainTenantShare = getMainTenantShare();
   const [selectedGuestReviews, setSelectedGuestReviews] = useState(null);
   const [showReviewsModal, setShowReviewsModal] = useState(false);
 
@@ -1514,7 +1521,7 @@ export default function Page() {
                                   {/* Propriétaire */}
                                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                                     <span style={{ fontSize: 13, color: '#64748b' }}>
-                                      💰 Part du propriétaire (40%)
+                                      💰 Part du propriétaire ({Math.round(proprietorShare * 100)}%)
                                     </span>
                                     <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
                                       {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.proprietor_share || 0)}
@@ -1524,7 +1531,7 @@ export default function Page() {
                                   {/* Locataire principal */}
                                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                                     <span style={{ fontSize: 13, color: '#64748b' }}>
-                                      💰 Part du locataire principal (60%)
+                                      💰 Part du locataire principal ({Math.round(mainTenantShare * 100)}%)
                                     </span>
                                     <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
                                       {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.main_tenant_share || 0)}
@@ -1534,7 +1541,7 @@ export default function Page() {
                                   {/* Plateforme HT */}
                                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid #e2e8f0' }}>
                                     <span style={{ fontSize: 13, color: '#64748b' }}>
-                                      Commission plateforme (HT)
+                                      Commission hôte ({Math.round(hostCommission * 100)}%) - HT
                                     </span>
                                     <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
                                       {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_share || 0)}
@@ -1586,8 +1593,8 @@ export default function Page() {
                                   fontStyle: 'italic',
                                   lineHeight: 1.5
                                 }}>
-                                  💡 Les parts propriétaire/locataire représentent votre revenu net après commission d'hôte (3%). 
-                                  La commission plateforme inclut les frais voyageur (17%) et la commission hôte (3%).
+                                  💡 Les parts propriétaire/locataire représentent votre revenu net après commission d'hôte ({Math.round(hostCommission * 100)}%). 
+                                  La plateforme perçoit {Math.round(platformPercent * 100)}% de frais voyageur + {Math.round(hostCommission * 100)}% de commission hôte.
                                 </p>
                               </div>
                             )}
@@ -1876,7 +1883,7 @@ export default function Page() {
                                           {/* Propriétaire */}
                                           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                                             <span style={{ fontSize: 13, color: '#64748b' }}>
-                                              💰 Part du propriétaire (40%)
+                                              💰 Part du propriétaire ({Math.round(proprietorShare * 100)}%)
                                             </span>
                                             <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
                                               {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.proprietor_share || 0)}
@@ -1886,7 +1893,7 @@ export default function Page() {
                                           {/* Locataire principal */}
                                           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                                             <span style={{ fontSize: 13, color: '#64748b' }}>
-                                              💰 Part du locataire principal (60%)
+                                              💰 Part du locataire principal ({Math.round(mainTenantShare * 100)}%)
                                             </span>
                                             <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
                                               {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.main_tenant_share || 0)}
@@ -1896,7 +1903,7 @@ export default function Page() {
                                           {/* Plateforme HT */}
                                           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid #e2e8f0' }}>
                                             <span style={{ fontSize: 13, color: '#64748b' }}>
-                                              Commission plateforme (HT)
+                                              Commission hôte ({Math.round(hostCommission * 100)}%) - HT
                                             </span>
                                             <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
                                               {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_share || 0)}
@@ -1948,8 +1955,8 @@ export default function Page() {
                                           fontStyle: 'italic',
                                           lineHeight: 1.5
                                         }}>
-                                          💡 Les parts propriétaire/locataire représentent votre revenu net après commission d'hôte (3%). 
-                                          La commission plateforme inclut les frais voyageur (17%) et la commission hôte (3%).
+                                          💡 Les parts propriétaire/locataire représentent votre revenu net après commission d'hôte ({Math.round(hostCommission * 100)}%). 
+                                          La plateforme perçoit {Math.round(platformPercent * 100)}% de frais voyageur + {Math.round(hostCommission * 100)}% de commission hôte.
                                         </p>
                                       </div>
                                     )}
