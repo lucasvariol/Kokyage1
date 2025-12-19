@@ -15,6 +15,7 @@ export default function Header({ activeTab, setActiveTab }) {
   const [isMobile, setIsMobile] = useState(false);
   const [userAvatar, setUserAvatar] = useState(null);
   const [userInitials, setUserInitials] = useState('');
+  const [unreadCount, setUnreadCount] = useState(0);
   
   // Detect mobile screen
   useEffect(() => {
@@ -104,6 +105,38 @@ export default function Header({ activeTab, setActiveTab }) {
       setLoading(false);
     };
     checkSession();
+
+    // Fetch unread messages count
+    const fetchUnreadCount = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from('messages')
+          .select('id', { count: 'exact', head: false })
+          .eq('receiver_id', session.user.id)
+          .eq('read', false);
+        if (!error && data) {
+          setUnreadCount(data.length);
+        }
+      }
+    };
+    fetchUnreadCount();
+
+    // Subscribe to realtime updates for unread count
+    const channel = supabase
+      .channel('header-unread-messages')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'messages' },
+        () => {
+          fetchUnreadCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setConnected(!!session);
@@ -431,6 +464,7 @@ export default function Header({ activeTab, setActiveTab }) {
             top: '75px',
             right: '20px',
             left: '20px',
+            bottom: '20px',
             background: 'rgba(255,255,255,0.98)',
             backdropFilter: 'blur(20px)',
             borderRadius: '24px',
@@ -440,7 +474,9 @@ export default function Header({ activeTab, setActiveTab }) {
             maxWidth: '380px',
             margin: '0 auto',
             animation: 'slideIn 0.3s ease-out',
-            zIndex: 1000003
+            zIndex: 1000003,
+            overflowY: 'auto',
+            maxHeight: 'calc(100vh - 95px)'
           }}
           onClick={(e) => e.stopPropagation()}
           >
@@ -530,9 +566,27 @@ export default function Header({ activeTab, setActiveTab }) {
                     padding: '12px 16px',
                     borderRadius: '12px',
                     marginBottom: '8px',
-                    gap: '12px'
+                    gap: '12px',
+                    position: 'relative'
                   }}>
                     💬 Messages
+                    {unreadCount > 0 && (
+                      <span style={{
+                        position: 'absolute',
+                        right: '12px',
+                        background: 'linear-gradient(135deg, #EF4444, #DC2626)',
+                        color: 'white',
+                        borderRadius: '12px',
+                        padding: '2px 8px',
+                        fontSize: '11px',
+                        fontWeight: '700',
+                        boxShadow: '0 2px 8px rgba(239,68,68,0.4)',
+                        minWidth: '20px',
+                        textAlign: 'center'
+                      }}>
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
                   </Link>
                   
                   <Link href="/reservations" style={{
