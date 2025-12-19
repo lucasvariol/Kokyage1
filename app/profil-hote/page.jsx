@@ -1962,13 +1962,13 @@ export default function Page() {
                                               </div>
                                               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                                                 <span style={{ color: '#64748b' }}>Commission hôte</span>
-                                                <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                                <span style={{ fontWeight: 600, color: '#0f172a' }}>
                                                   -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionLocataireHT)}
                                                 </span>
                                               </div>
                                               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                                                 <span style={{ color: '#64748b' }}>TVA</span>
-                                                <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                                <span style={{ fontWeight: 600, color: '#0f172a' }}>
                                                   -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionLocataireTVA)}
                                                 </span>
                                               </div>
@@ -2002,13 +2002,13 @@ export default function Page() {
                                               </div>
                                               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                                                 <span style={{ color: '#64748b' }}>Commission hôte</span>
-                                                <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                                <span style={{ fontWeight: 600, color: '#0f172a' }}>
                                                   -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionProprietaireHT)}
                                                 </span>
                                               </div>
                                               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                                                 <span style={{ color: '#64748b' }}>TVA</span>
-                                                <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                                <span style={{ fontWeight: 600, color: '#0f172a' }}>
                                                   -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionProprietaireTVA)}
                                                 </span>
                                               </div>
