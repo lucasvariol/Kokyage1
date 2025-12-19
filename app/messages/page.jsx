@@ -14,6 +14,7 @@ export default function Page() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showFilePreview, setShowFilePreview] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [otherTyping, setOtherTyping] = useState(false);
@@ -83,7 +84,7 @@ export default function Page() {
       .channel(`messages-thread-${user.id}-${otherUserId}`)
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'messages', filter: `receiver_id=eq.${user.id}` },
+        { event: '*', schema: 'public', table: 'messages' },
         (payload) => {
           const row = payload.new || payload.old;
           if (!row) return;
@@ -107,33 +108,6 @@ export default function Page() {
             setMessages((prev) => prev.filter((m) => String(m.id) !== String(payload.old.id)));
             loadConversations();
           }
-        }
-      )
-      // Also listen to changes where I'm the sender (deletes/updates of my own messages)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'messages', filter: `sender_id=eq.${user.id}` },
-        (payload) => {
-          const row = payload.new || payload.old;
-          if (!row) return;
-          const senderId = row.sender_id;
-          const receiverId = row.receiver_id;
-          const isInThread =
-            (senderId === otherUserId && receiverId === user.id) ||
-            (senderId === user.id && receiverId === otherUserId);
-          if (!isInThread) return;
-
-          if (payload.eventType === 'INSERT') {
-            setMessages((prev) => {
-              if (prev.some((m) => String(m.id) === String(payload.new.id))) return prev;
-              return [...prev, payload.new].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-            });
-          } else if (payload.eventType === 'UPDATE') {
-            setMessages((prev) => prev.map((m) => (String(m.id) === String(payload.new.id) ? payload.new : m)));
-          } else if (payload.eventType === 'DELETE') {
-            setMessages((prev) => prev.filter((m) => String(m.id) !== String(payload.old.id)));
-          }
-          loadConversations();
         }
       );
 
@@ -277,7 +251,13 @@ export default function Page() {
   function handleSelectFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Le fichier ne doit pas dépasser 10 MB');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
     setSelectedFile(file);
+    setShowFilePreview(true);
   }
 
   function emitTyping() {
@@ -315,6 +295,41 @@ export default function Page() {
       loadConversations();
     } catch (error) {
       console.error('Error deleting message:', error);
+    }
+  }
+
+  function cancelFilePreview() {
+    setSelectedFile(null);
+    setShowFilePreview(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
+  async function sendFilePreview() {
+    if (!selectedFile || !selectedConversation) return;
+    
+    setShowFilePreview(false);
+    setSending(true);
+    
+    try {
+      const form = new FormData();
+      form.append('message', newMessage || '');
+      form.append('file', selectedFile);
+      
+      const res = await fetch(`/api/messages/thread/${selectedConversation.threadId}`, {
+        method: 'POST',
+        body: form,
+      });
+
+      if (res.ok) {
+        setNewMessage('');
+        setSelectedFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        loadMessages(selectedConversation.threadId);
+      }
+    } catch (error) {
+      console.error('Error sending file:', error);
+    } finally {
+      setSending(false);
     }
   }
 
@@ -511,7 +526,7 @@ export default function Page() {
         </section>
 
         {/* Messages Section */}
-        <section style={{ padding: '0 24px 80px', transform: 'translateY(-40px)' }}>
+        <section className="messages-section" style={{ padding: '0 24px 80px', transform: 'translateY(-40px)' }}>
           <div className="messages-container" style={{ 
             background: 'rgba(255,255,255,0.98)', 
             backdropFilter: 'blur(30px)',
@@ -1037,6 +1052,7 @@ export default function Page() {
                       <button
                         type="submit"
                         disabled={(!newMessage.trim() && !selectedFile) || sending}
+                        className="send-button"
                         style={{
                           padding: '14px 28px',
                           background: (!newMessage.trim() && !selectedFile) || sending 
@@ -1049,7 +1065,7 @@ export default function Page() {
                           fontWeight: 700,
                           cursor: ((!newMessage.trim() && !selectedFile) || sending) ? 'not-allowed' : 'pointer',
                           transition: 'all 0.2s',
-                          display: 'flex',
+                          display: newMessage.trim() || selectedFile ? 'flex' : 'none',
                           alignItems: 'center',
                           gap: '8px',
                           boxShadow: (!newMessage.trim() && !selectedFile) || sending 
@@ -1079,12 +1095,13 @@ export default function Page() {
                               borderRadius: '50%',
                               animation: 'spin 1s linear infinite'
                             }}></div>
-                            Envoi...
+                            <span className="send-text">Envoi...</span>
                           </>
                         ) : (
                           <>
-                            Envoyer
+                            <span className="send-text">Envoyer</span>
                             <span style={{ fontSize: '1.2rem' }}>📨</span>
+                            <span className="send-icon">➤</span>
                           </>
                         )}
                       </button>
@@ -1092,6 +1109,7 @@ export default function Page() {
                         type="button"
                         disabled={sending}
                         onClick={() => fileInputRef.current?.click()}
+                        className="attach-button"
                         style={{
                           padding: '14px 16px',
                           background: '#F8FAFC',
@@ -1102,7 +1120,7 @@ export default function Page() {
                           fontWeight: 700,
                           cursor: sending ? 'not-allowed' : 'pointer',
                           transition: 'all 0.2s',
-                          display: 'flex',
+                          display: (!newMessage.trim() && !selectedFile) ? 'flex' : 'none',
                           alignItems: 'center',
                           justifyContent: 'center',
                           minWidth: '52px'
@@ -1144,6 +1162,154 @@ export default function Page() {
             </div>
           </div>
         </section>
+
+        {/* File Preview Modal */}
+        {showFilePreview && selectedFile && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.95)',
+            zIndex: 10000,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}>
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              maxWidth: '800px',
+              gap: '20px'
+            }}>
+              {/* Preview */}
+              <div style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                overflow: 'auto'
+              }}>
+                {selectedFile.type.startsWith('image/') ? (
+                  <img 
+                    src={URL.createObjectURL(selectedFile)} 
+                    alt="Preview"
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '60vh',
+                      objectFit: 'contain',
+                      borderRadius: '12px'
+                    }}
+                  />
+                ) : (
+                  <div style={{
+                    background: 'white',
+                    padding: '40px',
+                    borderRadius: '16px',
+                    textAlign: 'center'
+                  }}>
+                    <div style={{ fontSize: '4rem', marginBottom: '20px' }}>📎</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 600, color: '#1E293B', marginBottom: '8px' }}>
+                      {selectedFile.name}
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: '#64748B' }}>
+                      {(selectedFile.size / 1024).toFixed(1)} KB
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* File info */}
+              <div style={{
+                color: 'white',
+                fontSize: '1rem',
+                textAlign: 'center',
+                padding: '12px 24px',
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                backdropFilter: 'blur(10px)'
+              }}>
+                {selectedFile.name} • {(selectedFile.size / 1024).toFixed(1)} KB
+              </div>
+
+              {/* Action buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '20px',
+                justifyContent: 'center',
+                width: '100%',
+                maxWidth: '400px'
+              }}>
+                <button
+                  onClick={cancelFilePreview}
+                  style={{
+                    flex: 1,
+                    padding: '18px',
+                    background: 'rgba(239,68,68,0.9)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '70px',
+                    height: '70px',
+                    fontSize: '2rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 8px 24px rgba(239,68,68,0.4)'
+                  }}
+                  title="Annuler"
+                >
+                  ✖
+                </button>
+                <button
+                  onClick={sendFilePreview}
+                  disabled={sending}
+                  style={{
+                    flex: 1,
+                    padding: '18px',
+                    background: sending ? '#94A3B8' : 'linear-gradient(135deg, #4ECDC4, #44B5A8)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '70px',
+                    height: '70px',
+                    fontSize: '2rem',
+                    fontWeight: 700,
+                    cursor: sending ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: sending ? 'none' : '0 8px 24px rgba(78,205,196,0.4)'
+                  }}
+                  title="Envoyer"
+                >
+                  {sending ? (
+                    <div style={{
+                      width: '24px',
+                      height: '24px',
+                      border: '3px solid rgba(255,255,255,0.3)',
+                      borderTop: '3px solid white',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                  ) : '➤'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
       <Footer />
       <style dangerouslySetInnerHTML={{__html: `
@@ -1162,10 +1328,23 @@ export default function Page() {
 
         /* Mobile responsive */
         @media (max-width: 768px) {
+          /* Hide hero section on mobile */
+          section[style*="background: linear-gradient"] {
+            display: none !important;
+          }
+
+          /* Full screen messages */
+          .messages-section {
+            padding: 0 !important;
+            transform: none !important;
+          }
+
           .messages-container {
             border-radius: 0 !important;
-            height: calc(100vh - 140px) !important;
+            height: 100vh !important;
             max-width: 100% !important;
+            box-shadow: none !important;
+            border: none !important;
           }
           
           .conversations-list {
@@ -1181,6 +1360,29 @@ export default function Page() {
           .back-button {
             display: block !important;
           }
+
+          /* WhatsApp-style button: hide text, show only icon */
+          .send-button .send-text {
+            display: none !important;
+          }
+
+          .send-button span[style*="📨"] {
+            display: none !important;
+          }
+
+          .send-button .send-icon {
+            display: block !important;
+            font-size: 1.3rem;
+          }
+
+          .send-button,
+          .attach-button {
+            padding: 12px !important;
+            min-width: 44px !important;
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+          }
         }
 
         @media (min-width: 769px) {
@@ -1190,6 +1392,10 @@ export default function Page() {
           
           .chat-area {
             display: flex !important;
+          }
+
+          .send-button .send-icon {
+            display: none;
           }
         }
       `}} />
