@@ -1490,7 +1490,7 @@ export default function Page() {
                                   transition: 'all 0.2s'
                                 }}
                               >
-                                {expandedReservationId === reservation.id ? '▼ Masquer' : '▶'} Détails financiers
+                                {expandedReservationId === reservation.id ? '▼ Masquer' : '▶'} Détails des revenus 
                               </button>
                             </div>
 
@@ -1893,7 +1893,7 @@ export default function Page() {
                                           transition: 'all 0.2s'
                                         }}
                                       >
-                                        {expandedReservationId === reservation.id ? '▼ Masquer' : '▶'} Détails financiers
+                                        {expandedReservationId === reservation.id ? '▼ Masquer' : '▶'} Détails des revenus
                                       </button>
                                     </div>
 
