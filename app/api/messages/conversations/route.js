@@ -144,7 +144,7 @@ export async function GET(request) {
     if (otherUserIds.length > 0) {
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, name')
+        .select('id, name, photo_url')
         .in('id', otherUserIds);
 
       if (profilesError) {
@@ -209,6 +209,7 @@ export async function GET(request) {
 
       const fullName = profilesById.get(otherUserId)?.name?.trim() || '';
       const firstName = fullName ? fullName.split(/\s+/)[0] : null;
+      const otherUserPhotoUrl = profilesById.get(otherUserId)?.photo_url || null;
 
       const normalizedStart = reservation?.date_arrivee || null;
       const normalizedEnd = reservation?.date_depart || null;
@@ -229,6 +230,7 @@ export async function GET(request) {
         // Interlocuteur
         otherUserId,
         otherUserName: firstName || (c?.role === 'host' ? 'Voyageur' : 'Hôte'),
+        otherUserPhotoUrl,
         role: c?.role || 'guest',
 
         // Dernier message

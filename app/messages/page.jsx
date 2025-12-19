@@ -407,8 +407,8 @@ export default function Page() {
                           width: '50px',
                           height: '50px',
                           borderRadius: '14px',
-                          background: conv.listingImage 
-                            ? `url(${conv.listingImage})` 
+                          background: conv.otherUserPhotoUrl 
+                            ? `url(${conv.otherUserPhotoUrl})` 
                             : 'linear-gradient(135deg, #4ECDC4, #44B5A8)',
                           backgroundSize: 'cover',
                           backgroundPosition: 'center',
@@ -418,7 +418,7 @@ export default function Page() {
                           fontSize: '1.5rem',
                           flexShrink: 0
                         }}>
-                          {!conv.listingImage && '🏠'}
+                          {!conv.otherUserPhotoUrl && (conv.otherUserName?.trim()?.[0]?.toUpperCase() || '👤')}
                         </div>
 
                         <div style={{ flex: 1, minWidth: 0 }}>
@@ -499,21 +499,6 @@ export default function Page() {
                         )}
                       </div>
 
-                      <div style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        background: conv.role === 'host' 
-                          ? 'linear-gradient(135deg, #8B5CF6, #7C3AED)' 
-                          : 'linear-gradient(135deg, #3B82F6, #2563EB)',
-                        color: 'white',
-                        fontSize: '0.7rem',
-                        padding: '3px 8px',
-                        borderRadius: '8px',
-                        fontWeight: 600
-                      }}>
-                        {conv.role === 'host' ? '🏠 Hôte' : '✈️ Voyageur'}
-                      </div>
                     </div>
                   ))
                 )}
@@ -539,8 +524,8 @@ export default function Page() {
                         width: '56px',
                         height: '56px',
                         borderRadius: '16px',
-                        background: selectedConversation.listingImage 
-                          ? `url(${selectedConversation.listingImage})` 
+                        background: selectedConversation.otherUserPhotoUrl 
+                          ? `url(${selectedConversation.otherUserPhotoUrl})` 
                           : 'linear-gradient(135deg, #4ECDC4, #44B5A8)',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
@@ -549,7 +534,7 @@ export default function Page() {
                         justifyContent: 'center',
                         fontSize: '1.75rem'
                       }}>
-                        {!selectedConversation.listingImage && '🏠'}
+                        {!selectedConversation.otherUserPhotoUrl && (selectedConversation.otherUserName?.trim()?.[0]?.toUpperCase() || '👤')}
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{
@@ -573,18 +558,6 @@ export default function Page() {
                         }}>
                           📅 Séjour : {formatReservationDate(selectedConversation.startDate)} - {formatReservationDate(selectedConversation.endDate, true)}
                         </div>
-                      </div>
-                      <div style={{
-                        background: selectedConversation.role === 'host' 
-                          ? 'linear-gradient(135deg, #8B5CF6, #7C3AED)' 
-                          : 'linear-gradient(135deg, #3B82F6, #2563EB)',
-                        color: 'white',
-                        fontSize: '0.85rem',
-                        padding: '8px 16px',
-                        borderRadius: '12px',
-                        fontWeight: 600
-                      }}>
-                        {selectedConversation.role === 'host' ? '🏠 Vous êtes l\'hôte' : '✈️ Vous êtes le voyageur'}
                       </div>
                     </div>
                   </div>
