@@ -13,9 +13,30 @@ export default function Page() {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const ATTACHMENT_PREFIX = '__KOKYAGE_ATTACHMENT__:';
+
+  function parseRichMessage(raw) {
+    if (!raw || typeof raw !== 'string') return null;
+    if (!raw.startsWith(ATTACHMENT_PREFIX)) return null;
+    const json = raw.slice(ATTACHMENT_PREFIX.length);
+    try {
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  }
+
+  function messagePreview(raw) {
+    const parsed = parseRichMessage(raw);
+    if (parsed?.attachment?.name) return `📎 ${parsed.attachment.name}`;
+    return raw;
+  }
 
   useEffect(() => {
     checkUser();
@@ -83,18 +104,32 @@ export default function Page() {
 
   async function handleSendMessage(e) {
     e.preventDefault();
-    if (!newMessage.trim() || !selectedConversation) return;
+    if (!selectedConversation) return;
+    if (!newMessage.trim() && !selectedFile) return;
 
     setSending(true);
     try {
-      const res = await fetch(`/api/messages/thread/${selectedConversation.threadId}` , {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: newMessage })
-      });
+      let res;
+      if (selectedFile) {
+        const form = new FormData();
+        form.append('message', newMessage || '');
+        form.append('file', selectedFile);
+        res = await fetch(`/api/messages/thread/${selectedConversation.threadId}`, {
+          method: 'POST',
+          body: form,
+        });
+      } else {
+        res = await fetch(`/api/messages/thread/${selectedConversation.threadId}` , {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: newMessage })
+        });
+      }
 
       if (res.ok) {
         setNewMessage('');
+        setSelectedFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
         loadMessages(selectedConversation.threadId);
       }
     } catch (error) {
@@ -102,6 +137,12 @@ export default function Page() {
     } finally {
       setSending(false);
     }
+  }
+
+  function handleSelectFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
   }
 
   function formatDate(dateString) {
@@ -466,7 +507,7 @@ export default function Page() {
                               whiteSpace: 'nowrap',
                               fontWeight: conv.unreadCount > 0 ? 600 : 400
                             }}>
-                              {conv.lastMessage}
+                              {messagePreview(conv.lastMessage)}
                             </div>
                           ) : (
                             <div style={{
@@ -628,7 +669,34 @@ export default function Page() {
                                     lineHeight: 1.5,
                                     wordWrap: 'break-word'
                                   }}>
-                                    {msg.message}
+                                    {(() => {
+                                      const parsed = parseRichMessage(msg.message);
+                                      if (!parsed) return msg.message;
+
+                                      const text = typeof parsed.text === 'string' ? parsed.text : '';
+                                      const attachment = parsed.attachment;
+
+                                      return (
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                          {text ? <div>{text}</div> : null}
+                                          {attachment?.url ? (
+                                            <a
+                                              href={attachment.url}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                              style={{
+                                                color: isMine ? 'white' : '#0F172A',
+                                                textDecoration: 'underline',
+                                                fontWeight: 700,
+                                                wordBreak: 'break-word'
+                                              }}
+                                            >
+                                              📎 {attachment.name || 'Fichier'}
+                                            </a>
+                                          ) : null}
+                                        </div>
+                                      );
+                                    })()}
                                   </div>
                                   <div style={{
                                     fontSize: '0.75rem',
@@ -658,6 +726,36 @@ export default function Page() {
                   }}>
                     <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '12px' }}>
                       <input
+                        ref={fileInputRef}
+                        type="file"
+                        onChange={handleSelectFile}
+                        disabled={sending}
+                        style={{ display: 'none' }}
+                      />
+                      <button
+                        type="button"
+                        disabled={sending}
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{
+                          padding: '14px 16px',
+                          background: '#F8FAFC',
+                          color: '#334155',
+                          border: '2px solid #E2E8F0',
+                          borderRadius: '16px',
+                          fontSize: '1rem',
+                          fontWeight: 700,
+                          cursor: sending ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          minWidth: '52px'
+                        }}
+                        title={selectedFile ? selectedFile.name : 'Joindre un fichier'}
+                      >
+                        📎
+                      </button>
+                      <input
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
@@ -684,10 +782,10 @@ export default function Page() {
                       />
                       <button
                         type="submit"
-                        disabled={!newMessage.trim() || sending}
+                        disabled={(!newMessage.trim() && !selectedFile) || sending}
                         style={{
                           padding: '14px 28px',
-                          background: !newMessage.trim() || sending 
+                          background: (!newMessage.trim() && !selectedFile) || sending 
                             ? '#CBD5E1' 
                             : 'linear-gradient(135deg, #4ECDC4, #44B5A8)',
                           color: 'white',
@@ -695,24 +793,24 @@ export default function Page() {
                           borderRadius: '16px',
                           fontSize: '1rem',
                           fontWeight: 700,
-                          cursor: !newMessage.trim() || sending ? 'not-allowed' : 'pointer',
+                          cursor: ((!newMessage.trim() && !selectedFile) || sending) ? 'not-allowed' : 'pointer',
                           transition: 'all 0.2s',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '8px',
-                          boxShadow: !newMessage.trim() || sending 
+                          boxShadow: (!newMessage.trim() && !selectedFile) || sending 
                             ? 'none' 
                             : '0 4px 12px rgba(78,205,196,0.3)'
                         }}
                         onMouseEnter={(e) => {
-                          if (newMessage.trim() && !sending) {
+                          if ((newMessage.trim() || selectedFile) && !sending) {
                             e.target.style.transform = 'translateY(-2px)';
                             e.target.style.boxShadow = '0 8px 20px rgba(78,205,196,0.4)';
                           }
                         }}
                         onMouseLeave={(e) => {
                           e.target.style.transform = 'translateY(0)';
-                          e.target.style.boxShadow = newMessage.trim() && !sending 
+                          e.target.style.boxShadow = (newMessage.trim() || selectedFile) && !sending 
                             ? '0 4px 12px rgba(78,205,196,0.3)' 
                             : 'none';
                         }}

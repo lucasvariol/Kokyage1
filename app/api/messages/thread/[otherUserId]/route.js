@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 
+const ATTACHMENT_PREFIX = '__KOKYAGE_ATTACHMENT__:';
+
 // GET /api/messages/thread/[otherUserId]
 // Récupère tous les messages d'un fil (conversation) entre l'utilisateur connecté et otherUserId
 export async function GET(request, { params }) {
@@ -70,11 +72,23 @@ export async function GET(request, { params }) {
 export async function POST(request, { params }) {
   try {
     const { otherUserId } = await params;
-    const body = await request.json();
-    const messageRaw = body?.message;
+    const contentType = request.headers.get('content-type') || '';
 
-    if (!messageRaw || typeof messageRaw !== 'string' || !messageRaw.trim()) {
-      return NextResponse.json({ error: 'Message manquant' }, { status: 400 });
+    let messageRaw = '';
+    let file = null;
+
+    if (contentType.includes('multipart/form-data')) {
+      const form = await request.formData();
+      const formMessage = form.get('message');
+      if (typeof formMessage === 'string') messageRaw = formMessage;
+      const maybeFile = form.get('file');
+      if (maybeFile && typeof maybeFile === 'object' && typeof maybeFile.arrayBuffer === 'function') {
+        file = maybeFile;
+      }
+    } else {
+      const body = await request.json();
+      const jsonMessage = body?.message;
+      if (typeof jsonMessage === 'string') messageRaw = jsonMessage;
     }
 
     const cookieStore = await cookies();
@@ -106,6 +120,54 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'otherUserId manquant' }, { status: 400 });
     }
 
+    const hasText = typeof messageRaw === 'string' && messageRaw.trim().length > 0;
+    const hasFile = !!file;
+
+    if (!hasText && !hasFile) {
+      return NextResponse.json({ error: 'Message ou fichier manquant' }, { status: 400 });
+    }
+
+    // Upload éventuel de fichier
+    let attachment = null;
+    if (hasFile) {
+      const maxBytes = 10 * 1024 * 1024; // 10MB
+      if (typeof file.size === 'number' && file.size > maxBytes) {
+        return NextResponse.json({ error: 'Fichier trop volumineux (max 10MB)' }, { status: 400 });
+      }
+
+      const originalName = typeof file.name === 'string' ? file.name : 'fichier';
+      const safeName = originalName.replace(/[^A-Za-z0-9_.-]/g, '_');
+      const path = `messages/${user.id}/${Date.now()}-${safeName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('photos')
+        .upload(path, file, {
+          cacheControl: '3600',
+          upsert: false,
+          contentType: file.type || 'application/octet-stream',
+        });
+
+      if (uploadError) {
+        console.error('Error uploading attachment:', uploadError);
+        return NextResponse.json({ error: "Erreur lors de l'envoi du fichier" }, { status: 500 });
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('photos')
+        .getPublicUrl(path);
+
+      attachment = {
+        url: publicUrlData?.publicUrl || null,
+        name: originalName,
+        type: file.type || null,
+        size: typeof file.size === 'number' ? file.size : null,
+      };
+
+      if (!attachment.url) {
+        return NextResponse.json({ error: "Erreur lors de la génération du lien du fichier" }, { status: 500 });
+      }
+    }
+
     // Tenter d'associer le message à la réservation la plus récente entre ces 2 utilisateurs.
     // hostId est reservations.host_id OU listings.owner_id.
     const { data: candidateReservations, error: resError } = await supabase
@@ -132,13 +194,17 @@ export async function POST(request, { params }) {
       }
     }
 
+    const messageToStore = attachment
+      ? `${ATTACHMENT_PREFIX}${JSON.stringify({ text: hasText ? messageRaw.trim() : '', attachment })}`
+      : messageRaw.trim();
+
     const { data: newMessage, error: insertError } = await supabase
       .from('messages')
       .insert({
         reservation_id: reservationId,
         sender_id: user.id,
         receiver_id: otherUserId,
-        message: messageRaw.trim(),
+        message: messageToStore,
       })
       .select()
       .single();
