@@ -150,6 +150,18 @@ export default function Page() {
     };
   }, [user, selectedConversation?.threadId]);
 
+  // Fallback polling (in case Realtime is not enabled / blocked by RLS)
+  useEffect(() => {
+    if (!user || !selectedConversation?.threadId) return;
+
+    const threadId = selectedConversation.threadId;
+    const interval = setInterval(() => {
+      loadMessages(threadId);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [user, selectedConversation?.threadId]);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
