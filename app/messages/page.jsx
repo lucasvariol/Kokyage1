@@ -1,7 +1,6 @@
 'use client';
 
 import Header from '../_components/Header';
-import Footer from '../_components/Footer';
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
@@ -441,7 +440,6 @@ export default function Page() {
             <p style={{ color: '#718096', fontSize: '1.1rem' }}>Chargement de vos conversations...</p>
           </div>
         </main>
-        <Footer />
         <style dangerouslySetInnerHTML={{__html: `
           @keyframes spin {
             to { transform: rotate(360deg); }
@@ -454,7 +452,7 @@ export default function Page() {
   return (
     <>
       <Header />
-      <main style={{ 
+      <main className="messages-page-main" style={{ 
         fontFamily: 'Inter, system-ui, -apple-system, sans-serif', 
         background: 'linear-gradient(135deg, #F5F1ED 0%, #E8E3DC 100%)', 
         minHeight: '100vh', 
@@ -698,7 +696,7 @@ export default function Page() {
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap'
                           }}>
-                            {conv.listingTitle}
+                            <span className="mobile-hide-listing">{conv.listingTitle}</span>
                           </div>
 
                           {conv.lastMessage ? (
@@ -808,7 +806,7 @@ export default function Page() {
                           fontSize: '0.9rem',
                           color: '#64748B'
                         }}>
-                          {selectedConversation.listingTitle} · {selectedConversation.listingCity}
+                          <span className="mobile-hide-listing">{selectedConversation.listingTitle} · {selectedConversation.listingCity}</span>
                         </div>
                         <div style={{
                           fontSize: '0.8rem',
@@ -1344,7 +1342,6 @@ export default function Page() {
           </div>
         )}
       </main>
-      <Footer />
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes spin {
           to { transform: rotate(360deg); }
@@ -1361,6 +1358,18 @@ export default function Page() {
 
         /* Mobile responsive */
         @media (max-width: 768px) {
+          html, body {
+            height: 100%;
+            overflow: hidden;
+          }
+
+          .messages-page-main {
+            height: calc(100vh - 80px);
+            height: calc(100dvh - 80px);
+            min-height: unset !important;
+            overflow: hidden;
+          }
+
           /* Hide hero section on mobile */
           section[style*="background: linear-gradient"] {
             display: none !important;
@@ -1370,14 +1379,19 @@ export default function Page() {
           .messages-section {
             padding: 0 !important;
             transform: none !important;
+            height: 100% !important;
           }
 
           .messages-container {
             border-radius: 0 !important;
-            height: 100vh !important;
+            height: 100% !important;
             max-width: 100% !important;
             box-shadow: none !important;
             border: none !important;
+          }
+
+          .mobile-hide-listing {
+            display: none !important;
           }
           
           .conversations-list {
