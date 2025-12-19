@@ -37,6 +37,7 @@ export async function GET(request) {
         id,
         listing_id,
         user_id,
+        guest_id,
         host_id,
         date_arrivee,
         date_depart,
@@ -49,7 +50,7 @@ export async function GET(request) {
           images
         )
       `)
-      .or(`user_id.eq.${user.id},host_id.eq.${user.id}`)
+      .or(`user_id.eq.${user.id},guest_id.eq.${user.id},host_id.eq.${user.id}`)
   .order('start_date', { ascending: false });
 
     if (resError) {
@@ -60,10 +61,15 @@ export async function GET(request) {
     // Pour chaque réservation, récupérer le dernier message et les infos de l'autre personne
     const conversationsPromises = (reservations || []).map(async (reservation) => {
       const isHost = reservation.host_id === user.id;
-      const otherUserId = isHost ? reservation.user_id : reservation.host_id;
+      const guestId = reservation.guest_id || reservation.user_id;
+      const otherUserId = isHost ? guestId : reservation.host_id;
       // Normalize start/end dates: prefer start_date/end_date, fallback to date_arrivee/date_depart
       const normalizedStart = reservation.start_date || reservation.date_arrivee || null;
       const normalizedEnd = reservation.end_date || reservation.date_depart || null;
+
+      if (!otherUserId) {
+        return null;
+      }
 
       // Récupérer le profil de l'autre personne
       const { data: otherProfile } = await supabase
@@ -110,7 +116,7 @@ export async function GET(request) {
       };
     });
 
-    const conversations = await Promise.all(conversationsPromises);
+    const conversations = (await Promise.all(conversationsPromises)).filter(Boolean);
 
     // Trier par date du dernier message
     conversations.sort((a, b) => new Date(b.lastMessageDate) - new Date(a.lastMessageDate));
