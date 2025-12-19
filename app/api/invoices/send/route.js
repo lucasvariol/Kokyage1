@@ -159,7 +159,7 @@ export async function POST(request) {
     const invoice = await stripe.invoices.create({
       customer: customerId,
       collection_method: 'send_invoice',
-      days_until_due: null, // Pas de date limite car déjà payé
+      days_until_due: 30, // Requis par Stripe même si déjà payé
       auto_advance: false,
       description: `Réservation #${effectiveReservationId.slice(0, 8).toUpperCase()} - Séjour Kokyage du ${reservation?.date_arrivee || reservation?.start_date || ''} au ${reservation?.date_depart || reservation?.end_date || ''}`.trim(),
       footer: process.env.STRIPE_INVOICE_FOOTER || 'KOKYAGE - SAS au capital de 10 000€ - SIRET: XXX XXX XXX - RCS Paris - TVA: FRXX XXX XXX XXX',
