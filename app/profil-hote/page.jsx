@@ -277,9 +277,13 @@ export default function Page() {
       // Ajouter au DOM et cliquer immédiatement (important pour mobile)
       document.body.appendChild(a);
       a.click();
+      
+      // Nettoyer
+      setTimeout(() => {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
-      }
+      }, 100);
+      
       console.log('✅ PDF téléchargé avec succès');
     } catch (e) {
       console.error('❌ Erreur:', e);
