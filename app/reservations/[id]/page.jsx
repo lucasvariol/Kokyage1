@@ -235,6 +235,11 @@ export default function ReservationDetailPage() {
       return;
     }
 
+    // Sur mobile (iOS/Android), l'ouverture d'un onglet après un await est souvent bloquée.
+    // On pré-ouvre un onglet pendant le geste utilisateur, puis on y navigue vers le PDF.
+    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const popup = isMobile ? window.open('about:blank', '_blank') : null;
+
     setSendingInvoice(true);
     try {
       const response = await fetch('/api/invoices/send', {
@@ -273,11 +278,20 @@ export default function ReservationDetailPage() {
         alert('✅ Facture générée et envoyée par email avec succès !');
       }
 
-      // Optionnel : ouvrir le PDF dans un nouvel onglet
+      // Ouvrir le PDF
       if (result.invoice?.invoice_pdf) {
-        window.open(result.invoice.invoice_pdf, '_blank');
+        const pdfUrl = result.invoice.invoice_pdf;
+        if (popup && !popup.closed) {
+          popup.location.href = pdfUrl;
+        } else {
+          const opened = window.open(pdfUrl, '_blank');
+          if (!opened) window.location.assign(pdfUrl);
+        }
+      } else if (popup && !popup.closed) {
+        popup.close();
       }
     } catch (error) {
+      if (popup && !popup.closed) popup.close();
       alert('❌ Erreur lors de l\'envoi de la facture: ' + error.message);
     } finally {
       setSendingInvoice(false);
@@ -521,6 +535,8 @@ export default function ReservationDetailPage() {
               <div style={{ marginTop: 16 }}>
                 <button
                   onClick={async () => {
+                    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    const popup = isMobile ? window.open('about:blank', '_blank') : null;
                     setSendingInvoice(true);
                     try {
                       const response = await fetch('/api/invoices/send', {
@@ -552,12 +568,20 @@ export default function ReservationDetailPage() {
                       const data = await response.json();
                       
                       if (data.success && data.invoice?.invoice_pdf) {
-                        // Ouvrir le PDF dans un nouvel onglet
-                        window.open(data.invoice.invoice_pdf, '_blank');
+                        // Ouvrir le PDF
+                        const pdfUrl = data.invoice.invoice_pdf;
+                        if (popup && !popup.closed) {
+                          popup.location.href = pdfUrl;
+                        } else {
+                          const opened = window.open(pdfUrl, '_blank');
+                          if (!opened) window.location.assign(pdfUrl);
+                        }
                       } else {
+                        if (popup && !popup.closed) popup.close();
                         alert('Impossible de générer la facture');
                       }
                     } catch (error) {
+                      if (popup && !popup.closed) popup.close();
                       console.error('Erreur téléchargement facture:', error);
                       alert('Erreur lors du téléchargement de la facture');
                     } finally {
