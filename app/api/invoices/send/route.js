@@ -154,19 +154,20 @@ export async function POST(request) {
       taxRateId: taxRate?.id
     });
 
-    // Crée une facture en mode "charge_automatically" avec le PaymentIntent existant
-    // pour éviter la création d'un nouveau PaymentIntent
+    // Crée une facture en mode "send_invoice" (sans lien de paiement)
+    // La facture est uniquement pour archivage/consultation car le paiement est déjà géré par le PaymentIntent
     const invoice = await stripe.invoices.create({
       customer: customerId,
-      collection_method: 'charge_automatically',
+      collection_method: 'send_invoice',
+      days_until_due: null, // Pas de date limite car déjà payé
       auto_advance: false,
       description: `Réservation #${effectiveReservationId.slice(0, 8).toUpperCase()} - Séjour Kokyage du ${reservation?.date_arrivee || reservation?.start_date || ''} au ${reservation?.date_depart || reservation?.end_date || ''}`.trim(),
       footer: process.env.STRIPE_INVOICE_FOOTER || 'KOKYAGE - SAS au capital de 10 000€ - SIRET: XXX XXX XXX - RCS Paris - TVA: FRXX XXX XXX XXX',
-      default_payment_method: paymentIntent.payment_method,
       metadata: {
         reservationId: effectiveReservationId,
         listingId: reservation?.listing_id || listing?.id || '',
         paymentIntentId,
+        paid: 'true', // Indique que le paiement a déjà été effectué
       },
     });
 
@@ -225,17 +226,16 @@ export async function POST(request) {
     // Finalise la facture
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id, { auto_advance: false });
 
-    // DÉSACTIVÉ: Ne pas marquer comme payée pour éviter les transactions parasites
-    // Le paiement est déjà géré par le PaymentIntent de la réservation
-    /*
+    // Marquer la facture comme payée (hors bande) pour indiquer que le paiement a déjà été effectué via PaymentIntent
+    // Cela supprime le lien de paiement et affiche la facture comme "Paid"
     if ((baseAmount + taxAmount > 0) || totalAmount > 0) {
       try {
         await stripe.invoices.pay(finalizedInvoice.id, { paid_out_of_band: true });
+        console.log('✅ Facture marquée comme payée (hors bande)');
       } catch (payError) {
         console.warn('⚠️ Impossible de marquer la facture comme payée automatiquement:', payError?.message || payError);
       }
     }
-    */
 
     // DÉSACTIVÉ: Ne pas envoyer automatiquement par email
     // La facture reste disponible en consultation via hosted_invoice_url
