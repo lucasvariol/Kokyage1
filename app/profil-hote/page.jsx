@@ -1495,109 +1495,150 @@ export default function Page() {
                             </div>
 
                             {/* Détails financiers (affichés si expanded) */}
-                            {expandedReservationId === reservation.id && (
-                              <div style={{
-                                marginTop: 16,
-                                padding: 16,
-                                background: '#f8fafc',
-                                borderRadius: 12,
-                                border: '1px solid #e2e8f0'
-                              }}>
-                                <h4 style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
-                                  Répartition des revenus
-                                </h4>
-                                
-                                <div style={{ display: 'grid', gap: 12 }}>
-                                  {/* Hébergement */}
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e2e8f0' }}>
-                                    <span style={{ fontSize: 13, color: '#64748b' }}>Prix de base (hébergement)</span>
-                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>
-                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
-                                        (reservation.listings?.price_per_night || 0) * (reservation.nights || 0)
-                                      )}
-                                    </span>
-                                  </div>
-
-                                  {/* Propriétaire */}
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                                    <span style={{ fontSize: 13, color: '#64748b' }}>
-                                      💰 Part du propriétaire ({Math.round(proprietorShare * 100)}%)
-                                    </span>
-                                    <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
-                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.proprietor_share || 0)}
-                                    </span>
-                                  </div>
-
-                                  {/* Locataire principal */}
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                                    <span style={{ fontSize: 13, color: '#64748b' }}>
-                                      💰 Part du locataire principal ({Math.round(mainTenantShare * 100)}%)
-                                    </span>
-                                    <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
-                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.main_tenant_share || 0)}
-                                    </span>
-                                  </div>
-
-                                  {/* Plateforme HT */}
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid #e2e8f0' }}>
-                                    <span style={{ fontSize: 13, color: '#64748b' }}>
-                                      Commission hôte ({Math.round(hostCommission * 100)}%) - HT
-                                    </span>
-                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
-                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_share || 0)}
-                                    </span>
-                                  </div>
-
-                                  {/* TVA */}
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                                    <span style={{ fontSize: 13, color: '#64748b' }}>
-                                      TVA (20%)
-                                    </span>
-                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
-                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_tva || 0)}
-                                    </span>
-                                  </div>
-
-                                  {/* Taxe de séjour */}
-                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                                    <span style={{ fontSize: 13, color: '#64748b' }}>
-                                      Taxe de séjour
-                                    </span>
-                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
-                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.tax_price || 0)}
-                                    </span>
-                                  </div>
-
-                                  {/* Total vérifié */}
+                            {expandedReservationId === reservation.id && (() => {
+                              const VAT_RATE = 0.20;
+                              const hebergement = (reservation.listings?.price_per_night || 0) * (reservation.nights || 0);
+                              
+                              // Part brute avant commission hôte
+                              const partBruteLocataire = hebergement * mainTenantShare;
+                              const partBruteProprietaire = hebergement * proprietorShare;
+                              
+                              // Commission hôte TTC (3%)
+                              const commissionLocataireTTC = partBruteLocataire * hostCommission;
+                              const commissionProprietaireTTC = partBruteProprietaire * hostCommission;
+                              
+                              // Commission HT et TVA
+                              const commissionLocataireHT = commissionLocataireTTC / (1 + VAT_RATE);
+                              const commissionLocataireTVA = commissionLocataireTTC - commissionLocataireHT;
+                              const commissionProprietaireHT = commissionProprietaireTTC / (1 + VAT_RATE);
+                              const commissionProprietaireTVA = commissionProprietaireTTC - commissionProprietaireHT;
+                              
+                              // Total dû (part brute - commission TTC)
+                              const totalDuLocataire = partBruteLocataire - commissionLocataireTTC;
+                              const totalDuProprietaire = partBruteProprietaire - commissionProprietaireTTC;
+                              
+                              return (
+                                <div style={{
+                                  marginTop: 16,
+                                  padding: 16,
+                                  background: '#f8fafc',
+                                  borderRadius: 12,
+                                  border: '1px solid #e2e8f0'
+                                }}>
+                                  <h4 style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>
+                                    Répartition des revenus
+                                  </h4>
+                                  
+                                  {/* Prix total */}
                                   <div style={{ 
                                     display: 'flex', 
                                     justifyContent: 'space-between', 
-                                    padding: '12px 0', 
-                                    borderTop: '2px solid #cbd5e1',
-                                    marginTop: 8
+                                    padding: '12px 0',
+                                    borderBottom: '2px solid #cbd5e1',
+                                    marginBottom: 16
                                   }}>
-                                    <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
-                                      Total payé par le voyageur
+                                    <span style={{ fontSize: 15, fontWeight: 700, color: '#0f172a' }}>
+                                      Prix total
                                     </span>
                                     <span style={{ fontSize: 15, fontWeight: 800, color: '#0f172a' }}>
                                       {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.total_price || 0)}
                                     </span>
                                   </div>
-                                </div>
 
-                                {/* Note explicative */}
-                                <p style={{ 
-                                  fontSize: 12, 
-                                  color: '#64748b', 
-                                  marginTop: 12, 
-                                  fontStyle: 'italic',
-                                  lineHeight: 1.5
-                                }}>
-                                  💡 Les parts propriétaire/locataire représentent votre revenu net après commission d'hôte ({Math.round(hostCommission * 100)}%). 
-                                  La plateforme perçoit {Math.round(platformPercent * 100)}% de frais voyageur + {Math.round(hostCommission * 100)}% de commission hôte.
-                                </p>
-                              </div>
-                            )}
+                                  {/* Locataire principal */}
+                                  <div style={{ marginBottom: 16, padding: 12, background: '#fff', borderRadius: 8 }}>
+                                    <h5 style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
+                                      Locataire principal
+                                    </h5>
+                                    <div style={{ display: 'grid', gap: 8 }}>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                        <span style={{ color: '#64748b' }}>Part locataire principal</span>
+                                        <span style={{ fontWeight: 600, color: '#0f172a' }}>
+                                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(partBruteLocataire)}
+                                        </span>
+                                      </div>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                        <span style={{ color: '#64748b' }}>Commission hôte</span>
+                                        <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                          -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionLocataireHT)}
+                                        </span>
+                                      </div>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                        <span style={{ color: '#64748b' }}>TVA</span>
+                                        <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                          -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionLocataireTVA)}
+                                        </span>
+                                      </div>
+                                      <div style={{ 
+                                        display: 'flex', 
+                                        justifyContent: 'space-between', 
+                                        fontSize: 14,
+                                        paddingTop: 8,
+                                        borderTop: '1px solid #e2e8f0',
+                                        marginTop: 4
+                                      }}>
+                                        <span style={{ fontWeight: 700, color: '#0f172a' }}>Total dû au locataire principal</span>
+                                        <span style={{ fontWeight: 700, color: '#10b981' }}>
+                                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(totalDuLocataire)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Propriétaire */}
+                                  <div style={{ marginBottom: 12, padding: 12, background: '#fff', borderRadius: 8 }}>
+                                    <h5 style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
+                                      Propriétaire
+                                    </h5>
+                                    <div style={{ display: 'grid', gap: 8 }}>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                        <span style={{ color: '#64748b' }}>Part propriétaire</span>
+                                        <span style={{ fontWeight: 600, color: '#0f172a' }}>
+                                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(partBruteProprietaire)}
+                                        </span>
+                                      </div>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                        <span style={{ color: '#64748b' }}>Commission hôte</span>
+                                        <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                          -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionProprietaireHT)}
+                                        </span>
+                                      </div>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                        <span style={{ color: '#64748b' }}>TVA</span>
+                                        <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                          -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionProprietaireTVA)}
+                                        </span>
+                                      </div>
+                                      <div style={{ 
+                                        display: 'flex', 
+                                        justifyContent: 'space-between', 
+                                        fontSize: 14,
+                                        paddingTop: 8,
+                                        borderTop: '1px solid #e2e8f0',
+                                        marginTop: 4
+                                      }}>
+                                        <span style={{ fontWeight: 700, color: '#0f172a' }}>Total dû au propriétaire</span>
+                                        <span style={{ fontWeight: 700, color: '#10b981' }}>
+                                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(totalDuProprietaire)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Note explicative */}
+                                  <p style={{ 
+                                    fontSize: 12, 
+                                    color: '#64748b', 
+                                    marginTop: 12, 
+                                    fontStyle: 'italic',
+                                    lineHeight: 1.5
+                                  }}>
+                                    💡 La commission hôte ({Math.round(hostCommission * 100)}%) et sa TVA (20%) sont déduites de chaque part. 
+                                    Le total dû correspond au montant net que chacun recevra.
+                                  </p>
+                                </div>
+                              );
+                            })()}
 
                             {/* Actions pour les réservations en attente de validation hôte */}
                             {!reservation.host_validation_ok && (reservation.status === 'pending' || reservation.status === 'confirmed') && (
@@ -1857,109 +1898,150 @@ export default function Page() {
                                     </div>
 
                                     {/* Détails financiers (affichés si expanded) */}
-                                    {expandedReservationId === reservation.id && (
-                                      <div style={{
-                                        marginTop: 16,
-                                        padding: 16,
-                                        background: '#fff',
-                                        borderRadius: 12,
-                                        border: '1px solid #e2e8f0'
-                                      }}>
-                                        <h4 style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
-                                          Répartition des revenus
-                                        </h4>
-                                        
-                                        <div style={{ display: 'grid', gap: 12 }}>
-                                          {/* Hébergement */}
-                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e2e8f0' }}>
-                                            <span style={{ fontSize: 13, color: '#64748b' }}>Prix de base (hébergement)</span>
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>
-                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
-                                                (reservation.listings?.price_per_night || 0) * (reservation.nights || 0)
-                                              )}
-                                            </span>
-                                          </div>
-
-                                          {/* Propriétaire */}
-                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                                            <span style={{ fontSize: 13, color: '#64748b' }}>
-                                              💰 Part du propriétaire ({Math.round(proprietorShare * 100)}%)
-                                            </span>
-                                            <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
-                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.proprietor_share || 0)}
-                                            </span>
-                                          </div>
-
-                                          {/* Locataire principal */}
-                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                                            <span style={{ fontSize: 13, color: '#64748b' }}>
-                                              💰 Part du locataire principal ({Math.round(mainTenantShare * 100)}%)
-                                            </span>
-                                            <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
-                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.main_tenant_share || 0)}
-                                            </span>
-                                          </div>
-
-                                          {/* Plateforme HT */}
-                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid #e2e8f0' }}>
-                                            <span style={{ fontSize: 13, color: '#64748b' }}>
-                                              Commission hôte ({Math.round(hostCommission * 100)}%) - HT
-                                            </span>
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
-                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_share || 0)}
-                                            </span>
-                                          </div>
-
-                                          {/* TVA */}
-                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                                            <span style={{ fontSize: 13, color: '#64748b' }}>
-                                              TVA (20%)
-                                            </span>
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
-                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_tva || 0)}
-                                            </span>
-                                          </div>
-
-                                          {/* Taxe de séjour */}
-                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                                            <span style={{ fontSize: 13, color: '#64748b' }}>
-                                              Taxe de séjour
-                                            </span>
-                                            <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
-                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.tax_price || 0)}
-                                            </span>
-                                          </div>
-
-                                          {/* Total vérifié */}
+                                    {expandedReservationId === reservation.id && (() => {
+                                      const VAT_RATE = 0.20;
+                                      const hebergement = (reservation.listings?.price_per_night || 0) * (reservation.nights || 0);
+                                      
+                                      // Part brute avant commission hôte
+                                      const partBruteLocataire = hebergement * mainTenantShare;
+                                      const partBruteProprietaire = hebergement * proprietorShare;
+                                      
+                                      // Commission hôte TTC (3%)
+                                      const commissionLocataireTTC = partBruteLocataire * hostCommission;
+                                      const commissionProprietaireTTC = partBruteProprietaire * hostCommission;
+                                      
+                                      // Commission HT et TVA
+                                      const commissionLocataireHT = commissionLocataireTTC / (1 + VAT_RATE);
+                                      const commissionLocataireTVA = commissionLocataireTTC - commissionLocataireHT;
+                                      const commissionProprietaireHT = commissionProprietaireTTC / (1 + VAT_RATE);
+                                      const commissionProprietaireTVA = commissionProprietaireTTC - commissionProprietaireHT;
+                                      
+                                      // Total dû (part brute - commission TTC)
+                                      const totalDuLocataire = partBruteLocataire - commissionLocataireTTC;
+                                      const totalDuProprietaire = partBruteProprietaire - commissionProprietaireTTC;
+                                      
+                                      return (
+                                        <div style={{
+                                          marginTop: 16,
+                                          padding: 16,
+                                          background: '#fff',
+                                          borderRadius: 12,
+                                          border: '1px solid #e2e8f0'
+                                        }}>
+                                          <h4 style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>
+                                            Répartition des revenus
+                                          </h4>
+                                          
+                                          {/* Prix total */}
                                           <div style={{ 
                                             display: 'flex', 
                                             justifyContent: 'space-between', 
-                                            padding: '12px 0', 
-                                            borderTop: '2px solid #cbd5e1',
-                                            marginTop: 8
+                                            padding: '12px 0',
+                                            borderBottom: '2px solid #cbd5e1',
+                                            marginBottom: 16
                                           }}>
-                                            <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
-                                              Total payé par le voyageur
+                                            <span style={{ fontSize: 15, fontWeight: 700, color: '#0f172a' }}>
+                                              Prix total
                                             </span>
                                             <span style={{ fontSize: 15, fontWeight: 800, color: '#0f172a' }}>
                                               {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.total_price || 0)}
                                             </span>
                                           </div>
-                                        </div>
 
-                                        {/* Note explicative */}
-                                        <p style={{ 
-                                          fontSize: 12, 
-                                          color: '#64748b', 
-                                          marginTop: 12, 
-                                          fontStyle: 'italic',
-                                          lineHeight: 1.5
-                                        }}>
-                                          💡 Les parts propriétaire/locataire représentent votre revenu net après commission d'hôte ({Math.round(hostCommission * 100)}%). 
-                                          La plateforme perçoit {Math.round(platformPercent * 100)}% de frais voyageur + {Math.round(hostCommission * 100)}% de commission hôte.
-                                        </p>
-                                      </div>
-                                    )}
+                                          {/* Locataire principal */}
+                                          <div style={{ marginBottom: 16, padding: 12, background: '#f8fafc', borderRadius: 8 }}>
+                                            <h5 style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
+                                              Locataire principal
+                                            </h5>
+                                            <div style={{ display: 'grid', gap: 8 }}>
+                                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                                <span style={{ color: '#64748b' }}>Part locataire principal</span>
+                                                <span style={{ fontWeight: 600, color: '#0f172a' }}>
+                                                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(partBruteLocataire)}
+                                                </span>
+                                              </div>
+                                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                                <span style={{ color: '#64748b' }}>Commission hôte</span>
+                                                <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                                  -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionLocataireHT)}
+                                                </span>
+                                              </div>
+                                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                                <span style={{ color: '#64748b' }}>TVA</span>
+                                                <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                                  -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionLocataireTVA)}
+                                                </span>
+                                              </div>
+                                              <div style={{ 
+                                                display: 'flex', 
+                                                justifyContent: 'space-between', 
+                                                fontSize: 14,
+                                                paddingTop: 8,
+                                                borderTop: '1px solid #e2e8f0',
+                                                marginTop: 4
+                                              }}>
+                                                <span style={{ fontWeight: 700, color: '#0f172a' }}>Total dû au locataire principal</span>
+                                                <span style={{ fontWeight: 700, color: '#10b981' }}>
+                                                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(totalDuLocataire)}
+                                                </span>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          {/* Propriétaire */}
+                                          <div style={{ marginBottom: 12, padding: 12, background: '#f8fafc', borderRadius: 8 }}>
+                                            <h5 style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
+                                              Propriétaire
+                                            </h5>
+                                            <div style={{ display: 'grid', gap: 8 }}>
+                                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                                <span style={{ color: '#64748b' }}>Part propriétaire</span>
+                                                <span style={{ fontWeight: 600, color: '#0f172a' }}>
+                                                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(partBruteProprietaire)}
+                                                </span>
+                                              </div>
+                                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                                <span style={{ color: '#64748b' }}>Commission hôte</span>
+                                                <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                                  -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionProprietaireHT)}
+                                                </span>
+                                              </div>
+                                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+                                                <span style={{ color: '#64748b' }}>TVA</span>
+                                                <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                                  -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionProprietaireTVA)}
+                                                </span>
+                                              </div>
+                                              <div style={{ 
+                                                display: 'flex', 
+                                                justifyContent: 'space-between', 
+                                                fontSize: 14,
+                                                paddingTop: 8,
+                                                borderTop: '1px solid #e2e8f0',
+                                                marginTop: 4
+                                              }}>
+                                                <span style={{ fontWeight: 700, color: '#0f172a' }}>Total dû au propriétaire</span>
+                                                <span style={{ fontWeight: 700, color: '#10b981' }}>
+                                                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(totalDuProprietaire)}
+                                                </span>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          {/* Note explicative */}
+                                          <p style={{ 
+                                            fontSize: 12, 
+                                            color: '#64748b', 
+                                            marginTop: 12, 
+                                            fontStyle: 'italic',
+                                            lineHeight: 1.5
+                                          }}>
+                                            💡 La commission hôte ({Math.round(hostCommission * 100)}%) et sa TVA (20%) sont déduites de chaque part. 
+                                            Le total dû correspond au montant net que chacun recevra.
+                                          </p>
+                                        </div>
+                                      );
+                                    })()}
                                   </div>
                                 );
                               })}
