@@ -35,7 +35,8 @@ export default function Page() {
   function messagePreview(raw) {
     const parsed = parseRichMessage(raw);
     if (parsed?.attachment?.name) return `📎 ${parsed.attachment.name}`;
-    return raw;
+    if (typeof raw !== 'string') return '';
+    return raw.replace(/\s+/g, ' ').trim();
   }
 
   useEffect(() => {
@@ -667,7 +668,8 @@ export default function Page() {
                                   <div style={{
                                     fontSize: '0.95rem',
                                     lineHeight: 1.5,
-                                    wordWrap: 'break-word'
+                                    wordWrap: 'break-word',
+                                    whiteSpace: 'pre-wrap'
                                   }}>
                                     {(() => {
                                       const parsed = parseRichMessage(msg.message);
@@ -678,7 +680,7 @@ export default function Page() {
 
                                       return (
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                          {text ? <div>{text}</div> : null}
+                                          {text ? <div style={{ whiteSpace: 'pre-wrap' }}>{text}</div> : null}
                                           {attachment?.url ? (
                                             <a
                                               href={attachment.url}
@@ -755,12 +757,12 @@ export default function Page() {
                       >
                         📎
                       </button>
-                      <input
-                        type="text"
+                      <textarea
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Écrivez votre message..."
                         disabled={sending}
+                        rows={2}
                         style={{
                           flex: 1,
                           padding: '14px 20px',
@@ -769,7 +771,10 @@ export default function Page() {
                           fontSize: '1rem',
                           outline: 'none',
                           transition: 'all 0.2s',
-                          background: '#F8FAFC'
+                          background: '#F8FAFC',
+                          resize: 'none',
+                          lineHeight: 1.4,
+                          whiteSpace: 'pre-wrap'
                         }}
                         onFocus={(e) => {
                           e.target.style.borderColor = '#4ECDC4';
@@ -778,6 +783,12 @@ export default function Page() {
                         onBlur={(e) => {
                           e.target.style.borderColor = '#E2E8F0';
                           e.target.style.background = '#F8FAFC';
+                        }}
+                        onKeyDown={(e) => {
+                          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                            e.preventDefault();
+                            handleSendMessage(e);
+                          }
                         }}
                       />
                       <button
