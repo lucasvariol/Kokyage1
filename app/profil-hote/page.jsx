@@ -1496,7 +1496,7 @@ export default function Page() {
 
                             {/* Détails financiers (affichés si expanded) */}
                             {expandedReservationId === reservation.id && (() => {
-                              const VAT_RATE = 0.20;
+                              const VAT_RATE = Number(process.env.NEXT_PUBLIC_VAT_RATE || process.env.VAT_RATE || 20) / 100;
                               const hebergement = (reservation.listings?.price_per_night || 0) * (reservation.nights || 0);
                               
                               // Part brute avant commission hôte
@@ -1559,13 +1559,13 @@ export default function Page() {
                                       </div>
                                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                                         <span style={{ color: '#64748b' }}>Commission hôte</span>
-                                        <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                        <span style={{ fontWeight: 600, color: '#0f172a' }}>
                                           -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionLocataireHT)}
                                         </span>
                                       </div>
                                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                                         <span style={{ color: '#64748b' }}>TVA</span>
-                                        <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                        <span style={{ fontWeight: 600, color: '#0f172a' }}>
                                           -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionLocataireTVA)}
                                         </span>
                                       </div>
@@ -1599,13 +1599,13 @@ export default function Page() {
                                       </div>
                                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                                         <span style={{ color: '#64748b' }}>Commission hôte</span>
-                                        <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                        <span style={{ fontWeight: 600, color: '#0f172a' }}>
                                           -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionProprietaireHT)}
                                         </span>
                                       </div>
                                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                                         <span style={{ color: '#64748b' }}>TVA</span>
-                                        <span style={{ fontWeight: 600, color: '#ef4444' }}>
+                                        <span style={{ fontWeight: 600, color: '#0f172a' }}>
                                           -{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commissionProprietaireTVA)}
                                         </span>
                                       </div>
@@ -1633,7 +1633,7 @@ export default function Page() {
                                     fontStyle: 'italic',
                                     lineHeight: 1.5
                                   }}>
-                                    💡 La commission hôte ({Math.round(hostCommission * 100)}%) et sa TVA (20%) sont déduites de chaque part. 
+                                    💡 La commission hôte ({Math.round(hostCommission * 100)}%) TVA comprise sont déduites de chaque part. 
                                     Le total dû correspond au montant net que chacun recevra.
                                   </p>
                                 </div>
@@ -1899,7 +1899,7 @@ export default function Page() {
 
                                     {/* Détails financiers (affichés si expanded) */}
                                     {expandedReservationId === reservation.id && (() => {
-                                      const VAT_RATE = 0.20;
+                                      const VAT_RATE = Number(process.env.NEXT_PUBLIC_VAT_RATE || process.env.VAT_RATE || 20) / 100;
                                       const hebergement = (reservation.listings?.price_per_night || 0) * (reservation.nights || 0);
                                       
                                       // Part brute avant commission hôte
