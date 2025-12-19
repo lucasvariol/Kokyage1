@@ -27,6 +27,7 @@ export default function Page() {
   const [hostCancellationLoading, setHostCancellationLoading] = useState(null);
   const [showPastReservations, setShowPastReservations] = useState(false);
   const [showCancelledReservations, setShowCancelledReservations] = useState(false);
+  const [expandedReservationId, setExpandedReservationId] = useState(null); // Pour afficher les détails financiers
   const [selectedGuestReviews, setSelectedGuestReviews] = useState(null);
   const [showReviewsModal, setShowReviewsModal] = useState(false);
 
@@ -1464,6 +1465,133 @@ export default function Page() {
                               </div>
                             </div>
 
+                            {/* Bouton pour afficher les détails financiers */}
+                            <div style={{ marginTop: 12 }}>
+                              <button
+                                onClick={() => setExpandedReservationId(
+                                  expandedReservationId === reservation.id ? null : reservation.id
+                                )}
+                                style={{
+                                  padding: '8px 16px',
+                                  borderRadius: 8,
+                                  border: '1px solid #e2e8f0',
+                                  background: expandedReservationId === reservation.id ? '#f1f5f9' : '#fff',
+                                  color: '#64748b',
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s'
+                                }}
+                              >
+                                {expandedReservationId === reservation.id ? '▼ Masquer' : '▶'} Détails financiers
+                              </button>
+                            </div>
+
+                            {/* Détails financiers (affichés si expanded) */}
+                            {expandedReservationId === reservation.id && (
+                              <div style={{
+                                marginTop: 16,
+                                padding: 16,
+                                background: '#f8fafc',
+                                borderRadius: 12,
+                                border: '1px solid #e2e8f0'
+                              }}>
+                                <h4 style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
+                                  Répartition des revenus
+                                </h4>
+                                
+                                <div style={{ display: 'grid', gap: 12 }}>
+                                  {/* Hébergement */}
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e2e8f0' }}>
+                                    <span style={{ fontSize: 13, color: '#64748b' }}>Prix de base (hébergement)</span>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>
+                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
+                                        (reservation.listings?.price_per_night || 0) * (reservation.nights || 0)
+                                      )}
+                                    </span>
+                                  </div>
+
+                                  {/* Propriétaire */}
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                    <span style={{ fontSize: 13, color: '#64748b' }}>
+                                      💰 Part du propriétaire (40%)
+                                    </span>
+                                    <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
+                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.proprietor_share || 0)}
+                                    </span>
+                                  </div>
+
+                                  {/* Locataire principal */}
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                    <span style={{ fontSize: 13, color: '#64748b' }}>
+                                      💰 Part du locataire principal (60%)
+                                    </span>
+                                    <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
+                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.main_tenant_share || 0)}
+                                    </span>
+                                  </div>
+
+                                  {/* Plateforme HT */}
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid #e2e8f0' }}>
+                                    <span style={{ fontSize: 13, color: '#64748b' }}>
+                                      Commission plateforme (HT)
+                                    </span>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
+                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_share || 0)}
+                                    </span>
+                                  </div>
+
+                                  {/* TVA */}
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                    <span style={{ fontSize: 13, color: '#64748b' }}>
+                                      TVA (20%)
+                                    </span>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
+                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_tva || 0)}
+                                    </span>
+                                  </div>
+
+                                  {/* Taxe de séjour */}
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                    <span style={{ fontSize: 13, color: '#64748b' }}>
+                                      Taxe de séjour
+                                    </span>
+                                    <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
+                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.tax_price || 0)}
+                                    </span>
+                                  </div>
+
+                                  {/* Total vérifié */}
+                                  <div style={{ 
+                                    display: 'flex', 
+                                    justifyContent: 'space-between', 
+                                    padding: '12px 0', 
+                                    borderTop: '2px solid #cbd5e1',
+                                    marginTop: 8
+                                  }}>
+                                    <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
+                                      Total payé par le voyageur
+                                    </span>
+                                    <span style={{ fontSize: 15, fontWeight: 800, color: '#0f172a' }}>
+                                      {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.total_price || 0)}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Note explicative */}
+                                <p style={{ 
+                                  fontSize: 12, 
+                                  color: '#64748b', 
+                                  marginTop: 12, 
+                                  fontStyle: 'italic',
+                                  lineHeight: 1.5
+                                }}>
+                                  💡 Les parts propriétaire/locataire représentent votre revenu net après commission d'hôte (3%). 
+                                  La commission plateforme inclut les frais voyageur (17%) et la commission hôte (3%).
+                                </p>
+                              </div>
+                            )}
+
                             {/* Actions pour les réservations en attente de validation hôte */}
                             {!reservation.host_validation_ok && (reservation.status === 'pending' || reservation.status === 'confirmed') && (
                               <div style={{
@@ -1698,6 +1826,133 @@ export default function Page() {
                                         </p>
                                       </div>
                                     </div>
+
+                                    {/* Bouton pour afficher les détails financiers */}
+                                    <div style={{ marginTop: 12 }}>
+                                      <button
+                                        onClick={() => setExpandedReservationId(
+                                          expandedReservationId === reservation.id ? null : reservation.id
+                                        )}
+                                        style={{
+                                          padding: '8px 16px',
+                                          borderRadius: 8,
+                                          border: '1px solid #e2e8f0',
+                                          background: expandedReservationId === reservation.id ? '#f1f5f9' : '#fff',
+                                          color: '#64748b',
+                                          fontSize: 13,
+                                          fontWeight: 600,
+                                          cursor: 'pointer',
+                                          transition: 'all 0.2s'
+                                        }}
+                                      >
+                                        {expandedReservationId === reservation.id ? '▼ Masquer' : '▶'} Détails financiers
+                                      </button>
+                                    </div>
+
+                                    {/* Détails financiers (affichés si expanded) */}
+                                    {expandedReservationId === reservation.id && (
+                                      <div style={{
+                                        marginTop: 16,
+                                        padding: 16,
+                                        background: '#fff',
+                                        borderRadius: 12,
+                                        border: '1px solid #e2e8f0'
+                                      }}>
+                                        <h4 style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
+                                          Répartition des revenus
+                                        </h4>
+                                        
+                                        <div style={{ display: 'grid', gap: 12 }}>
+                                          {/* Hébergement */}
+                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e2e8f0' }}>
+                                            <span style={{ fontSize: 13, color: '#64748b' }}>Prix de base (hébergement)</span>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>
+                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(
+                                                (reservation.listings?.price_per_night || 0) * (reservation.nights || 0)
+                                              )}
+                                            </span>
+                                          </div>
+
+                                          {/* Propriétaire */}
+                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                            <span style={{ fontSize: 13, color: '#64748b' }}>
+                                              💰 Part du propriétaire (40%)
+                                            </span>
+                                            <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
+                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.proprietor_share || 0)}
+                                            </span>
+                                          </div>
+
+                                          {/* Locataire principal */}
+                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                            <span style={{ fontSize: 13, color: '#64748b' }}>
+                                              💰 Part du locataire principal (60%)
+                                            </span>
+                                            <span style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>
+                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.main_tenant_share || 0)}
+                                            </span>
+                                          </div>
+
+                                          {/* Plateforme HT */}
+                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid #e2e8f0' }}>
+                                            <span style={{ fontSize: 13, color: '#64748b' }}>
+                                              Commission plateforme (HT)
+                                            </span>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
+                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_share || 0)}
+                                            </span>
+                                          </div>
+
+                                          {/* TVA */}
+                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                            <span style={{ fontSize: 13, color: '#64748b' }}>
+                                              TVA (20%)
+                                            </span>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
+                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.platform_tva || 0)}
+                                            </span>
+                                          </div>
+
+                                          {/* Taxe de séjour */}
+                                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                                            <span style={{ fontSize: 13, color: '#64748b' }}>
+                                              Taxe de séjour
+                                            </span>
+                                            <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>
+                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.tax_price || 0)}
+                                            </span>
+                                          </div>
+
+                                          {/* Total vérifié */}
+                                          <div style={{ 
+                                            display: 'flex', 
+                                            justifyContent: 'space-between', 
+                                            padding: '12px 0', 
+                                            borderTop: '2px solid #cbd5e1',
+                                            marginTop: 8
+                                          }}>
+                                            <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
+                                              Total payé par le voyageur
+                                            </span>
+                                            <span style={{ fontSize: 15, fontWeight: 800, color: '#0f172a' }}>
+                                              {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reservation.total_price || 0)}
+                                            </span>
+                                          </div>
+                                        </div>
+
+                                        {/* Note explicative */}
+                                        <p style={{ 
+                                          fontSize: 12, 
+                                          color: '#64748b', 
+                                          marginTop: 12, 
+                                          fontStyle: 'italic',
+                                          lineHeight: 1.5
+                                        }}>
+                                          💡 Les parts propriétaire/locataire représentent votre revenu net après commission d'hôte (3%). 
+                                          La commission plateforme inclut les frais voyageur (17%) et la commission hôte (3%).
+                                        </p>
+                                      </div>
+                                    )}
                                   </div>
                                 );
                               })}
