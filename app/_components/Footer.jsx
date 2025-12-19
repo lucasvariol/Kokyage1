@@ -19,6 +19,8 @@ export default function Footer(){
         {' | '}
         <a href="/privacy">Politique de confidentialité</a>
         {' | '}
+        <a href="/referencement">Politique de référencement</a>
+        {' | '}
         <a href="#" onClick={handleManageCookies}>Gérer les cookies</a>
       </nav>
     </footer>
