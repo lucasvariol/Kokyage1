@@ -16,8 +16,13 @@ export default function Page() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [otherTyping, setOtherTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const typingResetRef = useRef(null);
+  const typingChannelRef = useRef(null);
+  const messagesChannelRef = useRef(null);
 
   const ATTACHMENT_PREFIX = '__KOKYAGE_ATTACHMENT__:';
 
@@ -54,6 +59,121 @@ export default function Page() {
       loadMessages(selectedConversation.threadId);
     }
   }, [selectedConversation]);
+
+  // Realtime: messages + typing indicator
+  useEffect(() => {
+    if (!user || !selectedConversation?.threadId) return;
+
+    const otherUserId = selectedConversation.threadId;
+
+    // Cleanup previous channels
+    if (messagesChannelRef.current) {
+      supabase.removeChannel(messagesChannelRef.current);
+      messagesChannelRef.current = null;
+    }
+    if (typingChannelRef.current) {
+      supabase.removeChannel(typingChannelRef.current);
+      typingChannelRef.current = null;
+    }
+
+    setOtherTyping(false);
+
+    const messagesChannel = supabase
+      .channel(`messages-thread-${user.id}-${otherUserId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'messages', filter: `receiver_id=eq.${user.id}` },
+        (payload) => {
+          const row = payload.new || payload.old;
+          if (!row) return;
+          const senderId = row.sender_id;
+          const receiverId = row.receiver_id;
+          const isInThread =
+            (senderId === otherUserId && receiverId === user.id) ||
+            (senderId === user.id && receiverId === otherUserId);
+          if (!isInThread) return;
+
+          if (payload.eventType === 'INSERT') {
+            setMessages((prev) => {
+              if (prev.some((m) => String(m.id) === String(payload.new.id))) return prev;
+              return [...prev, payload.new].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            });
+            loadConversations();
+          } else if (payload.eventType === 'UPDATE') {
+            setMessages((prev) => prev.map((m) => (String(m.id) === String(payload.new.id) ? payload.new : m)));
+            loadConversations();
+          } else if (payload.eventType === 'DELETE') {
+            setMessages((prev) => prev.filter((m) => String(m.id) !== String(payload.old.id)));
+            loadConversations();
+          }
+        }
+      )
+      // Also listen to changes where I'm the sender (deletes/updates of my own messages)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'messages', filter: `sender_id=eq.${user.id}` },
+        (payload) => {
+          const row = payload.new || payload.old;
+          if (!row) return;
+          const senderId = row.sender_id;
+          const receiverId = row.receiver_id;
+          const isInThread =
+            (senderId === otherUserId && receiverId === user.id) ||
+            (senderId === user.id && receiverId === otherUserId);
+          if (!isInThread) return;
+
+          if (payload.eventType === 'INSERT') {
+            setMessages((prev) => {
+              if (prev.some((m) => String(m.id) === String(payload.new.id))) return prev;
+              return [...prev, payload.new].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            });
+          } else if (payload.eventType === 'UPDATE') {
+            setMessages((prev) => prev.map((m) => (String(m.id) === String(payload.new.id) ? payload.new : m)));
+          } else if (payload.eventType === 'DELETE') {
+            setMessages((prev) => prev.filter((m) => String(m.id) !== String(payload.old.id)));
+          }
+          loadConversations();
+        }
+      );
+
+    messagesChannel.subscribe();
+    messagesChannelRef.current = messagesChannel;
+
+    const typingKey = [user.id, otherUserId].sort().join('-');
+    const typingChannel = supabase
+      .channel(`typing-${typingKey}`)
+      .on('broadcast', { event: 'typing' }, (payload) => {
+        const p = payload?.payload;
+        if (!p || p.userId !== otherUserId) return;
+        setOtherTyping(!!p.isTyping);
+        if (typingResetRef.current) clearTimeout(typingResetRef.current);
+        if (p.isTyping) {
+          typingResetRef.current = setTimeout(() => setOtherTyping(false), 2500);
+        }
+      })
+      .subscribe();
+    typingChannelRef.current = typingChannel;
+
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
+      }
+      if (typingResetRef.current) {
+        clearTimeout(typingResetRef.current);
+        typingResetRef.current = null;
+      }
+      setOtherTyping(false);
+      if (messagesChannelRef.current) {
+        supabase.removeChannel(messagesChannelRef.current);
+        messagesChannelRef.current = null;
+      }
+      if (typingChannelRef.current) {
+        supabase.removeChannel(typingChannelRef.current);
+        typingChannelRef.current = null;
+      }
+    };
+  }, [user, selectedConversation?.threadId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -108,6 +228,19 @@ export default function Page() {
     if (!selectedConversation) return;
     if (!newMessage.trim() && !selectedFile) return;
 
+    // Stop typing indicator
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+    if (typingChannelRef.current && user?.id && selectedConversation?.threadId) {
+      typingChannelRef.current.send({
+        type: 'broadcast',
+        event: 'typing',
+        payload: { userId: user.id, isTyping: false },
+      });
+    }
+
     setSending(true);
     try {
       let res;
@@ -144,6 +277,44 @@ export default function Page() {
     const file = e.target.files?.[0];
     if (!file) return;
     setSelectedFile(file);
+  }
+
+  function emitTyping() {
+    if (!typingChannelRef.current || !user?.id || !selectedConversation?.threadId) return;
+
+    typingChannelRef.current.send({
+      type: 'broadcast',
+      event: 'typing',
+      payload: { userId: user.id, isTyping: true },
+    });
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      typingChannelRef.current?.send({
+        type: 'broadcast',
+        event: 'typing',
+        payload: { userId: user.id, isTyping: false },
+      });
+    }, 1200);
+  }
+
+  async function handleDeleteMessage(messageId) {
+    if (!messageId) return;
+    const ok = window.confirm('Supprimer ce message ?');
+    if (!ok) return;
+
+    try {
+      const res = await fetch(`/api/messages/message/${messageId}`, { method: 'DELETE' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        console.error('Delete message error:', data?.error);
+        return;
+      }
+      setMessages((prev) => prev.filter((m) => String(m.id) !== String(messageId)));
+      loadConversations();
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
   }
 
   function formatDate(dateString) {
@@ -593,6 +764,16 @@ export default function Page() {
                         }}>
                           {selectedConversation.listingTitle} · {selectedConversation.listingCity}
                         </div>
+                        {otherTyping && (
+                          <div style={{
+                            fontSize: '0.8rem',
+                            color: '#4ECDC4',
+                            fontWeight: 700,
+                            marginTop: '6px'
+                          }}>
+                            {selectedConversation.otherUserName} écrit...
+                          </div>
+                        )}
                         <div style={{
                           fontSize: '0.8rem',
                           color: '#94A3B8',
@@ -665,6 +846,27 @@ export default function Page() {
                                     : '0 2px 8px rgba(0,0,0,0.04)',
                                   position: 'relative'
                                 }}>
+                                  {isMine && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteMessage(msg.id)}
+                                      style={{
+                                        position: 'absolute',
+                                        top: '6px',
+                                        right: '8px',
+                                        background: 'transparent',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: 'rgba(255,255,255,0.9)',
+                                        fontSize: '0.95rem',
+                                        padding: 0,
+                                        lineHeight: 1
+                                      }}
+                                      title="Supprimer"
+                                    >
+                                      🗑️
+                                    </button>
+                                  )}
                                   <div style={{
                                     fontSize: '0.95rem',
                                     lineHeight: 1.5,
@@ -759,7 +961,10 @@ export default function Page() {
                       </button>
                       <textarea
                         value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
+                        onChange={(e) => {
+                          setNewMessage(e.target.value);
+                          emitTyping();
+                        }}
                         placeholder="Écrivez votre message..."
                         disabled={sending}
                         rows={2}
@@ -788,6 +993,19 @@ export default function Page() {
                           if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                             e.preventDefault();
                             handleSendMessage(e);
+                          }
+                        }}
+                        onBlur={() => {
+                          if (typingTimeoutRef.current) {
+                            clearTimeout(typingTimeoutRef.current);
+                            typingTimeoutRef.current = null;
+                          }
+                          if (typingChannelRef.current && user?.id) {
+                            typingChannelRef.current.send({
+                              type: 'broadcast',
+                              event: 'typing',
+                              payload: { userId: user.id, isTyping: false },
+                            });
                           }
                         }}
                       />
