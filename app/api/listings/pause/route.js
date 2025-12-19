@@ -67,6 +67,7 @@ export async function POST(req) {
           proprietor_share: 0,
           main_tenant_share: 0,
           platform_share: 0,
+          platform_tva: 0,
         })
         .in('id', reservationIdsToCancel);
 

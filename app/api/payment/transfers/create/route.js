@@ -16,7 +16,7 @@ export async function POST(request) {
     // Récupérer la réservation et les parts
     const { data: res, error: resErr } = await supabase
       .from('reservations')
-      .select('id, listing_id, host_id, user_id, end_date, proprietor_share, main_tenant_share, platform_share, transfer_owner_id, transfer_tenant_id')
+      .select('id, listing_id, host_id, user_id, end_date, proprietor_share, main_tenant_share, platform_share, platform_tva, transfer_owner_id, transfer_tenant_id')
       .eq('id', reservationId)
       .single();
     if (resErr || !res) {

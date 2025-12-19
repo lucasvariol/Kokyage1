@@ -89,7 +89,7 @@ export async function POST(request) {
     const fraisPlateforme = totalBasePrice - hebergementTotal;
     
     // Utiliser la fonction centralisée pour calculer les parts
-    const { platform_share, main_tenant_share, proprietor_share } = calculateShares(
+    const { platform_share, platform_tva, main_tenant_share, proprietor_share } = calculateShares(
       hebergementTotal,
       fraisPlateforme
     );
@@ -112,6 +112,7 @@ export async function POST(request) {
         proprietor_share,
         main_tenant_share,
         platform_share,
+        platform_tva,
         caution_intent_id: cautionIntentId || null,
         caution_status: cautionIntentId ? 'authorized' : null,
         payment_method_id: paymentMethodId || null,

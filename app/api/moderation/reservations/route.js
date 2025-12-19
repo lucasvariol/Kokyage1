@@ -19,7 +19,7 @@ export async function GET() {
     // 1) Lire un batch de réservations récentes
     const { data: reservations, error: resErr } = await supabaseAdmin
       .from('reservations')
-      .select('id, listing_id, start_date, end_date, proprietor_share, main_tenant_share, platform_share, balances_allocated, balances_allocated_at, created_at')
+      .select('id, listing_id, start_date, end_date, proprietor_share, main_tenant_share, platform_share, platform_tva, balances_allocated, balances_allocated_at, created_at')
       .order('created_at', { ascending: false })
       .limit(100);
 

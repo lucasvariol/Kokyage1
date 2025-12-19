@@ -67,7 +67,7 @@ export async function POST(request) {
     // Vérifier la réservation avec toutes les infos nécessaires
     const { data: reservation, error: checkError } = await supabaseAdmin
       .from('reservations')
-      .select('id, user_id, guest_id, host_id, listing_id, status, date_arrivee, date_depart, guests, nights, total_price, base_price, tax_price, transaction_id, payment_status, caution_intent_id, refund_50_percent_date, refund_0_percent_date, proprietor_share, main_tenant_share, platform_share')
+      .select('id, user_id, guest_id, host_id, listing_id, status, date_arrivee, date_depart, guests, nights, total_price, base_price, tax_price, transaction_id, payment_status, caution_intent_id, refund_50_percent_date, refund_0_percent_date, proprietor_share, main_tenant_share, platform_share, platform_tva')
       .eq('id', reservationId)
       .single();
 
@@ -160,11 +160,13 @@ export async function POST(request) {
     const newProprietorShare = (reservation.proprietor_share || 0) * keptRate;
     const newMainTenantShare = (reservation.main_tenant_share || 0) * keptRate;
     const newPlatformShare = (reservation.platform_share || 0) * keptRate;
+    const newPlatformTva = (reservation.platform_tva || 0) * keptRate;
 
     console.log(`💼 Répartition après annulation (${keptRate * 100}% conservé):`);
     console.log(`   - Propriétaire: ${newProprietorShare.toFixed(2)}€`);
     console.log(`   - Locataire principal: ${newMainTenantShare.toFixed(2)}€`);
-    console.log(`   - Plateforme: ${newPlatformShare.toFixed(2)}€`);
+    console.log(`   - Plateforme HT: ${newPlatformShare.toFixed(2)}€`);
+    console.log(`   - TVA Plateforme: ${newPlatformTva.toFixed(2)}€`);
 
     // Annuler la réservation et mettre à jour les parts
     const { error: updateError } = await supabaseAdmin
@@ -173,7 +175,8 @@ export async function POST(request) {
         status: 'cancelled',
         proprietor_share: newProprietorShare,
         main_tenant_share: newMainTenantShare,
-        platform_share: newPlatformShare
+        platform_share: newPlatformShare,
+        platform_tva: newPlatformTva
       })
       .eq('id', reservationId);
 

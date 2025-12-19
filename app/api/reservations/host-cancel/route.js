@@ -57,7 +57,8 @@ export async function POST(request) {
         status: 'cancelled',
         proprietor_share: 0,
         main_tenant_share: 0,
-        platform_share: 0
+        platform_share: 0,
+        platform_tva: 0
       })
       .eq('id', reservationId);
 

@@ -22,7 +22,7 @@ export async function POST(request) {
     // 1) Lire la réservation avec parts et mapping des rôles
     const { data: res, error: resErr } = await supabaseAdmin
       .from('reservations')
-      .select('id, listing_id, host_id, user_id, proprietor_share, main_tenant_share, platform_share, balances_allocated')
+      .select('id, listing_id, host_id, user_id, proprietor_share, main_tenant_share, platform_share, platform_tva, balances_allocated')
       .eq('id', reservationId)
       .single();
 
