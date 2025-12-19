@@ -266,16 +266,26 @@ export default function Page() {
       }
       const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], { type: 'application/pdf' });
-
-      // Créer un lien de téléchargement
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Accord-Sous-Location-${listing.title.replace(/[^a-z0-9]/gi, '-')}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+
+      // Vérifier si on est sur mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // Sur mobile, ouvrir le PDF dans un nouvel onglet
+        window.open(url, '_blank');
+        // Nettoyer après un délai
+        setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+      } else {
+        // Sur desktop, télécharger normalement
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Accord-Sous-Location-${listing.title.replace(/[^a-z0-9]/gi, '-')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }
       console.log('✅ PDF téléchargé avec succès');
     } catch (e) {
       console.error('❌ Erreur:', e);
