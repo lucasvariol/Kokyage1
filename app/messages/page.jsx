@@ -17,6 +17,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [otherTyping, setOtherTyping] = useState(false);
+  const [showMobileChat, setShowMobileChat] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const typingTimeoutRef = useRef(null);
@@ -511,7 +512,7 @@ export default function Page() {
 
         {/* Messages Section */}
         <section style={{ padding: '0 24px 80px', transform: 'translateY(-40px)' }}>
-          <div style={{ 
+          <div className="messages-container" style={{ 
             background: 'rgba(255,255,255,0.98)', 
             backdropFilter: 'blur(30px)',
             borderRadius: '28px', 
@@ -538,10 +539,10 @@ export default function Page() {
 
             {/* ...existing code... (liste conversations + zone chat) */}
             {/* Liste des conversations */}
-            <div style={{
+            <div className="conversations-list" style={{
               width: '380px',
               borderRight: '1px solid #E2E8F0',
-              display: 'flex',
+              display: showMobileChat ? 'none' : 'flex',
               flexDirection: 'column',
               background: '#F8FAFC',
               paddingTop: '4px'
@@ -587,7 +588,10 @@ export default function Page() {
                   conversations.map((conv) => (
                     <div
                       key={conv.threadId}
-                      onClick={() => setSelectedConversation(conv)}
+                      onClick={() => {
+                        setSelectedConversation(conv);
+                        setShowMobileChat(true);
+                      }}
                       style={{
                         padding: '16px',
                         borderRadius: '16px',
@@ -719,23 +723,38 @@ export default function Page() {
             </div>
 
             {/* Zone de chat */}
-            <div style={{
+            <div className="chat-area" style={{
               flex: 1,
-              display: 'flex',
+              display: (!selectedConversation || !showMobileChat) ? 'none' : 'flex',
               flexDirection: 'column',
               background: 'white'
             }}>
               {selectedConversation ? (
                 <>
                   <div style={{
-                    padding: '24px',
+                    padding: '16px',
                     borderBottom: '1px solid #E2E8F0',
                     background: 'linear-gradient(135deg, rgba(78,205,196,0.05), rgba(68,181,168,0.02))'
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <button
+                        className="back-button"
+                        onClick={() => setShowMobileChat(false)}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: '1.5rem',
+                          padding: '8px',
+                          display: 'none',
+                          color: '#4ECDC4'
+                        }}
+                      >
+                        ←
+                      </button>
                       <div style={{
-                        width: '56px',
-                        height: '56px',
+                        width: '48px',
+                        height: '48px',
                         borderRadius: '16px',
                         background: selectedConversation.otherUserPhotoUrl 
                           ? `url(${selectedConversation.otherUserPhotoUrl})` 
@@ -788,7 +807,7 @@ export default function Page() {
                   <div style={{
                     flex: 1,
                     overflowY: 'auto',
-                    padding: '24px',
+                    padding: '16px',
                     background: 'linear-gradient(to bottom, #F8FAFC, white)'
                   }}>
                     {messages.length === 0 ? (
@@ -924,7 +943,7 @@ export default function Page() {
                   </div>
 
                   <div style={{
-                    padding: '20px 24px',
+                    padding: '12px 16px',
                     borderTop: '1px solid #E2E8F0',
                     background: 'white'
                   }}>
@@ -1100,6 +1119,39 @@ export default function Page() {
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+          .messages-container {
+            border-radius: 0 !important;
+            height: calc(100vh - 140px) !important;
+            max-width: 100% !important;
+          }
+          
+          .conversations-list {
+            width: 100% !important;
+            border-right: none !important;
+          }
+          
+          .chat-area {
+            width: 100% !important;
+            display: flex !important;
+          }
+          
+          .back-button {
+            display: block !important;
+          }
+        }
+
+        @media (min-width: 769px) {
+          .conversations-list {
+            display: flex !important;
+          }
+          
+          .chat-area {
+            display: flex !important;
+          }
         }
       `}} />
     </>
