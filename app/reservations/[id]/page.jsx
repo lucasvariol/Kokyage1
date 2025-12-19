@@ -880,69 +880,6 @@ export default function ReservationDetailPage() {
           );
         })()}
 
-        {/* Bouton facture après la fin du séjour */}
-        {reservation.status === 'confirmed' && (() => {
-          const now = new Date();
-          const departureDate = new Date(reservation.date_depart);
-          const hasEnded = now > departureDate;
-
-          if (!hasEnded) return null;
-
-          return (
-            <div style={{
-              textAlign: 'center',
-              padding: 24,
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(37,99,235,0.05))',
-              borderRadius: 16,
-              border: '2px solid rgba(59,130,246,0.2)',
-              marginBottom: 32
-            }}>
-              <div style={{ fontSize: '2rem', marginBottom: 12 }}>📄</div>
-              <p style={{ 
-                color: '#1e3a8a',
-                fontWeight: 600, 
-                fontSize: 15,
-                marginBottom: 16
-              }}>
-                Votre séjour est terminé
-              </p>
-              <button
-                onClick={handleSendInvoice}
-                disabled={sendingInvoice}
-                style={{
-                  background: sendingInvoice
-                    ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)'
-                    : 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 12,
-                  padding: '14px 32px',
-                  fontWeight: 800,
-                  fontSize: 15,
-                  cursor: sendingInvoice ? 'not-allowed' : 'pointer',
-                  opacity: sendingInvoice ? 0.7 : 1,
-                  boxShadow: sendingInvoice ? 'none' : '0 10px 25px rgba(59,130,246,0.3)',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  if (!sendingInvoice) {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 15px 35px rgba(59,130,246,0.4)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!sendingInvoice) {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 10px 25px rgba(59,130,246,0.3)';
-                  }
-                }}
-              >
-                {sendingInvoice ? '📧 Envoi en cours...' : '📧 Recevoir la facture par email'}
-              </button>
-            </div>
-          );
-        })()}
-
         {reservation.status === 'canceled' && (
           <div style={{
             textAlign: 'center',
