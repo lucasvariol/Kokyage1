@@ -3355,6 +3355,11 @@ export default function Page({ params: propsParams }) {
                               <button
                                 type="button"
                                 onClick={async () => {
+                                  // Sur mobile (iOS/Android), les téléchargements déclenchés après un await peuvent être bloqués.
+                                  // On ouvre un onglet tout de suite (pendant le geste utilisateur), puis on y navigue vers le PDF.
+                                  const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                  const popup = isMobile ? window.open('about:blank', '_blank') : null;
+
                                   // Debug logs
                                   console.log('🔍 Click bouton accord - item.owner_consent_pdf:', item?.owner_consent_pdf ? 'Présent' : 'Absent');
                                   
@@ -3410,6 +3415,15 @@ export default function Page({ params: propsParams }) {
                                     
                                     // Créer un lien de téléchargement (fonctionne sur desktop et mobile)
                                     const url = window.URL.createObjectURL(blob);
+
+                                    // Mobile: naviguer l'onglet ouvert pendant le geste utilisateur
+                                    if (popup && !popup.closed) {
+                                      popup.location.href = url;
+                                      setTimeout(() => window.URL.revokeObjectURL(url), 60_000);
+                                      console.log('✅ PDF ouvert (mobile)');
+                                      return;
+                                    }
+
                                     const a = document.createElement('a');
                                     a.href = url;
                                     a.download = `Accord-Sous-Location-${item.title.replace(/[^a-z0-9]/gi, '-')}.pdf`;
@@ -3428,6 +3442,7 @@ export default function Page({ params: propsParams }) {
                                     console.log('✅ PDF téléchargé avec succès');
                                     
                                   } catch (e) {
+                                    if (popup && !popup.closed) popup.close();
                                     console.error('❌ Erreur:', e);
                                     alert('Erreur: ' + e.message);
                                   }
