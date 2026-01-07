@@ -691,11 +691,11 @@ async function createUpcomingCautions() {
         console.log(`   📊 Status: ${cautionIntent.status}`);
         console.log(`   💰 Montant: ${cautionIntent.amount / 100}€`);
 
-        // Récupérer la charge pour vérifier extended_authorization et capture_before
+        // Récupérer la charge pour vérifier extended_authorization et capture_before (non-bloquant)
         let captureBefore = null;
         let extendedAuthStatus = null;
-        if (cautionIntent.latest_charge) {
-          try {
+        try {
+          if (cautionIntent.latest_charge) {
             const charge = await stripe.charges.retrieve(cautionIntent.latest_charge);
             captureBefore = charge.payment_method_details?.card?.capture_before || null;
             extendedAuthStatus = charge.payment_method_details?.card?.extended_authorization?.status || null;
@@ -721,9 +721,10 @@ async function createUpcomingCautions() {
                 console.warn(`   ⚠️⚠️ Ne couvrira pas jusqu'à J+14 après le départ - envisager débit+refund ou nouvelle caution au départ`);
               }
             }
-          } catch (chargeErr) {
-            console.warn(`   ⚠️ Impossible de récupérer capture_before:`, chargeErr.message);
           }
+        } catch (chargeErr) {
+          // Erreur non-bloquante: on continue même si on ne peut pas récupérer capture_before
+          console.warn(`   ⚠️ Impossible de récupérer capture_before (non-bloquant):`, chargeErr.message);
         }
 
         // Mettre à jour la réservation
