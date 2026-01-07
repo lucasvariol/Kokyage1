@@ -227,6 +227,24 @@ export async function POST(request) {
           }
         });
 
+        // Vérifier extended auth (non-bloquant)
+        try {
+          if (cautionIntent.latest_charge) {
+            const charge = await stripe.charges.retrieve(cautionIntent.latest_charge);
+            const extendedAuthStatus = charge.payment_method_details?.card?.extended_authorization?.status;
+            const captureBefore = charge.payment_method_details?.card?.capture_before;
+            
+            console.log('[Stripe API] Extended auth:', extendedAuthStatus || 'N/A');
+            console.log('[Stripe API] Capture before:', captureBefore ? new Date(captureBefore * 1000).toISOString() : 'N/A');
+            
+            if (extendedAuthStatus !== 'enabled') {
+              console.warn('[Stripe API] ⚠️ Extended authorization NON accordée - fenêtre standard');
+            }
+          }
+        } catch (err) {
+          console.warn('[Stripe API] ⚠️ Impossible de vérifier extended auth (non-bloquant):', err.message);
+        }
+
         // Si la caution nécessite une action (rare mais possible)
         if (cautionIntent.status === 'requires_action') {
           return NextResponse.json({
