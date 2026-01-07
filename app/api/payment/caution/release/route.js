@@ -21,13 +21,27 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Réservation introuvable ou caution absente' }, { status: 404 });
     }
 
-    // Annuler l'autorisation si encore capturable
-    const canceled = await stripe.paymentIntents.cancel(r.caution_intent_id);
+    // Annuler l'autorisation si encore annulable (idempotent)
+    const pi = await stripe.paymentIntents.retrieve(r.caution_intent_id);
+    let canceled = pi;
+    if (pi.status !== 'canceled') {
+      try {
+        canceled = await stripe.paymentIntents.cancel(r.caution_intent_id);
+      } catch (e) {
+        // Idempotence: si déjà canceled, c'est OK
+        const msg = String(e?.message || '');
+        const code = String(e?.code || '');
+        const alreadyCanceled = msg.includes('status of canceled') || (code === 'payment_intent_unexpected_state' && msg.toLowerCase().includes('canceled'));
+        if (!alreadyCanceled) throw e;
+        canceled = await stripe.paymentIntents.retrieve(r.caution_intent_id);
+      }
+    }
 
     await supabase
       .from('reservations')
       .update({
-        caution_status: 'canceled',
+        caution_status: 'released',
+        caution_released_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
       .eq('id', reservationId);

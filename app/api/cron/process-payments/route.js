@@ -7,6 +7,63 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+const CANCELABLE_PAYMENT_INTENT_STATUSES = new Set([
+  'requires_payment_method',
+  'requires_capture',
+  'requires_reauthorization',
+  'requires_confirmation',
+  'requires_action',
+  'processing'
+]);
+
+function isStripeAlreadyCanceledPaymentIntentError(err) {
+  const message = String(err?.message || '');
+  const code = String(err?.code || '');
+  return (
+    message.includes('status of canceled') ||
+    (code === 'payment_intent_unexpected_state' && message.toLowerCase().includes('canceled'))
+  );
+}
+
+async function cancelPaymentIntentIdempotent(paymentIntentId) {
+  if (!paymentIntentId) return { success: false, error: 'missing_payment_intent_id' };
+
+  // Pré-check: si déjà canceled, c'est une libération déjà faite (idempotent)
+  try {
+    const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (pi?.status === 'canceled') {
+      return { success: true, paymentIntent: pi, alreadyCanceled: true };
+    }
+
+    if (pi?.status && !CANCELABLE_PAYMENT_INTENT_STATUSES.has(pi.status)) {
+      return {
+        success: false,
+        paymentIntent: pi,
+        error: `payment_intent_not_cancelable_status:${pi.status}`
+      };
+    }
+  } catch (e) {
+    // Si retrieve échoue, on tente quand même le cancel (il donnera une erreur explicite)
+    console.warn('⚠️ Stripe PI retrieve failed, fallback to cancel:', e?.message);
+  }
+
+  try {
+    const canceled = await stripe.paymentIntents.cancel(paymentIntentId);
+    return { success: true, paymentIntent: canceled, alreadyCanceled: false };
+  } catch (e) {
+    if (isStripeAlreadyCanceledPaymentIntentError(e)) {
+      // Cas course: a été annulé entre retrieve et cancel
+      try {
+        const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+        return { success: true, paymentIntent: pi, alreadyCanceled: true };
+      } catch {
+        return { success: true, paymentIntent: null, alreadyCanceled: true };
+      }
+    }
+    return { success: false, error: e?.message || 'stripe_cancel_failed' };
+  }
+}
+
 export async function GET(request) {
   // Sécurité : vérifier que l'appel vient de Vercel Cron
   const authHeader = request.headers.get('authorization');
@@ -106,10 +163,13 @@ export async function GET(request) {
             console.log(`🔓 Libération caution pour #${reservation.id} (${daysSinceEnd} jours écoulés, pas de litige)`);
             
             try {
-              // Annuler (libérer) la caution au lieu de la capturer
-              const paymentIntent = await stripe.paymentIntents.cancel(
-                reservation.caution_intent_id
-              );
+              // Annuler (libérer) la caution au lieu de la capturer (idempotent)
+              const cancelResult = await cancelPaymentIntentIdempotent(reservation.caution_intent_id);
+              if (!cancelResult.success) {
+                throw new Error(cancelResult.error || 'Cancel caution failed');
+              }
+
+              const paymentIntent = cancelResult.paymentIntent;
 
               await supabaseAdmin
                 .from('reservations')
@@ -119,7 +179,11 @@ export async function GET(request) {
                 })
                 .eq('id', reservation.id);
 
-              console.log(`✅ Caution libérée: ${paymentIntent.amount / 100}€ rendus au voyageur`);
+              if (cancelResult.alreadyCanceled) {
+                console.log(`✅ Caution déjà libérée côté Stripe (PI canceled) - réservation #${reservation.id} mise à jour`);
+              } else {
+                console.log(`✅ Caution libérée: ${paymentIntent?.amount ? paymentIntent.amount / 100 : 'N/A'}€ rendus au voyageur`);
+              }
             } catch (err) {
               console.error(`❌ Erreur libération caution #${reservation.id}:`, err.message);
             }
@@ -731,9 +795,12 @@ async function releaseCautions() {
         // Libérer la caution
         console.log(`🔓 Libération caution pour réservation #${reservation.id}`);
 
-        const paymentIntent = await stripe.paymentIntents.cancel(
-          reservation.caution_intent_id
-        );
+        const cancelResult = await cancelPaymentIntentIdempotent(reservation.caution_intent_id);
+        if (!cancelResult.success) {
+          throw new Error(cancelResult.error || 'Cancel caution failed');
+        }
+
+        const paymentIntent = cancelResult.paymentIntent;
 
         await supabaseAdmin
           .from('reservations')
@@ -743,12 +810,16 @@ async function releaseCautions() {
           })
           .eq('id', reservation.id);
 
-        console.log(`✅ Caution libérée: ${paymentIntent.amount / 100}€`);
+        if (cancelResult.alreadyCanceled) {
+          console.log(`✅ Caution déjà libérée côté Stripe (PI canceled) - réservation #${reservation.id} mise à jour`);
+        } else {
+          console.log(`✅ Caution libérée: ${paymentIntent?.amount ? paymentIntent.amount / 100 : 'N/A'}€`);
+        }
 
         results.push({
           reservation_id: reservation.id,
           success: true,
-          amount: paymentIntent.amount / 100
+          amount: paymentIntent?.amount ? paymentIntent.amount / 100 : null
         });
 
       } catch (err) {
