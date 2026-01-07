@@ -676,6 +676,11 @@ async function createUpcomingCautions() {
           confirm: true,
           return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
           description: `Caution pour réservation #${reservation.id} - Libération automatique 14 jours après le départ`,
+          payment_method_options: {
+            card: {
+              request_extended_authorization: 'if_available'
+            }
+          },
           metadata: {
             reservation_id: reservation.id,
             type: 'caution'
@@ -686,6 +691,41 @@ async function createUpcomingCautions() {
         console.log(`   📊 Status: ${cautionIntent.status}`);
         console.log(`   💰 Montant: ${cautionIntent.amount / 100}€`);
 
+        // Récupérer la charge pour vérifier extended_authorization et capture_before
+        let captureBefore = null;
+        let extendedAuthStatus = null;
+        if (cautionIntent.latest_charge) {
+          try {
+            const charge = await stripe.charges.retrieve(cautionIntent.latest_charge);
+            captureBefore = charge.payment_method_details?.card?.capture_before || null;
+            extendedAuthStatus = charge.payment_method_details?.card?.extended_authorization?.status || null;
+            console.log(`   🕒 Capture avant: ${captureBefore ? new Date(captureBefore * 1000).toISOString() : 'N/A'}`);
+            console.log(`   🔐 Extended auth: ${extendedAuthStatus || 'N/A'}`);
+
+            // Alerter si extended authorization n'a pas été accordée
+            if (extendedAuthStatus !== 'enabled') {
+              console.warn(`   ⚠️⚠️ ALERTE: Extended authorization NON accordée pour réservation #${reservation.id} - Fenêtre standard (~5-7 jours)`);
+              console.warn(`   ⚠️⚠️ Carte brand: ${charge.payment_method_details?.card?.brand || 'unknown'}`);
+              console.warn(`   ⚠️⚠️ Vérifiez l'éligibilité du compte Stripe (IC+ requis) ou contactez le support`);
+            }
+
+            // Alerter si la fenêtre d'autorisation est trop courte
+            if (captureBefore) {
+              const captureDate = new Date(captureBefore * 1000);
+              const now = new Date();
+              const daysAvailable = Math.floor((captureDate - now) / (1000 * 60 * 60 * 24));
+              console.log(`   📅 Jours disponibles pour capture: ${daysAvailable}`);
+              
+              if (daysAvailable < 14) {
+                console.warn(`   ⚠️⚠️ ALERTE: Fenêtre d'autorisation courte (${daysAvailable} jours) pour réservation #${reservation.id}`);
+                console.warn(`   ⚠️⚠️ Ne couvrira pas jusqu'à J+14 après le départ - envisager débit+refund ou nouvelle caution au départ`);
+              }
+            }
+          } catch (chargeErr) {
+            console.warn(`   ⚠️ Impossible de récupérer capture_before:`, chargeErr.message);
+          }
+        }
+
         // Mettre à jour la réservation
         console.log(`   💾 Mise à jour de la réservation dans la base de données...`);
         const { error: updateError } = await supabaseAdmin
@@ -693,7 +733,8 @@ async function createUpcomingCautions() {
           .update({
             caution_intent_id: cautionIntent.id,
             caution_status: 'authorized',
-            caution_created_at: new Date().toISOString()
+            caution_created_at: new Date().toISOString(),
+            caution_capture_before: captureBefore ? new Date(captureBefore * 1000).toISOString() : null
           })
           .eq('id', reservation.id);
 

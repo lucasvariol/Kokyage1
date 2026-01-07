@@ -214,6 +214,11 @@ export async function POST(request) {
           confirm: true,
           description: 'Empreinte bancaire caution Kokyage',
           return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
+          payment_method_options: {
+            card: {
+              request_extended_authorization: 'if_available'
+            }
+          },
           metadata: {
             type: 'caution',
             userId: userId || 'test-user',
