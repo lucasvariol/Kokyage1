@@ -156,8 +156,8 @@ export async function POST(request) {
       payment_method: paymentIntent.payment_method
     });
 
-    // 2. Empreinte bancaire (caution 300€) — on ne la crée qu'après succès du paiement principal
-    let cautionIntent = null;
+    // 2. SetupIntent pour la caution — carte enregistrée en standby, activation manuelle uniquement si litige
+    let setupIntent = null;
 
     // Si le paiement principal nécessite une action supplémentaire (3D Secure, etc.)
     if (paymentIntent.status === 'requires_action') {
@@ -168,7 +168,7 @@ export async function POST(request) {
           client_secret: paymentIntent.client_secret,
           status: paymentIntent.status
         },
-        cautionIntent: null
+        setupIntent: null
       });
     }
 
@@ -180,7 +180,7 @@ export async function POST(request) {
           id: paymentIntent.id,
           status: paymentIntent.status
         },
-        cautionIntent: null
+        setupIntent: null
       }, { status: 400 });
     }
 
@@ -190,63 +190,30 @@ export async function POST(request) {
       const attachedPaymentMethod = paymentIntent.payment_method;
       console.log('[Stripe API] PaymentIntent succeeded. Attached PM:', attachedPaymentMethod);
       
-      // Calculer les jours avant l'arrivée
-      const dateArrivee = reservationData?.startDate ? new Date(reservationData.startDate) : null;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate day calculation
-      if (dateArrivee) {
-        dateArrivee.setHours(0, 0, 0, 0);
-      }
-      const daysUntilArrival = dateArrivee ? Math.floor((dateArrivee - today) / (1000 * 60 * 60 * 24)) : 0;
-      
-      console.log('[Stripe API] Date arrivée:', dateArrivee?.toISOString());
-      console.log('[Stripe API] Jours avant arrivée:', daysUntilArrival);
-
-      // Si l'arrivée est dans 7 jours ou moins, créer la caution immédiatement
-      if (daysUntilArrival <= 7) {
-        cautionIntent = await stripe.paymentIntents.create({
-          amount: 30000, // 300€ en centimes
-          currency: 'eur',
+      // Créer un SetupIntent pour enregistrer la carte (pas de débit, juste stockage)
+      // Ce SetupIntent sera utilisé uniquement en cas de litige
+      try {
+        setupIntent = await stripe.setupIntents.create({
           payment_method: paymentMethodToUse,
           customer: customer ? customer.id : undefined,
-          confirmation_method: 'manual',
-          capture_method: 'manual', // autorisation, pas de débit
           confirm: true,
-          description: 'Empreinte bancaire caution Kokyage',
+          usage: 'off_session', // Permet de charger la carte plus tard sans présence du client
+          description: 'Enregistrement carte pour caution - activation manuelle si litige',
           return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
-          payment_method_options: {
-            card: {
-              request_extended_authorization: 'if_available'
-            }
-          },
           metadata: {
-            type: 'caution',
+            type: 'caution_setup',
             userId: userId || 'test-user',
             listingId: listingId || '',
-            reservation: JSON.stringify(reservationData || {})
+            reservation: JSON.stringify(reservationData || {}),
+            max_amount: '30000', // 300€ max (info uniquement)
+            note: 'Carte en standby - débit uniquement si litige déclaré'
           }
         });
 
-        // Vérifier extended auth (non-bloquant)
-        try {
-          if (cautionIntent.latest_charge) {
-            const charge = await stripe.charges.retrieve(cautionIntent.latest_charge);
-            const extendedAuthStatus = charge.payment_method_details?.card?.extended_authorization?.status;
-            const captureBefore = charge.payment_method_details?.card?.capture_before;
-            
-            console.log('[Stripe API] Extended auth:', extendedAuthStatus || 'N/A');
-            console.log('[Stripe API] Capture before:', captureBefore ? new Date(captureBefore * 1000).toISOString() : 'N/A');
-            
-            if (extendedAuthStatus !== 'enabled') {
-              console.warn('[Stripe API] ⚠️ Extended authorization NON accordée - fenêtre standard');
-            }
-          }
-        } catch (err) {
-          console.warn('[Stripe API] ⚠️ Impossible de vérifier extended auth (non-bloquant):', err.message);
-        }
+        console.log('[Stripe API] SetupIntent créé:', setupIntent.id, 'Status:', setupIntent.status);
 
-        // Si la caution nécessite une action (rare mais possible)
-        if (cautionIntent.status === 'requires_action') {
+        // Si le SetupIntent nécessite une action (3D Secure)
+        if (setupIntent.status === 'requires_action') {
           return NextResponse.json({
             requiresAction: true,
             paymentIntent: {
@@ -254,12 +221,12 @@ export async function POST(request) {
               client_secret: paymentIntent.client_secret,
               status: paymentIntent.status
             },
-            cautionIntent: {
-              id: cautionIntent.id,
-              status: cautionIntent.status,
-              client_secret: cautionIntent.client_secret
+            setupIntent: {
+              id: setupIntent.id,
+              status: setupIntent.status,
+              client_secret: setupIntent.client_secret
             },
-            message: 'Action requise pour la caution (3D Secure).'
+            message: 'Action requise pour enregistrer la carte (3D Secure).'
           });
         }
 
@@ -287,20 +254,19 @@ export async function POST(request) {
               }
             } : null
           },
-          cautionIntent: {
-            id: cautionIntent.id,
-            status: cautionIntent.status,
-            amount: cautionIntent.amount,
-            currency: cautionIntent.currency,
-            client_secret: cautionIntent.client_secret
+          setupIntent: {
+            id: setupIntent.id,
+            status: setupIntent.status,
+            payment_method: setupIntent.payment_method
           },
           payment_method_id: attachedPaymentMethod,
           message: paymentIntent.status === 'requires_capture'
-            ? "Paiement autorisé (non débité). Le débit aura lieu lors de l'acceptation par l'hôte. Empreinte bancaire enregistrée !"
-            : 'Paiement effectué avec succès et empreinte bancaire enregistrée !'
+            ? "Paiement autorisé (non débité). Le débit aura lieu lors de l'acceptation par l'hôte. Carte enregistrée pour caution (activation manuelle si litige uniquement)."
+            : 'Paiement effectué avec succès ! Carte enregistrée pour caution (activation manuelle si litige uniquement).'
         });
-      } else {
-        // Arrivée dans plus de 7 jours : sauvegarder le PaymentMethod pour création différée
+      } catch (setupError) {
+        console.error('[Stripe API] Erreur création SetupIntent:', setupError);
+        // Continuer même si le SetupIntent échoue (le paiement principal a réussi)
         return NextResponse.json({
           success: true,
           transaction: {
@@ -325,12 +291,12 @@ export async function POST(request) {
               }
             } : null
           },
-          cautionIntent: null,
+          setupIntent: null,
           payment_method_id: attachedPaymentMethod,
-          caution_scheduled: true,
           message: paymentIntent.status === 'requires_capture'
-            ? "Paiement autorisé (non débité). Le débit aura lieu lors de l'acceptation par l'hôte. L'empreinte bancaire de caution (300€) sera créée 7 jours avant votre arrivée."
-            : `Paiement effectué avec succès ! L'empreinte bancaire de caution (300€) sera créée 7 jours avant votre arrivée.`
+            ? "Paiement autorisé (non débité). Le débit aura lieu lors de l'acceptation par l'hôte."
+            : 'Paiement effectué avec succès !',
+          warning: 'Carte non enregistrée pour caution - SetupIntent a échoué'
         });
       }
     }
@@ -343,10 +309,7 @@ export async function POST(request) {
         id: paymentIntent.id,
         status: paymentIntent.status
       },
-      cautionIntent: {
-        id: cautionIntent.id,
-        status: cautionIntent.status
-      }
+      setupIntent: null
     }, { status: 400 });
 
   } catch (error) {

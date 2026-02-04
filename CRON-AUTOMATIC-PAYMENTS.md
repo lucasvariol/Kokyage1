@@ -63,12 +63,12 @@ Tous les lundis à 9h :
 3. Recherche toutes les réservations terminées (`end_date < aujourd'hui`, `balances_allocated = false`)
 4. Pour chaque réservation :
    - **Lit les shares pré-calculées** lors de la création de la réservation (`proprietor_share`, `main_tenant_share`, `platform_share`)
-   - Libère la caution après 14 jours si pas de litige
    - Met à jour les soldes (`total_earnings`, `to_be_paid_to_user`) des profils
    - Transfère automatiquement via Stripe Connect si compte configuré
    - Met à jour `balances_allocated = true`
+5. **Caution (SetupIntent)** : La carte reste enregistrée en standby et **ne sera activée manuellement que s'il y a un litige**. Plus de gestion automatique.
 
-> **Note importante** : Le CRON ne calcule rien, il utilise uniquement les montants déjà calculés et stockés au moment de la réservation par `/api/reservations/create`.
+> **Note importante** : Le CRON ne calcule rien, il utilise uniquement les montants déjà calculés et stockés au moment de la réservation par `/api/reservations/create`. La caution n'est plus gérée automatiquement.
 
 ## Colonnes à ajouter dans Supabase
 
@@ -81,7 +81,11 @@ ADD COLUMN IF NOT EXISTS host_payout_amount DECIMAL,
 ADD COLUMN IF NOT EXISTS kokyage_commission DECIMAL,
 ADD COLUMN IF NOT EXISTS host_payout_date TIMESTAMP,
 ADD COLUMN IF NOT EXISTS stripe_transfer_id TEXT,
-ADD COLUMN IF NOT EXISTS caution_captured_at TIMESTAMP;
+ADD COLUMN IF NOT EXISTS setup_intent_id TEXT,
+ADD COLUMN IF NOT EXISTS caution_status TEXT;
+
+-- Note: caution_status peut être NULL (pas de caution), 'setup' (carte enregistrée), 
+-- 'captured' (capturée manuellement en cas de litige), ou 'released' (libérée manuellement)
 
 CREATE INDEX IF NOT EXISTS idx_reservations_auto_payment 
 ON reservations(status, end_date, balances_allocated)
