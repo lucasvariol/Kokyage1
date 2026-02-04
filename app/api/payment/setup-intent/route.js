@@ -32,6 +32,7 @@ export async function POST(request) {
       customer: customerId || undefined,
       confirm: true,
       usage: 'off_session', // Permet de charger la carte plus tard sans présence du client
+      return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
       description: 'Enregistrement carte pour caution - activation manuelle si litige',
       metadata: {
         type: 'caution_setup',
