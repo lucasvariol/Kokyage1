@@ -519,6 +519,37 @@ function ConfirmerEtPayerContent() {
           status: paymentIntent.status
         };
         paymentResult.payment_method_id = paymentMethodId;
+
+        // Créer le SetupIntent pour la caution maintenant que le paiement est confirmé
+        try {
+          const setupResponse = await fetch('/api/payment/setup-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              paymentMethodId: paymentMethodId,
+              customerId: paymentIntent.customer,
+              userId: user.id,
+              listingId: listingId,
+              reservationData: {
+                startDate,
+                endDate,
+                guests: parseInt(selectedGuests),
+                nights: parseInt(nights)
+              }
+            })
+          });
+
+          const setupResult = await setupResponse.json();
+          if (setupResult.success) {
+            paymentResult.setupIntent = setupResult.setupIntent;
+            console.log('✅ SetupIntent créé:', setupResult.setupIntent.id);
+          } else {
+            console.warn('⚠️ Échec création SetupIntent (non-bloquant):', setupResult.error);
+          }
+        } catch (setupError) {
+          console.warn('⚠️ Erreur SetupIntent (non-bloquant):', setupError);
+          // Ne pas bloquer la réservation si le SetupIntent échoue
+        }
       }
 
       if (!paymentResponse.ok || !paymentResult.success) {
