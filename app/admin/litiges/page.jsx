@@ -22,18 +22,32 @@ export default function LitigesAdmin() {
 
   const loadReservations = async () => {
     try {
-      const { data, error } = await supabase
+      // Charger d'abord les réservations
+      const { data: reservationsData, error } = await supabase
         .from('reservations')
         .select(`
           *,
-          listings!inner(title, city),
-          profiles(name, email)
+          listings!inner(title, city)
         `)
         .order('created_at', { ascending: false })
         .limit(100);
 
       if (error) throw error;
-      setReservations(data || []);
+
+      // Ensuite charger les profils utilisateurs
+      const userIds = [...new Set(reservationsData?.map(r => r.user_id).filter(Boolean))];
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, name, email')
+        .in('id', userIds);
+
+      // Associer les profils aux réservations
+      const reservationsWithProfiles = reservationsData?.map(reservation => ({
+        ...reservation,
+        profiles: profilesData?.find(p => p.id === reservation.user_id) || null
+      }));
+
+      setReservations(reservationsWithProfiles || []);
     } catch (error) {
       console.error('Erreur chargement réservations:', error);
       alert('Erreur lors du chargement des réservations');
