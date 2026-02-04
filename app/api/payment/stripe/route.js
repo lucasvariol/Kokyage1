@@ -146,7 +146,7 @@ export async function POST(request) {
       capture_method: 'manual', // autorisation, pas de débit immédiat
       confirm: false, // Ne pas confirmer immédiatement, laisse le frontend gérer le 3DS
       setup_future_usage: 'off_session',
-      return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
+      // return_url retiré car incompatible avec confirm: false (géré côté client)
     });
 
     console.log('[Stripe API] PaymentIntent created:', {
