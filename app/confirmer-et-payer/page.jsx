@@ -487,7 +487,39 @@ function ConfirmerEtPayerContent() {
         })
       });
 
-  const paymentResult = await paymentResponse.json();
+      const paymentResult = await paymentResponse.json();
+
+      // Gérer le cas où une action 3D Secure est requise
+      if (paymentResult.requiresAction && paymentResult.paymentIntent?.client_secret) {
+        console.log('🔐 3D Secure requis, confirmation en cours...');
+        
+        const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || '');
+        if (!stripe) {
+          throw new Error('Stripe non chargé');
+        }
+
+        const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
+          paymentResult.paymentIntent.client_secret
+        );
+
+        if (confirmError) {
+          throw new Error(confirmError.message || 'Échec de la confirmation 3D Secure');
+        }
+
+        if (paymentIntent.status !== 'requires_capture' && paymentIntent.status !== 'succeeded') {
+          throw new Error('Paiement non confirmé après 3D Secure');
+        }
+
+        console.log('✅ 3D Secure confirmé, poursuite de la réservation...');
+        
+        // Mettre à jour paymentResult avec le PaymentIntent confirmé
+        paymentResult.success = true;
+        paymentResult.transaction = {
+          transactionId: paymentIntent.id,
+          status: paymentIntent.status
+        };
+        paymentResult.payment_method_id = paymentMethodId;
+      }
 
       if (!paymentResponse.ok || !paymentResult.success) {
         throw new Error(paymentResult.error || 'Erreur lors du paiement');
