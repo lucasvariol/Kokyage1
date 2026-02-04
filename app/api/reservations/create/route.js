@@ -8,8 +8,10 @@ import { createReservationSchema, validateOrError } from '@/lib/validators';
 import logger from '@/lib/logger';
 import { applyRateLimit, contentRateLimit } from '@/lib/ratelimit';
 import { generateUniqueShortId } from '@/lib/generateShortId';
+import Stripe from 'stripe';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2023-10-16' });
 
 export async function POST(request) {
   // Rate limiting: 10 réservations par minute
@@ -146,6 +148,41 @@ export async function POST(request) {
         { error: 'Erreur lors de la création de la réservation: ' + reservationError.message },
         { status: 500 }
       );
+    }
+
+    // Mettre à jour le PaymentIntent Stripe avec l'ID de réservation pour traçabilité
+    if (transactionId && displayId) {
+      try {
+        await stripe.paymentIntents.update(transactionId, {
+          metadata: {
+            reservation_id: reservation.id,
+            display_id: displayId,
+            reservation_display: '#' + displayId
+          },
+          description: `Réservation #${displayId} - ${listing.title}`
+        });
+        logger.debug('PaymentIntent updated with reservation ID', { transactionId, displayId });
+      } catch (stripeError) {
+        // Non-bloquant : si la mise à jour Stripe échoue, on continue quand même
+        logger.warn('Failed to update PaymentIntent metadata', { error: stripeError.message });
+      }
+    }
+
+    // Mettre à jour le SetupIntent également si présent
+    if (setupIntentId && displayId) {
+      try {
+        await stripe.setupIntents.update(setupIntentId, {
+          metadata: {
+            reservation_id: reservation.id,
+            display_id: displayId,
+            reservation_display: '#' + displayId
+          },
+          description: `Caution réservation #${displayId}`
+        });
+        logger.debug('SetupIntent updated with reservation ID', { setupIntentId, displayId });
+      } catch (stripeError) {
+        logger.warn('Failed to update SetupIntent metadata', { error: stripeError.message });
+      }
     }
 
     // Bloquer les dates dans la table disponibilities
