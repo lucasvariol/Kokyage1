@@ -6,6 +6,7 @@ export const reservationHostPendingTemplate = {
   subject: 'Une nouvelle réservation doit être validée',
 
   getHtml: ({
+    reservationId,
     tenantName,
     guestName,
     listingTitle,
@@ -37,6 +38,9 @@ export const reservationHostPendingTemplate = {
               <h1 style="color:#ffffff;margin:0;font-size:26px;font-weight:800;letter-spacing:-0.02em;">
                 Nouvelle réservation reçue
               </h1>
+              <p style="color:rgba(255,255,255,0.9);margin:12px 0 0;font-size:15px;font-weight:600;">
+                Réservation ${reservationId || ''}
+              </p>
             </td>
           </tr>
           <tr>
@@ -90,6 +94,7 @@ export const reservationHostPendingTemplate = {
   `,
 
   getText: ({
+    reservationId,
     tenantName,
     guestName,
     listingTitle,
@@ -101,7 +106,7 @@ export const reservationHostPendingTemplate = {
     totalPrice,
     reservationUrl
   }) => `
-Nouvelle réservation à valider
+Nouvelle réservation à valider ${reservationId ? '(' + reservationId + ')' : ''}
 
 Bonjour ${tenantName},
 mar

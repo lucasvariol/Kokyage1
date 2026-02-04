@@ -7,6 +7,7 @@ import { calculateShares } from '@/lib/commissions';
 import { createReservationSchema, validateOrError } from '@/lib/validators';
 import logger from '@/lib/logger';
 import { applyRateLimit, contentRateLimit } from '@/lib/ratelimit';
+import { generateUniqueShortId } from '@/lib/generateShortId';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -94,10 +95,24 @@ export async function POST(request) {
       fraisPlateforme
     );
 
+    // Générer un ID court unique pour la réservation
+    const checkDisplayIdExists = async (displayId) => {
+      const { data } = await supabaseAdmin
+        .from('reservations')
+        .select('id')
+        .eq('display_id', displayId)
+        .maybeSingle();
+      return !!data;
+    };
+    
+    const displayId = await generateUniqueShortId(checkDisplayIdExists);
+    logger.debug('Generated display ID', { displayId });
+
     // Créer la réservation directement dans la table
     const { data: reservation, error: reservationError } = await supabaseAdmin
       .from('reservations')
       .insert({
+        display_id: displayId,
         user_id: guestId,  // Utiliser user_id au lieu de guest_id
         listing_id: listingId,
         host_id: listing.owner_id,
@@ -263,6 +278,7 @@ export async function POST(request) {
           const reservationUrl = `${baseUrl}/profil-hote`;
 
           const emailPayload = {
+            reservationId: '#' + displayId, // ID court et lisible
             tenantName: hostName,
             guestName,
             listingTitle: listing.title || 'Votre logement',
@@ -289,6 +305,7 @@ export async function POST(request) {
           // Envoi email au voyageur (confirmation + info délai 48h)
           if (guestUser?.email) {
             const guestEmailPayload = {
+              reservationId: '#' + displayId, // ID court et lisible
               guestName,
               listingTitle: listing.title || 'Votre logement',
               listingCity: listing.city || 'Localisation non renseignée',

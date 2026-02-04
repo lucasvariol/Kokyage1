@@ -7,6 +7,7 @@ export const reservationGuestPendingTemplate = {
   subject: 'Votre réservation est en attente de validation',
 
   getHtml: ({
+    reservationId,
     guestName,
     listingTitle,
     listingCity,
@@ -36,6 +37,9 @@ export const reservationGuestPendingTemplate = {
               <h1 style="color:#ffffff;margin:0;font-size:26px;font-weight:800;letter-spacing:-0.02em;">
                 Réservation en attente de validation
               </h1>
+              <p style="color:rgba(255,255,255,0.9);margin:12px 0 0;font-size:15px;font-weight:600;">
+                Réservation ${reservationId || ''}
+              </p>
             </td>
           </tr>
           <tr>
@@ -95,6 +99,7 @@ export const reservationGuestPendingTemplate = {
   `,
 
   getText: ({
+    reservationId,
     guestName,
     listingTitle,
     listingCity,
@@ -104,7 +109,7 @@ export const reservationGuestPendingTemplate = {
     guests,
     totalPrice
   }) => `
-Réservation en attente de validation
+Réservation en attente de validation ${reservationId ? '(' + reservationId + ')' : ''}
 
 Bonjour ${guestName},
 
