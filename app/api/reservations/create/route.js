@@ -50,6 +50,12 @@ export async function POST(request) {
       refund0PercentDate
     } = validation.data;
 
+    console.log('🔍 [API Reservation] Données reçues:', {
+      cautionIntentId,
+      paymentMethodId,
+      transactionId
+    });
+
     logger.api('POST', '/api/reservations/create', { listingId, guestId, totalPrice });
 
     // Récupérer les infos du logement (owner et id_proprietaire, price)
@@ -110,6 +116,8 @@ export async function POST(request) {
     const displayId = await generateUniqueShortId(checkDisplayIdExists);
     logger.debug('Generated display ID', { displayId });
 
+    console.log('💾 [API Reservation] Insertion avec caution_intent_id:', cautionIntentId);
+
     // Créer la réservation directement dans la table
     const { data: reservation, error: reservationError } = await supabaseAdmin
       .from('reservations')
@@ -149,6 +157,8 @@ export async function POST(request) {
         { status: 500 }
       );
     }
+
+    console.log('✅ [API Reservation] Créée avec ID:', reservation.id, 'caution_intent_id:', reservation.caution_intent_id);
 
     // Mettre à jour le PaymentIntent Stripe avec l'ID de réservation pour traçabilité
     if (transactionId && displayId) {
