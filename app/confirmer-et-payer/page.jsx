@@ -493,6 +493,9 @@ function ConfirmerEtPayerContent() {
       if (paymentResult.requiresAction && paymentResult.paymentIntent?.client_secret) {
         console.log('🔐 3D Secure requis, confirmation en cours...');
         
+        // Sauvegarder le customer ID du paymentIntent initial avant confirmation
+        const initialCustomerId = paymentResult.paymentIntent?.customer || null;
+        
         const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || '');
         if (!stripe) {
           throw new Error('Stripe non chargé');
@@ -527,7 +530,7 @@ function ConfirmerEtPayerContent() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               paymentMethodId: paymentMethodId,
-              customerId: paymentIntent.customer,
+              customerId: initialCustomerId, // Utiliser le customer ID de la réponse initiale
               userId: user.id,
               listingId: listingId,
               reservationData: {

@@ -167,7 +167,8 @@ export async function POST(request) {
         paymentIntent: {
           id: paymentIntent.id,
           client_secret: paymentIntent.client_secret,
-          status: paymentIntent.status
+          status: paymentIntent.status,
+          customer: paymentIntent.customer // ✅ Inclure le customer ID pour le SetupIntent ultérieur
         },
         setupIntent: null
       });
