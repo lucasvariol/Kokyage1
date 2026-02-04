@@ -142,9 +142,9 @@ export async function POST(request) {
       ...paymentIntentConfig,
       payment_method: paymentMethodToUse,
       customer: customer ? customer.id : undefined,
-      confirmation_method: 'manual',
+      confirmation_method: 'automatic', // Permet la confirmation côté client pour 3D Secure
       capture_method: 'manual', // autorisation, pas de débit immédiat
-      confirm: true,
+      confirm: false, // Ne pas confirmer immédiatement, laisse le frontend gérer le 3DS
       setup_future_usage: 'off_session',
       return_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kokyage.com'}/reservations`,
     });
@@ -160,7 +160,8 @@ export async function POST(request) {
     let setupIntent = null;
 
     // Si le paiement principal nécessite une action supplémentaire (3D Secure, etc.)
-    if (paymentIntent.status === 'requires_action') {
+    // Avec confirmation_method: 'automatic', on retourne le client_secret pour que le frontend confirme
+    if (paymentIntent.status === 'requires_confirmation' || paymentIntent.status === 'requires_action') {
       return NextResponse.json({
         requiresAction: true,
         paymentIntent: {
