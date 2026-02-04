@@ -540,16 +540,23 @@ function ConfirmerEtPayerContent() {
           });
 
           const setupResult = await setupResponse.json();
+          console.log('📝 SetupIntent response:', setupResult);
+          
           if (setupResult.success) {
             paymentResult.setupIntent = setupResult.setupIntent;
             console.log('✅ SetupIntent créé:', setupResult.setupIntent.id);
           } else {
-            console.warn('⚠️ Échec création SetupIntent (non-bloquant):', setupResult.error);
+            console.error('❌ Échec création SetupIntent:', setupResult.error);
           }
         } catch (setupError) {
-          console.warn('⚠️ Erreur SetupIntent (non-bloquant):', setupError);
+          console.error('❌ Erreur SetupIntent:', setupError);
           // Ne pas bloquer la réservation si le SetupIntent échoue
         }
+        
+        console.log('📦 PaymentResult final avant réservation:', {
+          setupIntentId: paymentResult?.setupIntent?.id,
+          paymentMethodId: paymentResult?.payment_method_id
+        });
       }
 
       if (!paymentResponse.ok || !paymentResult.success) {
@@ -563,24 +570,31 @@ function ConfirmerEtPayerContent() {
       const refund50Date = new Date(arrivalDate.getTime() - (6 * 24 * 60 * 60 * 1000)); // 6 jours avant
       const refund0Date = new Date(arrivalDate.getTime() - (2 * 24 * 60 * 60 * 1000));  // 2 jours avant
       
+      const reservationPayload = {
+        listingId: listingId,
+        guestId: user.id,
+        startDate: searchParams.get('startDate') || startDate,
+        endDate: searchParams.get('endDate') || endDate,
+        guests: selectedGuests,
+        basePrice: calculatedPrices.basePrice,
+        taxPrice: calculatedPrices.taxPrice,
+        totalPrice: calculatedPrices.totalPrice,
+        transactionId: paymentResult.transaction.transactionId,
+        cautionIntentId: paymentResult?.setupIntent?.id || null,
+        paymentMethodId: paymentResult?.payment_method_id || null,
+        refund50PercentDate: refund50Date.toISOString().split('T')[0],
+        refund0PercentDate: refund0Date.toISOString().split('T')[0]
+      };
+      
+      console.log('📤 Envoi réservation avec:', {
+        cautionIntentId: reservationPayload.cautionIntentId,
+        paymentMethodId: reservationPayload.paymentMethodId
+      });
+      
       const reservationResponse = await fetch('/api/reservations/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          listingId: listingId,
-          guestId: user.id,
-          startDate: searchParams.get('startDate') || startDate,
-          endDate: searchParams.get('endDate') || endDate,
-          guests: selectedGuests,
-          basePrice: calculatedPrices.basePrice,
-          taxPrice: calculatedPrices.taxPrice,
-          totalPrice: calculatedPrices.totalPrice,
-          transactionId: paymentResult.transaction.transactionId,
-          cautionIntentId: paymentResult?.setupIntent?.id || null,
-          paymentMethodId: paymentResult?.payment_method_id || null,
-          refund50PercentDate: refund50Date.toISOString().split('T')[0],
-          refund0PercentDate: refund0Date.toISOString().split('T')[0]
-        })
+        body: JSON.stringify(reservationPayload)
       });
 
       const reservationResult = await reservationResponse.json();
