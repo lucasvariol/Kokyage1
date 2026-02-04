@@ -27,7 +27,7 @@ export default function LitigesAdmin() {
         .select(`
           *,
           listings!inner(title, city),
-          profiles!reservations_user_id_fkey(name, email)
+          profiles(name, email)
         `)
         .order('created_at', { ascending: false })
         .limit(100);
