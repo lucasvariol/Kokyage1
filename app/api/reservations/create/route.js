@@ -44,7 +44,7 @@ export async function POST(request) {
       taxPrice,
       totalPrice,
       transactionId,
-      setupIntentId,
+      cautionIntentId,
       paymentMethodId,
       refund50PercentDate,
       refund0PercentDate
@@ -130,7 +130,7 @@ export async function POST(request) {
         main_tenant_share,
         platform_share,
         platform_tva,
-        setup_intent_id: setupIntentId || null,
+        caution_intent_id: setupIntentId || null,
         caution_status: setupIntentId ? 'setup' : null,
         payment_method_id: paymentMethodId || null,
         refund_50_percent_date: refund50PercentDate || null,
@@ -169,9 +169,9 @@ export async function POST(request) {
     }
 
     // Mettre à jour le SetupIntent également si présent
-    if (setupIntentId && displayId) {
+    if (cautionIntentId && displayId) {
       try {
-        await stripe.setupIntents.update(setupIntentId, {
+        await stripe.setupIntents.update(cautionIntentId, {
           metadata: {
             reservation_id: reservation.id,
             display_id: displayId,
@@ -179,7 +179,7 @@ export async function POST(request) {
           },
           description: `Caution réservation #${displayId}`
         });
-        logger.debug('SetupIntent updated with reservation ID', { setupIntentId, displayId });
+        logger.debug('SetupIntent updated with reservation ID', { setupIntentId: cautionIntentId, displayId });
       } catch (stripeError) {
         logger.warn('Failed to update SetupIntent metadata', { error: stripeError.message });
       }

@@ -545,7 +545,7 @@ function ConfirmerEtPayerContent() {
           taxPrice: calculatedPrices.taxPrice,
           totalPrice: calculatedPrices.totalPrice,
           transactionId: paymentResult.transaction.transactionId,
-          setupIntentId: paymentResult?.setupIntent?.id || null,
+          cautionIntentId: paymentResult?.setupIntent?.id || null,
           paymentMethodId: paymentResult?.payment_method_id || null,
           refund50PercentDate: refund50Date.toISOString().split('T')[0],
           refund0PercentDate: refund0Date.toISOString().split('T')[0]
