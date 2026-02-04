@@ -9,9 +9,17 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '20
  */
 export async function POST(request) {
   try {
-    const { paymentMethodId, customerId, userId, listingId, reservationData } = await request.json();
+    const body = await request.json();
+    const { paymentMethodId, customerId, userId, listingId, reservationData } = body;
+
+    console.log('🔵 [SetupIntent API] Requête reçue:', {
+      paymentMethodId,
+      customerId,
+      userId
+    });
 
     if (!paymentMethodId) {
+      console.error('❌ [SetupIntent API] PaymentMethod ID manquant');
       return NextResponse.json(
         { error: 'PaymentMethod ID requis' },
         { status: 400 }
@@ -35,7 +43,7 @@ export async function POST(request) {
       }
     });
 
-    console.log('✅ SetupIntent créé:', setupIntent.id, 'Status:', setupIntent.status);
+    console.log('✅ [SetupIntent API] SetupIntent créé:', setupIntent.id, 'Status:', setupIntent.status);
 
     return NextResponse.json({
       success: true,
@@ -47,7 +55,7 @@ export async function POST(request) {
     });
 
   } catch (error) {
-    console.error('❌ Erreur création SetupIntent:', error);
+    console.error('❌ [SetupIntent API] Erreur création SetupIntent:', error.message);
     return NextResponse.json(
       { error: error.message || 'Erreur lors de la création du SetupIntent' },
       { status: 500 }
