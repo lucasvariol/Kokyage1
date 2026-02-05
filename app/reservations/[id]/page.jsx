@@ -143,10 +143,9 @@ export default function ReservationDetailPage() {
           throw error;
         }
 
-        // Vérifier que l'utilisateur peut voir cette réservation (guest via user_id, guest_id ou host_id)
+        // Vérifier que l'utilisateur peut voir cette réservation (guest via user_id ou host_id)
         if (
           reservationData.user_id !== user.id &&
-          reservationData.guest_id !== user.id &&
           reservationData.host_id !== user.id
         ) {
           router.push('/reservations');
@@ -631,7 +630,6 @@ export default function ReservationDetailPage() {
         {/* Actions et politique d'annulation */}
         {reservation.status === 'confirmed' && (
           user?.id === reservation.user_id ||
-          user?.id === reservation.guest_id ||
           user?.id === reservation.host_id
         ) && (() => {
           // Vérifier si le séjour a déjà commencé

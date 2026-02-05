@@ -69,7 +69,6 @@ export default function ReviewPage() {
         .from('reservations')
         .select(`
           id,
-          guest_id,
           host_id,
           user_id,
           date_arrivee,
@@ -91,7 +90,7 @@ export default function ReviewPage() {
       }
 
       // Récupérer le profil du voyageur séparément
-      const guestId = resData.guest_id || resData.user_id;
+      const guestId = resData.user_id;
       let guestProfile = null;
       if (guestId) {
         const { data: profile } = await supabase

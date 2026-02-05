@@ -67,7 +67,7 @@ export async function POST(request) {
     // Vérifier la réservation avec toutes les infos nécessaires
     const { data: reservation, error: checkError } = await supabaseAdmin
       .from('reservations')
-      .select('id, user_id, guest_id, host_id, listing_id, status, date_arrivee, date_depart, guests, nights, total_price, base_price, tax_price, transaction_id, payment_status, caution_intent_id, refund_50_percent_date, refund_0_percent_date, proprietor_share, main_tenant_share, platform_share, platform_tva')
+      .select('id, user_id, host_id, listing_id, status, date_arrivee, date_depart, guests, nights, total_price, base_price, tax_price, transaction_id, payment_status, caution_intent_id, refund_50_percent_date, refund_0_percent_date, proprietor_share, main_tenant_share, platform_share, platform_tva')
       .eq('id', reservationId)
       .single();
 
@@ -78,8 +78,8 @@ export async function POST(request) {
       );
     }
 
-    // Vérifier que l'utilisateur peut annuler (user_id, guest_id)
-    const guestId = reservation.user_id || reservation.guest_id;
+    // Vérifier que l'utilisateur peut annuler (user_id)
+    const guestId = reservation.user_id;
     if (guestId !== user.id) {
       return NextResponse.json(
         { error: 'Seul le voyageur peut annuler cette réservation' },

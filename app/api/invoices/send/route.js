@@ -43,11 +43,11 @@ export async function POST(request) {
 
       const { data: reservationRow } = await supabaseAdmin
         .from('reservations')
-        .select('guest_id, user_id')
+        .select('user_id')
         .eq('id', effectiveReservationId)
         .maybeSingle();
 
-      const profileId = reservationRow?.guest_id || reservationRow?.user_id;
+      const profileId = reservationRow?.user_id;
       if (profileId) {
         const { data: profile } = await supabaseAdmin
           .from('profiles')

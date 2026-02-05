@@ -257,7 +257,7 @@ export async function POST(request) {
         .select(`
           *,
           listings!inner(title, owner_id),
-          guest:profiles!guest_id(full_name, email),
+          guest:profiles!user_id(full_name, email),
           host:profiles!host_id(full_name, email)
         `)
         .eq('id', reservationId)

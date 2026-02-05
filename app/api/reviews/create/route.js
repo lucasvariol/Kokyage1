@@ -62,7 +62,7 @@ export async function POST(request) {
     // Récupérer la réservation
     const { data: reservation, error: reservationError } = await supabaseAdmin
       .from('reservations')
-      .select('id, listing_id, user_id, guest_id, host_id, date_depart, created_at')
+      .select('id, listing_id, user_id, host_id, date_depart, created_at')
       .eq('id', reservationId)
       .single();
 
@@ -92,12 +92,12 @@ export async function POST(request) {
 
     if (reviewerType === 'guest') {
       // Le voyageur note l'hôte et le logement
-      reviewerId = reservation.guest_id || reservation.user_id;
+      reviewerId = reservation.user_id;
       revieweeId = reservation.host_id;
     } else {
       // L'hôte note le voyageur (on garde listing_id mais on filtrera côté public)
       reviewerId = reservation.host_id;
-      revieweeId = reservation.guest_id || reservation.user_id;
+      revieweeId = reservation.user_id;
     }
 
     // Vérifier qu'un avis n'existe pas déjà pour cette réservation par ce reviewer
