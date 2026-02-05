@@ -185,21 +185,54 @@ export async function POST(request) {
     }
 
     // Si le paiement principal est une autorisation non capturée, l'annuler pour libérer les fonds
+    // Si le paiement a été capturé (paid), effectuer un remboursement
+    let refundAmount = 0;
     try {
       const transactionId = reservation.transaction_id;
-      if (transactionId && String(transactionId).startsWith('pi_') && reservation.payment_status !== 'paid') {
+      if (transactionId && String(transactionId).startsWith('pi_')) {
         try {
           const pi = await stripe.paymentIntents.retrieve(transactionId);
+          
           if (pi.status === 'requires_capture' || pi.status === 'requires_confirmation' || pi.status === 'requires_action') {
+            // Autorisation non capturée : annuler pour libérer les fonds
             await stripe.paymentIntents.cancel(transactionId);
             await supabaseAdmin
               .from('reservations')
               .update({ payment_status: 'canceled' })
               .eq('id', reservationId);
             console.log('🔓 Autorisation paiement principal annulée (fonds libérés):', transactionId);
+          } else if (pi.status === 'succeeded' && reservation.payment_status === 'paid') {
+            // Paiement déjà capturé : effectuer un remboursement
+            refundAmount = Math.round(reservation.total_price * refundRate * 100);
+            
+            if (refundAmount > 0) {
+              const refund = await stripe.refunds.create({
+                payment_intent: transactionId,
+                amount: refundAmount,
+                reason: 'requested_by_customer',
+                metadata: {
+                  reservation_id: reservationId,
+                  refund_rate: `${refundRate * 100}%`
+                }
+              });
+              
+              await supabaseAdmin
+                .from('reservations')
+                .update({ 
+                  payment_status: refundRate === 1.0 ? 'refunded' : 'partially_refunded',
+                  refund_id: refund.id,
+                  refund_amount: refundAmount / 100,
+                  refunded_at: new Date().toISOString()
+                })
+                .eq('id', reservationId);
+              
+              console.log(`💰 Remboursement Stripe effectué: ${(refundAmount / 100).toFixed(2)}€ (${refundRate * 100}%)`, refund.id);
+            } else {
+              console.log('ℹ️ Pas de remboursement car taux = 0%');
+            }
           }
         } catch (cancelPayErr) {
-          console.warn('⚠️ Annulation autorisation paiement principal non aboutie:', cancelPayErr?.message || cancelPayErr);
+          console.warn('⚠️ Annulation/remboursement paiement principal non abouti:', cancelPayErr?.message || cancelPayErr);
         }
       }
     } catch (stripeError) {
