@@ -289,8 +289,9 @@ export default function AdminCronPage() {
               }}>
                 <strong>Ce traitement effectue :</strong>
                 <ul style={{ marginLeft: 20, marginTop: 8 }}>
-                  <li>📧 Envoie les demandes d'avis aux voyageurs et hôtes (réservations terminant aujourd'hui)</li>
-                  <li>📝 Publie automatiquement les avis en attente depuis 14+ jours</li>
+                  <li>� Refus automatique des réservations en attente depuis plus de 48h</li>
+                  <li>📧 Envoi des demandes d'avis aux voyageurs et hôtes (réservations terminant aujourd'hui)</li>
+                  <li>📝 Publication automatique des avis en attente depuis 14+ jours</li>
                   <li>⏰ Normalement déclenché automatiquement tous les jours à 18h</li>
                 </ul>
               </div>
@@ -342,66 +343,25 @@ export default function AdminCronPage() {
                 Traitement terminé avec succès
               </h3>
 
-              <div style={{
-                display: 'grid',
-                gap: 12,
-                fontSize: 14,
-                color: '#166534'
-              }}>
-                <div>
-                  <strong>Réservations traitées :</strong> {result.processed || 0}
-                </div>
-                
-                {result.pending_balances_processed && (
+              {/* Résultats pour les paiements automatiques */}
+              {activeTab === 'payments' && (
+                <div style={{
+                  display: 'grid',
+                  gap: 12,
+                  fontSize: 14,
+                  color: '#166534'
+                }}>
                   <div>
-                    <strong>Soldes en attente vérifiés :</strong> {result.pending_balances_processed.processed || 0}
+                    <strong>Réservations traitées :</strong> {result.processed || 0}
                   </div>
-                )}
+                  
+                  {result.pending_balances_processed && (
+                    <div>
+                      <strong>Soldes en attente vérifiés :</strong> {result.pending_balances_processed.processed || 0}
+                    </div>
+                  )}
 
-                {result.pending_balances_processed?.results && result.pending_balances_processed.results.length > 0 && (
-                  <div style={{
-                    marginTop: 12,
-                    background: '#ffffff',
-                    borderRadius: 8,
-                    padding: 16,
-                    border: '1px solid #86efac'
-                  }}>
-                    <strong style={{ display: 'block', marginBottom: 8 }}>
-                      Détail des soldes en attente :
-                    </strong>
-                    {result.pending_balances_processed.results.map((item, idx) => (
-                      <div key={idx} style={{
-                        padding: '8px 0',
-                        borderTop: idx > 0 ? '1px solid #dcfce7' : 'none',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}>
-                        <span>{item.email}</span>
-                        <span style={{
-                          padding: '4px 10px',
-                          borderRadius: 6,
-                          fontSize: 12,
-                          fontWeight: 600,
-                          background: item.status === 'paid' ? '#dcfce7' : '#fef3c7',
-                          color: item.status === 'paid' ? '#166534' : '#92400e'
-                        }}>
-                          {item.status === 'paid' ? `✓ Payé ${item.amount}€` : item.message}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {result.results && result.results.length > 0 && (
-                  <details style={{ marginTop: 12 }}>
-                    <summary style={{
-                      cursor: 'pointer',
-                      fontWeight: 600,
-                      padding: '8px 0'
-                    }}>
-                      Voir le détail des réservations ({result.results.length})
-                    </summary>
+                  {result.pending_balances_processed?.results && result.pending_balances_processed.results.length > 0 && (
                     <div style={{
                       marginTop: 12,
                       background: '#ffffff',
@@ -409,36 +369,197 @@ export default function AdminCronPage() {
                       padding: 16,
                       border: '1px solid #86efac'
                     }}>
-                      {result.results.map((item, idx) => (
+                      <strong style={{ display: 'block', marginBottom: 8 }}>
+                        Détail des soldes en attente :
+                      </strong>
+                      {result.pending_balances_processed.results.map((item, idx) => (
                         <div key={idx} style={{
-                          padding: '10px 0',
-                          borderTop: idx > 0 ? '1px solid #dcfce7' : 'none'
+                          padding: '8px 0',
+                          borderTop: idx > 0 ? '1px solid #dcfce7' : 'none',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
                         }}>
-                          <div style={{ fontWeight: 600, marginBottom: 4 }}>
-                            Réservation #{item.reservation_id}
-                          </div>
-                          {item.success ? (
-                            <div style={{ fontSize: 13 }}>
-                              <div>Propriétaire: {item.proprietor_amount}€</div>
-                              <div>Locataire principal: {item.main_tenant_amount}€</div>
-                              <div>Plateforme: {item.platform_amount}€</div>
-                              {item.transfers && item.transfers.length > 0 && (
-                                <div style={{ marginTop: 4, color: '#059669' }}>
-                                  ✓ {item.transfers.length} virement(s) automatique(s)
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <div style={{ color: '#dc2626', fontSize: 13 }}>
-                              ✗ Erreur: {item.error}
-                            </div>
-                          )}
+                          <span>{item.email}</span>
+                          <span style={{
+                            padding: '4px 10px',
+                            borderRadius: 6,
+                            fontSize: 12,
+                            fontWeight: 600,
+                            background: item.status === 'paid' ? '#dcfce7' : '#fef3c7',
+                            color: item.status === 'paid' ? '#166534' : '#92400e'
+                          }}>
+                            {item.status === 'paid' ? `✓ Payé ${item.amount}€` : item.message}
+                          </span>
                         </div>
                       ))}
                     </div>
-                  </details>
-                )}
-              </div>
+                  )}
+
+                  {result.results && result.results.length > 0 && (
+                    <details style={{ marginTop: 12 }}>
+                      <summary style={{
+                        cursor: 'pointer',
+                        fontWeight: 600,
+                        padding: '8px 0'
+                      }}>
+                        Voir le détail des réservations ({result.results.length})
+                      </summary>
+                      <div style={{
+                        marginTop: 12,
+                        background: '#ffffff',
+                        borderRadius: 8,
+                        padding: 16,
+                        border: '1px solid #86efac'
+                      }}>
+                        {result.results.map((item, idx) => (
+                          <div key={idx} style={{
+                            padding: '10px 0',
+                            borderTop: idx > 0 ? '1px solid #dcfce7' : 'none'
+                          }}>
+                            <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                              Réservation #{item.reservation_id}
+                            </div>
+                            {item.success ? (
+                              <div style={{ fontSize: 13 }}>
+                                <div>Propriétaire: {item.proprietor_amount}€</div>
+                                <div>Locataire principal: {item.main_tenant_amount}€</div>
+                                <div>Plateforme: {item.platform_amount}€</div>
+                                {item.transfers && item.transfers.length > 0 && (
+                                  <div style={{ marginTop: 4, color: '#059669' }}>
+                                    ✓ {item.transfers.length} virement(s) automatique(s)
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div style={{ color: '#dc2626', fontSize: 13 }}>
+                                ✗ Erreur: {item.error}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </div>
+              )}
+
+              {/* Résultats pour les tâches quotidiennes */}
+              {activeTab === 'daily' && result.results && (
+                <div style={{
+                  display: 'grid',
+                  gap: 16,
+                  fontSize: 14,
+                  color: '#166534'
+                }}>
+                  {/* Envoi demandes d'avis */}
+                  {result.results.sendReviewRequests && (
+                    <div style={{
+                      background: '#ffffff',
+                      borderRadius: 8,
+                      padding: 16,
+                      border: '1px solid #86efac'
+                    }}>
+                      <div style={{ fontWeight: 600, marginBottom: 12, fontSize: 16 }}>
+                        📧 Envoi des demandes d'avis
+                      </div>
+                      {result.results.sendReviewRequests.error ? (
+                        <div style={{ color: '#dc2626' }}>
+                          ❌ Erreur: {result.results.sendReviewRequests.error}
+                        </div>
+                      ) : (
+                        <div>
+                          <div style={{ marginBottom: 8 }}>
+                            <strong>Emails envoyés :</strong> {result.results.sendReviewRequests.sent || 0} sur {result.results.sendReviewRequests.total || 0} réservations
+                          </div>
+                          {result.results.sendReviewRequests.results && result.results.sendReviewRequests.results.length > 0 && (
+                            <details style={{ marginTop: 12 }}>
+                              <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
+                                Voir le détail ({result.results.sendReviewRequests.results.length})
+                              </summary>
+                              <div style={{ marginTop: 8 }}>
+                                {result.results.sendReviewRequests.results.map((item, idx) => (
+                                  <div key={idx} style={{
+                                    padding: '6px 0',
+                                    borderTop: idx > 0 ? '1px solid #dcfce7' : 'none',
+                                    fontSize: 13
+                                  }}>
+                                    <div style={{ fontWeight: 600 }}>
+                                      Réservation {item.reservation_display_id || item.reservation_id}
+                                    </div>
+                                    {item.success ? (
+                                      <div style={{ color: '#059669' }}>
+                                        ✓ Emails envoyés au voyageur et à l'hôte
+                                      </div>
+                                    ) : (
+                                      <div style={{ color: '#dc2626' }}>
+                                        ✗ {item.error}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </details>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Publication des avis */}
+                  {result.results.publishReviews && (
+                    <div style={{
+                      background: '#ffffff',
+                      borderRadius: 8,
+                      padding: 16,
+                      border: '1px solid #86efac'
+                    }}>
+                      <div style={{ fontWeight: 600, marginBottom: 12, fontSize: 16 }}>
+                        📝 Publication des avis
+                      </div>
+                      {result.results.publishReviews.error ? (
+                        <div style={{ color: '#dc2626' }}>
+                          ❌ Erreur: {result.results.publishReviews.error}
+                        </div>
+                      ) : (
+                        <div>
+                          <div style={{ marginBottom: 8 }}>
+                            <strong>Avis publiés :</strong> {result.results.publishReviews.published || 0}
+                          </div>
+                          {result.results.publishReviews.reservations && (
+                            <div style={{ fontSize: 13, color: '#6b7280' }}>
+                              Concernant {result.results.publishReviews.reservations} réservation(s)
+                            </div>
+                          )}
+                          {result.results.publishReviews.details && Object.keys(result.results.publishReviews.details).length > 0 && (
+                            <details style={{ marginTop: 12 }}>
+                              <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
+                                Voir le détail
+                              </summary>
+                              <div style={{ marginTop: 8 }}>
+                                {Object.entries(result.results.publishReviews.details).map(([displayId, data], idx) => (
+                                  <div key={idx} style={{
+                                    padding: '6px 0',
+                                    borderTop: idx > 0 ? '1px solid #dcfce7' : 'none',
+                                    fontSize: 13
+                                  }}>
+                                    <div style={{ fontWeight: 600 }}>
+                                      Réservation {displayId}
+                                    </div>
+                                    <div style={{ color: '#6b7280' }}>
+                                      {data.reviews?.length || 0} avis publié(s)
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </details>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

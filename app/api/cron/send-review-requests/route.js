@@ -36,6 +36,7 @@ export async function GET(request) {
       .from('reservations')
       .select(`
         id,
+        display_id,
         user_id,
         host_id,
         listing_id,
@@ -64,7 +65,7 @@ export async function GET(request) {
 
       for (const reservation of pendingReservations || []) {
         try {
-          console.log(`🚫 Refus automatique réservation ${reservation.id} (créée le ${reservation.created_at})`);
+          console.log(`🚫 Refus automatique réservation ${reservation.display_id || reservation.id} (créée le ${reservation.created_at})`);
 
           // Annuler la réservation
           const { error: updateError } = await supabaseAdmin
@@ -76,7 +77,7 @@ export async function GET(request) {
             .eq('id', reservation.id);
 
           if (updateError) {
-            console.error(`❌ Erreur mise à jour réservation ${reservation.id}:`, updateError);
+            console.error(`❌ Erreur mise à jour réservation ${reservation.display_id || reservation.id}:`, updateError);
             continue;
           }
 
@@ -206,6 +207,7 @@ export async function GET(request) {
       .from('reservations')
       .select(`
         id,
+        display_id,
         host_id,
         user_id,
         listing_id,
@@ -248,9 +250,10 @@ export async function GET(request) {
         const { data: { user: hostUser } } = await supabaseAdmin.auth.admin.getUserById(hostId);
 
         if (!guestUser?.email || !hostUser?.email) {
-          console.error(`❌ Emails introuvables pour réservation ${reservation.id}`);
+          console.error(`❌ Emails introuvables pour réservation ${reservation.display_id || reservation.id}`);
           results.push({
             reservation_id: reservation.id,
+            reservation_display_id: reservation.display_id,
             success: false,
             error: 'Emails introuvables'
           });
@@ -323,18 +326,20 @@ export async function GET(request) {
           })
         });
 
-        console.log(`✅ Emails envoyés pour réservation ${reservation.id}`);
+        console.log(`✅ Emails envoyés pour réservation ${reservation.display_id || reservation.id}`);
         results.push({
           reservation_id: reservation.id,
+          reservation_display_id: reservation.display_id,
           success: true,
           guest_email: guestEmailResult.id,
           host_email: hostEmailResult.id
         });
 
       } catch (err) {
-        console.error(`❌ Erreur envoi emails pour ${reservation.id}:`, err);
+        console.error(`❌ Erreur envoi emails pour ${reservation.display_id || reservation.id}:`, err);
         results.push({
           reservation_id: reservation.id,
+          reservation_display_id: reservation.display_id,
           success: false,
           error: err.message
         });

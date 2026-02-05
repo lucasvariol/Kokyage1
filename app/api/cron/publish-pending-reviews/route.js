@@ -28,7 +28,15 @@ export async function GET(request) {
     // Récupérer les avis non publiés créés il y a plus de 14 jours
     const { data: reviews, error } = await supabaseAdmin
       .from('reviews')
-      .select('id, reservation_id, reviewer_type, created_at')
+      .select(`
+        id,
+        reservation_id,
+        reviewer_type,
+        created_at,
+        reservations!inner (
+          display_id
+        )
+      `)
       .eq('is_published', false)
       .lt('created_at', cutoffDate);
 
@@ -69,10 +77,14 @@ export async function GET(request) {
     // Grouper par réservation pour le résultat
     const reservationGroups = {};
     reviews.forEach(review => {
-      if (!reservationGroups[review.reservation_id]) {
-        reservationGroups[review.reservation_id] = [];
+      const displayId = review.reservations?.display_id || review.reservation_id;
+      if (!reservationGroups[displayId]) {
+        reservationGroups[displayId] = {
+          reservation_id: review.reservation_id,
+          reviews: []
+        };
       }
-      reservationGroups[review.reservation_id].push({
+      reservationGroups[displayId].reviews.push({
         id: review.id,
         reviewer_type: review.reviewer_type,
         created_at: review.created_at
