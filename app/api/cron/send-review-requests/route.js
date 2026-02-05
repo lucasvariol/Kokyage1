@@ -36,7 +36,6 @@ export async function GET(request) {
       .from('reservations')
       .select(`
         id,
-        guest_id,
         user_id,
         host_id,
         listing_id,
@@ -135,7 +134,7 @@ export async function GET(request) {
 
           // Envoyer email au voyageur
           try {
-            const guestId = reservation.guest_id || reservation.user_id;
+            const guestId = reservation.user_id;
             const { data: { user: guestUser } } = await supabaseAdmin.auth.admin.getUserById(guestId);
 
             if (guestUser?.email) {
@@ -207,7 +206,6 @@ export async function GET(request) {
       .from('reservations')
       .select(`
         id,
-        guest_id,
         host_id,
         user_id,
         listing_id,
@@ -240,7 +238,7 @@ export async function GET(request) {
 
     for (const reservation of reservations) {
       try {
-        const guestId = reservation.guest_id || reservation.user_id;
+        const guestId = reservation.user_id;
         const hostId = reservation.host_id;
         const listingTitle = reservation.listings?.title || 'le logement';
         const listingCity = reservation.listings?.city || '';
