@@ -129,25 +129,16 @@ export default function Page() {
                     <strong style={{ color: '#374151' }}>Raison sociale :</strong> Kokyage
                   </p>
                   <p style={{ marginBottom: '12px' }}>
-                    <strong style={{ color: '#374151' }}>Forme juridique :</strong> [À compléter]
+                    <strong style={{ color: '#374151' }}>Siège social :</strong> 43 rue du 22 septembre, 92400 Courbevoie, France
                   </p>
                   <p style={{ marginBottom: '12px' }}>
-                    <strong style={{ color: '#374151' }}>Capital social :</strong> [À compléter]
-                  </p>
-                  <p style={{ marginBottom: '12px' }}>
-                    <strong style={{ color: '#374151' }}>Siège social :</strong> [Adresse à compléter]
-                  </p>
-                  <p style={{ marginBottom: '12px' }}>
-                    <strong style={{ color: '#374151' }}>SIRET :</strong> [Numéro à compléter]
-                  </p>
-                  <p style={{ marginBottom: '12px' }}>
-                    <strong style={{ color: '#374151' }}>Numéro de TVA :</strong> [Numéro à compléter]
+                    <strong style={{ color: '#374151' }}>SIREN :</strong> 918 642 836
                   </p>
                   <p style={{ marginBottom: '12px' }}>
                     <strong style={{ color: '#374151' }}>Email :</strong> <a href="mailto:contact@kokyage.com" style={{ color: '#4ECDC4', textDecoration: 'none', fontWeight: 600 }}>contact@kokyage.com</a>
                   </p>
                   <p style={{ margin: 0 }}>
-                    <strong style={{ color: '#374151' }}>Directeur de la publication :</strong> [Nom à compléter]
+                    <strong style={{ color: '#374151' }}>Directeur de la publication :</strong> Lucas Variol
                   </p>
                 </div>
               </article>

@@ -2,7 +2,7 @@
 
 ## Préambule
 
-Les présentes Conditions Générales d’Utilisation (ci-après les « CGU ») régissent l’accès et l’utilisation de la plateforme **Kokyage.com** (ci-après la « Plateforme »), éditée par **[Nom de l’entité juridique]**, société **[forme juridique]**, immatriculée au RCS de **[ville]** sous le numéro **[SIREN]**, dont le siège social est situé **[adresse complète]**.
+Les présentes Conditions Générales d’Utilisation (ci-après les « CGU ») régissent l’accès et l’utilisation de la plateforme **Kokyage.com** (ci-après la « Plateforme »), éditée par Kokyage et exploitée par Lucas Variol, immatriculée sous le numéro SIREN 918 642 836, dont le siège est situé 43 rue du 22 septembre 92400, Courbevoie, France.
 
 La Plateforme Kokyage.com a pour vocation de faciliter, dans un cadre adapté, la mise en relation entre :
 
@@ -22,7 +22,7 @@ L’utilisation de la Plateforme implique l’acceptation pleine et entière des
 
 ## Statut juridique de la plateforme
 
-Kokyage.com est exploitée par **[Nom de la société ou du porteur de projet]**, en qualité d’opérateur de plateforme en ligne. À ce titre, Kokyage met à disposition une interface numérique permettant la mise en relation, par voie électronique, de plusieurs utilisateurs en vue :
+Kokyage.com est exploitée en qualité d’opérateur de plateforme en ligne. À ce titre, Kokyage met à disposition une interface numérique permettant la mise en relation, par voie électronique, de plusieurs utilisateurs en vue :
 
 * pour les locataires principaux, de proposer temporairement leur logement à la sous-location sous forme d'un contrat de louage des choses, puis de recevoir une part du montant réglé par le voyageur ;
 * pour les propriétaires, d’autoriser et ces mises à disposition via un espace dédié et de recevoir une part du montant réglé par le voyageur ;
@@ -139,6 +139,30 @@ Le voyageur s’engage à :
 ## Politique d’annulation / remboursement / no-show
 
 Les conditions d’annulation et de remboursement sont précisées sur chaque annonce avant paiement.
+### Annulation par le voyageur
+
+Le voyageur peut annuler sa réservation à tout moment. Les conditions de remboursement dépendent du délai d'annulation par rapport à la date d'arrivée prévue :
+
+* **Plus de 6 jours avant l'arrivée** : remboursement à 100%
+* **Entre 6 et 2 jours avant l'arrivée** : remboursement à 50%
+* **Moins de 2 jours avant l'arrivée** : aucun remboursement
+
+### Annulation par le locataire principal (hôte)
+
+**L'annulation d'une réservation déjà confirmée par le locataire principal est fortement découragée car elle nuit gravement à l'expérience du voyageur.** En cas d'annulation par le locataire principal, les règles suivantes s'appliquent :
+
+**Remboursement du voyageur :**
+Le voyageur est remboursé **intégralement à 100%** du montant payé, quelle que soit la date d'annulation.
+
+**Pénalités appliquées au locataire principal :**
+Des pénalités financières sont appliquées au locataire principal afin de compenser le préjudice causé au voyageur et à la plateforme. Le montant de la pénalité dépend du délai d'annulation par rapport à la date d'arrivée :
+
+* **Plus de 30 jours avant l'arrivée** : pénalité de **15% du montant total de la réservation**
+* **Entre 2 et 30 jours avant l'arrivée** : pénalité de **25% du montant total de la réservation**
+* **Moins de 48 heures avant l'arrivée ou après la date d'arrivée** : pénalité de **50% du montant total de la réservation**
+
+**Modalités de prélèvement :**
+Les pénalités d'annulation sont automatiquement déduites du prochain versement de revenus du locataire principal. Si le solde disponible est insuffisant, la dette sera reportée sur les versements suivants jusqu'à apurement complet.
 
 ---
 

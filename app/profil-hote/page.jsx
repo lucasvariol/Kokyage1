@@ -17,7 +17,7 @@ export default function Page() {
   const [connectStatus, setConnectStatus] = useState(null);
   const [connectError, setConnectError] = useState('');
   const [activeTab, setActiveTab] = useState('logements'); // 'logements' | 'paiements' | 'reservations'
-  const [earnings, setEarnings] = useState({ total_earnings: 0, to_be_paid_to_user: 0 });
+  const [earnings, setEarnings] = useState({ total_earnings: 0, to_be_paid_to_user: 0, penalty_balance: 0 });
   const [payoutLoading, setPayoutLoading] = useState(false);
   const [payoutError, setPayoutError] = useState('');
   const [payoutSuccess, setPayoutSuccess] = useState('');
@@ -125,14 +125,15 @@ export default function Page() {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('total_earnings, to_be_paid_to_user')
+          .select('total_earnings, to_be_paid_to_user, penalty_balance')
           .eq('id', user.id)
           .single();
         
         if (!error && data) {
           setEarnings({
             total_earnings: data.total_earnings || 0,
-            to_be_paid_to_user: data.to_be_paid_to_user || 0
+            to_be_paid_to_user: data.to_be_paid_to_user || 0,
+            penalty_balance: data.penalty_balance || 0
           });
         }
       } catch (e) {
@@ -559,13 +560,45 @@ export default function Page() {
 
   // Annuler une réservation (hôte)
   const handleHostCancellation = async (reservationId) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir annuler cette réservation ? Le voyageur sera remboursé intégralement.')) return;
-    
-    setHostCancellationLoading(reservationId);
     try {
+      // 1. Calculer la pénalité AVANT de demander confirmation
       const { data: { session } } = await supabase.auth.getSession();
       const accessToken = session?.access_token;
 
+      const penaltyResponse = await fetch('/api/reservations/calculate-host-penalty', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reservationId })
+      });
+
+      const penaltyData = await penaltyResponse.json();
+      
+      if (!penaltyResponse.ok) {
+        alert('Erreur lors du calcul de la pénalité: ' + penaltyData.error);
+        return;
+      }
+
+      const { penalty } = penaltyData;
+      const penaltyAmountFormatted = new Intl.NumberFormat('fr-FR', { 
+        style: 'currency', 
+        currency: 'EUR' 
+      }).format(penalty.amount);
+
+      // 2. Afficher la pénalité et demander confirmation
+      const confirmMessage = `⚠️ ATTENTION - Annulation de réservation\n\n` +
+        `Une pénalité de ${penaltyAmountFormatted} (${penalty.rate}%) sera appliquée.\n` +
+        `Raison: ${penalty.reason}\n\n` +
+        `Cette pénalité sera déduite de votre prochain versement.\n` +
+        `Le voyageur sera remboursé intégralement.\n\n` +
+        `Voulez-vous vraiment annuler cette réservation ?`;
+
+      if (!window.confirm(confirmMessage)) return;
+      
+      setHostCancellationLoading(reservationId);
+
+      // 3. Procéder à l'annulation
       const response = await fetch('/api/reservations/host-cancel', {
         method: 'POST',
         headers: {
@@ -581,14 +614,13 @@ export default function Page() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);
 
-      alert('Réservation annulée. Le voyageur sera remboursé.');
+      alert(`✅ Réservation annulée.\n\nPénalité appliquée: ${penaltyAmountFormatted}\nLe voyageur sera remboursé intégralement.`);
       
       // Recharger les réservations
       try {
         await reloadHostReservations();
       } catch (reloadError) {
         console.error('Erreur rechargement:', reloadError);
-        // Recharger la page en dernier recours
         window.location.reload();
       }
     } catch (error) {
@@ -1042,6 +1074,57 @@ export default function Page() {
                             </svg>
                           </div>
                         </div>
+
+                        {/* Solde de pénalités */}
+                        {earnings.penalty_balance !== 0 && (
+                          <div style={{ 
+                            padding: 20, 
+                            background: earnings.penalty_balance < 0 ? '#fef2f2' : '#f0fdf4', 
+                            borderRadius: 16, 
+                            border: `1px solid ${earnings.penalty_balance < 0 ? '#fecaca' : '#bbf7d0'}`,
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'space-between' 
+                          }}>
+                            <div>
+                              <div style={{ fontSize: 13, color: earnings.penalty_balance < 0 ? '#991b1b' : '#166534', marginBottom: 6, fontWeight: 600 }}>
+                                {earnings.penalty_balance < 0 ? '⚠️ Pénalités d\'annulation' : '✅ Crédits'}
+                              </div>
+                              <div style={{ fontSize: 18, fontWeight: 800, color: earnings.penalty_balance < 0 ? '#991b1b' : '#166534', fontVariantNumeric: 'tabular-nums' }}>
+                                {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(Math.abs(earnings.penalty_balance))}
+                              </div>
+                              {earnings.penalty_balance < 0 && (
+                                <div style={{ fontSize: 12, color: '#991b1b', marginTop: 6, fontStyle: 'italic' }}>
+                                  Ce montant sera déduit de votre prochain virement
+                                </div>
+                              )}
+                            </div>
+                            <div style={{ 
+                              width: 44, 
+                              height: 44, 
+                              borderRadius: '50%', 
+                              background: earnings.penalty_balance < 0 ? '#fee2e2' : '#dcfce7', 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center' 
+                            }}>
+                              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={earnings.penalty_balance < 0 ? '#991b1b' : '#166534'} strokeWidth="2">
+                                {earnings.penalty_balance < 0 ? (
+                                  <>
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                  </>
+                                ) : (
+                                  <>
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                  </>
+                                )}
+                              </svg>
+                            </div>
+                          </div>
+                        )}
 
                         {/* Messages de succès/erreur */}
                         {payoutSuccess && (
@@ -1665,58 +1748,116 @@ export default function Page() {
 
                             {/* Actions pour les réservations en attente de validation hôte */}
                             {!reservation.host_validation_ok && (reservation.status === 'pending' || reservation.status === 'confirmed') && (
-                              <div style={{
-                                display: 'flex',
-                                gap: 12,
-                                marginTop: 16,
-                                paddingTop: 16,
-                                borderTop: '1px solid #e2e8f0'
-                              }}>
-                                <button
-                                  onClick={() => handleHostValidation(reservation.id)}
-                                  disabled={hostValidationLoading === reservation.id}
-                                  style={{
-                                    flex: 1,
-                                    padding: '12px 20px',
-                                    borderRadius: 12,
-                                    border: 'none',
-                                    background: hostValidationLoading === reservation.id 
-                                      ? '#94a3b8' 
-                                      : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                                    color: '#fff',
-                                    fontSize: 14,
-                                    fontWeight: 700,
-                                    cursor: hostValidationLoading === reservation.id ? 'not-allowed' : 'pointer',
-                                    opacity: hostValidationLoading === reservation.id ? 0.7 : 1,
-                                    boxShadow: hostValidationLoading === reservation.id ? 'none' : '0 4px 12px rgba(16,185,129,0.3)',
-                                    transition: 'all 0.2s'
-                                  }}
-                                >
-                                  {hostValidationLoading === reservation.id ? '⏳ Validation...' : '✓ Accepter'}
-                                </button>
-                                <button
-                                  onClick={() => handleHostRejection(reservation.id)}
-                                  disabled={hostRejectionLoading === reservation.id}
-                                  style={{
-                                    flex: 1,
-                                    padding: '12px 20px',
-                                    borderRadius: 12,
-                                    border: 'none',
-                                    background: hostRejectionLoading === reservation.id 
-                                      ? '#94a3b8' 
-                                      : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                                    color: '#fff',
-                                    fontSize: 14,
-                                    fontWeight: 700,
-                                    cursor: hostRejectionLoading === reservation.id ? 'not-allowed' : 'pointer',
-                                    opacity: hostRejectionLoading === reservation.id ? 0.7 : 1,
-                                    boxShadow: hostRejectionLoading === reservation.id ? 'none' : '0 4px 12px rgba(239,68,68,0.3)',
-                                    transition: 'all 0.2s'
-                                  }}
-                                >
-                                  {hostRejectionLoading === reservation.id ? '⏳ Refus...' : '✗ Refuser'}
+                              <>
+                                {/* Avertissement sur les pénalités d'annulation */}
+                                <div style={{
+                                  marginTop: 16,
+                                  padding: 16,
+                                  background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                                  borderRadius: 12,
+                                  border: '2px solid #f59e0b',
+                                  display: 'flex',
+                                  alignItems: 'flex-start',
+                                  gap: 12
+                                }}>
+                                  <div style={{ 
+                                    fontSize: 24, 
+                                    lineHeight: 1,
+                                    flexShrink: 0 
+                                  }}>⚠️</div>
+                                  <div style={{ flex: 1 }}>
+                                    <h4 style={{ 
+                                      fontSize: 14, 
+                                      fontWeight: 700, 
+                                      color: '#92400e', 
+                                      margin: '0 0 8px 0' 
+                                    }}>
+                                      Important : Pénalités en cas d'annulation
+                                    </h4>
+                                    <p style={{ 
+                                      fontSize: 13, 
+                                      color: '#78350f', 
+                                      margin: 0,
+                                      lineHeight: 1.5 
+                                    }}>
+                                      En acceptant cette réservation, vous vous engagez à honorer le séjour. 
+                                      <strong> Si vous deviez annuler après validation</strong>, des pénalités s'appliqueraient :
+                                    </p>
+                                    <ul style={{ 
+                                      fontSize: 13, 
+                                      color: '#78350f', 
+                                      margin: '8px 0 0 0',
+                                      paddingLeft: 20,
+                                      lineHeight: 1.6
+                                    }}>
+                                      <li><strong>Plus de 30 jours avant :</strong> 15% du montant</li>
+                                      <li><strong>Entre 2 et 30 jours avant :</strong> 25% du montant</li>
+                                      <li><strong>Moins de 48h avant ou après l'arrivée :</strong> 50% du montant</li>
+                                    </ul>
+                                    <p style={{ 
+                                      fontSize: 12, 
+                                      color: '#78350f', 
+                                      margin: '8px 0 0 0',
+                                      fontStyle: 'italic' 
+                                    }}>
+                                      Les pénalités seront déduites de vos prochains versements. Le voyageur sera toujours remboursé à 100%.
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div style={{
+                                  display: 'flex',
+                                  gap: 12,
+                                  marginTop: 16,
+                                  paddingTop: 16,
+                                  borderTop: '1px solid #e2e8f0'
+                                }}>
+                                  <button
+                                    onClick={() => handleHostValidation(reservation.id)}
+                                    disabled={hostValidationLoading === reservation.id}
+                                    style={{
+                                      flex: 1,
+                                      padding: '12px 20px',
+                                      borderRadius: 12,
+                                      border: 'none',
+                                      background: hostValidationLoading === reservation.id 
+                                        ? '#94a3b8' 
+                                        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                      color: '#fff',
+                                      fontSize: 14,
+                                      fontWeight: 700,
+                                      cursor: hostValidationLoading === reservation.id ? 'not-allowed' : 'pointer',
+                                      opacity: hostValidationLoading === reservation.id ? 0.7 : 1,
+                                      boxShadow: hostValidationLoading === reservation.id ? 'none' : '0 4px 12px rgba(16,185,129,0.3)',
+                                      transition: 'all 0.2s'
+                                    }}
+                                  >
+                                    {hostValidationLoading === reservation.id ? '⏳ Validation...' : '✓ Accepter'}
+                                  </button>
+                                  <button
+                                    onClick={() => handleHostRejection(reservation.id)}
+                                    disabled={hostRejectionLoading === reservation.id}
+                                    style={{
+                                      flex: 1,
+                                      padding: '12px 20px',
+                                      borderRadius: 12,
+                                      border: 'none',
+                                      background: hostRejectionLoading === reservation.id 
+                                        ? '#94a3b8' 
+                                        : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                      color: '#fff',
+                                      fontSize: 14,
+                                      fontWeight: 700,
+                                      cursor: hostRejectionLoading === reservation.id ? 'not-allowed' : 'pointer',
+                                      opacity: hostRejectionLoading === reservation.id ? 0.7 : 1,
+                                      boxShadow: hostRejectionLoading === reservation.id ? 'none' : '0 4px 12px rgba(239,68,68,0.3)',
+                                      transition: 'all 0.2s'
+                                    }}
+                                  >
+                                    {hostRejectionLoading === reservation.id ? '⏳ Refus...' : '✗ Refuser'}
                                 </button>
                               </div>
+                            </>
                             )}
 
                             {/* Bouton d'annulation pour les réservations validées par l'hôte */}

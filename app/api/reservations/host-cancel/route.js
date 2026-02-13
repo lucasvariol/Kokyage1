@@ -50,15 +50,85 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Cannot cancel: reservation not validated yet. Use reject instead.' }, { status: 400 });
     }
 
+    // ========================================
+    // CALCUL DES PÉNALITÉS D'ANNULATION HÔTE
+    // ========================================
+    
+    const arrivalDate = new Date(reservation.date_arrivee);
+    const now = new Date();
+    const diffTime = arrivalDate - now;
+    const daysBeforeArrival = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    // Déterminer le taux de pénalité selon les règles
+    let penaltyRate = 0;
+    let penaltyReason = '';
+
+    if (daysBeforeArrival < -2 || (daysBeforeArrival >= 0 && daysBeforeArrival < 2)) {
+      // < 48h avant OU après l'arrivée → 50%
+      penaltyRate = 0.50;
+      penaltyReason = 'Annulation moins de 48h avant ou après l\'arrivée';
+    } else if (daysBeforeArrival >= 2 && daysBeforeArrival < 30) {
+      // Entre 2 jours et 30 jours → 25%
+      penaltyRate = 0.25;
+      penaltyReason = 'Annulation entre 2 et 30 jours avant l\'arrivée';
+    } else if (daysBeforeArrival >= 30) {
+      // Plus de 30 jours → 15%
+      penaltyRate = 0.15;
+      penaltyReason = 'Annulation plus de 30 jours avant l\'arrivée';
+    } else {
+      // Cas exceptionnel : très après l'arrivée
+      penaltyRate = 0.50;
+      penaltyReason = 'Annulation après l\'arrivée';
+    }
+
+    // Calculer le montant de la pénalité (basé sur le total de la réservation)
+    const penaltyAmount = reservation.total_price * penaltyRate;
+
+    console.log(`💰 Pénalité hôte calculée:`);
+    console.log(`   - Jours avant arrivée: ${daysBeforeArrival}`);
+    console.log(`   - Taux: ${(penaltyRate * 100).toFixed(0)}%`);
+    console.log(`   - Montant: ${penaltyAmount.toFixed(2)}€`);
+    console.log(`   - Raison: ${penaltyReason}`);
+
+    // Mettre à jour le solde de pénalité de l'hôte (négatif = dette)
+    try {
+      // Récupérer le solde actuel
+      const { data: profileData } = await supabaseAdmin
+        .from('profiles')
+        .select('penalty_balance')
+        .eq('id', reservation.host_id)
+        .single();
+      
+      const currentBalance = profileData?.penalty_balance || 0;
+      const newBalance = currentBalance - penaltyAmount;
+      
+      // Mettre à jour avec le nouveau solde
+      const { error: penaltyError } = await supabaseAdmin
+        .from('profiles')
+        .update({ penalty_balance: newBalance })
+        .eq('id', reservation.host_id);
+
+      if (penaltyError) {
+        console.warn('⚠️ Erreur mise à jour solde pénalité:', penaltyError.message);
+      } else {
+        console.log(`✅ Solde pénalité mis à jour: ${currentBalance.toFixed(2)}€ → ${newBalance.toFixed(2)}€`);
+      }
+    } catch (penaltyUpdateError) {
+      console.warn('⚠️ Erreur mise à jour pénalité:', penaltyUpdateError.message);
+    }
+
     // Annuler la réservation avec remboursement intégral (mettre les parts à 0)
     const { error: updateError } = await supabaseAdmin
       .from('reservations')
       .update({ 
         status: 'cancelled',
+        cancelled_by: 'host',
         proprietor_share: 0,
         main_tenant_share: 0,
         platform_share: 0,
-        platform_tva: 0
+        platform_tva: 0,
+        host_penalty_amount: penaltyAmount,
+        host_penalty_rate: penaltyRate * 100 // Stocker en pourcentage
       })
       .eq('id', reservationId);
 
@@ -192,7 +262,9 @@ export async function POST(request) {
         nights: reservation.nights || 1,
         guests: reservation.guests || 1,
         totalPrice: formatCurrency(reservation.total_price),
-        refundAmount: formatCurrency(refundAmount)
+        refundAmount: formatCurrency(refundAmount),
+        penaltyAmount: formatCurrency(penaltyAmount),
+        penaltyRate: `${(penaltyRate * 100).toFixed(0)}%`
       };
 
       if (guestUser?.email) {
@@ -215,7 +287,12 @@ export async function POST(request) {
     return NextResponse.json({ 
       ok: true, 
       message: 'Reservation cancelled and refund processed',
-      refundAmount 
+      refundAmount,
+      penalty: {
+        amount: penaltyAmount,
+        rate: penaltyRate * 100,
+        reason: penaltyReason
+      }
     });
   } catch (error) {
     console.error('host-cancel route error:', error);
