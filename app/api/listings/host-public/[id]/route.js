@@ -34,11 +34,12 @@ export async function GET(_req, { params }) {
       return NextResponse.json({ error: 'Host profile not found' }, { status: 404 });
     }
 
-    // Derive first name
+    // Derive first name (avoid displaying emails)
+    const isEmail = (str) => str && str.includes('@') && str.includes('.');
     let firstName = 'Hôte';
-    if (profile.prenom) firstName = profile.prenom.split(' ')[0];
-    else if (profile.full_name) firstName = profile.full_name.split(' ')[0];
-    else if (profile.name) firstName = profile.name.split(' ')[0];
+    if (profile.prenom && !isEmail(profile.prenom)) firstName = profile.prenom.split(' ')[0];
+    else if (profile.full_name && !isEmail(profile.full_name)) firstName = profile.full_name.split(' ')[0];
+    else if (profile.name && !isEmail(profile.name)) firstName = profile.name.split(' ')[0];
 
     // Get reservations count for this listing
     const { count: reservationsCount } = await supabaseAdmin

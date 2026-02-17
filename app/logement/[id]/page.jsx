@@ -1287,10 +1287,12 @@ export default function Page({ params: propsParams }) {
           .maybeSingle();
 
         if (profileData) {
+          // Avoid displaying emails as names
+          const isEmail = (str) => str && str.includes('@') && str.includes('.');
           let firstName = 'Hôte';
-          if (profileData.prenom) firstName = profileData.prenom.split(' ')[0];
-          else if (profileData.full_name) firstName = profileData.full_name.split(' ')[0];
-          else if (profileData.name) firstName = profileData.name.split(' ')[0];
+          if (profileData.prenom && !isEmail(profileData.prenom)) firstName = profileData.prenom.split(' ')[0];
+          else if (profileData.full_name && !isEmail(profileData.full_name)) firstName = profileData.full_name.split(' ')[0];
+          else if (profileData.name && !isEmail(profileData.name)) firstName = profileData.name.split(' ')[0];
           hostProfile = { id: profileData.id, prenom: firstName, photo_url: profileData.photo_url };
         }
 
