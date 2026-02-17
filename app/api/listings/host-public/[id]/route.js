@@ -36,10 +36,31 @@ export async function GET(_req, { params }) {
 
     // Derive first name (avoid displaying emails)
     const isEmail = (str) => str && str.includes('@') && str.includes('.');
-    let firstName = 'Hôte';
+    let firstName = null;
+    
+    // Try to get name from profile fields
     if (profile.prenom && !isEmail(profile.prenom)) firstName = profile.prenom.split(' ')[0];
     else if (profile.full_name && !isEmail(profile.full_name)) firstName = profile.full_name.split(' ')[0];
     else if (profile.name && !isEmail(profile.name)) firstName = profile.name.split(' ')[0];
+    
+    // Fallback to user metadata if no valid name in profile
+    if (!firstName) {
+      try {
+        const { data: userData } = await supabaseAdmin.auth.admin.getUserById(hostId);
+        const user = userData?.user;
+        if (user) {
+          const metaName = user.user_metadata?.full_name || user.user_metadata?.name;
+          if (metaName && !isEmail(metaName)) {
+            firstName = metaName.split(' ')[0];
+          }
+        }
+      } catch (e) {
+        console.warn('Could not fetch user metadata:', e);
+      }
+    }
+    
+    // Final fallback
+    if (!firstName) firstName = 'Hôte';
 
     // Get reservations count for this listing
     const { count: reservationsCount } = await supabaseAdmin

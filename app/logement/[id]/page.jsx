@@ -1289,14 +1289,17 @@ export default function Page({ params: propsParams }) {
         if (profileData) {
           // Avoid displaying emails as names
           const isEmail = (str) => str && str.includes('@') && str.includes('.');
-          let firstName = 'Hôte';
+          let firstName = null;
           if (profileData.prenom && !isEmail(profileData.prenom)) firstName = profileData.prenom.split(' ')[0];
           else if (profileData.full_name && !isEmail(profileData.full_name)) firstName = profileData.full_name.split(' ')[0];
           else if (profileData.name && !isEmail(profileData.name)) firstName = profileData.name.split(' ')[0];
-          hostProfile = { id: profileData.id, prenom: firstName, photo_url: profileData.photo_url };
+          
+          if (firstName) {
+            hostProfile = { id: profileData.id, prenom: firstName, photo_url: profileData.photo_url };
+          }
         }
 
-        // Fallback to public host endpoint when profile isn't available (RLS may block when logged out)
+        // Fallback to public host endpoint when profile isn't available or name is missing
         if (!hostProfile) {
           try {
             const res = await fetch(`/api/listings/host-public/${params.id}`);
