@@ -2774,14 +2774,25 @@ export default function Page({ params: propsParams }) {
                           </svg>
                           Description
                         </h2>
-                        <p style={{ 
-                          whiteSpace: 'pre-wrap', 
-                          lineHeight: 1.7, 
+                        <div style={{ 
+                          whiteSpace: 'pre-line', 
+                          lineHeight: 1.8, 
                           color: '#4b5563',
-                          fontSize: 14
+                          fontSize: 15
                         }}>
-                          {item.description || 'Aucune description fournie pour le moment.'}
-                        </p>
+                          {(item.description || 'Aucune description fournie pour le moment.')
+                            .split('\n')
+                            .map((paragraph, i) => (
+                              paragraph.trim() ? (
+                                <p key={i} style={{ marginBottom: '0.8em', marginTop: 0 }}>
+                                  {paragraph}
+                                </p>
+                              ) : (
+                                <br key={i} />
+                              )
+                            ))
+                          }
+                        </div>
                       </div>
 
                       {/* Card Localisation */}
