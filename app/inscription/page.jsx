@@ -250,26 +250,23 @@ function InscriptionContent(){
 
       const user = data.user;
       
-      // ✅ Vérification dans notre table email_verifications
-      const { data: verificationData, error: verifyError } = await supabase
-        .from('email_verifications')
-        .select('verified_at, created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      
-      console.log('Vérification email:', {
-        userId: user.id,
-        email: user.email,
-        verificationData,
-        supabaseConfirmed: user.email_confirmed_at
-      });
+      // ✅ Vérification côté serveur (supabaseAdmin, bypass RLS)
+      let isVerified = false;
+      try {
+        const verifyResponse = await fetch('/api/auth/check-email-verified', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id })
+        });
+        const verifyResult = await verifyResponse.json();
+        isVerified = verifyResult.verified === true;
+        console.log('[Login] Vérification email:', { userId: user.id, email: user.email, isVerified, verifyResult });
+      } catch (verifyErr) {
+        console.error('[Login] Erreur lors de la vérification email:', verifyErr);
+        isVerified = false; // Bloquer en cas d'erreur
+      }
       
       // 🚫 BLOQUER si l'email n'est PAS vérifié
-      // On vérifie uniquement notre table email_verifications
-      const isVerified = verificationData && verificationData.verified_at;
-      
       if (!isVerified) {
         setError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email (vérifiez aussi vos spams).');
         setUnverifiedUserId(user.id);

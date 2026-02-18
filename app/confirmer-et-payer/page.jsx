@@ -211,15 +211,22 @@ function ConfirmerEtPayerContent() {
 
       const user = data.user;
 
-      const { data: verificationData } = await supabase
-        .from('email_verifications')
-        .select('verified_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      // ✅ Vérification côté serveur (supabaseAdmin, bypass RLS)
+      let isVerified = false;
+      try {
+        const verifyResponse = await fetch('/api/auth/check-email-verified', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id })
+        });
+        const verifyResult = await verifyResponse.json();
+        isVerified = verifyResult.verified === true;
+      } catch (verifyErr) {
+        console.error('[Login] Erreur vérification email:', verifyErr);
+        isVerified = false;
+      }
 
-      if (!verificationData || !verificationData.verified_at) {
+      if (!isVerified) {
         setAuthError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email.');
         setAuthLoading(false);
         await supabase.auth.signOut();
