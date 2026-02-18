@@ -227,9 +227,11 @@ function ConfirmerEtPayerContent() {
       }
 
       if (!isVerified) {
-        setAuthError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email.');
         setAuthLoading(false);
         await supabase.auth.signOut();
+        // Rediriger vers la page inscription pour déclencher la vérification par code OTP
+        const currentPath = window.location.pathname + window.location.search;
+        router.push('/inscription?redirect=' + encodeURIComponent(currentPath));
         return;
       }
 

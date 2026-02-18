@@ -346,9 +346,10 @@ export default function Page() {
       }
       
       if (!isVerified) {
-        setAuthError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email.');
         setAuthLoading(false);
         await supabase.auth.signOut();
+        // Rediriger vers la page inscription pour déclencher la vérification par code OTP
+        router.push('/inscription?redirect=/ajout-logement');
         return;
       }
 

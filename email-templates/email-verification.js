@@ -1,18 +1,19 @@
 /**
  * Template d'email de vérification d'adresse email
  * Envoyé lors de l'inscription d'un nouvel utilisateur
+ * Utilise un code OTP à 6 chiffres saisi directement sur la page
  */
 
 export const emailVerificationTemplate = {
-  subject: "Confirmez votre adresse email",
+  subject: "Votre code de vérification Kokyage",
   
-  getHtml: ({ prenom, verificationUrl }) => `
+  getHtml: ({ prenom, otpCode }) => `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vérifiez votre email</title>
+  <title>Votre code de vérification</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #F5F1ED;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F5F1ED; padding: 40px 20px;">
@@ -37,29 +38,29 @@ export const emailVerificationTemplate = {
               </p>
               
               <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #2D3748;">
-                Merci de vous être inscrit sur <strong style="color: #C96745;">Kokyage</strong> ! Nous sommes ravis de vous compter parmi nous.
+                Merci de vous être inscrit sur <strong style="color: #C96745;">Kokyage</strong> !
               </p>
 
               <p style="margin: 0 0 30px; font-size: 16px; line-height: 1.6; color: #2D3748;">
-                Pour activer votre compte et commencer à profiter de nos services, veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous :
+                Entrez ce code sur la page d'inscription pour confirmer votre adresse email :
               </p>
 
-              <!-- Bouton CTA -->
+              <!-- Code OTP affiché en grand -->
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="padding: 20px 0;">
-                    <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #D79077 0%, #C96745 100%); color: white; text-decoration: none; padding: 16px 40px; border-radius: 12px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(201, 103, 69, 0.3);">
-                      Confirmer mon email
-                    </a>
+                    <div style="display: inline-block; background: linear-gradient(135deg, #F5F1ED 0%, #EDE8E3 100%); border: 2px solid #D79077; border-radius: 16px; padding: 24px 48px;">
+                      <p style="margin: 0 0 8px; font-size: 13px; color: #718096; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Votre code de vérification</p>
+                      <p style="margin: 0; font-size: 48px; font-weight: 800; letter-spacing: 12px; color: #C96745; font-family: 'Courier New', monospace;">
+                        ${otpCode}
+                      </p>
+                    </div>
                   </td>
                 </tr>
               </table>
 
-              <p style="margin: 30px 0 0; font-size: 14px; line-height: 1.6; color: #718096;">
-                Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :
-              </p>
-              <p style="margin: 10px 0 0; font-size: 13px; word-break: break-all; color: #60A29D;">
-                ${verificationUrl}
+              <p style="margin: 30px 0 0; font-size: 14px; line-height: 1.6; color: #718096; text-align: center;">
+                Ce code est valable pendant <strong>15 minutes</strong>.
               </p>
             </td>
           </tr>
@@ -67,9 +68,6 @@ export const emailVerificationTemplate = {
           <!-- Footer -->
           <tr>
             <td style="background-color: #F5F1ED; padding: 30px; text-align: center;">
-              <p style="margin: 0 0 10px; font-size: 13px; color: #718096;">
-                Ce lien est valable pendant 24 heures.
-              </p>
               <p style="margin: 0 0 15px; font-size: 13px; color: #718096;">
                 Si vous n'avez pas créé de compte sur Kokyage, vous pouvez ignorer cet email.
               </p>

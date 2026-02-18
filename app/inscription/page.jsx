@@ -24,9 +24,13 @@ function InscriptionContent(){
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [unverifiedUserId, setUnverifiedUserId] = useState(null);
-  const [unverifiedUserEmail, setUnverifiedUserEmail] = useState('');
-  const [resendingEmail, setResendingEmail] = useState(false);
+  // États pour la vérification OTP
+  const [step, setStep] = useState('form'); // 'form' | 'verify-code'
+  const [verifyCode, setVerifyCode] = useState('');
+  const [verifyingCode, setVerifyingCode] = useState(false);
+  const [resendingCode, setResendingCode] = useState(false);
+  const [pendingUserId, setPendingUserId] = useState(null);
+  const [pendingUserEmail, setPendingUserEmail] = useState('');
   const router = useRouter();
 
   // États pour les focus des champs
@@ -168,15 +172,10 @@ function InscriptionContent(){
         return;
       }
       
-      // Message de succès
-      setSuccess('Compte créé ! Veuillez vérifier votre email pour confirmer votre inscription.');
-      
-      // Basculer vers l'onglet connexion après 3 secondes
-      setTimeout(() => {
-        setActiveTab('connexion');
-        setSuccess('');
-        setError('');
-      }, 3000);
+      // Passer à l'étape de saisie du code OTP
+      setPendingUserId(user.id);
+      setPendingUserEmail(email);
+      setStep('verify-code');
     } catch (err) {
       console.error('Erreur inattendue:', err);
       setError('Une erreur inattendue s\'est produite: ' + err.message);
@@ -185,38 +184,93 @@ function InscriptionContent(){
     }
   }
 
-  // Fonction pour renvoyer l'email de vérification
-  async function resendVerificationEmail() {
-    if (!unverifiedUserId || !unverifiedUserEmail) return;
+  // Renvoyer un nouveau code OTP
+  async function resendCode() {
+    if (!pendingUserId || !pendingUserEmail) return;
     
-    setResendingEmail(true);
+    setResendingCode(true);
     setError('');
     setSuccess('');
+    setVerifyCode('');
     
     try {
       const response = await fetch('/api/emails/verify-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: unverifiedUserEmail,
-          userId: unverifiedUserId,
-          nom: '', // Pas nécessaire pour le renvoi
-          prenom: ''
+          email: pendingUserEmail,
+          userId: pendingUserId
         })
+      });
+      
+      if (response.ok) {
+        setSuccess('Un nouveau code a été envoyé à ' + pendingUserEmail);
+      } else {
+        const result = await response.json();
+        setError('Erreur lors du renvoi du code : ' + (result.error || 'Erreur inconnue'));
+      }
+    } catch (err) {
+      setError('Impossible de renvoyer le code. Veuillez réessayer.');
+    } finally {
+      setResendingCode(false);
+    }
+  }
+
+  // Vérifier le code OTP saisi
+  async function verifyEmailCode(e) {
+    e.preventDefault();
+    if (!pendingUserId || !verifyCode) return;
+    
+    setVerifyingCode(true);
+    setError('');
+    setSuccess('');
+    
+    try {
+      const response = await fetch('/api/auth/verify-email-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: pendingUserId, code: verifyCode })
       });
       
       const result = await response.json();
       
-      if (response.ok) {
-        setSuccess('✅ Email de vérification renvoyé ! Vérifiez votre boîte de réception (et vos spams).');
-      } else {
-        setError('Erreur lors du renvoi de l\'email : ' + (result.error || 'Erreur inconnue'));
+      if (!response.ok) {
+        setError(result.error || 'Code invalide');
+        setVerifyingCode(false);
+        return;
       }
+      
+      // Code vérifié — l'utilisateur a déjà une session active (signUp ou signIn)
+      setSuccess('Email vérifié ! Redirection en cours...');
+      
+      // Vérifier que le profil existe
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const sessionUser = sessionData?.session?.user;
+        if (sessionUser) {
+          const { data: existingProfile } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', sessionUser.id)
+            .maybeSingle();
+          
+          if (!existingProfile) {
+            const fullName = sessionUser.user_metadata?.full_name ||
+              `${sessionUser.user_metadata?.prenom || ''} ${sessionUser.user_metadata?.nom || ''}`.trim() ||
+              sessionUser.email.split('@')[0];
+            await supabase.from('profiles').insert({ id: sessionUser.id, name: fullName });
+          }
+        }
+      } catch (profileErr) {
+        console.warn('Erreur profil (non bloquante):', profileErr);
+      }
+      
+      const destination = redirectUrl || '/logements';
+      setTimeout(() => router.push(destination), 1200);
+      
     } catch (err) {
-      console.error('Erreur renvoi email:', err);
-      setError('Impossible de renvoyer l\'email de vérification. Veuillez réessayer.');
-    } finally {
-      setResendingEmail(false);
+      setError('Une erreur est survenue : ' + err.message);
+      setVerifyingCode(false);
     }
   }
 
@@ -268,21 +322,24 @@ function InscriptionContent(){
       
       // 🚫 BLOQUER si l'email n'est PAS vérifié
       if (!isVerified) {
-        setError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email (vérifiez aussi vos spams).');
-        setUnverifiedUserId(user.id);
-        setUnverifiedUserEmail(user.email);
+        // Envoyer automatiquement un code OTP (session maintenue pour re-redirection ensuite)
+        try {
+          await fetch('/api/emails/verify-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: user.email, userId: user.id })
+          });
+        } catch (e) {
+          console.warn('[Login] Erreur envoi code OTP:', e);
+        }
+        setPendingUserId(user.id);
+        setPendingUserEmail(user.email);
+        setStep('verify-code');
         setLoading(false);
-        
-        // Déconnecter immédiatement
-        await supabase.auth.signOut();
         return;
       }
       
       console.log('✅ Email vérifié, connexion autorisée');
-      
-      // Réinitialiser les états d'email non vérifié si tout est OK
-      setUnverifiedUserId(null);
-      setUnverifiedUserEmail('');
 
     if (user) {
       const { data: existingProfile } = await supabase
@@ -451,15 +508,150 @@ function InscriptionContent(){
           maxWidth: '500px',
           margin: '0 auto'
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <h2 style={{ 
-              fontSize: '1.75rem', 
-              fontWeight: 700, 
-              color: '#2D3748'
-            }}>
-              {activeTab === 'connexion' ? 'Se connecter' : 'Créer mon compte'}
-            </h2>
-          </div>
+          {step === 'verify-code' ? (
+            /* Étape de vérification du code OTP */
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>📧</div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#2D3748', marginBottom: '12px' }}>
+                Vérifiez votre email
+              </h2>
+              <p style={{ color: '#718096', fontSize: '15px', marginBottom: '32px', lineHeight: 1.6 }}>
+                Un code à 6 chiffres a été envoyé à<br/>
+                <strong style={{ color: '#2D3748' }}>{pendingUserEmail}</strong>
+              </p>
+              <form onSubmit={verifyEmailCode} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                  <label style={{
+                    display: 'block', marginBottom: '8px', color: '#2D3748',
+                    fontWeight: '600', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em'
+                  }}>
+                    Code de vérification
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]{6}"
+                    maxLength={6}
+                    value={verifyCode}
+                    onChange={e => setVerifyCode(e.target.value.replace(/\D/g, ''))}
+                    placeholder="123456"
+                    autoFocus
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '20px',
+                      borderRadius: '12px',
+                      border: '2px solid #D79077',
+                      fontSize: '28px',
+                      fontWeight: '700',
+                      textAlign: 'center',
+                      letterSpacing: '10px',
+                      background: '#F7FAFC',
+                      color: '#2D3748',
+                      boxShadow: '0 4px 20px rgba(215,144,119,0.15)',
+                      boxSizing: 'border-box',
+                      outline: 'none',
+                      transition: 'all 0.3s ease',
+                      fontFamily: 'monospace'
+                    }}
+                  />
+                </div>
+
+                {error && (
+                  <div style={{
+                    padding: '14px', borderRadius: '10px',
+                    background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
+                    color: '#DC2626', fontSize: '14px', textAlign: 'center', fontWeight: '500'
+                  }}>
+                    {error}
+                  </div>
+                )}
+
+                {success && (
+                  <div style={{
+                    padding: '14px', borderRadius: '10px',
+                    background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)',
+                    color: '#16A34A', fontSize: '14px', textAlign: 'center', fontWeight: '500'
+                  }}>
+                    {success}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={verifyingCode || verifyCode.length !== 6}
+                  style={{
+                    width: '100%', padding: '18px 24px', borderRadius: '12px', border: 'none',
+                    background: (verifyingCode || verifyCode.length !== 6)
+                      ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)'
+                      : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)',
+                    color: 'white', fontSize: '16px', fontWeight: '700',
+                    cursor: (verifyingCode || verifyCode.length !== 6) ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: (verifyingCode || verifyCode.length !== 6) ? 'none' : '0 4px 20px rgba(201,103,69,0.3)',
+                    opacity: (verifyingCode || verifyCode.length !== 6) ? 0.7 : 1
+                  }}
+                >
+                  {verifyingCode ? (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+                      <span style={{
+                        display: 'inline-block', width: '20px', height: '20px',
+                        border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white',
+                        borderRadius: '50%', animation: 'spin 1s linear infinite'
+                      }}></span>
+                      Vérification...
+                    </div>
+                  ) : 'Valider le code'}
+                </button>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '4px' }}>
+                  <button
+                    type="button"
+                    onClick={resendCode}
+                    disabled={resendingCode}
+                    style={{
+                      width: '100%', padding: '14px', borderRadius: '10px', border: '2px solid #E2E8F0',
+                      background: 'transparent', color: '#4A5568', fontSize: '14px', fontWeight: '600',
+                      cursor: resendingCode ? 'not-allowed' : 'pointer', transition: 'all 0.3s ease',
+                      opacity: resendingCode ? 0.6 : 1
+                    }}
+                  >
+                    {resendingCode ? 'Envoi en cours...' : 'Renvoyer le code'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      setStep('form');
+                      setPendingUserId(null);
+                      setPendingUserEmail('');
+                      setVerifyCode('');
+                      setError('');
+                      setSuccess('');
+                    }}
+                    style={{
+                      width: '100%', padding: '14px', borderRadius: '10px', border: 'none',
+                      background: 'transparent', color: '#A0AEC0', fontSize: '13px',
+                      cursor: 'pointer', textDecoration: 'underline'
+                    }}
+                  >
+                    Annuler et retourner à la connexion
+                  </button>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <>
+            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <h2 style={{ 
+                fontSize: '1.75rem', 
+                fontWeight: 700, 
+                color: '#2D3748'
+              }}>
+                {activeTab === 'connexion' ? 'Se connecter' : 'Créer mon compte'}
+              </h2>
+            </div>
 
           {/* Formulaire de connexion */}
           {activeTab === 'connexion' && (
@@ -589,55 +781,7 @@ function InscriptionContent(){
                   textAlign: 'center',
                   fontWeight: '500'
                 }}>
-                  ⚠️ {error}
-                  
-                  {/* Bouton pour renvoyer l'email de vérification */}
-                  {unverifiedUserId && unverifiedUserEmail && (
-                    <button
-                      type="button"
-                      onClick={resendVerificationEmail}
-                      disabled={resendingEmail}
-                      style={{
-                        marginTop: '12px',
-                        padding: '10px 20px',
-                        borderRadius: '8px',
-                        border: 'none',
-                        background: resendingEmail 
-                          ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)'
-                          : 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
-                        color: 'white',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        cursor: resendingEmail ? 'not-allowed' : 'pointer',
-                        transition: 'all 0.3s ease',
-                        boxShadow: resendingEmail ? 'none' : '0 2px 8px rgba(96,162,157,0.3)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        width: '100%'
-                      }}
-                    >
-                      {resendingEmail ? (
-                        <>
-                          <span className="spinner" style={{
-                            display: 'inline-block',
-                            width: '16px',
-                            height: '16px',
-                            border: '2px solid rgba(255,255,255,0.3)',
-                            borderTop: '2px solid white',
-                            borderRadius: '50%',
-                            animation: 'spin 1s linear infinite'
-                          }}></span>
-                          Envoi en cours...
-                        </>
-                      ) : (
-                        <>
-                          📧 Renvoyer l'email de vérification
-                        </>
-                      )}
-                    </button>
-                  )}
+                  {error}
                 </div>
               )}
 
@@ -1054,6 +1198,8 @@ function InscriptionContent(){
             )}
 
           </form>
+          )}
+            </>
           )}
         </div>
       </section>
