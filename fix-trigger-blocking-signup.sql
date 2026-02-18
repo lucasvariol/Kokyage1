@@ -1,7 +1,7 @@
--- Notification automatique par email lors de la création d'un nouvel utilisateur
--- Ce webhook appellera l'API route pour envoyer un email à l'admin
+-- FIX URGENT: Rendre le trigger notify_new_user non-bloquant
+-- Exécutez ce script dans le SQL Editor de Supabase pour permettre les inscriptions
 
--- 1. Créer la fonction qui appelle l'API
+-- Remplacer la fonction pour qu'elle ne bloque pas les inscriptions
 CREATE OR REPLACE FUNCTION notify_new_user()
 RETURNS trigger AS $$
 DECLARE
@@ -50,20 +50,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 2. Créer le trigger sur la table profiles
-DROP TRIGGER IF EXISTS on_new_user_created ON profiles;
-
-CREATE TRIGGER on_new_user_created
-  AFTER INSERT ON profiles
-  FOR EACH ROW
-  EXECUTE FUNCTION notify_new_user();
-
--- Note: Pour que cela fonctionne, vous devez :
--- 1. Activer l'extension pg_net dans Supabase
--- 2. Configurer la variable app.api_url avec votre URL de production
-
--- Pour configurer l'URL de l'API (à exécuter avec votre URL de production) :
--- ALTER DATABASE postgres SET app.api_url TO 'https://votre-domaine.vercel.app';
-
--- Pour activer pg_net (si pas déjà activé) :
--- CREATE EXTENSION IF NOT EXISTS pg_net;
+-- Le trigger existe déjà, pas besoin de le recréer
+-- Vérifier que le trigger est bien actif
+SELECT 
+  tgname as trigger_name,
+  tgenabled as enabled
+FROM pg_trigger 
+WHERE tgname = 'on_new_user_created';

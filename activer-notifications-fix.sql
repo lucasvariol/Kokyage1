@@ -1,7 +1,7 @@
--- Notification automatique par email lors de la création d'un nouvel utilisateur
--- Ce webhook appellera l'API route pour envoyer un email à l'admin
+-- SOLUTION: Activer les notifications sans ALTER DATABASE
+-- Cette version code l'URL directement dans la fonction
 
--- 1. Créer la fonction qui appelle l'API
+-- Remplacer la fonction avec l'URL codée en dur
 CREATE OR REPLACE FUNCTION notify_new_user()
 RETURNS trigger AS $$
 DECLARE
@@ -9,7 +9,7 @@ DECLARE
   payload jsonb;
   api_url text;
 BEGIN
-  -- URL de l'API en dur (Supabase ne permet pas ALTER DATABASE)
+  -- URL de l'API en dur (plus besoin de current_setting)
   api_url := 'https://kokyage.com';
   
   -- Construire le payload avec les informations de l'utilisateur
@@ -21,7 +21,6 @@ BEGIN
   );
 
   -- Appeler l'API via http request (nécessite l'extension pg_net)
-  -- Si quelque chose échoue, on ne bloque pas l'insertion
   BEGIN
     -- Vérifier que pg_net est disponible
     IF NOT EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_net') THEN
@@ -50,20 +49,25 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 2. Créer le trigger sur la table profiles
-DROP TRIGGER IF EXISTS on_new_user_created ON profiles;
+-- Activer l'extension pg_net si pas déjà fait
+CREATE EXTENSION IF NOT EXISTS pg_net;
 
-CREATE TRIGGER on_new_user_created
-  AFTER INSERT ON profiles
-  FOR EACH ROW
-  EXECUTE FUNCTION notify_new_user();
+-- Vérifier que tout est OK
+SELECT 
+  CASE 
+    WHEN EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_net') 
+    THEN '✅ pg_net installé'
+    ELSE '❌ pg_net non installé'
+  END as status_pg_net,
+  CASE 
+    WHEN EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'notify_new_user') 
+    THEN '✅ Fonction notify_new_user existe'
+    ELSE '❌ Fonction manquante'
+  END as status_function;
 
--- Note: Pour que cela fonctionne, vous devez :
--- 1. Activer l'extension pg_net dans Supabase
--- 2. Configurer la variable app.api_url avec votre URL de production
-
--- Pour configurer l'URL de l'API (à exécuter avec votre URL de production) :
--- ALTER DATABASE postgres SET app.api_url TO 'https://votre-domaine.vercel.app';
-
--- Pour activer pg_net (si pas déjà activé) :
--- CREATE EXTENSION IF NOT EXISTS pg_net;
+-- NOTES:
+-- ✅ Plus besoin de ALTER DATABASE (permission refusée)
+-- ✅ L'URL est maintenant codée dans la fonction
+-- ✅ Les notifications fonctionneront pour les nouvelles inscriptions
+-- ⚠️ Vérifiez que ADMIN_EMAIL est configuré dans Vercel
+-- ⚠️ Vérifiez que RESEND_API_KEY est configuré dans Vercel
