@@ -116,13 +116,35 @@ export default function VerificationProprietaire() {
     e.preventDefault();
     setAuthLoading(true);
     setError("");
+    
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    
     if (error) {
       setError(error.message);
       setAuthLoading(false);
       return;
     }
+
+    const user = data.user;
+
+    // Vérifier que l'email est vérifié
+    const { data: verificationData } = await supabase
+      .from('email_verifications')
+      .select('verified_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (!verificationData || !verificationData.verified_at) {
+      setError('⚠️ Email non vérifié. Veuillez d\'abord vérifier votre email avant de vous connecter.');
+      setAuthLoading(false);
+      await supabase.auth.signOut();
+      return;
+    }
+
     await refreshUser();
+    setAuthLoading(false);
   }
 
   async function handleSignup(e) {
