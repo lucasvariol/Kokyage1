@@ -1818,7 +1818,7 @@ export default function Page({ params: propsParams }) {
               Chargement du logement...
             </p>
             <p style={{ fontSize: 14, color: '#C96745', fontWeight: 600, marginTop: 12, maxWidth: 340, textAlign: 'center', lineHeight: 1.5 }}>
-              Kokyage, la première plateforme de sous-location permettant le partage des revenus entre locataire et propriétaire !
+              Kokyage, la sous-location gagnant-gagnant
             </p>
           </div>
         ) : (
