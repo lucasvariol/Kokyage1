@@ -1817,6 +1817,9 @@ export default function Page({ params: propsParams }) {
             <p style={{ fontSize: 18, color: '#64748b', fontWeight: 500 }}>
               Chargement du logement...
             </p>
+            <p style={{ fontSize: 14, color: '#C96745', fontWeight: 600, marginTop: 12, maxWidth: 340, textAlign: 'center', lineHeight: 1.5 }}>
+              Kokyage, la première plateforme de sous-location permettant le partage des revenus entre locataire et propriétaire !
+            </p>
           </div>
         ) : (
           <article className="logement-detail" style={{ maxWidth: 1400, margin: '0 auto' }}>
