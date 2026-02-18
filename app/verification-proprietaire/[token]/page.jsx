@@ -33,6 +33,13 @@ export default function VerificationProprietaire() {
   // Messages
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  // États OTP
+  const [authStep, setAuthStep] = useState('form'); // 'form' | 'verify-code'
+  const [authOtpCode, setAuthOtpCode] = useState('');
+  const [authPendingUserId, setAuthPendingUserId] = useState(null);
+  const [authPendingUserEmail, setAuthPendingUserEmail] = useState('');
+  const [authVerifyingCode, setAuthVerifyingCode] = useState(false);
+  const [authResendingCode, setAuthResendingCode] = useState(false);
 
   const origin = useMemo(
     () => (typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
@@ -116,33 +123,38 @@ export default function VerificationProprietaire() {
     e.preventDefault();
     setAuthLoading(true);
     setError("");
-    
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    
     if (error) {
       setError(error.message);
       setAuthLoading(false);
       return;
     }
-
     const user = data.user;
-
-    // Vérifier que l'email est vérifié
-    const { data: verificationData } = await supabase
-      .from('email_verifications')
-      .select('verified_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (!verificationData || !verificationData.verified_at) {
-      setError('⚠️ Email non vérifié. Veuillez d\'abord vérifier votre email avant de vous connecter.');
+    // Vérifier email OTP
+    let isVerified = false;
+    try {
+      const res = await fetch('/api/auth/check-email-verified', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id })
+      });
+      const result = await res.json();
+      isVerified = result.verified === true;
+    } catch (e) { isVerified = false; }
+    if (!isVerified) {
+      try {
+        await fetch('/api/emails/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: user.email, userId: user.id })
+        });
+      } catch (e) { console.warn('Erreur envoi OTP:', e); }
+      setAuthPendingUserId(user.id);
+      setAuthPendingUserEmail(user.email);
+      setAuthStep('verify-code');
       setAuthLoading(false);
-      await supabase.auth.signOut();
       return;
     }
-
     await refreshUser();
     setAuthLoading(false);
   }
@@ -201,14 +213,76 @@ export default function VerificationProprietaire() {
         console.warn("Insertion profil ignorée:", profileInsertError.message);
       }
     }
-    // Si l'email n'est pas confirmé, prévenir l'utilisateur
+    // Si l'email n'est pas confirmé, envoyer OTP et afficher l'étape
     if (data?.user && !data.user.email_confirmed_at && !data.session) {
-      setSuccess("Compte créé ! Veuillez confirmer votre adresse email, puis revenez via le lien pour lier le logement.");
+      try {
+        await fetch('/api/emails/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: data.user.email, userId: data.user.id })
+        });
+      } catch (e) { console.warn('Erreur envoi OTP:', e); }
+      setAuthPendingUserId(data.user.id);
+      setAuthPendingUserEmail(data.user.email);
+      setAuthStep('verify-code');
       setAuthLoading(false);
       return;
     }
     await refreshUser();
     setAuthLoading(false);
+  }
+
+  async function handleVerifyOtpCode(e) {
+    e.preventDefault();
+    if (!authPendingUserId || authOtpCode.length !== 6) return;
+    setAuthVerifyingCode(true);
+    setError('');
+    setSuccess('');
+    try {
+      const res = await fetch('/api/auth/verify-email-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: authPendingUserId, code: authOtpCode })
+      });
+      const result = await res.json();
+      if (!res.ok) { setError(result.error || 'Code invalide'); setAuthVerifyingCode(false); return; }
+      // Profil si besoin
+      const { data: sessionData } = await supabase.auth.getSession();
+      const sessionUser = sessionData?.session?.user;
+      if (sessionUser) {
+        const { data: existingProfile } = await supabase.from('profiles').select('id').eq('id', sessionUser.id).maybeSingle();
+        if (!existingProfile) {
+          const fullName = sessionUser.user_metadata?.full_name ||
+            `${sessionUser.user_metadata?.prenom || ''} ${sessionUser.user_metadata?.nom || ''}`.trim() ||
+            sessionUser.email.split('@')[0];
+          await supabase.from('profiles').insert({ id: sessionUser.id, name: fullName });
+        }
+      }
+      setAuthStep('form');
+      setAuthOtpCode('');
+      await refreshUser();
+    } catch (err) {
+      setError('Erreur : ' + err.message);
+    }
+    setAuthVerifyingCode(false);
+  }
+
+  async function handleResendOtpCode() {
+    if (!authPendingUserId || !authPendingUserEmail) return;
+    setAuthResendingCode(true);
+    setError('');
+    setSuccess('');
+    setAuthOtpCode('');
+    try {
+      const res = await fetch('/api/emails/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: authPendingUserEmail, userId: authPendingUserId })
+      });
+      if (res.ok) setSuccess('Nouveau code envoyé !');
+      else setError('Erreur lors du renvoi du code');
+    } catch (e) { setError('Erreur réseau'); }
+    setAuthResendingCode(false);
   }
 
   async function assignOwner() {
@@ -498,6 +572,35 @@ export default function VerificationProprietaire() {
               </div>
             ) : (
               <div>
+                {authStep === 'verify-code' ? (
+                  <div style={{ textAlign: 'center', padding: '8px 0' }}>
+                    <div style={{ fontSize: '40px', marginBottom: '12px' }}>📧</div>
+                    <h2 style={{ fontSize: 'clamp(1.1rem, 3vw, 1.4rem)', fontWeight: 700, color: '#1F2937', marginBottom: '8px' }}>Vérifiez votre email</h2>
+                    <p style={{ color: '#64748B', fontSize: 'clamp(0.85rem, 2vw, 0.95rem)', marginBottom: '24px', lineHeight: 1.6 }}>
+                      Code envoyé à <strong style={{ color: '#1F2937' }}>{authPendingUserEmail}</strong>
+                    </p>
+                    <form onSubmit={handleVerifyOtpCode} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      <input
+                        type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6}
+                        value={authOtpCode} onChange={e => setAuthOtpCode(e.target.value.replace(/\D/g, ''))}
+                        placeholder="123456" autoFocus required
+                        style={{ width: '100%', padding: 'clamp(14px, 3vw, 18px)', borderRadius: '12px', border: '2px solid #C96745', fontSize: 'clamp(22px, 5vw, 28px)', fontWeight: '700', textAlign: 'center', letterSpacing: '10px', outline: 'none', fontFamily: 'monospace', boxSizing: 'border-box' }}
+                      />
+                      <button type="submit" disabled={authVerifyingCode || authOtpCode.length !== 6}
+                        style={{ width: '100%', padding: 'clamp(12px, 2.5vw, 14px)', borderRadius: '12px', border: 'none', background: (authVerifyingCode || authOtpCode.length !== 6) ? '#94A3B8' : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', color: 'white', fontWeight: 800, fontSize: 'clamp(0.9rem, 2vw, 1rem)', cursor: (authVerifyingCode || authOtpCode.length !== 6) ? 'not-allowed' : 'pointer' }}>
+                        {authVerifyingCode ? 'Vérification...' : 'Valider le code'}
+                      </button>
+                      <button type="button" onClick={handleResendOtpCode} disabled={authResendingCode}
+                        style={{ width: '100%', padding: 'clamp(10px, 2vw, 12px)', borderRadius: '10px', border: '2px solid #E2E8F0', background: 'transparent', color: '#334155', fontSize: 'clamp(0.85rem, 2vw, 0.95rem)', fontWeight: 600, cursor: authResendingCode ? 'not-allowed' : 'pointer', opacity: authResendingCode ? 0.6 : 1 }}>
+                        {authResendingCode ? 'Envoi...' : 'Renvoyer le code'}
+                      </button>
+                      <button type="button" onClick={async () => { await supabase.auth.signOut(); setAuthStep('form'); setAuthOtpCode(''); setError(''); setSuccess(''); }}
+                        style={{ background: 'transparent', border: 'none', color: '#94A3B8', fontSize: 'clamp(0.8rem, 1.8vw, 0.85rem)', cursor: 'pointer', textDecoration: 'underline' }}>
+                        Annuler
+                      </button>
+                    </form>
+                  </div>
+                ) : (<>
                 {/* Tabs */}
                 <div style={{ display: 'flex', gap: 'clamp(6px, 1.5vw, 8px)', background: '#F1F5F9', padding: 'clamp(4px, 1vw, 6px)', borderRadius: 999, marginBottom: 'clamp(16px, 3vw, 20px)' }}>
                   <button onClick={() => setActiveTab('login')} style={{ flex: 1, padding: 'clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px)', borderRadius: 999, fontWeight: 800, border: 'none', background: activeTab === 'login' ? '#0F172A' : 'transparent', color: activeTab === 'login' ? 'white' : '#0F172A', fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>Se connecter</button>
@@ -561,6 +664,8 @@ export default function VerificationProprietaire() {
                     </button>
                   </form>
                 )}
+              </>
+              )}
               </div>
             )}
           </div>
