@@ -19,19 +19,44 @@ export async function POST(req) {
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24); // Expire dans 24h
 
-    // Stocker le token dans une table personnalisée
-    const { error: insertError } = await supabaseAdmin
+    // Vérifier si une ligne existe déjà pour cet utilisateur (non vérifiée)
+    const { data: existingRow } = await supabaseAdmin
       .from('email_verifications')
-      .insert({
-        user_id: userId,
-        email: email,
-        token: verificationToken,
-        expires_at: expiresAt.toISOString()
-      });
+      .select('id')
+      .eq('user_id', userId)
+      .is('verified_at', null)
+      .limit(1)
+      .maybeSingle();
 
-    if (insertError) {
-      console.error('Erreur lors de la création du token:', insertError);
-      return NextResponse.json({ error: 'Erreur lors de la création du token' }, { status: 500 });
+    if (existingRow) {
+      // Mettre à jour la ligne existante avec un nouveau token
+      const { error: updateError } = await supabaseAdmin
+        .from('email_verifications')
+        .update({
+          token: verificationToken,
+          expires_at: expiresAt.toISOString()
+        })
+        .eq('id', existingRow.id);
+
+      if (updateError) {
+        console.error('Erreur lors de la mise à jour du token:', updateError);
+        return NextResponse.json({ error: 'Erreur lors de la mise à jour du token' }, { status: 500 });
+      }
+    } else {
+      // Insérer une nouvelle ligne seulement si aucune n'existe
+      const { error: insertError } = await supabaseAdmin
+        .from('email_verifications')
+        .insert({
+          user_id: userId,
+          email: email,
+          token: verificationToken,
+          expires_at: expiresAt.toISOString()
+        });
+
+      if (insertError) {
+        console.error('Erreur lors de la création du token:', insertError);
+        return NextResponse.json({ error: 'Erreur lors de la création du token' }, { status: 500 });
+      }
     }
 
     // URL de vérification - utilise la variable d'environnement ou le domaine par défaut
