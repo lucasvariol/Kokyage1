@@ -1343,9 +1343,23 @@ export default function Page({ params: propsParams }) {
           const isTenant = data.owner_id && String(data.owner_id) === String(userId);
           
           if (!isOwner && !isTenant) {
-            // Ni propriétaire ni locataire : accès refusé
-            router.push('/logements');
-            return;
+            // Vérifier si admin/modérateur
+            try {
+              const adminToken = sessionData?.session?.access_token;
+              const adminRes = await fetch('/api/auth/check-admin', {
+                headers: { 'Authorization': `Bearer ${adminToken}` }
+              });
+              const adminData = await adminRes.json();
+              if (!adminData.isAdmin) {
+                // Ni propriétaire, ni locataire, ni admin : accès refusé
+                router.push('/logements');
+                return;
+              }
+            } catch (e) {
+              // En cas d'erreur API, refuser l'accès par précaution
+              router.push('/logements');
+              return;
+            }
           }
         }
       }
