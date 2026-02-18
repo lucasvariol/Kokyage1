@@ -267,8 +267,8 @@ function InscriptionContent(){
       });
       
       // 🚫 BLOQUER si l'email n'est PAS vérifié
-      // Exception: si le compte a été confirmé par Supabase avant la mise en place de email_verifications
-      const isVerified = (verificationData && verificationData.verified_at) || user.email_confirmed_at;
+      // On vérifie uniquement notre table email_verifications
+      const isVerified = verificationData && verificationData.verified_at;
       
       if (!isVerified) {
         setError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email (vérifiez aussi vos spams).');
