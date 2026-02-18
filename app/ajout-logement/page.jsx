@@ -52,8 +52,13 @@ export default function Page() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState('');
   const [authSuccess, setAuthSuccess] = useState('');
-
-  // Functions stay the same
+  // États OTP
+  const [authStep, setAuthStep] = useState('form'); // 'form' | 'verify-code'
+  const [authOtpCode, setAuthOtpCode] = useState('');
+  const [authPendingUserId, setAuthPendingUserId] = useState(null);
+  const [authPendingUserEmail, setAuthPendingUserEmail] = useState('');
+  const [authVerifyingCode, setAuthVerifyingCode] = useState(false);
+  const [authResendingCode, setAuthResendingCode] = useState(false);
   const handleAddressChange = (e) => {
     const value = e.target.value;
     setStreet(value);
@@ -287,14 +292,10 @@ export default function Page() {
           console.warn('Erreur envoi email:', emailErr);
         }
 
-        setAuthSuccess('✅ Compte créé ! Vérifiez votre email pour activer votre compte, puis reconnectez-vous.');
-        setAuthLoading(false);
-        
-        // Basculer vers connexion après 3 secondes
-        setTimeout(() => {
-          setAuthTab('connexion');
-          setAuthSuccess('');
-        }, 3000);
+      setAuthPendingUserId(user.id);
+      setAuthPendingUserEmail(authEmail);
+      setAuthStep('verify-code');
+      setAuthLoading(false);
       }
     } catch (err) {
       console.error('Erreur inscription:', err);
@@ -346,10 +347,18 @@ export default function Page() {
       }
       
       if (!isVerified) {
+        // Envoyer le code OTP et rester dans la modal
+        try {
+          await fetch('/api/emails/verify-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: user.email, userId: user.id })
+          });
+        } catch (e) { console.warn('Erreur envoi OTP:', e); }
+        setAuthPendingUserId(user.id);
+        setAuthPendingUserEmail(user.email);
+        setAuthStep('verify-code');
         setAuthLoading(false);
-        await supabase.auth.signOut();
-        // Rediriger vers la page inscription pour déclencher la vérification par code OTP
-        router.push('/inscription?redirect=/ajout-logement');
         return;
       }
 
@@ -388,6 +397,63 @@ export default function Page() {
       setAuthError('Une erreur est survenue lors de la connexion');
       setAuthLoading(false);
     }
+  };
+
+  // Vérifier le code OTP dans la modal
+  const handleVerifyOtpCode = async (e) => {
+    e.preventDefault();
+    if (!authPendingUserId || authOtpCode.length !== 6) return;
+    setAuthVerifyingCode(true);
+    setAuthError('');
+    setAuthSuccess('');
+    try {
+      const res = await fetch('/api/auth/verify-email-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: authPendingUserId, code: authOtpCode })
+      });
+      const result = await res.json();
+      if (!res.ok) { setAuthError(result.error || 'Code invalide'); setAuthVerifyingCode(false); return; }
+      const { data: sessionData } = await supabase.auth.getSession();
+      const sessionUser = sessionData?.session?.user;
+      if (sessionUser) {
+        const { data: existingProfile } = await supabase.from('profiles').select('id').eq('id', sessionUser.id).maybeSingle();
+        if (!existingProfile) {
+          const fullName = sessionUser.user_metadata?.full_name ||
+            `${sessionUser.user_metadata?.prenom || ''} ${sessionUser.user_metadata?.nom || ''}`.trim() ||
+            sessionUser.email.split('@')[0];
+          await supabase.from('profiles').insert({ id: sessionUser.id, name: fullName });
+        }
+        setAuthSuccess('✅ Email vérifié !');
+        setAuthVerifyingCode(false);
+        setTimeout(() => {
+          setShowAuthModal(false);
+          setAuthStep('form');
+          setAuthOtpCode('');
+        }, 1000);
+      }
+    } catch (err) {
+      setAuthError('Erreur : ' + err.message);
+      setAuthVerifyingCode(false);
+    }
+  };
+
+  const handleResendOtpCode = async () => {
+    if (!authPendingUserId || !authPendingUserEmail) return;
+    setAuthResendingCode(true);
+    setAuthError('');
+    setAuthSuccess('');
+    setAuthOtpCode('');
+    try {
+      const res = await fetch('/api/emails/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: authPendingUserEmail, userId: authPendingUserId })
+      });
+      if (res.ok) setAuthSuccess('Nouveau code envoyé !');
+      else setAuthError('Erreur lors du renvoi du code');
+    } catch (e) { setAuthError('Erreur réseau'); }
+    finally { setAuthResendingCode(false); }
   };
 
   const handleSubmit = async (e) => {
@@ -2524,6 +2590,46 @@ export default function Page() {
               ✕
             </button>
 
+            {authStep === 'verify-code' ? (
+              <div style={{ textAlign: 'center', padding: '8px 0' }}>
+                <div style={{ fontSize: '40px', marginBottom: '12px' }}>📧</div>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#2D3748', marginBottom: '8px' }}>Vérifiez votre email</h2>
+                <p style={{ color: '#718096', fontSize: '14px', marginBottom: '24px', lineHeight: 1.6 }}>
+                  Code envoyé à <strong style={{ color: '#2D3748' }}>{authPendingUserEmail}</strong>
+                </p>
+                {authError && (
+                  <div style={{ padding: '12px', borderRadius: '8px', background: '#FEE', border: '1px solid #FCC', color: '#C53030', fontSize: '14px', marginBottom: '16px' }}>
+                    {authError}
+                  </div>
+                )}
+                {authSuccess && (
+                  <div style={{ padding: '12px', borderRadius: '8px', background: '#E6FFFA', border: '1px solid #81E6D9', color: '#234E52', fontSize: '14px', marginBottom: '16px' }}>
+                    {authSuccess}
+                  </div>
+                )}
+                <form onSubmit={handleVerifyOtpCode} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  <input
+                    type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6}
+                    value={authOtpCode} onChange={e => setAuthOtpCode(e.target.value.replace(/\D/g, ''))}
+                    placeholder="123456" autoFocus required
+                    style={{ width: '100%', padding: '18px', borderRadius: '12px', border: '2px solid #C96745', fontSize: '28px', fontWeight: '700', textAlign: 'center', letterSpacing: '10px', outline: 'none', fontFamily: 'monospace', boxSizing: 'border-box' }}
+                  />
+                  <button type="submit" disabled={authVerifyingCode || authOtpCode.length !== 6}
+                    style={{ width: '100%', padding: '14px', borderRadius: '12px', border: 'none', background: (authVerifyingCode || authOtpCode.length !== 6) ? '#CBD5E0' : 'linear-gradient(135deg, #D79077 0%, #C96745 100%)', color: 'white', fontWeight: '600', fontSize: '16px', cursor: (authVerifyingCode || authOtpCode.length !== 6) ? 'not-allowed' : 'pointer' }}>
+                    {authVerifyingCode ? 'Vérification...' : 'Valider le code'}
+                  </button>
+                  <button type="button" onClick={handleResendOtpCode} disabled={authResendingCode}
+                    style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '2px solid #E2E8F0', background: 'transparent', color: '#4A5568', fontSize: '14px', fontWeight: '600', cursor: authResendingCode ? 'not-allowed' : 'pointer', opacity: authResendingCode ? 0.6 : 1 }}>
+                    {authResendingCode ? 'Envoi...' : 'Renvoyer le code'}
+                  </button>
+                  <button type="button" onClick={async () => { await supabase.auth.signOut(); setAuthStep('form'); setAuthOtpCode(''); setAuthError(''); setAuthSuccess(''); }}
+                    style={{ background: 'transparent', border: 'none', color: '#A0AEC0', fontSize: '13px', cursor: 'pointer', textDecoration: 'underline' }}>
+                    Annuler
+                  </button>
+                </form>
+              </div>
+            ) : (<>
+
             {/* Tabs */}
             <div style={{
               display: 'flex',
@@ -2862,6 +2968,7 @@ export default function Page() {
                 </button>
               </form>
             )}
+            </>)}
           </div>
         </div>
       )}
