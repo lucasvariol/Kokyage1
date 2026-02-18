@@ -24,6 +24,9 @@ function InscriptionContent(){
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [unverifiedUserId, setUnverifiedUserId] = useState(null);
+  const [unverifiedUserEmail, setUnverifiedUserEmail] = useState('');
+  const [resendingEmail, setResendingEmail] = useState(false);
   const router = useRouter();
 
   // États pour les focus des champs
@@ -182,6 +185,41 @@ function InscriptionContent(){
     }
   }
 
+  // Fonction pour renvoyer l'email de vérification
+  async function resendVerificationEmail() {
+    if (!unverifiedUserId || !unverifiedUserEmail) return;
+    
+    setResendingEmail(true);
+    setError('');
+    setSuccess('');
+    
+    try {
+      const response = await fetch('/api/emails/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: unverifiedUserEmail,
+          userId: unverifiedUserId,
+          nom: '', // Pas nécessaire pour le renvoi
+          prenom: ''
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        setSuccess('✅ Email de vérification renvoyé ! Vérifiez votre boîte de réception (et vos spams).');
+      } else {
+        setError('Erreur lors du renvoi de l\'email : ' + (result.error || 'Erreur inconnue'));
+      }
+    } catch (err) {
+      console.error('Erreur renvoi email:', err);
+      setError('Impossible de renvoyer l\'email de vérification. Veuillez réessayer.');
+    } finally {
+      setResendingEmail(false);
+    }
+  }
+
   // Fonction pour la connexion
   async function onLoginSubmit(e) {
     e.preventDefault();
@@ -234,6 +272,8 @@ function InscriptionContent(){
       
       if (!isVerified) {
         setError('⚠️ Email non vérifié. Veuillez cliquer sur le lien de vérification envoyé à votre adresse email (vérifiez aussi vos spams).');
+        setUnverifiedUserId(user.id);
+        setUnverifiedUserEmail(user.email);
         setLoading(false);
         
         // Déconnecter immédiatement
@@ -242,6 +282,10 @@ function InscriptionContent(){
       }
       
       console.log('✅ Email vérifié, connexion autorisée');
+      
+      // Réinitialiser les états d'email non vérifié si tout est OK
+      setUnverifiedUserId(null);
+      setUnverifiedUserEmail('');
 
     if (user) {
       const { data: existingProfile } = await supabase
@@ -549,6 +593,54 @@ function InscriptionContent(){
                   fontWeight: '500'
                 }}>
                   ⚠️ {error}
+                  
+                  {/* Bouton pour renvoyer l'email de vérification */}
+                  {unverifiedUserId && unverifiedUserEmail && (
+                    <button
+                      type="button"
+                      onClick={resendVerificationEmail}
+                      disabled={resendingEmail}
+                      style={{
+                        marginTop: '12px',
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: resendingEmail 
+                          ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)'
+                          : 'linear-gradient(135deg, #60A29D 0%, #4A8B87 100%)',
+                        color: 'white',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: resendingEmail ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.3s ease',
+                        boxShadow: resendingEmail ? 'none' : '0 2px 8px rgba(96,162,157,0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        width: '100%'
+                      }}
+                    >
+                      {resendingEmail ? (
+                        <>
+                          <span className="spinner" style={{
+                            display: 'inline-block',
+                            width: '16px',
+                            height: '16px',
+                            border: '2px solid rgba(255,255,255,0.3)',
+                            borderTop: '2px solid white',
+                            borderRadius: '50%',
+                            animation: 'spin 1s linear infinite'
+                          }}></span>
+                          Envoi en cours...
+                        </>
+                      ) : (
+                        <>
+                          📧 Renvoyer l'email de vérification
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
               )}
 
