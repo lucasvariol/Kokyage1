@@ -535,6 +535,9 @@ export default function Page() {
     }
 
     // Insertion dans la table 'listings'
+    // Normalise les sauts de ligne (\r\n Windows, \r ancien Mac -> \n)
+    const normalizedDescription = description.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
     const { error: insertError } = await supabase
       .from('listings')
       .insert([
@@ -544,7 +547,7 @@ export default function Page() {
           title,
           city,
           address: street,
-          description,
+          description: normalizedDescription,
           price_per_night: price ? parseFloat(price) : null,
           images: imageUrls,
           email_proprietaire: ownerEmail,

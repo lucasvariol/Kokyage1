@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Header from '../../_components/Header';
 import Footer from '../../_components/Footer';
@@ -1175,7 +1175,7 @@ export default function Page({ params: propsParams }) {
       city: editCity,
       address: editStreet,
       price_per_night: parseFloat(editPrice),
-      description: editDescription,
+      description: editDescription.replace(/\r\n/g, '\n').replace(/\r/g, '\n'),
       nb_voyageurs: editNbVoyageurs,
       bedrooms: editBedrooms,
       bathrooms: editBathrooms,
@@ -1226,7 +1226,7 @@ export default function Page({ params: propsParams }) {
       beds: Number(form.beds) || 0,
       bathrooms: Number(form.bathrooms) || 0,
       surface: Number(form.surface) || 0,
-      description: form.description || "",
+      description: (form.description || "").replace(/\r\n/g, '\n').replace(/\r/g, '\n'),
       // Ajoute ici d'autres colonnes si besoin, exemple :
       // images: JSON.stringify(images),
       // amenities: form.amenities ? JSON.stringify(form.amenities) : null,
@@ -2796,6 +2796,7 @@ export default function Page({ params: propsParams }) {
                           fontSize: 15
                         }}>
                           {(item.description || 'Aucune description fournie pour le moment.')
+                            .replace(/\r\n/g, '\n').replace(/\r/g, '\n')
                             .split('\n')
                             .map((paragraph, i) => (
                               paragraph.trim() ? (
