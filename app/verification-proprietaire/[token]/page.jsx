@@ -213,8 +213,8 @@ export default function VerificationProprietaire() {
         console.warn("Insertion profil ignorée:", profileInsertError.message);
       }
     }
-    // Si l'email n'est pas confirmé, envoyer OTP et afficher l'étape
-    if (data?.user && !data.user.email_confirmed_at && !data.session) {
+    // Toujours envoyer le code OTP après inscription (notre système, indépendant de Supabase)
+    if (data?.user) {
       try {
         await fetch('/api/emails/verify-email', {
           method: 'POST',
