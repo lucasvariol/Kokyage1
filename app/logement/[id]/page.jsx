@@ -1376,8 +1376,9 @@ export default function Page({ params: propsParams }) {
         // Certains environnements utilisent un id numérique, d'autres une chaîne (uuid).
         // On privilégie l'entier si possible, sinon on fallback sur params.id.
         const listingIdRaw = params?.id;
+        // Utiliser l'entier uniquement si l'id est PUREMENT numérique (évite parseInt('3c0be2be...') = 3 pour les UUID)
         const listingIdParsed = Number.parseInt(listingIdRaw, 10);
-        const listingIdFilter = Number.isFinite(listingIdParsed) && !Number.isNaN(listingIdParsed)
+        const listingIdFilter = /^\d+$/.test(String(listingIdRaw)) && Number.isFinite(listingIdParsed)
           ? listingIdParsed
           : listingIdRaw;
 
