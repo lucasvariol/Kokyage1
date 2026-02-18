@@ -786,6 +786,9 @@ function LogementsInner() {
       }
     }
 
+    // ID du logement masqué pour les non-modérateurs
+    const HIDDEN_LISTING_ID = 'ccff5de9-d9db-408b-bd59-13218a8d38b4';
+
     // Load only listings that have been validated by a moderator
     supabase.from('listings').select('*').eq('status', 'validé modérateur').order('created_at', { ascending: false }).then(async ({ data, error }) => {
       try {
@@ -801,6 +804,21 @@ function LogementsInner() {
           setItems([]);
           setFilteredItems([]);
           return;
+        }
+
+        // Vérifie si l'utilisateur est modérateur
+        let isModerator = false;
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            const adminCheck = await fetch('/api/auth/check-admin', {
+              headers: { 'Authorization': `Bearer ${session.access_token}` }
+            });
+            const adminData = await adminCheck.json();
+            isModerator = !!adminData.isAdmin;
+          }
+        } catch (e) {
+          isModerator = false;
         }
 
         // Géocode les adresses manquantes
@@ -824,7 +842,11 @@ function LogementsInner() {
           return item;
         }));
         
-        const validGeocoded = geocoded.filter(item => item !== null);
+        let validGeocoded = geocoded.filter(item => item !== null);
+        // Masquer le logement spécifique si l'utilisateur n'est pas modérateur
+        if (!isModerator) {
+          validGeocoded = validGeocoded.filter(item => item.id !== HIDDEN_LISTING_ID);
+        }
         setItems(validGeocoded);
         // Initially show all items, filters will be applied by useEffect
         setFilteredItems(validGeocoded);
