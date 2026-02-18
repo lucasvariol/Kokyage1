@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import Header from '@/app/_components/Header';
@@ -10,7 +10,7 @@ export default function VerifyEmailPage({ params }) {
   const [status, setStatus] = useState('loading'); // loading, success, error, expired
   const [message, setMessage] = useState('');
   const router = useRouter();
-  const token = params.token;
+  const { token } = use(params);
 
   useEffect(() => {
     if (!token) {
