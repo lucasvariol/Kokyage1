@@ -357,7 +357,7 @@ function LogementsInner() {
   useEffect(() => { imageIndexesRef.current = imageIndexes; }, [imageIndexes]);
   const [hoveredCard, setHoveredCard] = useState(null);
   const searchParams = useSearchParams();
-  const initialVoyageurs = parseInt(searchParams.get('voyageurs'), 10) || 2;
+  const initialVoyageurs = parseInt(searchParams.get('voyageurs'), 10) || 1;
   const [mounted, setMounted] = useState(false);
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -555,7 +555,8 @@ function LogementsInner() {
       // Apply all filters except availability
       if (typeof item.nb_voyageurs === 'number' && item.nb_voyageurs < voyageurs) return false;
       if (typeof item.price_per_night === 'number') {
-        if (item.price_per_night * 1.17 < priceMin || item.price_per_night * 1.17 > priceMax) return false;
+        const alternativePrice = item.price_per_night * 1.17;
+        if (alternativePrice < priceMin || (priceMax < 500 && alternativePrice > priceMax)) return false;
       }
       if (minBedrooms > 0 && (typeof item.bedrooms !== 'number' || item.bedrooms < minBedrooms)) return false;
       if (minBathrooms > 0 && (typeof item.bathrooms !== 'number' || item.bathrooms < minBathrooms)) return false;
@@ -638,7 +639,8 @@ function LogementsInner() {
       const feeMultiplier = getFeeMultiplier();
       const priceWithFees = (typeof item.price_per_night === 'number') ? item.price_per_night * feeMultiplier : NaN;
       if (!isFinite(priceWithFees)) return true;
-      return priceWithFees >= priceMin && priceWithFees <= priceMax;
+      // Quand le slider est au max (500), on ne filtre pas par prix haut
+      return priceWithFees >= priceMin && (priceMax >= 500 || priceWithFees <= priceMax);
     });
     
     // Filter by minimum bedrooms (only if > 0)
